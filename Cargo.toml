@@ -1,0 +1,7 @@
+[package]
+name = "afterburner"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+burn = { version = "0.19.1", features = ["fusion", "std", "train", "tui", "vision", "wgpu"] }
