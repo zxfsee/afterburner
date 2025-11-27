@@ -2,6 +2,14 @@
 name = "afterburner"
 version = "0.1.0"
 edition = "2024"
+license = "MIT"
 
 [dependencies]
-burn = { version = "0.19.1", features = ["fusion", "std", "train", "tui", "vision", "wgpu"] }
+burn = { version = "0.19.1", features = [
+  "fusion",
+  "std",
+  "train",
+  "tui",
+  "vision",
+  "wgpu",
+] }

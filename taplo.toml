@@ -2,6 +2,9 @@
 #
 # https://taplo.tamasfe.dev/configuration/file.html#configuration-file
 
+include = ["Cargo.toml", "deny.toml", "taplo.toml", ".cargo/audit.toml"]
+exclude = [".direnv/**", "target/**"]
+
 [formatting]
 reorder_keys = false
 
