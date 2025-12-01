@@ -12,4 +12,8 @@ burn = { version = "0.19.1", features = [
   "tui",
   "vision",
   "wgpu",
+  "ndarray",
 ] }
+
+[dependencies.burn-autodiff]
+version = "0.19.1"
