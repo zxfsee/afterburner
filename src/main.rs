@@ -1,12 +1,9 @@
 #![recursion_limit = "256"]
 
-mod data;
-mod model;
-mod train;
-
 use burn::prelude::*;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
 use burn_autodiff::Autodiff;
+use afterburner::train;
 
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
