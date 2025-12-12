@@ -32,8 +32,10 @@ fn run_infer<B: Backend>(weights_path: PathBuf) {
     let device = B::Device::default();
     let recorder = CompactRecorder::new();
 
-    let model: Model<B> = Model::load_file(weights_path, &recorder, &device)
-        .expect("failed to load model");
+    println!("Loading model artifact from {:?}", weights_path);
+    println!("Expected input: [B, 1, 28, 28] normalized MNIST");
+    let model: Model<B> =
+        Model::load_file(weights_path, &recorder, &device).expect("failed to load model");
 
     // Example single input: zeros shaped as MNIST image batch [1, 1, 28, 28].
     let input = Tensor::<B, 4>::zeros([1, 1, 28, 28], &device);
