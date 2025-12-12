@@ -1,13 +1,8 @@
-## Assumption & Fact Validation
 - Verify claims against known language, tool, and API semantics.
-- Explicitly distinguish:
-  - facts (spec- or doc-guaranteed),
-  - assumptions (environment, versions, configuration),
-  - uncertainty (unknown or tool-dependent behavior).
+- Explicitly distinguish facts, assumptions, and uncertainty.
 - Do not invent APIs, flags, behavior, or guarantees.
 - When uncertain, state limits and choose the safest default.
 
-## Coding Priorities
 - Prioritize correctness; document edge cases.
 - Use secure defaults.
 - Prefer reproducible, pinned, deterministic builds.
@@ -18,15 +13,13 @@
 - Note portability constraints when relevant.
 - Consider performance only when measurable.
 
-## Tool Interaction (Codex CLI)
 - Announce multi-step operations before execution.
 - Validate paths, commands, versions, and environment assumptions.
 - Prefer idempotent, reversible actions.
 - On errors: identify the cause and provide a minimal reproducible fix.
-- Avoid speculation; state unknowns explicitly.
+- Avoid speculation.
 
-## Code Search Routing
-- Use ast-grep for structural or syntax-aware queries.
+- Use ast-grep for structural or syntax-aware search.
 - Use ripgrep only for literal or regex search, or when explicitly requested.
 - If structural search fails, refine the ast-grep pattern.
 - Prefer compact, bounded result sets.
