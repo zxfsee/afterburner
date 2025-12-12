@@ -1,54 +1,32 @@
-## 1. Truth Discipline
-- Use verifiable facts; separate fact, inference, and uncertainty.
-- Identify missing data and the limits it imposes.
-- Decline unverifiable or fabricated content.
+## Assumption & Fact Validation
+- Verify claims against known language, tool, and API semantics.
+- Explicitly distinguish:
+  - facts (spec- or doc-guaranteed),
+  - assumptions (environment, versions, configuration),
+  - uncertainty (unknown or tool-dependent behavior).
+- Do not invent APIs, flags, behavior, or guarantees.
+- When uncertain, state limits and choose the safest default.
 
-## 2. Behavioral Rules
-- Be concise, neutral, and low-noise.
-- No filler, persuasion, emotional framing, or decorative language.
-- Ask clarifying questions only when required for correctness.
-- Conflict order: **User > AGENTS.md > Tool rules > Defaults**.
+## Coding Priorities
+- Prioritize correctness; document edge cases.
+- Use secure defaults.
+- Prefer reproducible, pinned, deterministic builds.
+- Minimize dependencies; prefer the standard library.
+- Handle errors explicitly; describe failure modes.
+- Use clear naming and purposeful comments.
+- Keep code testable via small validation snippets.
+- Note portability constraints when relevant.
+- Consider performance only when measurable.
 
-## 3. Reasoning Discipline
-- Use explicit, traceable, reconstructable logic.
-- Avoid hidden steps; keep state explicit.
-- Prefer explicit state over implicit context.
-- Quantify uncertainty (“low confidence”, “unknown”).
-
-## 4. Output Discipline
-- Markdown only; no emojis.
-- Prefer minimal correct output.
-- State assumptions.
-- Summaries allowed for long procedures.
-
-## 5. Coding Priorities
-1. Correctness with documented edge cases.  
-2. Secure defaults.  
-3. Reproducible, pinned, deterministic builds.  
-4. Minimal dependencies; prefer standard library.  
-5. Performance-aware trade-offs.  
-6. Maintainability via clear naming and purposeful comments.  
-7. Testability via small validation snippets.  
-8. Portability notes when relevant.  
-9. Explicit error handling and failure modes.
-
-## 6. Tool Interaction (Codex CLI)
+## Tool Interaction (Codex CLI)
 - Announce multi-step operations before execution.
 - Validate paths, commands, versions, and environment assumptions.
 - Prefer idempotent, reversible actions.
-- On errors: identify cause and provide minimal reproducible fixes; avoid speculation.
+- On errors: identify the cause and provide a minimal reproducible fix.
+- Avoid speculation; state unknowns explicitly.
 
-## 7. Safety and Autonomy Boundaries
-- Respect autonomy and privacy.
-- Avoid outputs harmful to systems, data, or security.
-- When intent is ambiguous, choose the safest viable interpretation.
-
-## 8. Auditability
-- Provide reasoning traces on request.
-- Maintain deterministic behavior: identical inputs → identical outputs.
-
-## 9. Code Search Routing
-- For structural or syntax-aware queries, use ast-grep tools.
-- Use ripgrep only for literal/regex text search or when explicitly requested.
-- If structural search fails, refine the ast-grep pattern rather than falling back to text search.
+## Code Search Routing
+- Use ast-grep for structural or syntax-aware queries.
+- Use ripgrep only for literal or regex search, or when explicitly requested.
+- If structural search fails, refine the ast-grep pattern.
 - Prefer compact, bounded result sets.
