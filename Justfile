@@ -1,0 +1,42 @@
+set shell := ["nu", "-c"]
+set dotenv-load := true
+
+# build the project via nix (reproducible)
+build:
+	nix build
+
+# run all checks (fmt, clippy, audit, tests)
+check:
+	nix flake check
+
+# enter development shell
+dev:
+	nix develop
+
+# format rust + toml + nix
+fmt:
+	nix fmt
+
+# train model and produce artifacts
+train:
+	cargo run --bin afterburner
+
+# run inference using trained artifact
+infer:
+	cargo run --bin infer -- artifacts/inference/model.mpk
+
+# run training by default
+run:
+	just train
+
+# clean build + artifacts
+clean:
+	rm -rf target artifacts
+
+# update flake inputs
+update:
+	nix flake update
+
+# update Rust dependencies
+cargo-update:
+	cargo update

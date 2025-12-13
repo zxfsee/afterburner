@@ -2,11 +2,11 @@
   description = "Build a cargo project";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
 
-    crane.url = "github:ipetkov/crane";
+    crane.url = "https://flakehub.com/f/ipetkov/crane/0";
 
-    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.url = "https://flakehub.com/f/hercules-ci/flake-parts/0.1";
 
     advisory-db = {
       url = "github:rustsec/advisory-db";
@@ -14,9 +14,11 @@
     };
 
     rust-overlay = {
-      url = "github:oxalica/rust-overlay";
+      url = "https://flakehub.com/f/oxalica/rust-overlay/0.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    treefmt-nix.url = "https://flakehub.com/f/numtide/treefmt-nix/0.1";
+
   };
 
   outputs =
@@ -27,6 +29,7 @@
       flake-parts,
       advisory-db,
       rust-overlay,
+      treefmt-nix,
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -35,10 +38,15 @@
         "aarch64-darwin"
       ];
 
+      imports = [
+        treefmt-nix.flakeModule
+      ];
+
       perSystem =
         {
           system,
           lib,
+          config,
           ...
         }:
         let
@@ -77,7 +85,7 @@
 
           # Build the actual crate itself, reusing the dependency
           # artifacts from above.
-          my-crate = craneLib.buildPackage (
+          afterburner = craneLib.buildPackage (
             commonArgs
             // {
               inherit cargoArtifacts;
@@ -87,7 +95,7 @@
         {
           checks = {
             # Build the crate as part of `nix flake check` for convenience
-            inherit my-crate;
+            inherit afterburner;
 
             # Run clippy (and deny all warnings) on the crate source,
             # again, reusing the dependency artifacts from above.
@@ -95,7 +103,7 @@
             # Note that this is done as a separate derivation so that
             # we can block the CI if there are issues here, but not
             # prevent downstream consumers from building our crate by itself.
-            my-crate-clippy = craneLib.cargoClippy (
+            afterburner-clippy = craneLib.cargoClippy (
               commonArgs
               // {
                 inherit cargoArtifacts;
@@ -103,7 +111,7 @@
               }
             );
 
-            my-crate-doc = craneLib.cargoDoc (
+            afterburner-doc = craneLib.cargoDoc (
               commonArgs
               // {
                 inherit cargoArtifacts;
@@ -114,30 +122,22 @@
             );
 
             # Check formatting
-            my-crate-fmt = craneLib.cargoFmt {
-              inherit src;
-            };
-
-            my-crate-toml-fmt = craneLib.taploFmt {
-              src = pkgs.lib.sources.sourceFilesBySuffices src [ ".toml" ];
-              # taplo arguments can be further customized below as needed
-              taploExtraArgs = "--config ./taplo.toml";
-            };
+            formatting = config.treefmt.build.check self;
 
             # Audit dependencies
-            my-crate-audit = craneLib.cargoAudit {
+            afterburner-audit = craneLib.cargoAudit {
               inherit src advisory-db;
             };
 
             # Audit licenses
-            my-crate-deny = craneLib.cargoDeny {
+            afterburner-deny = craneLib.cargoDeny {
               inherit src;
             };
 
             # Run tests with cargo-nextest
-            # Consider setting `doCheck = false` on `my-crate` if you do not want
+            # Consider setting `doCheck = false` on `afterburner` if you do not want
             # the tests to run twice
-            my-crate-nextest = craneLib.cargoNextest (
+            afterburner-nextest = craneLib.cargoNextest (
               commonArgs
               // {
                 inherit cargoArtifacts;
@@ -149,12 +149,12 @@
           };
 
           packages = {
-            default = my-crate;
+            default = afterburner;
           };
 
           apps.default = {
             type = "app";
-            program = "${my-crate}/bin/${my-crate.pname or "my-crate"}";
+            program = "${afterburner}/bin/afterburner";
           };
 
           devShells.default = craneLib.devShell {
@@ -165,10 +165,25 @@
             # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
 
             # Extra inputs can be added here; cargo and rustc are provided by default.
-            packages = [
-              # pkgs.ripgrep
+            packages = with pkgs; [
+              just
             ];
           };
+
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs = {
+              nixfmt.enable = true;
+              rustfmt.enable = true;
+              taplo.enable = true;
+            };
+            settings.formatter.taplo.options = [
+              "--config"
+              (toString ./taplo.toml)
+            ];
+          };
+
+          formatter = config.treefmt.build.wrapper;
         };
     };
 }

@@ -21,7 +21,7 @@ impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
         let images = items
             .iter()
-            .map(|item| TensorData::from(item.image.clone()).convert::<B::FloatElem>())
+            .map(|item| TensorData::from(item.image).convert::<B::FloatElem>())
             .map(|data| Tensor::<B, 2>::from_data(data, device))
             .map(|tensor| tensor.reshape([1, 28, 28]))
             .map(|tensor| ((tensor / 255) - 0.1307) / 0.3081) // standard MNIST normalization
@@ -44,7 +44,7 @@ pub fn train_loader<B: Backend>(
     seed: u64,
     device: B::Device,
 ) -> Arc<dyn burn::data::dataloader::DataLoader<B, MnistBatch<B>>> {
-    burn::data::dataloader::DataLoaderBuilder::new(MnistBatcher::default())
+    burn::data::dataloader::DataLoaderBuilder::new(MnistBatcher)
         .batch_size(batch_size)
         .shuffle(seed)
         .num_workers(num_workers)
@@ -57,7 +57,7 @@ pub fn test_loader<B: Backend>(
     num_workers: usize,
     device: B::Device,
 ) -> Arc<dyn burn::data::dataloader::DataLoader<B, MnistBatch<B>>> {
-    burn::data::dataloader::DataLoaderBuilder::new(MnistBatcher::default())
+    burn::data::dataloader::DataLoaderBuilder::new(MnistBatcher)
         .batch_size(batch_size)
         .num_workers(num_workers)
         .set_device(device)
