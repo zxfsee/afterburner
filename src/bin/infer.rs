@@ -31,6 +31,8 @@ fn run_infer<B: Backend>(weights_path: PathBuf) {
     let device = B::Device::default();
     let recorder = CompactRecorder::new();
 
+    eprintln!("Loading inference artifact: {}", weights_path.display());
+
     let model = afterburner::model::ModelConfig::new(10)
         .init::<B>(&device)
         .load_file(weights_path, &recorder, &device)

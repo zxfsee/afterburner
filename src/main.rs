@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 
+use afterburner::model::ModelConfig;
 use afterburner::train;
 use burn::prelude::*;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
@@ -19,14 +20,14 @@ fn main() {
     let artifact_dir = std::env::var("ARTIFACTS_DIR").ok();
 
     if use_cpu {
-        let mut config = train::TrainingConfig::default();
+        let mut config = train::TrainingConfig::new(ModelConfig::new(10));
         if let Some(dir) = artifact_dir.clone() {
             config.artifacts_dir = dir;
         }
         let device = <CpuBackend as Backend>::Device::default();
         train::train::<CpuAutodiff>(config, device);
     } else {
-        let mut config = train::TrainingConfig::default();
+        let mut config = train::TrainingConfig::new(ModelConfig::new(10));
         if let Some(dir) = artifact_dir {
             config.artifacts_dir = dir;
         }

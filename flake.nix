@@ -59,6 +59,11 @@
             targets = [ "wasm32-wasip2" ];
           };
 
+          taploConfig = builtins.path {
+            path = ./taplo.toml;
+            name = "taplo.toml";
+          };
+
           craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
           src = craneLib.cleanCargoSource ./.;
 
@@ -155,6 +160,7 @@
           apps.default = {
             type = "app";
             program = "${afterburner}/bin/afterburner";
+            meta.description = "Afterburner training binary (Burn + Nix)";
           };
 
           devShells.default = craneLib.devShell {
@@ -178,9 +184,10 @@
               rustfmt.enable = true;
               taplo.enable = true;
             };
+            # TODO: migrate toml to nix.
             settings.formatter.taplo.options = [
               "--config"
-              (toString ./taplo.toml)
+              (toString taploConfig)
             ];
           };
 

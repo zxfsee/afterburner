@@ -1,5 +1,3 @@
-use std::path::Path;
-
 use burn::{
     config::Config,
     optim::AdamConfig,
@@ -11,6 +9,7 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
+use std::path::Path;
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
@@ -29,23 +28,9 @@ pub struct TrainingConfig {
     pub num_workers: usize,
     #[config(default = 42)]
     pub seed: u64,
-    #[config(default = "\"artifacts/train\".to_string()")]
+    #[config(default = "\"artifacts\".to_string()")]
     pub artifacts_dir: String,
     pub model: ModelConfig,
-}
-
-impl Default for TrainingConfig {
-    fn default() -> Self {
-        Self {
-            batch_size: 64,
-            num_epochs: 10,
-            learning_rate: 1e-3,
-            num_workers: 0,
-            seed: 42,
-            artifacts_dir: "artifacts".into(),
-            model: ModelConfig::new(10),
-        }
-    }
 }
 
 impl<B: AutodiffBackend> TrainStep<MnistBatch<B>, burn::train::ClassificationOutput<B>>
@@ -66,7 +51,13 @@ impl<B: Backend> ValidStep<MnistBatch<B>, burn::train::ClassificationOutput<B>> 
 
 pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     B::seed(&device, config.seed);
-    std::fs::create_dir_all(&config.artifacts_dir).expect("failed to create artifact directory");
+
+    let root = Path::new(&config.artifacts_dir);
+    let train_dir = root.join("train");
+    let inference_dir = root.join("inference");
+
+    std::fs::create_dir_all(&train_dir).expect("failed to create train dir");
+    std::fs::create_dir_all(&inference_dir).expect("failed to create inference dir");
 
     let train_loader = train_loader::<B>(
         config.batch_size,
@@ -79,7 +70,7 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     let optim = AdamConfig::new().init::<B, Model<B>>();
 
-    let learner = LearnerBuilder::new(config.artifacts_dir.clone())
+    let learner = LearnerBuilder::new(train_dir.to_string_lossy().to_string())
         .metric_train_numeric(LossMetric::new())
         .metric_train_numeric(AccuracyMetric::new())
         .metric_valid_numeric(LossMetric::new())
@@ -90,17 +81,14 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     let result = learner.fit(train_loader, valid_loader);
 
-    let path = Path::new(&config.artifacts_dir).join("model");
+    // Save trained model into train dir
+    let train_model_path = train_dir.join("model.mpk");
     result
         .model
-        .save_file(path, &CompactRecorder::new())
+        .save_file(&train_model_path, &CompactRecorder::new())
         .expect("failed to save trained model");
 
-    let train_dir = Path::new(&config.artifacts_dir);
-    let inference_dir = Path::new("artifacts/inference");
-
-    std::fs::create_dir_all(inference_dir).expect("create inference dir");
-
-    std::fs::copy(train_dir.join("model.mpk"), inference_dir.join("model.mpk"))
-        .expect("copy model to inference");
+    // Export immutable inference artifact
+    let inference_model_path = inference_dir.join("model.mpk");
+    std::fs::copy(&train_model_path, &inference_model_path).expect("copy model to inference");
 }
