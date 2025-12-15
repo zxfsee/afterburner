@@ -154,13 +154,16 @@
           };
 
           packages = {
-            default = afterburner;
+            default = afterburner.overrideAttrs (old: {
+              meta = (old.meta or { }) // {
+                description = "Afterburner training binary (Burn + Nix)";
+              };
+            });
           };
 
           apps.default = {
             type = "app";
             program = "${afterburner}/bin/afterburner";
-            meta.description = "Afterburner training binary (Burn + Nix)";
           };
 
           devShells.default = craneLib.devShell {
@@ -173,7 +176,6 @@
             # Extra inputs can be added here; cargo and rustc are provided by default.
             packages = with pkgs; [
               just
-              direnv
             ];
           };
 

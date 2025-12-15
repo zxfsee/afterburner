@@ -10,6 +10,8 @@ type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
 fn main() {
+    // Inference consumes only the contract artifact (no training internals).
+    // Default path matches README + ADR-002.
     let args: Vec<String> = env::args().collect();
     let weights_path = args
         .get(1)
@@ -33,11 +35,14 @@ fn run_infer<B: Backend>(weights_path: PathBuf) {
 
     eprintln!("Loading inference artifact: {}", weights_path.display());
 
+    // Load into an initialized model instance. This keeps the artifact format stable while
+    // allowing the model structure to remain explicit in code (no magic deserialization).
     let model = afterburner::model::ModelConfig::new(10)
         .init::<B>(&device)
         .load_file(weights_path, &recorder, &device)
-        .expect("failed to load model");
+        .expect("load model artifact");
 
+    // Placeholder input. Replace with real preprocessed MNIST input later.
     let input = Tensor::<B, 4>::zeros([1, 1, 28, 28], &device);
     let logits = model.forward(input);
     let probs = softmax(logits, 1);

@@ -19,11 +19,11 @@ fmt:
 
 # train model and produce artifacts
 train:
-	cargo run --bin afterburner
+	cargo run --locked --bin afterburner
 
 # run inference using trained artifact
 infer:
-	cargo run --bin infer -- artifacts/inference/model.mpk
+	cargo run --locked --bin infer -- artifacts/inference/model.mpk
 
 # run training by default
 run:
@@ -31,7 +31,7 @@ run:
 
 # clean build + artifacts
 clean:
-	rm -rf target artifacts
+	rm -rf target artifacts result
 
 # update flake inputs
 update:

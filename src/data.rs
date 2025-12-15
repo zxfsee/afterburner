@@ -19,6 +19,8 @@ pub struct MnistBatcher;
 
 impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
+        // NOTE: preprocessing is part of the *implicit* contract.
+        // If this changes, inference must apply the same transform (or we must formalize it in a manifest).
         let images = items
             .iter()
             .map(|item| TensorData::from(item.image).convert::<B::FloatElem>())
