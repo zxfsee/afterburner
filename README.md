@@ -1,43 +1,57 @@
 # Afterburner
 
 ## What this is
-Minimal Rust-based ML system demonstrating model training, inference,
-and reproducible infrastructure using Burn and Nix.
+Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
+
+It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime.
 
 ## Design goals
 - Reproducibility over convenience
 - Explicit boundaries between training and inference
-- Inspectable artifacts
+- Inspectable, versioned artifacts
 - Minimal but intentional infrastructure
 
 ## Training
-How training works, where artifacts go.
+Training is executed as a standalone binary.
+
+It produces artifacts under `artifacts/`, including:
+- training checkpoints
+- metrics and logs
+- a stable, inference-ready model artifact
+
+Training code owns experimentation, optimization, and iteration, but does **not** define the inference contract.
 
 ## Inference
-How inference is invoked and why CLI-first.
+Inference is executed via a separate CLI binary.
 
-## Training
-Training is executed as a standalone binary and produces versioned artifacts under `artifacts/`,
-including checkpoints, metrics, and an inference-ready model artifact.
+It consumes **only** the inference artifact and has no access to training internals.  
+This enforces a clear boundary between model development and runtime execution.
 
-## Inference
-Inference is executed via a separate CLI binary that consumes only the inference artifact,
-without access to training internals.
+Training and inference are intentionally exposed as separate binaries to mirror production ML serving systems.
 
-Training and inference are exposed as separate binaries to make system boundaries explicit.
-
-## Infrastructure choices
-This project uses Rust, Burn, and Nix to favor explicitness, reproducibility, and inspectability over rapid iteration or convenience.
-Trade-offs include slower experimentation in exchange for clearer system boundaries.
-
-## Artifact Contract
-
-Training produces a stable, inference-ready artifact under `artifacts/inference/`, consisting of:
+## Artifact contract
+Training produces a single inference artifact under `artifacts/inference/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
 - a lightweight manifest describing input and output assumptions
 
-Inference binaries treat this artifact as immutable and consume it as their sole input.
-Training checkpoints, metrics, and logs are intentionally excluded from the inference contract.
+Inference binaries treat this artifact as immutable and consume it as their sole input.  
+Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
 
-This mirrors production model-serving systems, where training pipelines and runtime
-environments are cleanly separated.
+This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
+
+## CPU vs GPU execution
+Training and inference are backend-agnostic.
+
+The same model artifact can run on CPU or GPU without retraining:
+- GPU is intended for training and throughput-oriented inference
+- CPU is supported for development, debugging, and environments without accelerators
+
+Backend selection is explicit (`BACKEND=cpu`), reflecting production systems where execution targets vary by cost, latency, and scale.
+
+## Infrastructure choices
+This project uses **Rust, Burn, and Nix** to favor explicitness, reproducibility, and inspectability over rapid iteration.
+
+The trade-off is slower experimentation in exchange for:
+- deterministic builds
+- clear system boundaries
+- infrastructure that can be reasoned about end-to-end
