@@ -12,11 +12,16 @@ type CpuBackend = NdArray<f32>;
 fn main() {
     // Inference consumes only the contract artifact (no training internals).
     // Default path matches README + ADR-002.
+    // NOTE: This path is the inference contract (ADR-002). Training outputs under artifacts/train are not consumed here.
     let args: Vec<String> = env::args().collect();
     let weights_path = args
         .get(1)
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from("artifacts/inference/model.mpk"));
+
+    if !weights_path.exists() {
+        panic!("inference artifact not found: {}", weights_path.display());
+    }
 
     let use_cpu = env::var("BACKEND")
         .map(|v| v.eq_ignore_ascii_case("cpu"))
@@ -42,7 +47,8 @@ fn run_infer<B: Backend>(weights_path: PathBuf) {
         .load_file(weights_path, &recorder, &device)
         .expect("load model artifact");
 
-    // Placeholder input. Replace with real preprocessed MNIST input later.
+    // TODO: Replace placeholder input with real preprocessed MNIST input.
+    // Must apply the same normalization as training (see data::MnistBatcher).
     let input = Tensor::<B, 4>::zeros([1, 1, 28, 28], &device);
     let logits = model.forward(input);
     let probs = softmax(logits, 1);

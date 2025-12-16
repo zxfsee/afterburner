@@ -96,6 +96,7 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     // Export the inference contract (immutable input to runtime).
     // This is the *only* file inference binaries depend on.
+    // NOTE: Keep this export step narrow: inference must not depend on any other training outputs.
     let inference_model_path = inference_dir.join("model.mpk");
     std::fs::copy(&train_model_path, &inference_model_path).expect("export inference model");
 }

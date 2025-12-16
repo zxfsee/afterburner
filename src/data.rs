@@ -19,14 +19,14 @@ pub struct MnistBatcher;
 
 impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
-        // NOTE: preprocessing is part of the *implicit* contract.
-        // If this changes, inference must apply the same transform (or we must formalize it in a manifest).
+        // TODO(adr-002): Encode preprocessing (normalize constants, shape) into artifacts/inference/manifest.toml
+        // so inference can validate inputs and avoid silent train/serve skew.
         let images = items
             .iter()
             .map(|item| TensorData::from(item.image).convert::<B::FloatElem>())
             .map(|data| Tensor::<B, 2>::from_data(data, device))
             .map(|tensor| tensor.reshape([1, 28, 28]))
-            .map(|tensor| ((tensor / 255) - 0.1307) / 0.3081) // standard MNIST normalization
+            .map(|tensor| ((tensor / 255.0) - 0.1307) / 0.3081) // standard MNIST normalization
             .collect();
 
         let images = Tensor::stack(images, 0);
