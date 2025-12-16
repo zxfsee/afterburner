@@ -19,7 +19,7 @@ pub struct MnistBatcher;
 
 impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
-        // TODO(adr-002): formalize preprocessing + IO contract in a manifest
+        // TODO(adr-002): encode preprocessing params (shape, dtype, normalization) in artifacts/infer/manifest.toml
         // so inference can validate inputs and avoid silent train/serve skew.
         let images = items
             .iter()

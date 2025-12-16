@@ -5,6 +5,16 @@ Afterburner is a minimal Rust-based ML system demonstrating **training, inferenc
 
 It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime execution.
 
+## Why this exists
+This repository focuses on **system boundaries**, not model quality.
+
+It demonstrates how to design ML systems where:
+- training is experimental and mutable
+- inference is stable, auditable, and deployable
+- infrastructure choices are explicit and reproducible
+
+The goal is to make training, artifacts, and runtime behavior easy to reason about and hard to misuse.
+
 ## Design goals
 - Reproducibility over convenience
 - Explicit boundaries between training and inference
@@ -32,7 +42,7 @@ Training and inference are intentionally exposed as separate binaries to mirror 
 Rationale is documented in [ADR-001: Training vs Inference Separation](docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
-Training produces a single, versioned inference artifact under `artifacts/infer/`, consisting of:
+Training exports a single, versioned inference artifact under `artifacts/infer/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
 - a lightweight manifest describing input and output assumptions
 
@@ -61,6 +71,5 @@ The trade-off is slower experimentation in exchange for:
 - infrastructure that can be reasoned about end-to-end
 
 ## Documentation
-
 - [Architecture overview](docs/architecture.md)
 - [Design decisions (ADRs)](docs/adr/)
