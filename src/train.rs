@@ -9,7 +9,8 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
-use std::path::Path;
+use std::io;
+use std::path::{Path, PathBuf};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
@@ -61,8 +62,7 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // - train/: mutable, iterative outputs (checkpoints, logs, metrics)
     // - inference/: immutable deployment contract consumed by runtime binaries
     let root = Path::new(&config.artifacts_dir);
-    let train_dir = root.join("train");
-    let inference_dir = root.join("inference");
+    let (train_dir, inference_dir) = artifact_dirs(root);
 
     std::fs::create_dir_all(&train_dir).expect("create train dir");
     std::fs::create_dir_all(&inference_dir).expect("create inference dir");
@@ -99,6 +99,21 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // Export the inference contract (immutable input to runtime).
     // This is the *only* file inference binaries depend on.
     // NOTE: Keep this export step narrow: inference must not depend on any other training outputs.
-    let inference_model_path = inference_dir.join("model.mpk");
-    std::fs::copy(&train_model_path, &inference_model_path).expect("export inference model");
+    export_inference_artifact(&train_model_path, &inference_dir).expect("export inference model");
+}
+
+pub fn artifact_dirs(root: &Path) -> (PathBuf, PathBuf) {
+    let train_dir = root.join("train");
+    let inference_dir = root.join("inference");
+    (train_dir, inference_dir)
+}
+
+pub fn export_inference_artifact(
+    train_model_path: &Path,
+    inference_dir: &Path,
+) -> io::Result<PathBuf> {
+    std::fs::create_dir_all(inference_dir)?;
+    let out = inference_dir.join("model.mpk");
+    std::fs::copy(train_model_path, &out)?;
+    Ok(out)
 }

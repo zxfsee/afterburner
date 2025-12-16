@@ -1,0 +1,21 @@
+use afterburner::infer::{default_weights_path, parse_weights_path_from_args};
+
+#[test]
+fn default_path_is_contract_path() {
+    assert_eq!(
+        default_weights_path().to_string_lossy(),
+        "artifacts/inference/model.mpk"
+    );
+}
+
+#[test]
+fn parse_path_prefers_cli_arg() {
+    let p = parse_weights_path_from_args(["infer", "x.mpk"]);
+    assert_eq!(p.to_string_lossy(), "x.mpk");
+}
+
+#[test]
+fn parse_path_falls_back_to_default() {
+    let p = parse_weights_path_from_args(["infer"]);
+    assert_eq!(p.to_string_lossy(), "artifacts/inference/model.mpk");
+}

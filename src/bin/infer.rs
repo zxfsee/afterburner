@@ -1,6 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 
+use afterburner::infer::parse_weights_path;
 use burn::prelude::*;
 use burn::record::CompactRecorder;
 use burn::tensor::activation::softmax;
@@ -13,11 +14,7 @@ fn main() {
     // Inference consumes only the contract artifact (no training internals).
     // Default path matches README + ADR-002.
     // NOTE: This path is the inference contract (ADR-002). Training outputs under artifacts/train are not consumed here.
-    let args: Vec<String> = env::args().collect();
-    let weights_path = args
-        .get(1)
-        .map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from("artifacts/infer/model.mpk"));
+    let weights_path = parse_weights_path();
 
     if !weights_path.exists() {
         panic!("inference artifact not found: {}", weights_path.display());

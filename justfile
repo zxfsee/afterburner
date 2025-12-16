@@ -40,3 +40,11 @@ update:
 # update Rust dependencies
 cargo-update:
 	cargo update
+
+# run tests via nextest (fast, consistent)
+test:
+	cargo nextest run
+
+# run unit/integration tests with cargo (fallback)
+test-cargo:
+	cargo test

@@ -17,3 +17,8 @@ burn = { version = "0.19.1", features = [
 
 [dependencies.burn-autodiff]
 version = "0.19.1"
+
+[dev-dependencies]
+assert_cmd = "2.1.1"
+predicates = "3.1.3"
+tempfile = "3.23.0"

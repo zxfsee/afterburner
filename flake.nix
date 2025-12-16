@@ -94,6 +94,7 @@
             commonArgs
             // {
               inherit cargoArtifacts;
+              doCheck = false;
             }
           );
         in
