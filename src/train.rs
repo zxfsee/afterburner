@@ -5,14 +5,14 @@ use burn::{
     record::CompactRecorder,
     tensor::backend::AutodiffBackend,
     train::{
-        LearnerBuilder, TrainOutput, TrainStep, ValidStep,
         metric::{AccuracyMetric, LossMetric},
+        LearnerBuilder, TrainOutput, TrainStep, ValidStep,
     },
 };
 use std::path::Path;
 
 use crate::{
-    data::{MnistBatch, test_loader, train_loader},
+    data::{test_loader, train_loader, MnistBatch},
     model::{Model, ModelConfig},
 };
 
@@ -28,7 +28,7 @@ pub struct TrainingConfig {
     pub num_workers: usize,
     #[config(default = 42)]
     pub seed: u64,
-    /// Root directory for *all* outputs (train + inference contract).
+    /// Root directory for *all* outputs (train + infer contract).
     /// This is intentionally a single knob so runs are relocatable.
     #[config(default = "\"artifacts\".to_string()")]
     pub artifacts_dir: String,
@@ -57,13 +57,13 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     // Directory convention:
     // - train/: mutable, iterative outputs (checkpoints, logs, metrics)
-    // - inference/: immutable deployment contract consumed by runtime binaries
+    // - infer/: immutable deployment contract consumed by runtime binaries
     let root = Path::new(&config.artifacts_dir);
     let train_dir = root.join("train");
-    let inference_dir = root.join("inference");
+    let infer_dir = root.join("infer");
 
     std::fs::create_dir_all(&train_dir).expect("create train dir");
-    std::fs::create_dir_all(&inference_dir).expect("create inference dir");
+    std::fs::create_dir_all(&infer_dir).expect("create inference dir");
 
     let train_loader = train_loader::<B>(
         config.batch_size,
@@ -97,6 +97,6 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // Export the inference contract (immutable input to runtime).
     // This is the *only* file inference binaries depend on.
     // NOTE: Keep this export step narrow: inference must not depend on any other training outputs.
-    let inference_model_path = inference_dir.join("model.mpk");
+    let inference_model_path = infer_dir.join("model.mpk");
     std::fs::copy(&train_model_path, &inference_model_path).expect("export inference model");
 }

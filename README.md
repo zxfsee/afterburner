@@ -32,7 +32,7 @@ Training and inference are intentionally exposed as separate binaries to mirror 
 Rationale is documented in [ADR-001: Training vs Inference Separation](docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
-Training produces a single, versioned inference artifact under `artifacts/inference/`, consisting of:
+Training produces a single, versioned inference artifact under `artifacts/infer/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
 - a lightweight manifest describing input and output assumptions
 

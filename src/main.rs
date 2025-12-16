@@ -17,7 +17,7 @@ fn main() {
         .unwrap_or(false);
 
     // Single override point so CI / experiments can redirect outputs without code changes.
-    // The artifact contract lives under `<ARTIFACTS_DIR>/inference/`.
+    // The artifact contract lives under `<ARTIFACTS_DIR>/infer/`.
     let artifact_dir = std::env::var("ARTIFACTS_DIR").ok();
 
     let mut config = train::TrainingConfig::new(ModelConfig::new(10));

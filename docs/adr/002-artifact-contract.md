@@ -11,7 +11,7 @@ and makes deployment and reproducibility harder.
 
 ## Decision
 
-Training produces a single, inference-ready artifact under `artifacts/inference/`.
+Training produces a single, inference-ready artifact under `artifacts/infer/`.
 
 Inference binaries consume **only** this artifact and have no access to training
 internals, checkpoints, or logs.

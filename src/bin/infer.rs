@@ -17,7 +17,7 @@ fn main() {
     let weights_path = args
         .get(1)
         .map(PathBuf::from)
-        .unwrap_or_else(|| PathBuf::from("artifacts/inference/model.mpk"));
+        .unwrap_or_else(|| PathBuf::from("artifacts/infer/model.mpk"));
 
     if !weights_path.exists() {
         panic!("inference artifact not found: {}", weights_path.display());

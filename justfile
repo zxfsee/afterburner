@@ -23,7 +23,7 @@ train:
 
 # run inference using trained artifact
 infer:
-	cargo run --locked --bin infer -- artifacts/inference/model.mpk
+	cargo run --locked --bin infer -- artifacts/infer/model.mpk
 
 # run training by default
 run:
