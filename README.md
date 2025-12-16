@@ -2,8 +2,8 @@
 
 ## What this is
 Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
-
 It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime execution.
+While the example model uses MNIST, the system boundaries are designed for scientific ML workloads (e.g. molecular, protein, or graph-based models) where inference contracts, auditability, and deployment safety matter more than model accuracy.
 
 ## What this is not
 This is not a production model, training pipeline, or serving system.

@@ -5,14 +5,14 @@ use burn::{
     record::CompactRecorder,
     tensor::backend::AutodiffBackend,
     train::{
-        metric::{AccuracyMetric, LossMetric},
         LearnerBuilder, TrainOutput, TrainStep, ValidStep,
+        metric::{AccuracyMetric, LossMetric},
     },
 };
 use std::path::Path;
 
 use crate::{
-    data::{test_loader, train_loader, MnistBatch},
+    data::{MnistBatch, test_loader, train_loader},
     model::{Model, ModelConfig},
 };
 

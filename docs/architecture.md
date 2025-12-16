@@ -22,3 +22,6 @@ No runtime coupling exists between training and inference.
 This design prioritizes explicit boundaries and reproducibility over rapid iteration.
 As a result, some conveniences common in ML prototypes (implicit preprocessing,
 auto-versioning, embedded serving) are intentionally absent.
+
+### Assumptions
+The same artifact contract applies to non-image domains (e.g. sequence or graph tensors), where input semantics must be explicit and validated.
