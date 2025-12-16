@@ -5,6 +5,11 @@ Afterburner is a minimal Rust-based ML system demonstrating **training, inferenc
 
 It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime execution.
 
+## What this is not
+This is not a production model, training pipeline, or serving system.
+It is a boundary-focused reference implementation intended to demonstrate
+system design judgment, not model performance.
+
 ## Why this exists
 This repository focuses on **system boundaries**, not model quality.
 

@@ -18,3 +18,7 @@ Training produces artifacts.
 Inference consumes artifacts.
 No runtime coupling exists between training and inference.
 
+### Trade-offs
+This design prioritizes explicit boundaries and reproducibility over rapid iteration.
+As a result, some conveniences common in ML prototypes (implicit preprocessing,
+auto-versioning, embedded serving) are intentionally absent.

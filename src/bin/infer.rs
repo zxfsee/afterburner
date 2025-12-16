@@ -42,6 +42,8 @@ fn run_infer<B: Backend>(weights_path: PathBuf) {
 
     // Load into an initialized model instance. This keeps the artifact format stable while
     // allowing the model structure to remain explicit in code (no magic deserialization).
+    // NOTE: Failing fast here is intentional.
+    // Silent fallback would hide artifact drift and create non-reproducible inference behavior.
     let model = afterburner::model::ModelConfig::new(10)
         .init::<B>(&device)
         .load_file(weights_path, &recorder, &device)

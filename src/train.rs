@@ -5,14 +5,14 @@ use burn::{
     record::CompactRecorder,
     tensor::backend::AutodiffBackend,
     train::{
-        LearnerBuilder, TrainOutput, TrainStep, ValidStep,
         metric::{AccuracyMetric, LossMetric},
+        LearnerBuilder, TrainOutput, TrainStep, ValidStep,
     },
 };
 use std::path::Path;
 
 use crate::{
-    data::{MnistBatch, test_loader, train_loader},
+    data::{test_loader, train_loader, MnistBatch},
     model::{Model, ModelConfig},
 };
 
@@ -53,6 +53,8 @@ impl<B: Backend> ValidStep<MnistBatch<B>, burn::train::ClassificationOutput<B>> 
 }
 
 pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
+    // INFO: Startup performs only deterministic work.
+    // No background initialization to keep failure modes observable.
     B::seed(&device, config.seed);
 
     // Directory convention:
