@@ -28,7 +28,7 @@ fn main() {
     let backend = if use_cpu { "cpu" } else { "wgpu" };
     let t0 = Instant::now();
 
-    let artifact = json_escape(&weights_path.to_string_lossy());
+    let artifact = json_escape(weights_path.to_string_lossy().as_ref());
     eprintln!(r#"{{"event":"infer_start","backend":"{backend}","artifact":"{artifact}"}}"#);
 
     if use_cpu {
@@ -74,6 +74,7 @@ fn run_infer<B: Backend>(weights_path: &Path, backend: &str, artifact: &str) {
     println!("Probabilities: {probs}");
 }
 
+// Minimal JSON escaping to keep logs structured without adding a logging dependency.
 fn json_escape(s: &str) -> String {
     let mut out = String::with_capacity(s.len());
     for c in s.chars() {

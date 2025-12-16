@@ -68,7 +68,8 @@ Training exports a single, versioned inference artifact under `artifacts/inferen
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
-Inference emits structured stderr events for artifact load and backend selection.
+Inference emits minimal structured events as JSON lines on stderr for artifact loading and backend selection,
+without introducing a logging framework.
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 

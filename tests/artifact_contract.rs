@@ -25,8 +25,26 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
         .save_file(&train_model, &recorder)
         .expect("save model");
 
+    assert!(
+        train_dir.is_dir(),
+        "missing train dir: {}",
+        train_dir.display()
+    );
+
+    std::fs::create_dir_all(&infer_dir).expect("create inference dir");
     let exported = afterburner::train::export_inference_artifact(&train_model, &infer_dir)
         .expect("export inference model");
+
+    assert!(
+        infer_dir.is_dir(),
+        "missing inference dir: {}",
+        infer_dir.display()
+    );
+    assert!(
+        exported.exists(),
+        "missing exported artifact: {}",
+        exported.display()
+    );
 
     let _loaded = ModelConfig::new(10)
         .init::<CpuBackend>(&device)
