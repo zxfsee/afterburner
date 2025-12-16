@@ -4,6 +4,7 @@
 - [README](./README.md)
 - [Architecture](./docs/architecture.md)
 - [ADRs](./docs/adr/)
+- [Next steps](./docs/next-steps.md)
 
 ## Rules
 

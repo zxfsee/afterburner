@@ -1,14 +1,28 @@
 # Afterburner
 
+## Quick start
+
+```sh
+# enter reproducible dev environment
+nix develop
+
+# train a model and export inference artifact
+just train
+
+# run inference using the exported artifact
+just infer
+```
+
 ## What this is
 Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
-It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime execution.
+It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime.
 While the example model uses MNIST, the system boundaries are designed for scientific ML workloads (e.g. molecular, protein, or graph-based models) where inference contracts, auditability, and deployment safety matter more than model accuracy.
 
 ## What this is not
 This is not a production model, training pipeline, or serving system.
 It is a boundary-focused reference implementation intended to demonstrate
 system design judgment, not model performance.
+It intentionally omits serving layers, rollout tooling, and multi-node scheduling concerns.
 
 ## Why this exists
 This repository focuses on **system boundaries**, not model quality.
@@ -20,6 +34,8 @@ It demonstrates how to design ML systems where:
 
 The goal is to make training, artifacts, and runtime behavior easy to reason about and hard to misuse.
 
+Future extensions are listed in [Next steps](docs/next-steps.md).
+
 ## Design goals
 - Reproducibility over convenience
 - Explicit boundaries between training and inference
@@ -30,10 +46,10 @@ The goal is to make training, artifacts, and runtime behavior easy to reason abo
 Training is executed as a standalone binary.
 
 It produces artifacts under `artifacts/`, including:
-- training checkpoints
-- a stable, inference-ready model artifact
+- a trained model output under `artifacts/train/`
+- a stable, inference-ready model artifact under `artifacts/inference/`
 
-Training code owns experimentation and optimization, but does **not** define the inference contract.
+Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
 
 ## Inference
 Inference is executed via a separate CLI binary.
@@ -48,10 +64,11 @@ Rationale is documented in [ADR-001: Training vs Inference Separation](docs/adr/
 ## Artifact contract
 Training exports a single, versioned inference artifact under `artifacts/inference/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
-- a lightweight manifest describing input and output assumptions
+- (planned) a lightweight manifest describing input and output assumptions
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
+Inference emits structured stderr events for artifact load and backend selection.
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 
@@ -74,6 +91,9 @@ The trade-off is slower experimentation in exchange for:
 - clear system boundaries
 - infrastructure that can be reasoned about end-to-end
 
+This mirrors environments where deployment safety and auditability outweigh iteration speed.
+
 ## Documentation
 - [Architecture overview](docs/architecture.md)
 - [Design decisions (ADRs)](docs/adr/)
+- [Next steps](docs/next-steps.md)

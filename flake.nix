@@ -165,6 +165,7 @@
           apps.default = {
             type = "app";
             program = "${afterburner}/bin/afterburner";
+            meta.description = "Afterburner training binary (Burn + Nix)";
           };
 
           devShells.default = craneLib.devShell {

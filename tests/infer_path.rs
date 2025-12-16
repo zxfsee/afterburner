@@ -9,13 +9,10 @@ fn default_path_is_contract_path() {
 }
 
 #[test]
-fn parse_path_prefers_cli_arg() {
+fn parse_path_prefers_cli_arg_or_defaults() {
     let p = parse_weights_path_from_args(["infer", "x.mpk"]);
     assert_eq!(p.to_string_lossy(), "x.mpk");
-}
 
-#[test]
-fn parse_path_falls_back_to_default() {
     let p = parse_weights_path_from_args(["infer"]);
     assert_eq!(p.to_string_lossy(), "artifacts/inference/model.mpk");
 }
