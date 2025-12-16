@@ -26,7 +26,6 @@ Training is executed as a standalone binary.
 
 It produces artifacts under `artifacts/`, including:
 - training checkpoints
-- metrics and logs
 - a stable, inference-ready model artifact
 
 Training code owns experimentation and optimization, but does **not** define the inference contract.
@@ -42,7 +41,7 @@ Training and inference are intentionally exposed as separate binaries to mirror 
 Rationale is documented in [ADR-001: Training vs Inference Separation](docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
-Training exports a single, versioned inference artifact under `artifacts/infer/`, consisting of:
+Training exports a single, versioned inference artifact under `artifacts/inference/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
 - a lightweight manifest describing input and output assumptions
 

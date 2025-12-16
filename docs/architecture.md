@@ -9,7 +9,7 @@ Training -> Artifact -> Inference
 [ Training Binary ]
         |
         v
-[ artifacts/infer/model.mpk ]
+[ artifacts/inference/model.mpk ]
         |
         v
 [ Inference Binary ]
