@@ -98,3 +98,7 @@ This mirrors environments where deployment safety and auditability outweigh iter
 - [Architecture overview](docs/architecture.md)
 - [Design decisions (ADRs)](docs/adr/)
 - [Next steps](docs/next-steps.md)
+
+---
+
+License: MIT
