@@ -190,6 +190,7 @@
               nixfmt.enable = true;
               rustfmt.enable = true;
               taplo.enable = true;
+              just.enable = true;
             };
             # TODO: migrate toml to nix.
             settings.formatter.taplo.options = [
