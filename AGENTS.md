@@ -6,16 +6,10 @@
 - [ADRs](./docs/adr/)
 - [Roadmap](./ROADMAP.md)
 
-## Rules
-
-### Scope
-- This file is **project-scoped**.
-
-### Execution
-- Prefer small, reviewable changes.
-- Keep docs consistent with implementation when behavior changes.
-- If a change touches boundaries/invariants/interfaces/data flow, read `./ARCHITECTURE.md` and relevant ADRs first.
-- Add an ADR for non-trivial or irreversible decisions.
-
-### Notes
-- Do not restate global rules here. Only override or add project-specific constraints.
+## Project-specific constraints
+- Keep changes small and reviewable.
+- When changing behavior, update the relevant docs in the references list.
+- When a decision is recorded in an ADR, link it from `ARCHITECTURE.md` (or a Decisions index).
+- When changing externally visible behavior or architecture invariants, update the relevant docs in the references list.
+- ADRs live in `docs/adr/` and use sequential numeric filenames: `docs/adr/NNN-title.md` (e.g. `docs/adr/001-training-vs-inference.md`). One decision per ADR.
+- Keep a decisions index at `ARCHITECTURE.md#decisions` and link new ADRs there.
