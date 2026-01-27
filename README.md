@@ -34,7 +34,7 @@ It demonstrates how to design ML systems where:
 
 The goal is to make training, artifacts, and runtime behavior easy to reason about and hard to misuse.
 
-Future extensions are listed in [Next steps](docs/next-steps.md).
+Future extensions are listed in [Roadmap](./ROADMAP.md).
 
 ## Design goals
 - Reproducibility over convenience
@@ -59,7 +59,7 @@ This enforces a strict boundary between model development and runtime execution.
 
 Training and inference are intentionally exposed as separate binaries to mirror production ML serving systems.
 
-Rationale is documented in [ADR-001: Training vs Inference Separation](docs/adr/001-training-vs-inference.md).
+Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
 Training exports a single, versioned inference artifact under `artifacts/inference/`, consisting of:
@@ -73,7 +73,7 @@ without introducing a logging framework.
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 
-See [ADR-002: Artifact Contract](docs/adr/002-artifact-contract.md) for rationale.
+See [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md) for rationale.
 
 ## CPU vs GPU execution
 Training and inference are backend-agnostic.
@@ -95,9 +95,9 @@ The trade-off is slower experimentation in exchange for:
 This mirrors environments where deployment safety and auditability outweigh iteration speed.
 
 ## Documentation
-- [Architecture overview](docs/architecture.md)
-- [Design decisions (ADRs)](docs/adr/)
-- [Next steps](docs/next-steps.md)
+- [Architecture overview](./ARCHITECTURE.md)
+- [Design decisions (ADRs)](./docs/adr/)
+- [Roadmap](./ROADMAP.md)
 
 ---
 
