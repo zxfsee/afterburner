@@ -1,4 +1,4 @@
-# Next steps
+# Roadmap
 
 This document outlines **intentional extensions** to the current design.
 They are ordered to preserve the existing training ↔ inference boundary.
