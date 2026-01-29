@@ -2,11 +2,9 @@ use std::env;
 use std::path::Path;
 use std::time::Instant;
 
-use afterburner::infer::{manifest_path_for_weights, parse_weights_path};
-use afterburner::manifest::{ArtifactManifest, ManifestError};
-use afterburner::preprocess::mnist_image_to_tensor;
+use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path};
+use afterburner::manifest::ManifestError;
 use burn::prelude::*;
-use burn::record::CompactRecorder;
 use burn::tensor::activation::softmax;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
 
@@ -21,23 +19,6 @@ fn main() {
 
 fn run() -> Result<(), InferError> {
     let weights_path = parse_weights_path();
-
-    if !weights_path.exists() {
-        return Err(InferError::ArtifactMissing { path: weights_path });
-    }
-
-    let manifest_path = manifest_path_for_weights(&weights_path);
-    if !manifest_path.exists() {
-        return Err(InferError::ManifestMissing {
-            path: manifest_path,
-        });
-    }
-
-    let manifest =
-        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
-    manifest
-        .validate_against_current(&weights_path)
-        .map_err(InferError::ManifestInvalid)?;
 
     let use_cpu = env::var("BACKEND")
         .map(|v| v.eq_ignore_ascii_case("cpu"))
@@ -65,16 +46,9 @@ fn run_infer<B: Backend>(
     artifact: &str,
 ) -> Result<(), InferError> {
     let device = B::Device::default();
-    let recorder = CompactRecorder::new();
 
     let t_load = Instant::now();
-    let model = afterburner::model::ModelConfig::new(10)
-        .init::<B>(&device)
-        .load_file(weights_path, &recorder, &device)
-        .map_err(|err| InferError::ArtifactLoadFailed {
-            detail: err.to_string(),
-            path: weights_path.to_path_buf(),
-        })?;
+    let model = load_model::<B>(weights_path, &device)?;
 
     let load_ms = t_load.elapsed().as_millis();
     eprintln!(
@@ -82,26 +56,10 @@ fn run_infer<B: Backend>(
     );
 
     let image = [[0.0f32; 28]; 28];
-    let input = Tensor::stack(vec![mnist_image_to_tensor::<B>(image, &device)], 0);
-    let logits = model.forward(input);
+    let logits = logits_from_model(&model, &device, image);
     let probs = softmax(logits, 1);
     println!("Probabilities: {probs}");
     Ok(())
-}
-
-#[derive(Debug)]
-enum InferError {
-    ArtifactMissing {
-        path: std::path::PathBuf,
-    },
-    ManifestMissing {
-        path: std::path::PathBuf,
-    },
-    ManifestInvalid(ManifestError),
-    ArtifactLoadFailed {
-        detail: String,
-        path: std::path::PathBuf,
-    },
 }
 
 fn emit_error(err: &InferError) -> ! {

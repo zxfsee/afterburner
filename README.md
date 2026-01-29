@@ -59,6 +59,14 @@ This enforces a strict boundary between model development and runtime execution.
 
 Training and inference are intentionally exposed as separate binaries to mirror production ML serving systems.
 
+## HTTP wrapper (optional)
+Afterburner includes a minimal HTTP wrapper binary (`afterburner-http`) that exposes:
+- `GET /healthz`
+- `POST /infer` (accepts raw 784 bytes or JSON with base64, returns logits)
+
+The HTTP wrapper is intentionally thin and still uses the same inference path as the CLI.
+The CLI remains the canonical interface; the HTTP binary is only a transport adapter.
+
 Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract

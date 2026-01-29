@@ -4,7 +4,12 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 
+[[bin]]
+name = "afterburner-http"
+path = "src/bin/afterburner_http.rs"
+
 [dependencies]
+base64 = "0.22"
 burn = { version = "0.19.1", features = [
   "fusion",
   "std",
@@ -15,7 +20,9 @@ burn = { version = "0.19.1", features = [
   "ndarray",
 ] }
 png = "0.17"
+serde_json = "1.0"
 sha2 = "0.10"
+tiny_http = "0.12"
 toml = "0.8"
 
 [dependencies.burn-autodiff]

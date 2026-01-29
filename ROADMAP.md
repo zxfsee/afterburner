@@ -4,12 +4,9 @@ This document outlines **intentional extensions** to the current design.
 They are ordered to preserve the existing training ↔ inference boundary.
 These are deliberately excluded from the current implementation to keep the core system small and inspectable.
 
-## Preprocessing parity
-- Extract MNIST normalization into a shared preprocessing module.
-- Reuse the same logic for:
-  - training data loading
-  - inference input preparation
-- Eliminate implicit train/serve assumptions.
+## Completed
+- Preprocessing parity between training and inference.
+- Minimal HTTP wrapper that keeps the CLI canonical.
 
 ## Model versioning
 - Add explicit semantic versions to inference artifacts.
@@ -23,11 +20,6 @@ These are deliberately excluded from the current implementation to keep the core
   - inference latency
 - Prepare for OpenTelemetry integration without backend coupling.
 - Persist training metrics and logs as structured artifacts under `artifacts/train/`.
-
-## Deployment shape
-- Wrap the inference binary in a minimal HTTP or gRPC service.
-- Keep the CLI as the canonical execution path.
-- Treat the service layer as a thin transport adapter.
 
 ## Security & compliance
 - Prepare for artifact signing in regulated environments.

@@ -7,6 +7,8 @@ In early prototypes, they are often tightly coupled, which makes deployment and 
 ## Decision
 Training and inference are implemented as separate binaries.
 Inference consumes only a stable artifact and has no access to training internals.
+An optional HTTP wrapper exists as a separate binary and uses the same inference path;
+the CLI remains the canonical interface.
 
 ## Consequences
 - Clear boundary between experimentation and runtime

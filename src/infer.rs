@@ -1,7 +1,12 @@
 use std::env;
 use std::path::{Path, PathBuf};
 
-use crate::manifest::MANIFEST_FILENAME;
+use burn::prelude::*;
+use burn::record::CompactRecorder;
+
+use crate::manifest::{ArtifactManifest, MANIFEST_FILENAME, ManifestError};
+use crate::model::ModelConfig;
+use crate::preprocess::mnist_image_to_tensor;
 
 /// Default inference artifact path (ADR-002).
 pub fn default_weights_path() -> PathBuf {
@@ -33,4 +38,59 @@ pub fn parse_weights_path() -> PathBuf {
 pub fn manifest_path_for_weights(weights_path: &Path) -> PathBuf {
     let parent = weights_path.parent().unwrap_or_else(|| Path::new("."));
     parent.join(MANIFEST_FILENAME)
+}
+
+#[derive(Debug)]
+pub enum InferError {
+    ArtifactMissing { path: PathBuf },
+    ManifestMissing { path: PathBuf },
+    ManifestInvalid(ManifestError),
+    ArtifactLoadFailed { detail: String, path: PathBuf },
+}
+
+pub fn validate_artifacts(weights_path: &Path) -> Result<(), InferError> {
+    if !weights_path.exists() {
+        return Err(InferError::ArtifactMissing {
+            path: weights_path.to_path_buf(),
+        });
+    }
+
+    let manifest_path = manifest_path_for_weights(weights_path);
+    if !manifest_path.exists() {
+        return Err(InferError::ManifestMissing {
+            path: manifest_path,
+        });
+    }
+
+    let manifest =
+        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
+    manifest
+        .validate_against_current(weights_path)
+        .map_err(InferError::ManifestInvalid)?;
+    Ok(())
+}
+
+pub fn load_model<B: Backend>(
+    weights_path: &Path,
+    device: &B::Device,
+) -> Result<crate::model::Model<B>, InferError> {
+    validate_artifacts(weights_path)?;
+    let recorder = CompactRecorder::new();
+    ModelConfig::new(10)
+        .init::<B>(device)
+        .load_file(weights_path, &recorder, device)
+        .map_err(|err| InferError::ArtifactLoadFailed {
+            detail: err.to_string(),
+            path: weights_path.to_path_buf(),
+        })
+}
+
+pub fn logits_from_model<B: Backend>(
+    model: &crate::model::Model<B>,
+    device: &B::Device,
+    image: [[f32; 28]; 28],
+) -> Tensor<B, 2> {
+    let tensor = mnist_image_to_tensor::<B>(image, device);
+    let input = Tensor::stack(vec![tensor], 0);
+    model.forward(input)
 }

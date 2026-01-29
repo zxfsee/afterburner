@@ -16,9 +16,12 @@ Training -> Artifact -> Inference
         |
         v
 [ Inference Binary ]
+        |
+        v
+[ Optional HTTP Wrapper ]
 
 Training produces artifacts.
-Inference consumes artifacts.
+Inference consumes artifacts via the CLI and the optional HTTP wrapper.
 No runtime coupling exists between training and inference.
 
 ### Trade-offs
