@@ -77,6 +77,11 @@ Training exports versioned inference artifacts under `artifacts/inference/<versi
 The active version is tracked by `artifacts/inference/current`, enabling safe rollout/rollback without retraining.
 Set `ARTIFACT_VERSION` to control the exported version.
 
+Rollback example:
+```sh
+printf "0.1.0\n" > artifacts/inference/current
+```
+
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
 Inference emits minimal structured events as JSON lines on stderr for artifact loading and backend selection,
