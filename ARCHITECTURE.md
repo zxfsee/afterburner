@@ -12,6 +12,9 @@ Training -> Artifact -> Inference
 [ artifacts/inference/model.mpk ]
         |
         v
+[ artifacts/inference/manifest.toml ]
+        |
+        v
 [ Inference Binary ]
 
 Training produces artifacts.
@@ -25,3 +28,8 @@ auto-versioning, embedded serving) are intentionally absent.
 
 ### Assumptions
 The same artifact contract applies to non-image domains (e.g. sequence or graph tensors), where input semantics must be explicit and validated.
+
+## Decisions
+- [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md)
+- [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md)
+- [ADR-003: Artifact Manifest](./docs/adr/003-artifact-manifest.md)

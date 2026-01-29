@@ -1,5 +1,7 @@
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+
+use crate::manifest::MANIFEST_FILENAME;
 
 /// Default inference artifact path (ADR-002).
 pub fn default_weights_path() -> PathBuf {
@@ -25,4 +27,10 @@ where
 /// Parse weights path from the actual process arguments.
 pub fn parse_weights_path() -> PathBuf {
     parse_weights_path_from_args(env::args())
+}
+
+/// Derive the manifest path for a given weights file.
+pub fn manifest_path_for_weights(weights_path: &Path) -> PathBuf {
+    let parent = weights_path.parent().unwrap_or_else(|| Path::new("."));
+    parent.join(MANIFEST_FILENAME)
 }

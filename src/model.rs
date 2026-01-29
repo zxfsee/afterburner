@@ -8,6 +8,9 @@ use burn::{
     train::ClassificationOutput,
 };
 
+pub const MODEL_ARCH_ID: &str = "afterburner.mnist.residual_v1";
+pub const MODEL_ARCH_VERSION: u32 = 1;
+
 #[derive(Module, Debug)]
 pub struct Model<B: Backend> {
     stem: Conv2d<B>,

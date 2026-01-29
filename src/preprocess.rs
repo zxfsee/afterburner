@@ -5,6 +5,7 @@ use burn::tensor::TensorData;
 /// Keeping them named makes the contract auditable.
 pub const MNIST_MEAN: f32 = 0.1307;
 pub const MNIST_STD: f32 = 0.3081;
+pub const MNIST_NORMALIZATION_NOTES: &str = "((x / 255.0) - 0.1307) / 0.3081";
 
 /// Convert a single MNIST image to a `[1,1,28,28]` tensor and normalize.
 pub fn mnist_image_to_tensor<B: Backend>(

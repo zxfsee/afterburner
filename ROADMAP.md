@@ -4,14 +4,6 @@ This document outlines **intentional extensions** to the current design.
 They are ordered to preserve the existing training ↔ inference boundary.
 These are deliberately excluded from the current implementation to keep the core system small and inspectable.
 
-## Artifact contract hardening
-- Generate `artifacts/inference/manifest.toml` during training.
-- Include:
-  - input shape, dtype, normalization constants
-  - output semantics (logits vs probabilities)
-  - model architecture identifier and version
-- Validate the manifest at inference startup to fail fast on contract drift.
-
 ## Preprocessing parity
 - Extract MNIST normalization into a shared preprocessing module.
 - Reuse the same logic for:

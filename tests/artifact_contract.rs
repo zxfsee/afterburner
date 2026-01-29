@@ -2,7 +2,10 @@ use burn::backend::ndarray::NdArray;
 use burn::prelude::*; // brings Module into scope for save_file/load_file
 use burn::record::CompactRecorder;
 
+use afterburner::manifest::{ArtifactManifest, INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME};
 use afterburner::model::ModelConfig;
+use afterburner::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
+use afterburner::preprocess::{MNIST_MEAN, MNIST_NORMALIZATION_NOTES, MNIST_STD};
 
 type CpuBackend = NdArray<f32>;
 
@@ -45,6 +48,23 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
         "missing exported artifact: {}",
         exported.display()
     );
+
+    let manifest_path = infer_dir.join(MANIFEST_FILENAME);
+    assert!(
+        manifest_path.exists(),
+        "missing manifest: {}",
+        manifest_path.display()
+    );
+    let manifest = ArtifactManifest::load_from_path(&manifest_path).expect("load manifest");
+    assert_eq!(manifest.artifact, "model.mpk");
+    assert_eq!(manifest.model.architecture_id, MODEL_ARCH_ID);
+    assert_eq!(manifest.model.architecture_version, MODEL_ARCH_VERSION);
+    assert_eq!(manifest.input.shape, INPUT_SHAPE);
+    assert_eq!(manifest.input.dtype, INPUT_DTYPE);
+    assert_eq!(manifest.normalization.dataset, "mnist");
+    assert_eq!(manifest.normalization.mean, MNIST_MEAN);
+    assert_eq!(manifest.normalization.std, MNIST_STD);
+    assert_eq!(manifest.normalization.notes, MNIST_NORMALIZATION_NOTES);
 
     let _loaded = ModelConfig::new(10)
         .init::<CpuBackend>(&device)

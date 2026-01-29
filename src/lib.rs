@@ -2,6 +2,7 @@
 
 pub mod data;
 pub mod infer;
+pub mod manifest;
 pub mod model;
 pub mod preprocess;
 pub mod train;

@@ -11,9 +11,10 @@ and makes deployment and reproducibility harder.
 
 ## Decision
 
-Training produces a single, inference-ready artifact under `artifacts/inference/`.
+Training produces a single, inference-ready artifact set under `artifacts/inference/`
+consisting of model weights and a manifest.
 
-Inference binaries consume **only** this artifact and have no access to training
+Inference binaries consume **only** this artifact set and have no access to training
 internals, checkpoints, or logs.
 
 The artifact is treated as immutable once produced.

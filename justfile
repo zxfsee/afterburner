@@ -9,6 +9,10 @@ build:
 check:
     nix flake check
 
+# quick Rust typecheck (uses Cargo cache)
+cargo-check:
+    cargo check --locked
+
 # enter development shell
 dev:
     nix develop

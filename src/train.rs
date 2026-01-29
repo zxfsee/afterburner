@@ -14,6 +14,7 @@ use std::path::{Path, PathBuf};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
+    manifest::ArtifactManifest,
     model::{Model, ModelConfig},
 };
 
@@ -115,5 +116,7 @@ pub fn export_inference_artifact(
     std::fs::create_dir_all(inference_dir)?;
     let out = inference_dir.join("model.mpk");
     std::fs::copy(train_model_path, &out)?;
+    let manifest = ArtifactManifest::for_current("model.mpk");
+    manifest.write_to_dir(inference_dir)?;
     Ok(out)
 }
