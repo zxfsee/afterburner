@@ -2,6 +2,9 @@ use std::fs;
 
 use afterburner::manifest::{MANIFEST_FILENAME, compute_sha256_hex};
 
+#[path = "fixture_support.rs"]
+mod fixture_support;
+
 #[test]
 fn infer_fails_fast_on_manifest_mismatch() {
     let tmp = tempfile::tempdir().expect("tempdir");
@@ -9,32 +12,17 @@ fn infer_fails_fast_on_manifest_mismatch() {
     let weights = dir.join("model.mpk");
     fs::write(&weights, "").expect("write weights");
     let checksum = compute_sha256_hex(&weights).expect("checksum");
-
-    let manifest = format!(
-        r#"
-artifact = "model.mpk"
-artifact_sha256 = "{checksum}"
-
-[model]
-architecture_id = "afterburner.mnist.residual_v0"
-architecture_version = 1
-
-[input]
-shape = [1, 28, 28]
-dtype = "f32"
-
-[normalization]
-dataset = "mnist"
-mean = 0.1307
-std = 0.3081
-notes = "((x / 255.0) - 0.1307) / 0.3081"
-"#
+    let manifest_fixture = fixture_support::load_manifest_fixture();
+    let bad_checksum = format!("{checksum}00");
+    let manifest = manifest_fixture.replace(
+        &format!("artifact_sha256 = \"{checksum}\""),
+        &format!("artifact_sha256 = \"{bad_checksum}\""),
     );
     fs::write(dir.join(MANIFEST_FILENAME), manifest).expect("write manifest");
 
     let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("infer");
     cmd.arg(&weights);
-    let assert = cmd.assert().failure();
+    let assert = cmd.assert().failure().code(2);
     let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
 
     let lines: Vec<&str> = stderr.lines().collect();
@@ -46,5 +34,9 @@ notes = "((x / 255.0) - 0.1307) / 0.3081"
     assert!(
         lines[0].contains(r#""kind":"manifest_mismatch""#),
         "stderr should describe manifest mismatch"
+    );
+    assert!(
+        lines[0].contains(r#""field":"artifact_sha256""#),
+        "stderr should include checksum field"
     );
 }

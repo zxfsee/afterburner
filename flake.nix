@@ -65,7 +65,15 @@
           };
 
           craneLib = (crane.mkLib pkgs).overrideToolchain rustToolchain;
-          src = craneLib.cleanCargoSource ./.;
+          src = lib.cleanSourceWith {
+            src = ./.;
+            filter =
+              path: type:
+              let
+                rel = lib.removePrefix (toString ./. + "/") (toString path);
+              in
+              craneLib.filterCargoSources path type || lib.hasPrefix "fixtures/" rel;
+          };
 
           # Common arguments can be set here to avoid repeating them later
           commonArgs = {

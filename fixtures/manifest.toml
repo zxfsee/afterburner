@@ -1,0 +1,16 @@
+artifact = "model.mpk"
+artifact_sha256 = "b3b57b1fea16e57389145b129a3330998bf3c3bc1e412c46779b3e1827fdd55b"
+
+[model]
+architecture_id = "afterburner.mnist.residual_v1"
+architecture_version = 1
+
+[input]
+shape = [1, 28, 28]
+dtype = "f32"
+
+[normalization]
+dataset = "mnist"
+mean = 0.1307
+std = 0.3081
+notes = "((x / 255.0) - 0.1307) / 0.3081"

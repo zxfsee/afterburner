@@ -22,7 +22,7 @@ impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
         let images = items
             .iter()
-            .map(|item| mnist_image_to_tensor::<B>(item.image, device))
+            .map(|item| training_preprocess_mnist_image::<B>(item.image, device))
             .collect();
 
         let images = Tensor::stack(images, 0);
@@ -34,6 +34,13 @@ impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
 
         MnistBatch { images, targets }
     }
+}
+
+pub fn training_preprocess_mnist_image<B: Backend>(
+    image: [[f32; 28]; 28],
+    device: &B::Device,
+) -> Tensor<B, 3> {
+    mnist_image_to_tensor::<B>(image, device)
 }
 
 pub fn train_loader<B: Backend>(
