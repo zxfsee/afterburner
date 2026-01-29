@@ -64,7 +64,7 @@ Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/ad
 ## Artifact contract
 Training exports a single, versioned inference artifact under `artifacts/inference/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
-- a lightweight `manifest.toml` describing input shape/dtype, normalization, and model architecture identity
+- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, and checksum
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.

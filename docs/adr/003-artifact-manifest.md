@@ -17,6 +17,7 @@ Training must export a `manifest.toml` alongside the inference weights under
 - model architecture identifier and version
 - expected input shape and dtype
 - normalization constants and notes
+- SHA-256 checksum of the weights file
 
 Inference must load the manifest at startup and fail fast on any mismatch with
 the compiled expectations.

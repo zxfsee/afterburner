@@ -30,8 +30,6 @@ These are deliberately excluded from the current implementation to keep the core
 - Treat the service layer as a thin transport adapter.
 
 ## Security & compliance
-- Enforce artifact immutability at runtime.
-- Add checksum verification for inference artifacts.
 - Prepare for artifact signing in regulated environments.
 
 ## Scale considerations

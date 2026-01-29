@@ -2,6 +2,8 @@ use std::fmt::Write as _;
 use std::io;
 use std::path::{Path, PathBuf};
 
+use sha2::{Digest, Sha256};
+
 use crate::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
 use crate::preprocess::{MNIST_MEAN, MNIST_NORMALIZATION_NOTES, MNIST_STD};
 
@@ -12,6 +14,7 @@ pub const INPUT_SHAPE: [usize; 3] = [1, 28, 28];
 #[derive(Debug, Clone)]
 pub struct ArtifactManifest {
     pub artifact: String,
+    pub artifact_sha256: String,
     pub model: ManifestModel,
     pub input: ManifestInput,
     pub normalization: ManifestNormalization,
@@ -51,9 +54,10 @@ pub enum ManifestError {
 }
 
 impl ArtifactManifest {
-    pub fn for_current(artifact_filename: &str) -> Self {
+    pub fn for_current(artifact_filename: &str, artifact_sha256: String) -> Self {
         Self {
             artifact: artifact_filename.to_string(),
+            artifact_sha256,
             model: ManifestModel {
                 architecture_id: MODEL_ARCH_ID.to_string(),
                 architecture_version: MODEL_ARCH_VERSION,
@@ -74,6 +78,7 @@ impl ArtifactManifest {
     pub fn to_toml_string(&self) -> String {
         let mut out = String::new();
         let _ = writeln!(&mut out, "artifact = \"{}\"", self.artifact);
+        let _ = writeln!(&mut out, "artifact_sha256 = \"{}\"", self.artifact_sha256);
         let _ = writeln!(&mut out);
         let _ = writeln!(&mut out, "[model]");
         let _ = writeln!(
@@ -129,6 +134,15 @@ impl ArtifactManifest {
                 field: "artifact",
                 expected: expected_artifact.to_string(),
                 actual: self.artifact.clone(),
+            });
+        }
+
+        let expected_sha256 = compute_sha256_hex(weights_path).map_err(ManifestError::Io)?;
+        if self.artifact_sha256 != expected_sha256 {
+            return Err(ManifestError::Mismatch {
+                field: "artifact_sha256",
+                expected: expected_sha256,
+                actual: self.artifact_sha256.clone(),
             });
         }
 
@@ -202,6 +216,7 @@ impl ArtifactManifest {
 
 fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, ManifestError> {
     let artifact = read_string(value, "artifact")?;
+    let artifact_sha256 = read_string(value, "artifact_sha256")?;
 
     let model = value
         .get("model")
@@ -225,6 +240,7 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
 
     Ok(ArtifactManifest {
         artifact,
+        artifact_sha256,
         model: ManifestModel {
             architecture_id,
             architecture_version,
@@ -237,6 +253,22 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
             notes,
         },
     })
+}
+
+pub fn compute_sha256_hex(path: &Path) -> io::Result<String> {
+    let bytes = std::fs::read(path)?;
+    let mut hasher = Sha256::new();
+    hasher.update(bytes);
+    let digest = hasher.finalize();
+    Ok(hex_encode(&digest))
+}
+
+fn hex_encode(bytes: &[u8]) -> String {
+    let mut out = String::with_capacity(bytes.len() * 2);
+    for byte in bytes {
+        let _ = write!(&mut out, "{:02x}", byte);
+    }
+    out
 }
 
 fn read_string(value: &toml::Value, field: &'static str) -> Result<String, ManifestError> {

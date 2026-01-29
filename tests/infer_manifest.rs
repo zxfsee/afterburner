@@ -1,6 +1,6 @@
 use std::fs;
 
-use afterburner::manifest::MANIFEST_FILENAME;
+use afterburner::manifest::{MANIFEST_FILENAME, compute_sha256_hex};
 
 #[test]
 fn infer_fails_fast_on_manifest_mismatch() {
@@ -8,9 +8,12 @@ fn infer_fails_fast_on_manifest_mismatch() {
     let dir = tmp.path();
     let weights = dir.join("model.mpk");
     fs::write(&weights, "").expect("write weights");
+    let checksum = compute_sha256_hex(&weights).expect("checksum");
 
-    let manifest = r#"
+    let manifest = format!(
+        r#"
 artifact = "model.mpk"
+artifact_sha256 = "{checksum}"
 
 [model]
 architecture_id = "afterburner.mnist.residual_v0"
@@ -25,7 +28,8 @@ dataset = "mnist"
 mean = 0.1307
 std = 0.3081
 notes = "((x / 255.0) - 0.1307) / 0.3081"
-"#;
+"#
+    );
     fs::write(dir.join(MANIFEST_FILENAME), manifest).expect("write manifest");
 
     let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("infer");
