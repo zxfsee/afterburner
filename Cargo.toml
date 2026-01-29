@@ -10,7 +10,7 @@ path = "src/bin/afterburner_http.rs"
 
 [dependencies]
 base64 = "0.22"
-burn = { version = "0.19.1", features = [
+burn = { version = "0.20.1", features = [
   "fusion",
   "std",
   "train",
@@ -26,7 +26,7 @@ tiny_http = "0.12"
 toml = "0.8"
 
 [dependencies.burn-autodiff]
-version = "0.19.1"
+version = "0.20.1"
 
 [dev-dependencies]
 assert_cmd = "2.1.1"

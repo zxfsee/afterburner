@@ -5,7 +5,7 @@ use burn::{
     record::CompactRecorder,
     tensor::backend::AutodiffBackend,
     train::{
-        LearnerBuilder, TrainOutput, TrainStep, ValidStep,
+        InferenceStep, Learner, SupervisedTraining, TrainOutput, TrainStep,
         metric::{AccuracyMetric, LossMetric},
     },
 };
@@ -38,18 +38,22 @@ pub struct TrainingConfig {
     pub model: ModelConfig,
 }
 
-impl<B: AutodiffBackend> TrainStep<MnistBatch<B>, burn::train::ClassificationOutput<B>>
-    for Model<B>
-{
-    fn step(&self, batch: MnistBatch<B>) -> TrainOutput<burn::train::ClassificationOutput<B>> {
+impl<B: AutodiffBackend> TrainStep for Model<B> {
+    type Input = MnistBatch<B>;
+    type Output = burn::train::ClassificationOutput<B>;
+
+    fn step(&self, batch: Self::Input) -> TrainOutput<Self::Output> {
         let item = self.forward_classification(batch.images, batch.targets);
         let grads = item.loss.backward();
         TrainOutput::new(self, grads, item)
     }
 }
 
-impl<B: Backend> ValidStep<MnistBatch<B>, burn::train::ClassificationOutput<B>> for Model<B> {
-    fn step(&self, batch: MnistBatch<B>) -> burn::train::ClassificationOutput<B> {
+impl<B: Backend> InferenceStep for Model<B> {
+    type Input = MnistBatch<B>;
+    type Output = burn::train::ClassificationOutput<B>;
+
+    fn step(&self, batch: Self::Input) -> Self::Output {
         self.forward_classification(batch.images, batch.targets)
     }
 }
@@ -79,16 +83,16 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     let optim = AdamConfig::new().init::<B, Model<B>>();
 
-    let learner = LearnerBuilder::new(train_dir.to_string_lossy().to_string())
+    let learner = Learner::new(config.model.init::<B>(&device), optim, config.learning_rate);
+
+    let result = SupervisedTraining::new(&train_dir, train_loader, valid_loader)
         .metric_train_numeric(LossMetric::new())
         .metric_train_numeric(AccuracyMetric::new())
         .metric_valid_numeric(LossMetric::new())
         .metric_valid_numeric(AccuracyMetric::new())
         .num_epochs(config.num_epochs)
         .with_file_checkpointer(CompactRecorder::new())
-        .build(config.model.init::<B>(&device), optim, config.learning_rate);
-
-    let result = learner.fit(train_loader, valid_loader);
+        .launch(learner);
 
     // Training output (mutable; not part of inference contract).
     let train_model_path = train_dir.join("model.mpk");
