@@ -4,13 +4,19 @@ use std::path::{Path, PathBuf};
 use burn::prelude::*;
 use burn::record::CompactRecorder;
 
-use crate::manifest::{ArtifactManifest, MANIFEST_FILENAME, ManifestError};
+use crate::manifest::{
+    ArtifactManifest, CURRENT_VERSION_FILENAME, MANIFEST_FILENAME, ManifestError, is_semver,
+};
 use crate::model::ModelConfig;
 use crate::preprocess::mnist_image_to_tensor;
 
 /// Default inference artifact path (ADR-002).
 pub fn default_weights_path() -> PathBuf {
-    PathBuf::from("artifacts/inference/model.mpk")
+    let inference_root = PathBuf::from("artifacts/inference");
+    if let Some(version) = read_current_version(&inference_root) {
+        return inference_root.join(version).join("model.mpk");
+    }
+    inference_root.join("model.mpk")
 }
 
 /// Parse optional CLI args into a weights path.
@@ -38,6 +44,16 @@ pub fn parse_weights_path() -> PathBuf {
 pub fn manifest_path_for_weights(weights_path: &Path) -> PathBuf {
     let parent = weights_path.parent().unwrap_or_else(|| Path::new("."));
     parent.join(MANIFEST_FILENAME)
+}
+
+fn read_current_version(inference_root: &Path) -> Option<String> {
+    let path = inference_root.join(CURRENT_VERSION_FILENAME);
+    let contents = std::fs::read_to_string(path).ok()?;
+    let version = contents.trim();
+    if version.is_empty() || !is_semver(version) {
+        return None;
+    }
+    Some(version.to_string())
 }
 
 #[derive(Debug)]

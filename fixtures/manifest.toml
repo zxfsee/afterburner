@@ -1,4 +1,5 @@
 artifact = "model.mpk"
+artifact_version = "0.1.0"
 artifact_sha256 = "b3b57b1fea16e57389145b129a3330998bf3c3bc1e412c46779b3e1827fdd55b"
 
 [model]

@@ -19,10 +19,14 @@ fn main() {
     // Single override point so CI / experiments can redirect outputs without code changes.
     // The artifact contract lives under `<ARTIFACTS_DIR>/inference/`.
     let artifact_dir = std::env::var("ARTIFACTS_DIR").ok();
+    let artifact_version = std::env::var("ARTIFACT_VERSION").ok();
 
     let mut config = train::TrainingConfig::new(ModelConfig::new(10));
     if let Some(dir) = artifact_dir {
         config.artifacts_dir = dir;
+    }
+    if let Some(version) = artifact_version {
+        config.artifact_version = version;
     }
 
     if use_cpu {

@@ -70,9 +70,12 @@ The CLI remains the canonical interface; the HTTP binary is only a transport ada
 Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
-Training exports a single, versioned inference artifact under `artifacts/inference/`, consisting of:
+Training exports versioned inference artifacts under `artifacts/inference/<version>/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
-- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, and checksum
+- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, artifact version, and checksum
+
+The active version is tracked by `artifacts/inference/current`, enabling safe rollout/rollback without retraining.
+Set `ARTIFACT_VERSION` to control the exported version.
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.

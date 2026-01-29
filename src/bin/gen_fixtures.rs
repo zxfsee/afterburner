@@ -91,8 +91,10 @@ fn write_fixture_weights(path: &PathBuf) -> Result<(), Box<dyn std::error::Error
 }
 
 fn write_manifest(path: &PathBuf, checksum: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let version = "0.1.0";
     let template = format!(
         "artifact = \"model.mpk\"\n\
+artifact_version = \"{}\"\n\
 artifact_sha256 = \"{}\"\n\
 \n\
 [model]\n\
@@ -108,6 +110,7 @@ dataset = \"mnist\"\n\
 mean = {}\n\
 std = {}\n\
 notes = \"{}\"\n",
+        version,
         checksum,
         afterburner::model::MODEL_ARCH_ID,
         afterburner::model::MODEL_ARCH_VERSION,

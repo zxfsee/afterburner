@@ -7,11 +7,7 @@ These are deliberately excluded from the current implementation to keep the core
 ## Completed
 - Preprocessing parity between training and inference.
 - Minimal HTTP wrapper that keeps the CLI canonical.
-
-## Model versioning
-- Add explicit semantic versions to inference artifacts.
-- Allow multiple inference artifacts to coexist under `artifacts/inference/`.
-- Enable safe rollout and rollback without retraining.
+- Versioned inference artifacts with a current pointer for rollbacks.
 
 ## Observability hooks
 - Emit structured logs for:

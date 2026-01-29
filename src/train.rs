@@ -14,7 +14,7 @@ use std::path::{Path, PathBuf};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
-    manifest::{ArtifactManifest, compute_sha256_hex},
+    manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, compute_sha256_hex},
     model::{Model, ModelConfig},
 };
 
@@ -34,6 +34,9 @@ pub struct TrainingConfig {
     /// This is intentionally a single knob so runs are relocatable.
     #[config(default = "\"artifacts\".to_string()")]
     pub artifacts_dir: String,
+    /// Semantic version for the inference artifact.
+    #[config(default = "\"0.1.0\".to_string()")]
+    pub artifact_version: String,
 
     pub model: ModelConfig,
 }
@@ -67,7 +70,8 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // - train/: mutable, iterative outputs (checkpoints, logs, metrics)
     // - inference/: immutable deployment contract consumed by runtime binaries
     let root = Path::new(&config.artifacts_dir);
-    let (train_dir, inference_dir) = artifact_dirs(root);
+    let (train_dir, inference_root) = artifact_dirs(root);
+    let inference_dir = inference_version_dir(&inference_root, &config.artifact_version);
 
     std::fs::create_dir_all(&train_dir).expect("create train dir");
     std::fs::create_dir_all(&inference_dir).expect("create inference dir");
@@ -104,24 +108,38 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // Export the inference contract (immutable input to runtime).
     // This is the *only* file inference binaries depend on.
     // NOTE: Keep this export step narrow: inference must not depend on any other training outputs.
-    export_inference_artifact(&train_model_path, &inference_dir).expect("export inference model");
+    export_inference_artifact(&train_model_path, &inference_root, &config.artifact_version)
+        .expect("export inference model");
 }
 
 pub fn artifact_dirs(root: &Path) -> (PathBuf, PathBuf) {
     let train_dir = root.join("train");
-    let inference_dir = root.join("inference");
-    (train_dir, inference_dir)
+    let inference_root = root.join("inference");
+    (train_dir, inference_root)
 }
 
 pub fn export_inference_artifact(
     train_model_path: &Path,
-    inference_dir: &Path,
+    inference_root: &Path,
+    artifact_version: &str,
 ) -> io::Result<PathBuf> {
-    std::fs::create_dir_all(inference_dir)?;
-    let out = inference_dir.join("model.mpk");
+    let version_dir = inference_version_dir(inference_root, artifact_version);
+    std::fs::create_dir_all(&version_dir)?;
+    let out = version_dir.join("model.mpk");
     std::fs::copy(train_model_path, &out)?;
     let checksum = compute_sha256_hex(&out)?;
-    let manifest = ArtifactManifest::for_current("model.mpk", checksum);
-    manifest.write_to_dir(inference_dir)?;
+    let manifest = ArtifactManifest::for_current("model.mpk", artifact_version, checksum);
+    manifest.write_to_dir(&version_dir)?;
+    write_current_version(inference_root, artifact_version)?;
     Ok(out)
+}
+
+pub fn inference_version_dir(inference_root: &Path, artifact_version: &str) -> PathBuf {
+    inference_root.join(artifact_version)
+}
+
+fn write_current_version(inference_root: &Path, artifact_version: &str) -> io::Result<PathBuf> {
+    let path = inference_root.join(CURRENT_VERSION_FILENAME);
+    std::fs::write(&path, format!("{artifact_version}\n"))?;
+    Ok(path)
 }

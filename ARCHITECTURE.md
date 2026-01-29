@@ -9,10 +9,13 @@ Training -> Artifact -> Inference
 [ Training Binary ]
         |
         v
-[ artifacts/inference/model.mpk ]
+[ artifacts/inference/<version>/model.mpk ]
         |
         v
-[ artifacts/inference/manifest.toml ]
+[ artifacts/inference/<version>/manifest.toml ]
+        ^
+        |
+[ artifacts/inference/current ]
         |
         v
 [ Inference Binary ]
@@ -36,3 +39,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md)
 - [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md)
 - [ADR-003: Artifact Manifest](./docs/adr/003-artifact-manifest.md)
+- [ADR-004: Versioned Inference Artifacts](./docs/adr/004-artifact-versioning.md)

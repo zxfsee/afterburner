@@ -8,12 +8,15 @@ use crate::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
 use crate::preprocess::{MNIST_MEAN, MNIST_NORMALIZATION_NOTES, MNIST_STD};
 
 pub const MANIFEST_FILENAME: &str = "manifest.toml";
+pub const CURRENT_VERSION_FILENAME: &str = "current";
+pub const DEFAULT_ARTIFACT_VERSION: &str = "0.1.0";
 pub const INPUT_DTYPE: &str = "f32";
 pub const INPUT_SHAPE: [usize; 3] = [1, 28, 28];
 
 #[derive(Debug, Clone)]
 pub struct ArtifactManifest {
     pub artifact: String,
+    pub artifact_version: String,
     pub artifact_sha256: String,
     pub model: ManifestModel,
     pub input: ManifestInput,
@@ -54,9 +57,14 @@ pub enum ManifestError {
 }
 
 impl ArtifactManifest {
-    pub fn for_current(artifact_filename: &str, artifact_sha256: String) -> Self {
+    pub fn for_current(
+        artifact_filename: &str,
+        artifact_version: &str,
+        artifact_sha256: String,
+    ) -> Self {
         Self {
             artifact: artifact_filename.to_string(),
+            artifact_version: artifact_version.to_string(),
             artifact_sha256,
             model: ManifestModel {
                 architecture_id: MODEL_ARCH_ID.to_string(),
@@ -78,6 +86,7 @@ impl ArtifactManifest {
     pub fn to_toml_string(&self) -> String {
         let mut out = String::new();
         let _ = writeln!(&mut out, "artifact = \"{}\"", self.artifact);
+        let _ = writeln!(&mut out, "artifact_version = \"{}\"", self.artifact_version);
         let _ = writeln!(&mut out, "artifact_sha256 = \"{}\"", self.artifact_sha256);
         let _ = writeln!(&mut out);
         let _ = writeln!(&mut out, "[model]");
@@ -134,6 +143,23 @@ impl ArtifactManifest {
                 field: "artifact",
                 expected: expected_artifact.to_string(),
                 actual: self.artifact.clone(),
+            });
+        }
+
+        if !is_semver(&self.artifact_version) {
+            return Err(ManifestError::InvalidField(
+                "artifact_version",
+                "expected semver (MAJOR.MINOR.PATCH)".to_string(),
+            ));
+        }
+
+        if let Some(expected_version) = infer_artifact_version(weights_path)
+            && self.artifact_version != expected_version
+        {
+            return Err(ManifestError::Mismatch {
+                field: "artifact_version",
+                expected: expected_version,
+                actual: self.artifact_version.clone(),
             });
         }
 
@@ -216,6 +242,7 @@ impl ArtifactManifest {
 
 fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, ManifestError> {
     let artifact = read_string(value, "artifact")?;
+    let artifact_version = read_string(value, "artifact_version")?;
     let artifact_sha256 = read_string(value, "artifact_sha256")?;
 
     let model = value
@@ -240,6 +267,7 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
 
     Ok(ArtifactManifest {
         artifact,
+        artifact_version,
         artifact_sha256,
         model: ManifestModel {
             architecture_id,
@@ -324,4 +352,29 @@ fn read_shape(value: &toml::Value, field: &'static str) -> Result<[usize; 3], Ma
         out[idx] = v;
     }
     Ok(out)
+}
+
+pub fn is_semver(version: &str) -> bool {
+    let mut parts = version.split('.');
+    let (Some(major), Some(minor), Some(patch), None) =
+        (parts.next(), parts.next(), parts.next(), parts.next())
+    else {
+        return false;
+    };
+    [major, minor, patch]
+        .iter()
+        .all(|part| !part.is_empty() && part.chars().all(|c| c.is_ascii_digit()))
+}
+
+fn infer_artifact_version(weights_path: &Path) -> Option<String> {
+    let parent = weights_path.parent()?;
+    let version = parent.file_name()?.to_str()?;
+    if !is_semver(version) {
+        return None;
+    }
+    let root = parent.parent()?;
+    if root.file_name()?.to_str()? != "inference" {
+        return None;
+    }
+    Some(version.to_string())
 }

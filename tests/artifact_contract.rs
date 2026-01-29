@@ -3,7 +3,8 @@ use burn::prelude::*; // brings Module into scope for save_file/load_file
 use burn::record::CompactRecorder;
 
 use afterburner::manifest::{
-    ArtifactManifest, INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME, compute_sha256_hex,
+    ArtifactManifest, CURRENT_VERSION_FILENAME, INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME,
+    compute_sha256_hex,
 };
 use afterburner::model::ModelConfig;
 use afterburner::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
@@ -19,6 +20,7 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
     let (train_dir, infer_dir) = afterburner::train::artifact_dirs(root);
     std::fs::create_dir_all(&train_dir).expect("create train dir");
 
+    let version = "0.1.0";
     let device = <CpuBackend as Backend>::Device::default();
     let recorder = CompactRecorder::new();
 
@@ -37,7 +39,7 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
     );
 
     std::fs::create_dir_all(&infer_dir).expect("create inference dir");
-    let exported = afterburner::train::export_inference_artifact(&train_model, &infer_dir)
+    let exported = afterburner::train::export_inference_artifact(&train_model, &infer_dir, version)
         .expect("export inference model");
 
     assert!(
@@ -51,7 +53,7 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
         exported.display()
     );
 
-    let manifest_path = infer_dir.join(MANIFEST_FILENAME);
+    let manifest_path = infer_dir.join(version).join(MANIFEST_FILENAME);
     assert!(
         manifest_path.exists(),
         "missing manifest: {}",
@@ -59,6 +61,7 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
     );
     let manifest = ArtifactManifest::load_from_path(&manifest_path).expect("load manifest");
     assert_eq!(manifest.artifact, "model.mpk");
+    assert_eq!(manifest.artifact_version, version);
     assert_eq!(manifest.model.architecture_id, MODEL_ARCH_ID);
     assert_eq!(manifest.model.architecture_version, MODEL_ARCH_VERSION);
     assert_eq!(manifest.input.shape, INPUT_SHAPE);
@@ -71,6 +74,15 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
         manifest.artifact_sha256,
         compute_sha256_hex(&exported).expect("compute checksum")
     );
+
+    let current_path = infer_dir.join(CURRENT_VERSION_FILENAME);
+    assert!(
+        current_path.exists(),
+        "missing current version pointer: {}",
+        current_path.display()
+    );
+    let current = std::fs::read_to_string(current_path).expect("read current version");
+    assert_eq!(current.trim(), version);
 
     let _loaded = ModelConfig::new(10)
         .init::<CpuBackend>(&device)
