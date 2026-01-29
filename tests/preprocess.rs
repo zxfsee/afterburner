@@ -10,7 +10,7 @@ fn preprocess_shape_and_finiteness() {
 
     let x = afterburner::preprocess::mnist_image_to_tensor::<B>(image, &device);
 
-    assert_eq!(x.dims(), [1, 1, 28, 28]);
+    assert_eq!(x.dims(), [1, 28, 28]);
 
     let flat = x.reshape([784]);
     let data = flat.to_data();

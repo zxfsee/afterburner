@@ -4,10 +4,9 @@ use burn::{
     data::dataloader::batcher::Batcher,
     data::dataset::vision::{MnistDataset, MnistItem},
     prelude::*,
-    tensor::TensorData,
 };
 
-use crate::preprocess::{MNIST_MEAN, MNIST_STD};
+use crate::preprocess::mnist_image_to_tensor;
 
 /// Batched MNIST tensors ready for a convolutional classifier.
 #[derive(Clone, Debug)]
@@ -23,10 +22,7 @@ impl<B: Backend> Batcher<B, MnistItem, MnistBatch<B>> for MnistBatcher {
     fn batch(&self, items: Vec<MnistItem>, device: &B::Device) -> MnistBatch<B> {
         let images = items
             .iter()
-            .map(|item| TensorData::from(item.image).convert::<B::FloatElem>())
-            .map(|data| Tensor::<B, 2>::from_data(data, device))
-            .map(|tensor| tensor.reshape([1, 28, 28]))
-            .map(|tensor| ((tensor / 255.0) - MNIST_MEAN) / MNIST_STD) // standard MNIST normalization
+            .map(|item| mnist_image_to_tensor::<B>(item.image, device))
             .collect();
 
         let images = Tensor::stack(images, 0);

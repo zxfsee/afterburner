@@ -4,6 +4,7 @@ use std::time::Instant;
 
 use afterburner::infer::{manifest_path_for_weights, parse_weights_path};
 use afterburner::manifest::{ArtifactManifest, ManifestError};
+use afterburner::preprocess::mnist_image_to_tensor;
 use burn::prelude::*;
 use burn::record::CompactRecorder;
 use burn::tensor::activation::softmax;
@@ -80,7 +81,8 @@ fn run_infer<B: Backend>(
         r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}","elapsed_ms":{load_ms}}}"#
     );
 
-    let input = Tensor::<B, 4>::zeros([1, 1, 28, 28], &device);
+    let image = [[0.0f32; 28]; 28];
+    let input = Tensor::stack(vec![mnist_image_to_tensor::<B>(image, &device)], 0);
     let logits = model.forward(input);
     let probs = softmax(logits, 1);
     println!("Probabilities: {probs}");
