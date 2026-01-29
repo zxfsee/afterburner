@@ -9,13 +9,14 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
-use std::io;
 use std::path::{Path, PathBuf};
+use std::{env, io};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
     manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, compute_sha256_hex},
     model::{Model, ModelConfig},
+    observability::{append_json_line, json_escape},
 };
 
 #[derive(Config, Debug)]
@@ -62,6 +63,7 @@ impl<B: Backend> InferenceStep for Model<B> {
 }
 
 pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
+    let start = std::time::Instant::now();
     // INFO: Startup performs only deterministic work.
     // No background initialization to keep failure modes observable.
     B::seed(&device, config.seed);
@@ -75,6 +77,17 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
 
     std::fs::create_dir_all(&train_dir).expect("create train dir");
     std::fs::create_dir_all(&inference_dir).expect("create inference dir");
+
+    let backend = backend_label();
+    write_train_event(
+        &train_dir,
+        "train_start",
+        &backend,
+        &config.artifact_version,
+        &train_dir,
+        &inference_dir,
+    )
+    .expect("write train start event");
 
     let train_loader = train_loader::<B>(
         config.batch_size,
@@ -108,8 +121,25 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     // Export the inference contract (immutable input to runtime).
     // This is the *only* file inference binaries depend on.
     // NOTE: Keep this export step narrow: inference must not depend on any other training outputs.
-    export_inference_artifact(&train_model_path, &inference_root, &config.artifact_version)
-        .expect("export inference model");
+    let exported =
+        export_inference_artifact(&train_model_path, &inference_root, &config.artifact_version)
+            .expect("export inference model");
+
+    let manifest_path = inference_dir.join(crate::manifest::MANIFEST_FILENAME);
+    let current_path = inference_root.join(CURRENT_VERSION_FILENAME);
+    write_train_export_event(
+        &train_dir,
+        &backend,
+        &config.artifact_version,
+        &exported,
+        &manifest_path,
+        &current_path,
+    )
+    .expect("write train export event");
+
+    let elapsed_ms = start.elapsed().as_millis();
+    write_train_done_event(&train_dir, &backend, &config.artifact_version, elapsed_ms)
+        .expect("write train done event");
 }
 
 pub fn artifact_dirs(root: &Path) -> (PathBuf, PathBuf) {
@@ -142,4 +172,68 @@ fn write_current_version(inference_root: &Path, artifact_version: &str) -> io::R
     let path = inference_root.join(CURRENT_VERSION_FILENAME);
     std::fs::write(&path, format!("{artifact_version}\n"))?;
     Ok(path)
+}
+
+fn backend_label() -> String {
+    env::var("BACKEND")
+        .map(|value| value.to_ascii_lowercase())
+        .unwrap_or_else(|_| "wgpu".to_string())
+}
+
+fn observability_path(train_dir: &Path) -> PathBuf {
+    train_dir.join("observability.jsonl")
+}
+
+fn write_train_event(
+    train_dir: &Path,
+    event: &str,
+    backend: &str,
+    artifact_version: &str,
+    metrics_dir: &Path,
+    inference_dir: &Path,
+) -> io::Result<()> {
+    let path = observability_path(train_dir);
+    let metrics_dir = json_escape(&metrics_dir.to_string_lossy());
+    let inference_dir = json_escape(&inference_dir.to_string_lossy());
+    let artifact_version = json_escape(artifact_version);
+    let backend = json_escape(backend);
+    let line = format!(
+        r#"{{"event":"{event}","backend":"{backend}","artifact_version":"{artifact_version}","metrics_dir":"{metrics_dir}","inference_dir":"{inference_dir}"}}"#
+    );
+    append_json_line(&path, &line)
+}
+
+fn write_train_export_event(
+    train_dir: &Path,
+    backend: &str,
+    artifact_version: &str,
+    artifact_path: &Path,
+    manifest_path: &Path,
+    current_path: &Path,
+) -> io::Result<()> {
+    let path = observability_path(train_dir);
+    let backend = json_escape(backend);
+    let artifact_version = json_escape(artifact_version);
+    let artifact_path = json_escape(&artifact_path.to_string_lossy());
+    let manifest_path = json_escape(&manifest_path.to_string_lossy());
+    let current_path = json_escape(&current_path.to_string_lossy());
+    let line = format!(
+        r#"{{"event":"artifact_exported","backend":"{backend}","artifact_version":"{artifact_version}","artifact_path":"{artifact_path}","manifest_path":"{manifest_path}","current_path":"{current_path}"}}"#
+    );
+    append_json_line(&path, &line)
+}
+
+fn write_train_done_event(
+    train_dir: &Path,
+    backend: &str,
+    artifact_version: &str,
+    elapsed_ms: u128,
+) -> io::Result<()> {
+    let path = observability_path(train_dir);
+    let backend = json_escape(backend);
+    let artifact_version = json_escape(artifact_version);
+    let line = format!(
+        r#"{{"event":"train_done","backend":"{backend}","artifact_version":"{artifact_version}","elapsed_ms":{elapsed_ms}}}"#
+    );
+    append_json_line(&path, &line)
 }

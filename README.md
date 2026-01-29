@@ -84,8 +84,11 @@ printf "0.1.0\n" > artifacts/inference/current
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
-Inference emits minimal structured events as JSON lines on stderr for artifact loading and backend selection,
-without introducing a logging framework.
+Inference emits minimal structured events as JSON lines on stderr for artifact loading, backend selection,
+and inference latency without introducing a logging framework.
+
+Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn persists per-metric logs
+under `artifacts/train/` for auditability.
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 

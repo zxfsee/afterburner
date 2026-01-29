@@ -27,6 +27,9 @@ Training produces artifacts.
 Inference consumes artifacts via the CLI and the optional HTTP wrapper.
 No runtime coupling exists between training and inference.
 
+Training also emits JSONL observability events under `artifacts/train/` to keep
+metrics and runtime metadata inspectable without introducing a logging stack.
+
 ### Trade-offs
 This design prioritizes explicit boundaries and reproducibility over rapid iteration.
 As a result, some conveniences common in ML prototypes (implicit preprocessing,

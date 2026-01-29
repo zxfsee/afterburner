@@ -8,14 +8,7 @@ These are deliberately excluded from the current implementation to keep the core
 - Preprocessing parity between training and inference.
 - Minimal HTTP wrapper that keeps the CLI canonical.
 - Versioned inference artifacts with a current pointer for rollbacks.
-
-## Observability hooks
-- Emit structured logs for:
-  - artifact loading
-  - backend selection (CPU vs GPU)
-  - inference latency
-- Prepare for OpenTelemetry integration without backend coupling.
-- Persist training metrics and logs as structured artifacts under `artifacts/train/`.
+- Structured observability events for training and inference.
 
 ## Security & compliance
 - Prepare for artifact signing in regulated environments.

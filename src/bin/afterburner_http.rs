@@ -1,6 +1,7 @@
 use std::net::SocketAddr;
 
 use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path_from_args};
+use afterburner::observability::json_escape;
 use base64::Engine as _;
 use burn::prelude::*;
 use serde_json::json;
@@ -20,9 +21,9 @@ fn main() {
         .unwrap_or(false);
 
     if use_cpu {
-        run_server::<CpuBackend>(weights_path, addr);
+        run_server::<CpuBackend>(weights_path, addr, "cpu");
     } else {
-        run_server::<GpuBackend>(weights_path, addr);
+        run_server::<GpuBackend>(weights_path, addr, "wgpu");
     }
 }
 
@@ -34,12 +35,15 @@ fn http_addr() -> SocketAddr {
     SocketAddr::from(([0, 0, 0, 0], port))
 }
 
-fn run_server<B: Backend>(weights_path: std::path::PathBuf, addr: SocketAddr) -> ! {
+fn run_server<B: Backend>(weights_path: std::path::PathBuf, addr: SocketAddr, backend: &str) -> ! {
     let device = B::Device::default();
     let model = match load_model::<B>(&weights_path, &device) {
         Ok(model) => model,
         Err(err) => emit_error_and_exit(&err),
     };
+    let artifact = json_escape(&weights_path.to_string_lossy());
+    eprintln!(r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}"}}"#);
+    eprintln!(r#"{{"event":"backend_selected","backend":"{backend}"}}"#);
 
     let server = Server::http(addr).unwrap_or_else(|err| {
         eprintln!(
@@ -53,7 +57,7 @@ fn run_server<B: Backend>(weights_path: std::path::PathBuf, addr: SocketAddr) ->
         let mut request = request;
         let response = match (request.method(), request.url()) {
             (&Method::Get, "/healthz") => ok_response("ok\n"),
-            (&Method::Post, "/infer") => handle_infer(&mut request, &model, &device),
+            (&Method::Post, "/infer") => handle_infer(&mut request, &model, &device, backend),
             _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
         };
         let _ = request.respond(response);
@@ -66,7 +70,9 @@ fn handle_infer<B: Backend>(
     request: &mut tiny_http::Request,
     model: &afterburner::model::Model<B>,
     device: &B::Device,
+    backend: &str,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
+    let start = std::time::Instant::now();
     let body = match read_body(request) {
         Ok(body) => body,
         Err(err) => return json_error(StatusCode(400), "invalid_body", &err),
@@ -91,6 +97,8 @@ fn handle_infer<B: Backend>(
     let logits = logits_from_model(model, device, image);
     let data = logits.to_data();
     let logits: Vec<f32> = data.iter().collect();
+    let elapsed_ms = start.elapsed().as_millis();
+    eprintln!(r#"{{"event":"infer_done","backend":"{backend}","elapsed_ms":{elapsed_ms}}}"#);
 
     let payload = json!({ "logits": logits }).to_string();
     Response::from_string(payload)
@@ -234,19 +242,4 @@ fn emit_error_and_exit(err: &InferError) -> ! {
         }
     }
     std::process::exit(2);
-}
-
-fn json_escape(s: &str) -> String {
-    let mut out = String::with_capacity(s.len());
-    for c in s.chars() {
-        match c {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            _ => out.push(c),
-        }
-    }
-    out
 }

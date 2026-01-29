@@ -4,6 +4,7 @@ use std::time::Instant;
 
 use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path};
 use afterburner::manifest::ManifestError;
+use afterburner::observability::json_escape;
 use burn::prelude::*;
 use burn::tensor::activation::softmax;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
@@ -54,6 +55,7 @@ fn run_infer<B: Backend>(
     eprintln!(
         r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}","elapsed_ms":{load_ms}}}"#
     );
+    eprintln!(r#"{{"event":"backend_selected","backend":"{backend}"}}"#);
 
     let image = [[0.0f32; 28]; 28];
     let logits = logits_from_model(&model, &device, image);
@@ -121,20 +123,4 @@ fn emit_error(err: &InferError) -> ! {
         }
     }
     std::process::exit(2);
-}
-
-// Minimal JSON escaping to keep logs structured without adding a logging dependency.
-fn json_escape(s: &str) -> String {
-    let mut out = String::with_capacity(s.len());
-    for c in s.chars() {
-        match c {
-            '"' => out.push_str("\\\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            _ => out.push(c),
-        }
-    }
-    out
 }
