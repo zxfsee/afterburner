@@ -10,6 +10,7 @@ header = """# Changelog
 ## TODO
 - Security & compliance — prepare for artifact signing in regulated environments.
 - Scale considerations — explicit batch inference support with limits; memory and execution safeguards for GPU inference; deterministic startup behavior under load.
+- Eval regression guard — add a small fixed-seed MNIST eval pass to catch accuracy drift.
 
 ## [Trunk]
 
