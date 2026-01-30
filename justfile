@@ -52,3 +52,7 @@ test:
 # run unit/integration tests with cargo (fallback)
 test-cargo:
     cargo test
+
+# regenerate CHANGELOG.md from git history
+changelog:
+    git-cliff -c Cargo.toml -o CHANGELOG.md
