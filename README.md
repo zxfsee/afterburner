@@ -34,7 +34,7 @@ It demonstrates how to design ML systems where:
 
 The goal is to make training, artifacts, and runtime behavior easy to reason about and hard to misuse.
 
-Future extensions are listed in [Roadmap](./ROADMAP.md).
+Future extensions are listed in [Changelog](./CHANGELOG.md).
 
 ## Design goals
 - Reproducibility over convenience
@@ -116,7 +116,7 @@ This mirrors environments where deployment safety and auditability outweigh iter
 ## Documentation
 - [Architecture overview](./ARCHITECTURE.md)
 - [Design decisions (ADRs)](./docs/adr/)
-- [Roadmap](./ROADMAP.md)
+- [Changelog](./CHANGELOG.md)
 
 ---
 

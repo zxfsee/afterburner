@@ -4,7 +4,7 @@
 - [README](./README.md)
 - [Architecture](./ARCHITECTURE.md)
 - [ADRs](./docs/adr/)
-- [Roadmap](./ROADMAP.md)
+- [Changelog](./CHANGELOG.md)
 
 ## Project-specific constraints
 - Keep changes small and reviewable.

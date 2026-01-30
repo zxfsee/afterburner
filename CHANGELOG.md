@@ -1,0 +1,123 @@
+# Changelog
+
+## TODO
+- Security & compliance — prepare for artifact signing in regulated environments.
+- Scale considerations — explicit batch inference support with limits; memory and execution safeguards for GPU inference; deterministic startup behavior under load.
+
+## [Trunk]
+
+### Added
+
+- Enable Rust and mold in devenv.nix ([94e3119])
+- Add Model/ModelConfig and initialize & print model in main ([8a19388])
+- Add burn-autodiff integration and training pipeline ([2535151])
+- Add inference CLI and move modules to library; bump Cargo.lock ([ac473da])
+- Load inference artifact from artifacts/inference/model.mpk and use explicit softmax ([d21a891])
+- Set artifacts/train default, copy model to artifacts/inference, rename package to afterburner ([97ef620])
+- Load inference contract, validate artifact, honor BACKEND env ([e36bcda])
+- Centralize inference artifact path handling and CLI arg parsing ([6050ad6])
+- Emit structured stderr events and fail gracefully on missing artifact ([3445782])
+- Emit minimal structured JSON events on stderr; add json_escape and update tests/docs/.gitignore ([13ffa8e])
+- Harden inference artifact contract ([7f3a4ef])
+- Add SHA-256 checksum to artifact manifest and verify integrity ([ae91a99])
+- Add minimal HTTP inference wrapper ([b981d60])
+- Version inference artifacts ([be3bdce])
+- Add observability events ([4506a9a])
+
+### Changed
+
+- Standardize artifacts layout and include taplo.toml in flake ([41b6336])
+- Rename artifacts/inference to artifacts/infer and update references ([173ebc1])
+- Rename artifacts/infer → artifacts/inference (update code/docs/justfile) ([cadcadb])
+- Return [1,28,28] tensor from mnist_image_to_tensor ([5ab0036])
+
+### Chore
+
+- Add initial Rust project scaffold (Cargo.toml, Cargo.lock, .gitignore, src/main.rs) ([118aa3b])
+- Add devenv & direnv configs, update .gitignore, add initial model.rs ([249e039])
+- Add flake.nix, taplo.toml, deny.toml, .cargo/audit.toml and .gitignore ([c4c241b])
+- Add Nix flake and tooling configs (taplo, deny, direnv); update .gitignore and Cargo license ([4e2536e])
+- Replace flake-utils with flake-parts, update rust-overlay & lockfile; docs: add Artifact Contract; feat(infer): log artifact loading and load model with recorder & device ([bc679fe])
+- Add MIT LICENSE, clean up README, and add direnv to flake.nix ([cc2ad89])
+- Require `cargo --locked` in justfile; add `direnv` and package metadata in flake; minor cleanup ([8aeec2f])
+- Add nushell to flake packages ([92cf2a9])
+- Enable just formatter in flake and reformat justfile ([9d6119d])
+- Update burn training API ([9f107fd])
+
+### Documentation
+
+- Add AGENTS.md with guidelines on truth, behavior, reasoning, output, coding, tool interaction, safety, and auditability ([283d0fa])
+- Clarify and streamline guideline wording ([6f45e66])
+- Restructure AGENTS.md to improve clarity and add coding, tool, and search guidance ([1bcccf7])
+- Clarify assumptions, facts, and uncertainty; tweak tool/search wording ([3d3181a])
+- Add ADR-001 (training vs inference) and ADR-002 (immutable artifact contract); update README and AGENTS.md ([2c824be])
+- Clarify artifact wording and update preprocessing manifest TODO ([c14d65b])
+- Add trade-offs section and clarify README; minor code tidy ([0c9d78f])
+- Add "Assumptions" section and clarify README; style(train): reorder imports ([f1248e5])
+- Remove Architecture/ADRs/Next Steps links and add License: MIT ([ea3c8bf])
+- Rename architecture & next-steps to ARCHITECTURE.md & ROADMAP.md, update refs and simplify AGENTS.md ([8b74d56])
+- Update document title from "Next steps" to "Roadmap" ([55e9131])
+- Replace Rules section with Project-specific constraints clarifying ADRs, decision index, and doc-update expectations ([086147c])
+- Combine guidelines for changing behavior and clarify ADR linking ([8007d08])
+- Clarify that behavior changes require updating docs ([3858b0f])
+- Add rollback snippet ([ce6b8a7])
+
+### Other
+
+- Revert "feat(devenv): enable Rust and mold in devenv.nix" ([271f315])
+- Revert "chore(devenv): add devenv & direnv configs, update .gitignore, add initial model.rs" ([3d1724d])
+
+### Tests
+
+- Add golden fixtures for contract stability ([7a104bf])
+
+[Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
+[118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
+[249e039]: https://github.com/zxfsee/afterburner/commit/249e0391e0b8dd5ec107e2bdebaf62bff319fc63
+[94e3119]: https://github.com/zxfsee/afterburner/commit/94e311907737a621bc3a55af4f6a2f1302bc0f27
+[271f315]: https://github.com/zxfsee/afterburner/commit/271f315462dcf6b7e5a338daa98558e57c12a1e2
+[3d1724d]: https://github.com/zxfsee/afterburner/commit/3d1724ddda537a6329ee1a8ae32eae327db0aa0b
+[c4c241b]: https://github.com/zxfsee/afterburner/commit/c4c241be90ec76ebc559cedaec4918566c2c8e7e
+[4e2536e]: https://github.com/zxfsee/afterburner/commit/4e2536e7c25b25ef47bef18d406e89aac9804292
+[8a19388]: https://github.com/zxfsee/afterburner/commit/8a193886fadf822d02395b24ed8eeec71a7e9869
+[283d0fa]: https://github.com/zxfsee/afterburner/commit/283d0fa3861f3b0bbdf4edccbe04a9bf42a2b7fc
+[2535151]: https://github.com/zxfsee/afterburner/commit/2535151770092d1985b39d3e9ef6206209aa3fb4
+[6f45e66]: https://github.com/zxfsee/afterburner/commit/6f45e6648c099a261903384b37cbeece061d695e
+[ac473da]: https://github.com/zxfsee/afterburner/commit/ac473dac8c9124d0962e68579acb508c1e80934a
+[bc679fe]: https://github.com/zxfsee/afterburner/commit/bc679fef261e3e2934732bfeb0aec445ece90e42
+[1bcccf7]: https://github.com/zxfsee/afterburner/commit/1bcccf7a5aace7c7d446feced33817afd999bf27
+[3d3181a]: https://github.com/zxfsee/afterburner/commit/3d3181a9610343f6754bcd186247b49a134b28ad
+[d21a891]: https://github.com/zxfsee/afterburner/commit/d21a8910e5ca657c354ab8e560158d7f6daa39de
+[97ef620]: https://github.com/zxfsee/afterburner/commit/97ef620ea137dd4c923249bb9dcc10ff05a9351a
+[cc2ad89]: https://github.com/zxfsee/afterburner/commit/cc2ad8968448e202229cc0f2f9f80f161c8c0563
+[2c824be]: https://github.com/zxfsee/afterburner/commit/2c824be9cab0fb428064598a28fba5249de4e2b2
+[41b6336]: https://github.com/zxfsee/afterburner/commit/41b6336494b10542c4b47b51f2a24985f7549d2b
+[8aeec2f]: https://github.com/zxfsee/afterburner/commit/8aeec2f69565a5dd7048b5dcd13f7b7c7b975ca9
+[e36bcda]: https://github.com/zxfsee/afterburner/commit/e36bcdab992098b9c361e20cfc17b67bcd22d6de
+[173ebc1]: https://github.com/zxfsee/afterburner/commit/173ebc163dd7435b96abac229e8fe5422e4118d8
+[c14d65b]: https://github.com/zxfsee/afterburner/commit/c14d65bd035f0ee0f8fa191f15e6a2c8e32a1919
+[cadcadb]: https://github.com/zxfsee/afterburner/commit/cadcadbeb680679c353f7ce4f0ce13b5ad123e5f
+[0c9d78f]: https://github.com/zxfsee/afterburner/commit/0c9d78fb90abef23286d96513b8b05120d4b7bf3
+[f1248e5]: https://github.com/zxfsee/afterburner/commit/f1248e54220a7d0758ad17893efb2a6ff516c9e7
+[6050ad6]: https://github.com/zxfsee/afterburner/commit/6050ad60829fea10073f75236aca50dd6efa71ec
+[3445782]: https://github.com/zxfsee/afterburner/commit/34457825780d2190b7c8bf8091000406806c0601
+[13ffa8e]: https://github.com/zxfsee/afterburner/commit/13ffa8e48b770688de7a939d269739cb456fc73d
+[ea3c8bf]: https://github.com/zxfsee/afterburner/commit/ea3c8bf18dddbf5481df8143b6e005506b7fb976
+[92cf2a9]: https://github.com/zxfsee/afterburner/commit/92cf2a9a5c5496d79021b3b6922e97fdc7691fc1
+[9d6119d]: https://github.com/zxfsee/afterburner/commit/9d6119d51fb770790213abfdd4ec0050651e3d69
+[8b74d56]: https://github.com/zxfsee/afterburner/commit/8b74d569c7a7bc25f19d99b9c6460a8eba717eeb
+[55e9131]: https://github.com/zxfsee/afterburner/commit/55e9131627b870f786791192aa03b90b05d20539
+[086147c]: https://github.com/zxfsee/afterburner/commit/086147ceb63c0ea18b0af05601f753525971fc2f
+[8007d08]: https://github.com/zxfsee/afterburner/commit/8007d08f11169e2ac99cd6396834b74706a25843
+[3858b0f]: https://github.com/zxfsee/afterburner/commit/3858b0f2352fdcf672089c76ff2b6a0ffa65ab2d
+[7f3a4ef]: https://github.com/zxfsee/afterburner/commit/7f3a4efa8ad4ed13a13e50a2eeeac75940621743
+[ae91a99]: https://github.com/zxfsee/afterburner/commit/ae91a999a96e9647c81fe7a7436e7a0e2c98be87
+[5ab0036]: https://github.com/zxfsee/afterburner/commit/5ab0036430c66b3c753ceabd822c2bfcd8f2d826
+[7a104bf]: https://github.com/zxfsee/afterburner/commit/7a104bf1353e1dd38e03da11a4bc94cdb7f6434c
+[b981d60]: https://github.com/zxfsee/afterburner/commit/b981d6096774c712ea3fd0caf027d90e6209fed3
+[9f107fd]: https://github.com/zxfsee/afterburner/commit/9f107fdf546cd0d2d7743c4d0a6b5b5ed79e0c04
+[be3bdce]: https://github.com/zxfsee/afterburner/commit/be3bdce5335fe2a70f7dd997efc58aa97930fd3d
+[ce6b8a7]: https://github.com/zxfsee/afterburner/commit/ce6b8a703ed26772e8410af256e001585c1afdab
+[4506a9a]: https://github.com/zxfsee/afterburner/commit/4506a9a9cb8db4c10ef807600384c69daa7fe9d0
+
+<!-- generated by git-cliff -->
