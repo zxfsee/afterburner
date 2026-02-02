@@ -8,9 +8,11 @@ license = "MIT"
 header = """# Changelog
 
 ## TODO
-- Security & compliance — prepare for artifact signing in regulated environments.
-- Scale considerations — explicit batch inference support with limits; memory and execution safeguards for GPU inference; deterministic startup behavior under load.
-- Eval regression guard — add a small fixed-seed MNIST eval pass to catch accuracy drift.
+- Eval regression guard — fixed-seed MNIST eval command + CI gate + structured JSON summary.
+- Batch inference envelope — max batch/request limits + timeouts + deterministic failure modes.
+- HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs.
+- Telemetry shaping — normalize JSON event schema + optional JSONL sink.
+- Signing-ready manifest — signature placeholders + canonicalization notes.
 
 ## [Trunk]
 
