@@ -29,6 +29,14 @@ train:
 infer:
     cargo run --locked --bin infer -- artifacts/inference/model.mpk
 
+# run deterministic MNIST eval and write JSON summary
+eval:
+    cargo run --locked --bin eval -- artifacts/inference/model.mpk --seed 42 --batch-size 128 --max-batches 8 --out artifacts/eval/mnist_eval_summary.json
+
+# CI-friendly eval regression gate
+eval-gate:
+    just eval
+
 # run training by default
 run:
     just train

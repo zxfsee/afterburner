@@ -8,11 +8,11 @@ license = "MIT"
 header = """# Changelog
 
 ## TODO
-- Eval regression guard — fixed-seed MNIST eval command + CI gate + structured JSON summary.
 - Batch inference envelope — max batch/request limits + timeouts + deterministic failure modes.
 - HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs.
 - Telemetry shaping — normalize JSON event schema + optional JSONL sink.
 - Signing-ready manifest — signature placeholders + canonicalization notes.
+- Eval acceptance threshold gate — fail if deterministic accuracy drops below baseline.
 
 ## [Trunk]
 
