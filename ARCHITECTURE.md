@@ -35,6 +35,12 @@ This design prioritizes explicit boundaries and reproducibility over rapid itera
 As a result, some conveniences common in ML prototypes (implicit preprocessing,
 auto-versioning, embedded serving) are intentionally absent.
 
+## Invariants
+- Adapters depend on core; core must not depend on adapters.
+  - “Core” = library modules implementing artifact contract + preprocessing + inference logic.
+  - “Adapters” = binaries/transport layers (CLI, HTTP wrapper) and any integration glue.
+  - Any new adapter must call a stable core API; do not import adapter modules from core.
+
 ### Assumptions
 The same artifact contract applies to non-image domains (e.g. sequence or graph tensors), where input semantics must be explicit and validated.
 
