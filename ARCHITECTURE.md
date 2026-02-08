@@ -40,6 +40,12 @@ auto-versioning, embedded serving) are intentionally absent.
   - “Core” = library modules implementing artifact contract + preprocessing + inference logic.
   - “Adapters” = binaries/transport layers (CLI, HTTP wrapper) and any integration glue.
   - Any new adapter must call a stable core API; do not import adapter modules from core.
+- Public contracts (artifact format, CLI surface, HTTP surface, event schema) must be:
+  - explicit and versioned when needed,
+  - validated at boundaries,
+  - protected by compatibility tests (e.g. golden fixtures).
+- Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
+  core remains framework- and SDK-independent.
 
 ### Assumptions
 The same artifact contract applies to non-image domains (e.g. sequence or graph tensors), where input semantics must be explicit and validated.
