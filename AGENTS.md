@@ -7,7 +7,6 @@
 - [Changelog](./CHANGELOG.md)
 
 ## Project-specific constraints
-- Keep changes small and reviewable.
 - When changing behavior, update the relevant docs in the references list (including external interfaces and architecture invariants).
 - Core must not depend on adapters (training, HTTP, telemetry, etc.); adapters depend on core.
 - Public contracts (artifact/CLI/HTTP/event schema) must be explicit, versioned when needed, and protected by compatibility tests (golden fixtures).
@@ -15,6 +14,10 @@
 - ADRs live in `docs/adr/` and use sequential numeric filenames: `docs/adr/NNN-title.md` (e.g. `docs/adr/001-training-vs-inference.md`). One decision per ADR.
 - Keep a decisions index at `ARCHITECTURE.md#decisions` and link new ADRs there.
 - Tooling: prefer `just --list` to discover workflows and keep recipes up to date.
+- Integration policy:
+  - Prefer stacked diffs that land via the merge queue.
+  - Each diff must be independently reviewable and independently verifiable (own checks/evidence).
+  - The stack must not break trunk/CI; rebase/update as needed to stay current.
 - `CHANGELOG.md` is generated; treat it as derived output (edit `Cargo.toml` `[package.metadata.git-cliff.*]`, then regenerate).
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
