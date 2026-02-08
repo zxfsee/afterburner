@@ -5,6 +5,7 @@
 - [Architecture](./ARCHITECTURE.md)
 - [ADRs](./docs/adr/)
 - [Changelog](./CHANGELOG.md)
+- [Notes](./NOTE.md)
 
 ## Project-specific constraints
 - When changing behavior, update the relevant docs in the references list (including external interfaces and architecture invariants).
@@ -25,3 +26,4 @@
     - a new inspectable artifact/event (structured output under `artifacts/`).
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
   - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
+- Maintain human-level review bar for agent output; reject functional-but-poorly-maintainable code.
