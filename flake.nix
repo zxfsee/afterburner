@@ -50,9 +50,18 @@
           ...
         }:
         let
+          isLinux = lib.hasSuffix "-linux" system;
+
           pkgs = import nixpkgs {
             inherit system;
-            overlays = [ rust-overlay.overlays.default ];
+            overlays = [
+              rust-overlay.overlays.default
+            ]
+            ++ lib.optionals isLinux [
+              (final: prev: {
+                stdenv = prev.stdenvAdapters.useMoldLinker prev.stdenv;
+              })
+            ];
           };
 
           rustToolchain = pkgs.rust-bin.stable.latest.default.override {
@@ -79,6 +88,10 @@
           commonArgs = {
             inherit src;
             strictDeps = true;
+
+            nativeBuildInputs = lib.optionals pkgs.stdenv.isLinux [
+              pkgs.mold
+            ];
 
             buildInputs = [
               # Add additional build inputs here
@@ -184,13 +197,20 @@
 
             # Additional dev-shell environment variables can be set directly
             # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
+            RUSTFLAGS = lib.optionalString pkgs.stdenv.isLinux "-C linker=clang -C link-arg=-fuse-ld=mold";
 
             # Extra inputs can be added here; cargo and rustc are provided by default.
-            packages = with pkgs; [
-              git-cliff
-              just
-              nushell
-            ];
+            packages =
+              with pkgs;
+              [
+                git-cliff
+                just
+                nushell
+              ]
+              ++ lib.optionals pkgs.stdenv.isLinux [
+                clang
+                mold
+              ];
           };
 
           treefmt = {
