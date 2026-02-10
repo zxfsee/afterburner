@@ -27,8 +27,7 @@
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
   - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
 - Maintain human-level review bar for agent output; reject functional-but-poorly-maintainable code.
-- When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration),
-  do not invent a framework or choose a technology implicitly.
-  First:
-    - check whether a stack is already established in the repo,
-    - if not, ask the user to confirm the desired stack before introducing one.
+- When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration):
+  - Do not invent a framework or choose a technology implicitly.
+  - First check whether a stack is already established in the repo.
+  - If not, ask the user to confirm the desired stack before introducing one.
