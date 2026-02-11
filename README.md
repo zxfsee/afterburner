@@ -16,6 +16,8 @@ just infer
 just eval-gate
 ```
 
+`just infer` and `just eval` resolve the artifact through `artifacts/inference/current` by default.
+
 ## What this is
 Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
 It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime.
@@ -89,7 +91,8 @@ Inference binaries treat this artifact as immutable and consume it as their sole
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
 Inference emits minimal structured events as JSON lines on stderr for artifact loading, backend selection,
 and inference latency without introducing a logging framework.
-The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json`.
+The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and accepts
+an optional artifact path (`eval [artifact_path]`) when override is needed.
 
 Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn persists per-metric logs
 under `artifacts/train/` for auditability.
@@ -106,6 +109,7 @@ The same model artifact can run on CPU or GPU without retraining:
 - CPU is supported for development, debugging, and environments without accelerators
 
 Backend selection is explicit (`BACKEND=cpu`), reflecting production systems where execution targets vary by cost, latency, and scale.
+If `BACKEND` is unset, training attempts `wgpu` first and falls back to `cpu` automatically when no compatible GPU adapter is available.
 
 ## Infrastructure choices
 This project uses **Rust, Burn, and Nix** to favor explicitness, reproducibility, and inspectability over rapid iteration.

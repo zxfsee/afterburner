@@ -1,3 +1,5 @@
+use std::any::Any;
+
 use afterburner::model::ModelConfig;
 use afterburner::train;
 use burn::prelude::*;
@@ -10,12 +12,41 @@ type GpuAutodiff = Autodiff<GpuBackend>;
 type CpuAutodiff = Autodiff<CpuBackend>;
 
 fn main() {
+    let backend = std::env::var("BACKEND")
+        .map(|v| v.to_ascii_lowercase())
+        .unwrap_or_else(|_| "wgpu".to_string());
+
+    let config = training_config_from_env();
+
+    if backend == "cpu" {
+        let device = <CpuBackend as Backend>::Device::default();
+        train::train::<CpuAutodiff>(config, device);
+        return;
+    }
+
+    let gpu_result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let device = <GpuBackend as Backend>::Device::default();
+        train::train::<GpuAutodiff>(config, device);
+    }));
+
+    if let Err(payload) = gpu_result {
+        if is_missing_wgpu_adapter_panic(payload.as_ref()) {
+            eprintln!(
+                r#"{{"event":"backend_fallback","from":"wgpu","to":"cpu","reason":"no_adapter"}}"#
+            );
+            let cpu_config = training_config_from_env();
+            let device = <CpuBackend as Backend>::Device::default();
+            train::train::<CpuAutodiff>(cpu_config, device);
+            return;
+        }
+
+        std::panic::resume_unwind(payload);
+    }
+}
+
+fn training_config_from_env() -> train::TrainingConfig {
     // Explicit runtime knob to mirror production deployment variance:
     // same code + same artifact contract, different execution target.
-    let use_cpu = std::env::var("BACKEND")
-        .map(|v| v.eq_ignore_ascii_case("cpu"))
-        .unwrap_or(false);
-
     // Single override point so CI / experiments can redirect outputs without code changes.
     // The artifact contract lives under `<ARTIFACTS_DIR>/inference/`.
     let artifact_dir = std::env::var("ARTIFACTS_DIR").ok();
@@ -29,11 +60,15 @@ fn main() {
         config.artifact_version = version;
     }
 
-    if use_cpu {
-        let device = <CpuBackend as Backend>::Device::default();
-        train::train::<CpuAutodiff>(config, device);
-    } else {
-        let device = <GpuBackend as Backend>::Device::default();
-        train::train::<GpuAutodiff>(config, device);
+    config
+}
+
+fn is_missing_wgpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
+    if let Some(message) = payload.downcast_ref::<&'static str>() {
+        return message.contains("No possible adapter available for backend");
     }
+    if let Some(message) = payload.downcast_ref::<String>() {
+        return message.contains("No possible adapter available for backend");
+    }
+    false
 }

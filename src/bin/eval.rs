@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::time::Instant;
 
 use afterburner::data::test_loader;
-use afterburner::infer::load_model;
+use afterburner::infer::{default_weights_path, load_model};
 use afterburner::observability::json_escape;
 use burn::backend::ndarray::NdArray;
 use burn::prelude::*;
@@ -12,7 +12,6 @@ type CpuBackend = NdArray<f32>;
 
 #[derive(Debug)]
 enum EvalError {
-    MissingArtifactArg,
     InvalidArg(String),
     Io(std::io::Error),
     Infer(afterburner::infer::InferError),
@@ -21,14 +20,26 @@ enum EvalError {
 impl std::fmt::Display for EvalError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::MissingArtifactArg => write!(
-                f,
-                "usage: eval <artifact_path> [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"
-            ),
             Self::InvalidArg(msg) => write!(f, "{msg}"),
             Self::Io(err) => write!(f, "io error: {err}"),
             Self::Infer(err) => write!(f, "inference error: {err:?}"),
         }
+    }
+}
+
+fn usage() -> &'static str {
+    "usage: eval [artifact_path] [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"
+}
+
+impl std::error::Error for EvalError {}
+
+impl EvalError {
+    fn unknown_arg(arg: &str) -> Self {
+        Self::InvalidArg(format!("unknown argument: {arg}\n{}", usage()))
+    }
+
+    fn invalid_arg(msg: String) -> Self {
+        Self::InvalidArg(format!("{msg}\n{}", usage()))
     }
 }
 
@@ -100,7 +111,7 @@ fn run() -> Result<(), EvalError> {
     }
 
     if total == 0 {
-        return Err(EvalError::InvalidArg("no samples evaluated".to_string()));
+        return Err(EvalError::invalid_arg("no samples evaluated".to_string()));
     }
 
     let accuracy = correct as f64 / total as f64;
@@ -132,14 +143,19 @@ fn run() -> Result<(), EvalError> {
     Ok(())
 }
 
-fn parse_args<I>(mut args: I) -> Result<EvalArgs, EvalError>
+fn parse_args<I>(args: I) -> Result<EvalArgs, EvalError>
 where
     I: Iterator<Item = String>,
 {
-    let artifact = args
-        .next()
-        .map(PathBuf::from)
-        .ok_or(EvalError::MissingArtifactArg)?;
+    let mut args = args.peekable();
+    let artifact = if matches!(args.peek(), Some(v) if !v.starts_with("--")) {
+        match args.next() {
+            Some(path) => PathBuf::from(path),
+            None => default_weights_path(),
+        }
+    } else {
+        default_weights_path()
+    };
 
     let mut seed = 42u64;
     let mut batch_size = 128usize;
@@ -154,22 +170,20 @@ where
             "--out" => {
                 let value = args
                     .next()
-                    .ok_or_else(|| EvalError::InvalidArg("missing value for --out".to_string()))?;
+                    .ok_or_else(|| EvalError::invalid_arg("missing value for --out".to_string()))?;
                 out_path = PathBuf::from(value);
             }
-            _ => {
-                return Err(EvalError::InvalidArg(format!("unknown argument: {arg}")));
-            }
+            _ => return Err(EvalError::unknown_arg(&arg)),
         }
     }
 
     if batch_size == 0 {
-        return Err(EvalError::InvalidArg(
+        return Err(EvalError::invalid_arg(
             "--batch-size must be > 0".to_string(),
         ));
     }
     if max_batches == 0 {
-        return Err(EvalError::InvalidArg(
+        return Err(EvalError::invalid_arg(
             "--max-batches must be > 0".to_string(),
         ));
     }
@@ -190,8 +204,55 @@ where
 {
     let value = args
         .next()
-        .ok_or_else(|| EvalError::InvalidArg(format!("missing value for {flag}")))?;
+        .ok_or_else(|| EvalError::invalid_arg(format!("missing value for {flag}")))?;
     value
         .parse::<T>()
-        .map_err(|_| EvalError::InvalidArg(format!("invalid value for {flag}: {value}")))
+        .map_err(|_| EvalError::invalid_arg(format!("invalid value for {flag}: {value}")))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{default_weights_path, parse_args};
+    use std::path::PathBuf;
+
+    #[test]
+    fn parse_args_defaults_artifact_when_not_provided() {
+        let args = vec![
+            "--seed".to_string(),
+            "42".to_string(),
+            "--batch-size".to_string(),
+            "64".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse args");
+        assert_eq!(parsed.artifact, default_weights_path());
+        assert_eq!(parsed.seed, 42);
+        assert_eq!(parsed.batch_size, 64);
+    }
+
+    #[test]
+    fn parse_args_accepts_explicit_artifact_path() {
+        let args = vec![
+            "artifacts/inference/0.1.0/model.mpk".to_string(),
+            "--max-batches".to_string(),
+            "4".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse args");
+        assert_eq!(
+            parsed.artifact,
+            PathBuf::from("artifacts/inference/0.1.0/model.mpk")
+        );
+        assert_eq!(parsed.max_batches, 4);
+    }
+
+    #[test]
+    fn parse_args_rejects_unknown_flag() {
+        let args = vec!["--bogus".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("unknown flag should fail");
+        assert!(
+            err.to_string().contains("unknown argument: --bogus"),
+            "unexpected error: {err}"
+        );
+    }
 }
