@@ -59,7 +59,7 @@
             ]
             ++ lib.optionals isLinux [
               (final: prev: {
-                stdenv = prev.stdenvAdapters.useMoldLinker prev.stdenv;
+                stdenv = prev.useWildLinker prev.stdenv;
               })
             ];
           };
@@ -90,7 +90,7 @@
             strictDeps = true;
 
             nativeBuildInputs = lib.optionals pkgs.stdenv.isLinux [
-              pkgs.mold
+              pkgs.wild
             ];
 
             buildInputs = [
@@ -197,7 +197,7 @@
 
             # Additional dev-shell environment variables can be set directly
             # MY_CUSTOM_DEVELOPMENT_VAR = "something else";
-            RUSTFLAGS = lib.optionalString pkgs.stdenv.isLinux "-C linker=clang -C link-arg=-fuse-ld=mold";
+            RUSTFLAGS = lib.optionalString pkgs.stdenv.isLinux "-C linker=clang -C link-arg=-fuse-ld=wild";
 
             # Extra inputs can be added here; cargo and rustc are provided by default.
             packages =
@@ -209,7 +209,7 @@
               ]
               ++ lib.optionals pkgs.stdenv.isLinux [
                 clang
-                mold
+                wild
               ];
           };
 

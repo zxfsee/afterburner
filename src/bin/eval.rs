@@ -21,7 +21,10 @@ enum EvalError {
 impl std::fmt::Display for EvalError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::MissingArtifactArg => write!(f, "usage: eval <artifact_path> [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"),
+            Self::MissingArtifactArg => write!(
+                f,
+                "usage: eval <artifact_path> [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"
+            ),
             Self::InvalidArg(msg) => write!(f, "{msg}"),
             Self::Io(err) => write!(f, "io error: {err}"),
             Self::Infer(err) => write!(f, "inference error: {err:?}"),
@@ -66,7 +69,7 @@ fn run() -> Result<(), EvalError> {
     <CpuBackend as Backend>::seed(&device, args.seed);
 
     let model = load_model::<CpuBackend>(&args.artifact, &device)?;
-    let loader = test_loader::<CpuBackend>(args.batch_size, 0, device.clone());
+    let loader = test_loader::<CpuBackend>(args.batch_size, 0, device);
 
     let start = Instant::now();
     let mut total = 0usize;
@@ -161,10 +164,14 @@ where
     }
 
     if batch_size == 0 {
-        return Err(EvalError::InvalidArg("--batch-size must be > 0".to_string()));
+        return Err(EvalError::InvalidArg(
+            "--batch-size must be > 0".to_string(),
+        ));
     }
     if max_batches == 0 {
-        return Err(EvalError::InvalidArg("--max-batches must be > 0".to_string()));
+        return Err(EvalError::InvalidArg(
+            "--max-batches must be > 0".to_string(),
+        ));
     }
 
     Ok(EvalArgs {
