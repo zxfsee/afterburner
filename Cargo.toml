@@ -9,11 +9,11 @@ header = """# Changelog
 
 ## TODO
 
-- Batch inference envelope — max batch/request limits + timeouts + deterministic failure modes.
-- HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs.
-- Telemetry shaping — normalize JSON event schema + optional JSONL sink.
-- Signing-ready manifest — signature placeholders + canonicalization notes.
-- Eval acceptance threshold gate — fail if deterministic accuracy drops below baseline.
+- HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs. [Runtime Infra]
+- Telemetry shaping — normalize JSON event schema + optional JSONL sink. [Runtime Infra]
+- Signing-ready manifest — signature placeholders + canonicalization notes. [Inference]
+- Eval acceptance threshold gate — fail if deterministic accuracy drops below baseline. [Post-training]
+- HTTP response contract fixture gate — golden fixtures for single vs batch `/infer` JSON response compatibility. [Inference, Runtime Infra]
 
 ## [Trunk]
 

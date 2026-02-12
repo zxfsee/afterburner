@@ -68,7 +68,19 @@ Training and inference are intentionally exposed as separate binaries to mirror 
 ## HTTP wrapper (optional)
 Afterburner includes a minimal HTTP wrapper binary (`afterburner-http`) that exposes:
 - `GET /healthz`
-- `POST /infer` (accepts raw 784 bytes or JSON with base64, returns logits)
+- `POST /infer` (accepts single or batched MNIST inputs, returns logits)
+
+`POST /infer` accepted payloads:
+- `application/octet-stream`: raw single image bytes (`784` bytes)
+- `application/json`: single input (`{"base64":"..."}` or `{"bytes":[...]}`)
+- `application/json`: batch input (`{"batch":[{"base64":"..."},{"bytes":[...]}]}`)
+
+Envelope limits (env-configurable):
+- `HTTP_MAX_REQUEST_BYTES` (default `65536`)
+- `HTTP_MAX_BATCH_SIZE` (default `16`)
+- `HTTP_INFER_TIMEOUT_MS` (default `1500`)
+
+Deterministic failures return JSON with stable `error.kind` values (for example `request_too_large`, `batch_too_large`, `infer_timeout`, `invalid_input`).
 
 The HTTP wrapper is intentionally thin and still uses the same inference path as the CLI.
 The CLI remains the canonical interface; the HTTP binary is only a transport adapter.
