@@ -31,11 +31,13 @@ Training also emits JSONL observability events under `artifacts/train/` to keep
 metrics and runtime metadata inspectable without introducing a logging stack.
 
 ### Trade-offs
+
 This design prioritizes explicit boundaries and reproducibility over rapid iteration.
 As a result, some conveniences common in ML prototypes (implicit preprocessing,
 auto-versioning, embedded serving) are intentionally absent.
 
 ## Invariants
+
 - Adapters depend on core; core must not depend on adapters.
   - “Core” = library modules implementing artifact contract + preprocessing + inference logic.
   - “Adapters” = binaries/transport layers (CLI, HTTP wrapper) and any integration glue.
@@ -48,9 +50,11 @@ auto-versioning, embedded serving) are intentionally absent.
   core remains framework- and SDK-independent.
 
 ### Assumptions
+
 The same artifact contract applies to non-image domains (e.g. sequence or graph tensors), where input semantics must be explicit and validated.
 
 ## Decisions
+
 - [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md)
 - [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md)
 - [ADR-003: Artifact Manifest](./docs/adr/003-artifact-manifest.md)

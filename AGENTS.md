@@ -1,6 +1,7 @@
 # AGENTS.md
 
 ## References
+
 - [README](./README.md)
 - [Architecture](./ARCHITECTURE.md)
 - [ADRs](./docs/adr/)
@@ -8,6 +9,7 @@
 - [Notes](./NOTE.md)
 
 ## Project-specific constraints
+
 - When changing behavior, update the relevant docs in the references list (including external interfaces and architecture invariants).
 - Core must not depend on adapters (training, HTTP, telemetry, etc.); adapters depend on core.
 - Public contracts (artifact/CLI/HTTP/event schema) must be explicit, versioned when needed, and protected by compatibility tests (golden fixtures).
@@ -27,7 +29,22 @@
     - a new inspectable artifact/event (structured output under `artifacts/`).
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
   - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
-  - TODOs must be tagged with one or more focus areas (Numerics, Kernels, RL Infra, Pre-training, Post-training, Inference, Distributed Training, Frameworks, Compilers, Runtime Infra) to keep the queue aligned with project goals.
+- TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
+- Focus areas (research infra domains) for TODO tagging:
+  - Numerics
+  - Kernels
+  - RL Infra
+  - Pre-training
+  - Post-training
+  - Inference
+  - Distributed Training
+  - Frameworks
+  - Compilers
+  - Runtime Infra
+  - Data Infra
+  - Experimentation/Eval Infra
+  - Serving/Deployment Infra
+- When adding the next TODO, prefer an underrepresented focus area unless blocked by an explicit dependency. If blocked, state the dependency in the TODO.
 - Maintain human-level review bar for agent output; reject functional-but-poorly-maintainable code.
 - When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration):
   - Do not invent a framework or choose a technology implicitly.

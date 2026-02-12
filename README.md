@@ -19,17 +19,20 @@ just eval-gate
 `just infer` and `just eval` resolve the artifact through `artifacts/inference/current` by default.
 
 ## What this is
+
 Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
 It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime.
 While the example model uses MNIST, the system boundaries are designed for scientific ML workloads (e.g. molecular, protein, or graph-based models) where inference contracts, auditability, and deployment safety matter more than model accuracy.
 
 ## What this is not
+
 This is not a production model, training pipeline, or serving system.
 It is a boundary-focused reference implementation intended to demonstrate
 system design judgment, not model performance.
 It intentionally omits serving layers, rollout tooling, and multi-node scheduling concerns.
 
 ## Why this exists
+
 This repository focuses on **system boundaries**, not model quality.
 
 It demonstrates how to design ML systems where:
@@ -42,13 +45,15 @@ The goal is to make training, artifacts, and runtime behavior easy to reason abo
 Future extensions are listed in [Changelog](./CHANGELOG.md).
 
 ## Design goals
+
 - Reproducibility over convenience
 - Explicit boundaries between training and inference
 - Inspectable, versioned artifacts
 - Minimal but intentional infrastructure
-- Incrementally expandable toward numerics, kernels, distributed execution, and runtime infrastructure without breaking contract boundaries.
+- Architected to scale across research infrastructure domains (numerics, kernels, distributed training, runtime systems) without violating contract boundaries.
 
 ## Training
+
 Training is executed as a standalone binary.
 
 It produces artifacts under `artifacts/`, including:
@@ -58,6 +63,7 @@ It produces artifacts under `artifacts/`, including:
 Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
 
 ## Inference
+
 Inference is executed via a separate CLI binary.
 
 It consumes **only** the inference artifact and has no access to training internals.  
@@ -66,6 +72,7 @@ This enforces a strict boundary between model development and runtime execution.
 Training and inference are intentionally exposed as separate binaries to mirror production ML serving systems.
 
 ## HTTP wrapper (optional)
+
 Afterburner includes a minimal HTTP wrapper binary (`afterburner-http`) that exposes:
 - `GET /healthz`
 - `POST /infer` (accepts single or batched MNIST inputs, returns logits)
@@ -88,6 +95,7 @@ The CLI remains the canonical interface; the HTTP binary is only a transport ada
 Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md).
 
 ## Artifact contract
+
 Training exports versioned inference artifacts under `artifacts/inference/<version>/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
 - a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, artifact version, and checksum
@@ -115,6 +123,7 @@ This mirrors real-world model deployment, where training pipelines and serving e
 See [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md) for rationale.
 
 ## CPU vs GPU execution
+
 Training and inference are backend-agnostic.
 
 The same model artifact can run on CPU or GPU without retraining:
@@ -125,6 +134,7 @@ Backend selection is explicit (`BACKEND=cpu`), reflecting production systems whe
 If `BACKEND` is unset, training attempts `wgpu` first and falls back to `cpu` automatically when no compatible GPU adapter is available.
 
 ## Infrastructure choices
+
 This project uses **Rust, Burn, and Nix** to favor explicitness, reproducibility, and inspectability over rapid iteration.
 
 The trade-off is slower experimentation in exchange for:
@@ -135,6 +145,7 @@ The trade-off is slower experimentation in exchange for:
 This mirrors environments where deployment safety and auditability outweigh iteration speed.
 
 ## Documentation
+
 - [Architecture overview](./ARCHITECTURE.md)
 - [Design decisions (ADRs)](./docs/adr/)
 - [Changelog](./CHANGELOG.md)
