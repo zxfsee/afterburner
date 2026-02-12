@@ -8,6 +8,7 @@ license = "MIT"
 header = """# Changelog
 
 ## TODO
+
 - Batch inference envelope — max batch/request limits + timeouts + deterministic failure modes.
 - HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs.
 - Telemetry shaping — normalize JSON event schema + optional JSONL sink.

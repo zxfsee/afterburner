@@ -46,6 +46,7 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 - Explicit boundaries between training and inference
 - Inspectable, versioned artifacts
 - Minimal but intentional infrastructure
+- Incrementally expandable toward numerics, kernels, distributed execution, and runtime infrastructure without breaking contract boundaries.
 
 ## Training
 Training is executed as a standalone binary.

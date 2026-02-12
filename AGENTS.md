@@ -15,7 +15,7 @@
 - ADRs live in `docs/adr/` and use sequential numeric filenames: `docs/adr/NNN-title.md` (e.g. `docs/adr/001-training-vs-inference.md`). One decision per ADR.
 - Keep a decisions index at `ARCHITECTURE.md#decisions` and link new ADRs there.
 - Tooling: prefer `just --list` to discover workflows and keep recipes up to date.
-- Recipes and docs must follow canonical contract-resolution paths and avoid hardcoded compatibility shortcuts that bypass active contract selection.
+- Recipes/docs must use the canonical contract-resolution mechanism — no hardcoded artifact paths or legacy compatibility shortcuts that bypass active contract selection.
 - Integration policy:
   - Prefer stacked diffs that land via the merge queue.
   - Each diff must be independently reviewable and independently verifiable (own checks/evidence).
@@ -27,6 +27,7 @@
     - a new inspectable artifact/event (structured output under `artifacts/`).
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
   - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
+  - TODOs must be tagged with one or more focus areas (Numerics, Kernels, RL Infra, Pre-training, Post-training, Inference, Distributed Training, Frameworks, Compilers, Runtime Infra) to keep the queue aligned with project goals.
 - Maintain human-level review bar for agent output; reject functional-but-poorly-maintainable code.
 - When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration):
   - Do not invent a framework or choose a technology implicitly.
