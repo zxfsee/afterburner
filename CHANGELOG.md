@@ -2,12 +2,12 @@
 
 ## TODO
 
-- Eval baseline refresh flow — document and test the baseline update path when intended model changes move deterministic accuracy. [Experimentation/Eval Infra, Post-training]
 - HTTP error contract fixture gate — golden fixtures for stable JSON error payloads (`invalid_input`, `batch_too_large`, `infer_timeout`). [Inference, Runtime Infra]
 - Fixture dataset hash gate — verify fixture image bytes and summary hash remain stable across regeneration. [Data Infra, Experimentation/Eval Infra]
 - Build graph check gate — add a reproducible check that fails when core crates/modules depend on adapter binaries or transport-only crates. [Compilers, Frameworks]
 - Preprocess numerics guard — add a fixture-backed gate asserting normalized tensor values stay finite and within `[0.0, 1.0]`. [Numerics, Inference]
 - RL rollout schema stub — add a minimal, versioned artifact schema for policy rollout metadata (without runtime wiring yet). [RL Infra, Serving/Deployment Infra]
+- Kernel shape guard — add a fast gate asserting logits tensor shape remains `[batch, 10]` across CPU and WGPU backends for the same artifact. [Kernels, Runtime Infra]
 
 ## [Trunk]
 

@@ -30,7 +30,8 @@ impl std::fmt::Display for EvalError {
                 min_accuracy,
             } => write!(
                 f,
-                "eval accuracy below baseline: accuracy={accuracy:.8} min_accuracy={min_accuracy:.8}"
+                "eval accuracy below baseline: accuracy={accuracy:.8} min_accuracy={min_accuracy:.8}; {}",
+                baseline_refresh_flow()
             ),
         }
     }
@@ -38,6 +39,10 @@ impl std::fmt::Display for EvalError {
 
 fn usage() -> &'static str {
     "usage: afterburner eval [artifact_path] [--artifact PATH] [--seed N] [--batch-size N] [--max-batches N] [--min-accuracy F64] [--out PATH]"
+}
+
+fn baseline_refresh_flow() -> &'static str {
+    "refresh flow: run `just eval`; review `artifacts/eval/mnist_eval_summary.json`; if model change is intended, update `justfile` `eval-gate` --min-accuracy to the approved deterministic value"
 }
 
 impl std::error::Error for EvalError {}
@@ -286,7 +291,7 @@ where
 
 #[cfg(test)]
 mod tests {
-    use super::{default_weights_path, enforce_accuracy_gate, parse_args};
+    use super::{baseline_refresh_flow, default_weights_path, enforce_accuracy_gate, parse_args};
     use std::path::PathBuf;
 
     #[test]
@@ -378,5 +383,16 @@ mod tests {
     fn accuracy_gate_accepts_equal_or_above_threshold() {
         enforce_accuracy_gate(0.91, 0.91).expect("equal threshold should pass");
         enforce_accuracy_gate(0.92, 0.91).expect("higher accuracy should pass");
+    }
+
+    #[test]
+    fn accuracy_gate_failure_includes_baseline_refresh_flow() {
+        let err = enforce_accuracy_gate(0.9, 0.91).expect_err("must fail threshold");
+        let msg = err.to_string();
+        assert!(msg.contains("below baseline"));
+        assert!(msg.contains("run `just eval`"));
+        assert!(msg.contains("artifacts/eval/mnist_eval_summary.json"));
+        assert!(msg.contains("`justfile` `eval-gate` --min-accuracy"));
+        assert!(msg.contains(baseline_refresh_flow()));
     }
 }
