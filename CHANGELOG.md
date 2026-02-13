@@ -2,12 +2,12 @@
 
 ## TODO
 
-- Preprocess numerics guard — add a fixture-backed gate asserting normalized tensor values stay finite and within `[0.0, 1.0]`. [Numerics, Inference]
 - RL rollout schema stub — add a minimal, versioned artifact schema for policy rollout metadata (without runtime wiring yet). [RL Infra, Serving/Deployment Infra]
 - Kernel shape guard — add a fast gate asserting logits tensor shape remains `[batch, 10]` across CPU and WGPU backends for the same artifact. [Kernels, Runtime Infra]
 - Distributed artifact copy smoke test — add a deterministic local multi-process check that two workers can read the same pinned artifact concurrently without mutation. [Distributed Training, Runtime Infra]
 - Pretraining sample contract stub — define and fixture-test a minimal pretraining sample metadata schema (source, split, checksum) without wiring loaders yet. [Pre-training, Data Infra]
 - Post-training calibration stub — define a versioned calibration artifact metadata schema and add a fixture parse/validate gate. [Post-training, Inference]
+- Framework adapter registry stub — add a fixture-validated schema for declaring supported runtime framework adapters and versions. [Frameworks, Runtime Infra]
 
 ## [Trunk]
 
