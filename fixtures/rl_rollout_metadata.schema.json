@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/rl-rollout-metadata/v1",
+  "title": "RL Rollout Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_artifact",
+    "policy_sha256",
+    "environment",
+    "created_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "policy_artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
