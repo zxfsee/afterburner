@@ -210,29 +210,7 @@ impl ArtifactManifest {
             });
         }
 
-        if self.signature.scheme != SIGNATURE_SCHEME_PLACEHOLDER {
-            return Err(ManifestError::Mismatch {
-                field: "signature.scheme",
-                expected: SIGNATURE_SCHEME_PLACEHOLDER.to_string(),
-                actual: self.signature.scheme.clone(),
-            });
-        }
-
-        if self.signature.key_id != SIGNATURE_KEY_ID_PLACEHOLDER {
-            return Err(ManifestError::Mismatch {
-                field: "signature.key_id",
-                expected: SIGNATURE_KEY_ID_PLACEHOLDER.to_string(),
-                actual: self.signature.key_id.clone(),
-            });
-        }
-
-        if self.signature.value != SIGNATURE_VALUE_PLACEHOLDER {
-            return Err(ManifestError::Mismatch {
-                field: "signature.value",
-                expected: SIGNATURE_VALUE_PLACEHOLDER.to_string(),
-                actual: self.signature.value.clone(),
-            });
-        }
+        self.validate_signature()?;
 
         if self.canonicalization.method != CANONICALIZATION_METHOD {
             return Err(ManifestError::Mismatch {
@@ -315,6 +293,82 @@ impl ArtifactManifest {
         }
 
         Ok(())
+    }
+
+    fn validate_signature(&self) -> Result<(), ManifestError> {
+        if self.signature.scheme == SIGNATURE_SCHEME_PLACEHOLDER {
+            if self.signature.key_id != SIGNATURE_KEY_ID_PLACEHOLDER {
+                return Err(ManifestError::Mismatch {
+                    field: "signature.key_id",
+                    expected: SIGNATURE_KEY_ID_PLACEHOLDER.to_string(),
+                    actual: self.signature.key_id.clone(),
+                });
+            }
+
+            if self.signature.value != SIGNATURE_VALUE_PLACEHOLDER {
+                return Err(ManifestError::Mismatch {
+                    field: "signature.value",
+                    expected: SIGNATURE_VALUE_PLACEHOLDER.to_string(),
+                    actual: self.signature.value.clone(),
+                });
+            }
+
+            return Ok(());
+        }
+
+        if self.signature.key_id.trim().is_empty() {
+            return Err(ManifestError::InvalidField(
+                "signature.key_id",
+                "must be non-empty when signature.scheme != \"none\"".to_string(),
+            ));
+        }
+
+        if self.signature.value.trim().is_empty() {
+            return Err(ManifestError::InvalidField(
+                "signature.value",
+                "must be non-empty when signature.scheme != \"none\"".to_string(),
+            ));
+        }
+
+        let digest = self
+            .signature
+            .value
+            .strip_prefix("sha256:")
+            .ok_or(ManifestError::InvalidField(
+                "signature.value",
+                "expected format sha256:<hex-digest>".to_string(),
+            ))?;
+
+        if digest.len() != 64 || !digest.chars().all(|c| c.is_ascii_hexdigit()) {
+            return Err(ManifestError::InvalidField(
+                "signature.value",
+                "expected format sha256:<hex-digest>".to_string(),
+            ));
+        }
+
+        let expected_digest = self.canonicalized_manifest_digest_hex();
+        if digest.to_ascii_lowercase() != expected_digest {
+            return Err(ManifestError::Mismatch {
+                field: "signature.value.digest",
+                expected: expected_digest,
+                actual: digest.to_ascii_lowercase(),
+            });
+        }
+
+        Ok(())
+    }
+
+    fn canonicalized_manifest_digest_input(&self) -> String {
+        let mut signing_manifest = self.clone();
+        signing_manifest.signature.value = SIGNATURE_VALUE_PLACEHOLDER.to_string();
+        signing_manifest.to_toml_string()
+    }
+
+    fn canonicalized_manifest_digest_hex(&self) -> String {
+        let input = self.canonicalized_manifest_digest_input();
+        let mut hasher = Sha256::new();
+        hasher.update(input.as_bytes());
+        hex_encode(&hasher.finalize())
     }
 }
 
@@ -497,7 +551,7 @@ fn infer_artifact_version(weights_path: &Path) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, SIGNATURE_KEY_ID_PLACEHOLDER,
+        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, ManifestError, SIGNATURE_KEY_ID_PLACEHOLDER,
         SIGNATURE_SCHEME_PLACEHOLDER, parse_manifest_value,
     };
 
@@ -528,5 +582,106 @@ notes = "((x / 255.0) - 0.1307) / 0.3081"
         assert_eq!(parsed.signature.key_id, SIGNATURE_KEY_ID_PLACEHOLDER);
         assert_eq!(parsed.canonicalization.method, CANONICALIZATION_METHOD);
         assert_eq!(parsed.canonicalization.notes, CANONICALIZATION_NOTES);
+    }
+
+    #[test]
+    fn signed_manifest_requires_non_empty_key_id() {
+        let manifest = r#"
+artifact = "model.mpk"
+artifact_version = "0.1.0"
+artifact_sha256 = "abc"
+
+[signature]
+scheme = "ed25519"
+key_id = ""
+value = "sha256:8f2f4d6f8f2f4d6f8f2f4d6f8f2f4d6f8f2f4d6f8f2f4d6f8f2f4d6f8f2f4d6f"
+
+[canonicalization]
+method = "toml-manifest-v1"
+notes = "Canonical bytes use UTF-8 with LF line endings and the field order emitted by ArtifactManifest::to_toml_string()."
+
+[model]
+architecture_id = "afterburner.mnist.residual_v1"
+architecture_version = 1
+
+[input]
+shape = [1, 28, 28]
+dtype = "f32"
+
+[normalization]
+dataset = "mnist"
+mean = 0.1307
+std = 0.3081
+notes = "((x / 255.0) - 0.1307) / 0.3081"
+"#;
+        let value: toml::Value = toml::from_str(manifest).expect("valid toml");
+        let parsed = parse_manifest_value(&value).expect("parse manifest");
+        let err = parsed.validate_signature().expect_err("empty key id must fail");
+        match err {
+            ManifestError::InvalidField(field, detail) => {
+                assert_eq!(field, "signature.key_id");
+                assert!(detail.contains("must be non-empty"));
+            }
+            _ => panic!("expected invalid field error for signature.key_id"),
+        }
+    }
+
+    #[test]
+    fn signed_manifest_digest_must_match_canonical_input() {
+        let manifest = r#"
+artifact = "model.mpk"
+artifact_version = "0.1.0"
+artifact_sha256 = "abc"
+
+[signature]
+scheme = "ed25519"
+key_id = "unit-test-key"
+value = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+
+[canonicalization]
+method = "toml-manifest-v1"
+notes = "Canonical bytes use UTF-8 with LF line endings and the field order emitted by ArtifactManifest::to_toml_string()."
+
+[model]
+architecture_id = "afterburner.mnist.residual_v1"
+architecture_version = 1
+
+[input]
+shape = [1, 28, 28]
+dtype = "f32"
+
+[normalization]
+dataset = "mnist"
+mean = 0.1307
+std = 0.3081
+notes = "((x / 255.0) - 0.1307) / 0.3081"
+"#;
+        let value: toml::Value = toml::from_str(manifest).expect("valid toml");
+        let mut parsed = parse_manifest_value(&value).expect("parse manifest");
+
+        let err = parsed
+            .validate_signature()
+            .expect_err("digest mismatch must fail");
+        match err {
+            ManifestError::Mismatch {
+                field,
+                expected,
+                actual,
+            } => {
+                assert_eq!(field, "signature.value.digest");
+                assert_eq!(
+                    actual,
+                    "0000000000000000000000000000000000000000000000000000000000000000"
+                );
+                assert_eq!(expected.len(), 64);
+            }
+            _ => panic!("expected mismatch for signature.value.digest"),
+        }
+
+        let digest = parsed.canonicalized_manifest_digest_hex();
+        parsed.signature.value = format!("sha256:{digest}");
+        parsed
+            .validate_signature()
+            .expect("matching canonical digest should pass");
     }
 }

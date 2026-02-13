@@ -108,6 +108,8 @@ Training exports versioned inference artifacts under `artifacts/inference/<versi
 
 The active version is tracked by `artifacts/inference/current`, enabling safe rollout/rollback without retraining.
 Set `ARTIFACT_VERSION` to control the exported version.
+If `signature.scheme != "none"`, inference requires non-empty `signature.key_id` and
+`signature.value = "sha256:<hex>"`, where the digest matches canonicalized manifest input bytes.
 
 Rollback example:
 ```sh
