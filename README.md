@@ -52,7 +52,7 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 - Explicit boundaries between training and inference
 - Inspectable, versioned artifacts
 - Minimal but intentional infrastructure
-- Architected to scale across research infrastructure domains (numerics, kernels, distributed training, runtime systems) without violating contract boundaries.
+- The system must remain incrementally expandable across all defined research infrastructure domains without requiring architectural rewrites, favoring evolution behind stable contract boundaries.
 
 ## Training
 
