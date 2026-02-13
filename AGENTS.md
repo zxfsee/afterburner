@@ -1,5 +1,10 @@
 # AGENTS.md
 
+Normative rules only.
+
+Only include rules and constraints that apply to all agent sessions.
+Do not include temporary heuristics that reflect a single session correction.
+
 ## References
 
 - [README](./README.md)
@@ -23,6 +28,8 @@
   - Prefer stacked diffs that land via the merge queue.
   - Each diff must be independently reviewable and independently verifiable (own checks/evidence).
   - The stack must not break trunk/CI; rebase/update as needed to stay current.
+  - Parallelize only across independent scopes.
+  - If tasks touch the same contract, shared files, or the TODO queue, serialize them or use stacked diffs.
 - `CHANGELOG.md` is generated; treat it as derived output (edit `Cargo.toml` `[package.metadata.git-cliff.*]`, then regenerate).
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:

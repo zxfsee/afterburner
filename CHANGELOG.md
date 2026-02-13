@@ -2,12 +2,12 @@
 
 ## TODO
 
-- Distributed artifact copy smoke test — add a deterministic local multi-process check that two workers can read the same pinned artifact concurrently without mutation. [Distributed Training, Runtime Infra]
 - Pretraining sample contract stub — define and fixture-test a minimal pretraining sample metadata schema (source, split, checksum) without wiring loaders yet. [Pre-training, Data Infra]
 - Post-training calibration stub — define a versioned calibration artifact metadata schema and add a fixture parse/validate gate. [Post-training, Inference]
 - Framework adapter registry stub — add a fixture-validated schema for declaring supported runtime framework adapters and versions. [Frameworks, Runtime Infra]
 - Serving rollout budget schema stub — add a fixture-validated schema for latency/error budget metadata used in deployment rollouts. [Serving/Deployment Infra, Runtime Infra]
 - Compiler feature matrix fixture — add a fixture gate that declares and validates supported compile-time backend feature combinations. [Compilers, Kernels]
+- Distributed shard metadata schema stub — add a fixture-validated schema for per-shard ownership/checksum metadata in multi-worker training. [Distributed Training, Data Infra]
 
 ## [Trunk]
 
