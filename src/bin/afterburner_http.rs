@@ -938,4 +938,29 @@ mod tests {
         let expected = include_str!("../../fixtures/http_error_overloaded.json").trim();
         assert_eq!(actual, expected);
     }
+
+    #[test]
+    fn invalid_input_error_payload_matches_fixture() {
+        let actual = error_payload("invalid_input", "empty input batch");
+        let expected = include_str!("../../fixtures/http_error_invalid_input.json").trim();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn batch_too_large_error_payload_matches_fixture() {
+        let actual = error_payload(
+            "batch_too_large",
+            "batch size 17 exceeds HTTP_MAX_BATCH_SIZE=16",
+        );
+        let expected = include_str!("../../fixtures/http_error_batch_too_large.json").trim();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn infer_timeout_error_payload_matches_fixture() {
+        let timeout = super::HttpFailure::timeout("decode", 1_500);
+        let actual = error_payload(timeout.kind, &timeout.detail);
+        let expected = include_str!("../../fixtures/http_error_infer_timeout.json").trim();
+        assert_eq!(actual, expected);
+    }
 }

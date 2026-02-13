@@ -2,12 +2,12 @@
 
 ## TODO
 
-- HTTP error contract fixture gate — golden fixtures for stable JSON error payloads (`invalid_input`, `batch_too_large`, `infer_timeout`). [Inference, Runtime Infra]
 - Fixture dataset hash gate — verify fixture image bytes and summary hash remain stable across regeneration. [Data Infra, Experimentation/Eval Infra]
 - Build graph check gate — add a reproducible check that fails when core crates/modules depend on adapter binaries or transport-only crates. [Compilers, Frameworks]
 - Preprocess numerics guard — add a fixture-backed gate asserting normalized tensor values stay finite and within `[0.0, 1.0]`. [Numerics, Inference]
 - RL rollout schema stub — add a minimal, versioned artifact schema for policy rollout metadata (without runtime wiring yet). [RL Infra, Serving/Deployment Infra]
 - Kernel shape guard — add a fast gate asserting logits tensor shape remains `[batch, 10]` across CPU and WGPU backends for the same artifact. [Kernels, Runtime Infra]
+- Distributed artifact copy smoke test — add a deterministic local multi-process check that two workers can read the same pinned artifact concurrently without mutation. [Distributed Training, Runtime Infra]
 
 ## [Trunk]
 
