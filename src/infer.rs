@@ -21,7 +21,8 @@ pub fn default_weights_path() -> PathBuf {
 
 /// Parse optional CLI args into a weights path.
 /// - `argv[0]` is ignored
-/// - `argv[1]` (if present) is treated as the artifact path
+/// - `--artifact <path>` or `--artifact=<path>` is preferred
+/// - `argv[1]` positional path remains supported for compatibility
 ///
 /// Pure function => unit-testable without spawning a process.
 pub fn parse_weights_path_from_args<I, S>(args: I) -> PathBuf
@@ -29,10 +30,29 @@ where
     I: IntoIterator<Item = S>,
     S: AsRef<str>,
 {
-    args.into_iter()
-        .nth(1)
-        .map(|s| PathBuf::from(s.as_ref()))
-        .unwrap_or_else(default_weights_path)
+    let mut args = args.into_iter().skip(1).map(|arg| arg.as_ref().to_string());
+
+    while let Some(arg) = args.next() {
+        if let Some(path) = arg.strip_prefix("--artifact=") {
+            if !path.is_empty() {
+                return PathBuf::from(path);
+            }
+            return default_weights_path();
+        }
+
+        if arg == "--artifact" {
+            return args
+                .next()
+                .map(PathBuf::from)
+                .unwrap_or_else(default_weights_path);
+        }
+
+        if !arg.starts_with("--") {
+            return PathBuf::from(arg);
+        }
+    }
+
+    default_weights_path()
 }
 
 /// Parse weights path from the actual process arguments.

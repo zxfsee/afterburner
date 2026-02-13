@@ -2,7 +2,7 @@ use std::env;
 use std::path::Path;
 use std::time::Instant;
 
-use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path};
+use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path_from_args};
 use afterburner::manifest::ManifestError;
 use afterburner::observability::json_escape;
 use burn::prelude::*;
@@ -12,14 +12,31 @@ use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
-fn main() {
-    if let Err(err) = run() {
-        emit_error(&err);
+pub fn run<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args: Vec<String> = args.collect();
+    if args.iter().any(|arg| arg == "--help" || arg == "-h") {
+        println!("{}", usage());
+        return 0;
     }
+
+    if let Err(err) = run_inner(args.into_iter()) {
+        emit_error(&err);
+        return 2;
+    }
+
+    0
 }
 
-fn run() -> Result<(), InferError> {
-    let weights_path = parse_weights_path();
+fn run_inner<I>(args: I) -> Result<(), InferError>
+where
+    I: Iterator<Item = String>,
+{
+    let weights_path = parse_weights_path_from_args(
+        std::iter::once("infer".to_string()).chain(args),
+    );
 
     let use_cpu = env::var("BACKEND")
         .map(|v| v.eq_ignore_ascii_case("cpu"))
@@ -64,7 +81,7 @@ fn run_infer<B: Backend>(
     Ok(())
 }
 
-fn emit_error(err: &InferError) -> ! {
+fn emit_error(err: &InferError) {
     match err {
         InferError::ArtifactMissing { path } => {
             let artifact = json_escape(&path.to_string_lossy());
@@ -122,5 +139,8 @@ fn emit_error(err: &InferError) -> ! {
             );
         }
     }
-    std::process::exit(2);
+}
+
+fn usage() -> &'static str {
+    "usage: afterburner infer [artifact_path] [--artifact PATH]"
 }

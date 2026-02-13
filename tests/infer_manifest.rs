@@ -20,8 +20,8 @@ fn infer_fails_fast_on_manifest_mismatch() {
     );
     fs::write(dir.join(MANIFEST_FILENAME), manifest).expect("write manifest");
 
-    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("infer");
-    cmd.arg(&weights);
+    let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("afterburner");
+    cmd.arg("infer").arg(&weights);
     let assert = cmd.assert().failure().code(2);
     let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
 

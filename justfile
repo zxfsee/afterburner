@@ -23,15 +23,15 @@ fmt:
 
 # train model and produce artifacts
 train:
-    cargo run --locked --bin afterburner
+    cargo run --locked --bin afterburner -- train
 
 # run inference using trained artifact
 infer:
-    cargo run --locked --bin infer
+    cargo run --locked --bin afterburner -- infer
 
 # run deterministic MNIST eval and write JSON summary
 eval:
-    cargo run --locked --bin eval -- --seed 42 --batch-size 128 --max-batches 8 --out artifacts/eval/mnist_eval_summary.json
+    cargo run --locked --bin afterburner -- eval --seed 42 --batch-size 128 --max-batches 8 --out artifacts/eval/mnist_eval_summary.json
 
 # CI-friendly eval regression gate
 eval-gate:

@@ -28,7 +28,7 @@ impl std::fmt::Display for EvalError {
 }
 
 fn usage() -> &'static str {
-    "usage: eval [artifact_path] [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"
+    "usage: afterburner eval [artifact_path] [--artifact PATH] [--seed N] [--batch-size N] [--max-batches N] [--out PATH]"
 }
 
 impl std::error::Error for EvalError {}
@@ -64,18 +64,32 @@ struct EvalArgs {
     out_path: PathBuf,
 }
 
-fn main() {
-    if let Err(err) = run() {
+pub fn run<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args: Vec<String> = args.collect();
+    if args.iter().any(|arg| arg == "--help" || arg == "-h") {
+        println!("{}", usage());
+        return 0;
+    }
+
+    if let Err(err) = run_inner(args.into_iter()) {
         eprintln!(
             "{{\"event\":\"eval_error\",\"kind\":\"cli\",\"detail\":\"{}\"}}",
             json_escape(&err.to_string())
         );
-        std::process::exit(2);
+        return 2;
     }
+
+    0
 }
 
-fn run() -> Result<(), EvalError> {
-    let args = parse_args(std::env::args().skip(1))?;
+fn run_inner<I>(args: I) -> Result<(), EvalError>
+where
+    I: Iterator<Item = String>,
+{
+    let args = parse_args(args)?;
     let device = <CpuBackend as Backend>::Device::default();
     <CpuBackend as Backend>::seed(&device, args.seed);
 
@@ -148,7 +162,7 @@ where
     I: Iterator<Item = String>,
 {
     let mut args = args.peekable();
-    let artifact = if matches!(args.peek(), Some(v) if !v.starts_with("--")) {
+    let mut artifact = if matches!(args.peek(), Some(v) if !v.starts_with("--")) {
         match args.next() {
             Some(path) => PathBuf::from(path),
             None => default_weights_path(),
@@ -164,6 +178,12 @@ where
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
+            "--artifact" => {
+                let value = args.next().ok_or_else(|| {
+                    EvalError::invalid_arg("missing value for --artifact".to_string())
+                })?;
+                artifact = PathBuf::from(value);
+            }
             "--seed" => seed = parse_value(&mut args, "--seed")?,
             "--batch-size" => batch_size = parse_value(&mut args, "--batch-size")?,
             "--max-batches" => max_batches = parse_value(&mut args, "--max-batches")?,
@@ -242,6 +262,23 @@ mod tests {
         assert_eq!(
             parsed.artifact,
             PathBuf::from("artifacts/inference/0.1.0/model.mpk")
+        );
+        assert_eq!(parsed.max_batches, 4);
+    }
+
+    #[test]
+    fn parse_args_accepts_named_artifact_flag() {
+        let args = vec![
+            "--artifact".to_string(),
+            "artifacts/inference/0.2.0/model.mpk".to_string(),
+            "--max-batches".to_string(),
+            "4".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse args");
+        assert_eq!(
+            parsed.artifact,
+            PathBuf::from("artifacts/inference/0.2.0/model.mpk")
         );
         assert_eq!(parsed.max_batches, 4);
     }

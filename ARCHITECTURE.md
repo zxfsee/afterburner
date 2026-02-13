@@ -6,7 +6,7 @@ Training -> Artifact -> Inference
 
 ## High-level flow
 
-[ Training Binary ]
+[ `afterburner train` ]
         |
         v
 [ artifacts/inference/<version>/model.mpk ]
@@ -18,7 +18,7 @@ Training -> Artifact -> Inference
 [ artifacts/inference/current ]
         |
         v
-[ Inference Binary ]
+[ `afterburner infer` ]
         |
         v
 [ Optional HTTP Wrapper ]

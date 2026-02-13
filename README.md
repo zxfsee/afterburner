@@ -17,6 +17,8 @@ just eval-gate
 ```
 
 `just infer` and `just eval` resolve the artifact through `artifacts/inference/current` by default.
+Override with `--artifact <path>` (or positional `[artifact_path]` for compatibility).
+The canonical CLI is `afterburner <train|infer|eval>`.
 
 ## What this is
 
@@ -54,7 +56,7 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 
 ## Training
 
-Training is executed as a standalone binary.
+Training is executed via the `afterburner train` subcommand.
 
 It produces artifacts under `artifacts/`, including:
 - a trained model output under `artifacts/train/`
@@ -64,12 +66,10 @@ Training code owns experimentation and optimization, but does **not** define the
 
 ## Inference
 
-Inference is executed via a separate CLI binary.
+Inference is executed via the `afterburner infer` subcommand.
 
 It consumes **only** the inference artifact and has no access to training internals.  
 This enforces a strict boundary between model development and runtime execution.
-
-Training and inference are intentionally exposed as separate binaries to mirror production ML serving systems.
 
 ## HTTP wrapper (optional)
 
@@ -113,7 +113,7 @@ Training checkpoints, metrics, and logs are explicitly excluded from the inferen
 Inference emits minimal structured events as JSON lines on stderr for artifact loading, backend selection,
 and inference latency without introducing a logging framework.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and accepts
-an optional artifact path (`eval [artifact_path]`) when override is needed.
+an optional artifact override via `afterburner eval --artifact <path>` (or legacy positional artifact).
 
 Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn persists per-metric logs
 under `artifacts/train/` for auditability.
