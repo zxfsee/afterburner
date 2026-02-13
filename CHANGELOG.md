@@ -2,12 +2,12 @@
 
 ## TODO
 
-- HTTP overload fixture gate — deterministic 503 fixture when `HTTP_MAX_CONCURRENCY` is saturated. [Serving/Deployment Infra, Runtime Infra]
 - HTTP graceful-shutdown integration gate — verify in-flight `/infer` requests complete correctly on SIGINT/SIGTERM. [Runtime Infra, Serving/Deployment Infra]
 - Telemetry envelope fixture gate — assert required keys (`ts_ms`, `level`, `source`, `event`, `fields`) for emitted JSON events. [Runtime Infra, Experimentation/Eval Infra]
 - Manifest signature verification gate — when `signature.scheme != "none"`, require non-empty `key_id`/`value` and validate canonicalized-manifest digest input. [Inference, Runtime Infra]
 - Eval baseline refresh flow — document and test the baseline update path when intended model changes move deterministic accuracy. [Experimentation/Eval Infra, Post-training]
 - HTTP error contract fixture gate — golden fixtures for stable JSON error payloads (`invalid_input`, `batch_too_large`, `infer_timeout`). [Inference, Runtime Infra]
+- Fixture dataset hash gate — verify fixture image bytes and summary hash remain stable across regeneration. [Data Infra, Experimentation/Eval Infra]
 
 ## [Trunk]
 

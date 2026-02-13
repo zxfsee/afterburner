@@ -93,7 +93,7 @@ Operational behavior:
 - `SIGINT`/`SIGTERM` triggers graceful shutdown (workers stop receiving new requests).
 - Responses include `X-Request-Id`; logs include matching `request_id` for correlation.
 
-Deterministic failures return JSON with stable `error.kind` values (for example `request_too_large`, `batch_too_large`, `infer_timeout`, `invalid_input`).
+Deterministic failures return JSON with stable `error.kind` values (for example `request_too_large`, `batch_too_large`, `infer_timeout`, `invalid_input`, `server_overloaded`).
 
 The HTTP wrapper is intentionally thin and still uses the same inference path as the CLI.
 The CLI remains the canonical interface; the HTTP binary is only a transport adapter.

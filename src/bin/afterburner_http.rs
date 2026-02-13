@@ -1,7 +1,7 @@
 use std::net::SocketAddr;
 use std::sync::{
     Arc,
-    atomic::{AtomicBool, AtomicU64, Ordering},
+    atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering},
 };
 use std::thread;
 use std::time::{Duration, Instant};
@@ -25,6 +25,7 @@ const DEFAULT_HTTP_MAX_REQUEST_BYTES: usize = 64 * 1024;
 const DEFAULT_HTTP_MAX_BATCH_SIZE: usize = 16;
 const DEFAULT_HTTP_INFER_TIMEOUT_MS: u64 = 1_500;
 const DEFAULT_HTTP_MAX_CONCURRENCY: usize = 4;
+const EXTRA_HTTP_ACCEPT_WORKERS: usize = 1;
 const HTTP_RECV_TIMEOUT_MS: u64 = 200;
 
 fn main() {
@@ -74,6 +75,10 @@ where
     }));
 
     let envelope = EnvelopeLimits::from_env();
+    let infer_limiter = Arc::new(InferConcurrencyLimiter::new(envelope.max_concurrency));
+    let worker_count = envelope
+        .max_concurrency
+        .saturating_add(EXTRA_HTTP_ACCEPT_WORKERS);
     let shutdown = Arc::new(AtomicBool::new(false));
     let request_ids = Arc::new(RequestIdGenerator::new());
     emit_event(
@@ -84,7 +89,8 @@ where
             "max_request_bytes": envelope.max_request_bytes,
             "max_batch_size": envelope.max_batch_size,
             "timeout_ms": envelope.infer_timeout_ms,
-            "max_concurrency": envelope.max_concurrency
+            "max_concurrency": envelope.max_concurrency,
+            "worker_count": worker_count
         }),
     );
     emit_event(
@@ -94,21 +100,23 @@ where
         json!({
             "backend": backend,
             "addr": addr.to_string(),
-            "max_concurrency": envelope.max_concurrency
+            "max_concurrency": envelope.max_concurrency,
+            "worker_count": worker_count
         }),
     );
 
     install_signal_handler(
         Arc::clone(&shutdown),
         Arc::clone(&server),
-        envelope.max_concurrency,
+        worker_count,
     );
 
-    let mut worker_handles = Vec::with_capacity(envelope.max_concurrency);
-    for worker_idx in 0..envelope.max_concurrency {
+    let mut worker_handles = Vec::with_capacity(worker_count);
+    for worker_idx in 0..worker_count {
         let server = Arc::clone(&server);
         let shutdown = Arc::clone(&shutdown);
         let request_ids = Arc::clone(&request_ids);
+        let infer_limiter = Arc::clone(&infer_limiter);
         let worker_backend = backend;
         let worker_weights = weights_path.clone();
         let worker_handle = thread::spawn(move || {
@@ -119,6 +127,7 @@ where
                 request_ids,
                 worker_backend,
                 envelope,
+                infer_limiter,
                 worker_weights,
             );
         });
@@ -220,6 +229,7 @@ fn run_worker_loop<B>(
     request_ids: Arc<RequestIdGenerator>,
     backend: &str,
     envelope: EnvelopeLimits,
+    infer_limiter: Arc<InferConcurrencyLimiter>,
     weights_path: std::path::PathBuf,
 ) where
     B: Backend + Send + 'static,
@@ -264,6 +274,7 @@ fn run_worker_loop<B>(
             &device,
             backend,
             envelope,
+            &infer_limiter,
             worker_idx,
         );
         let _ = request.respond(response);
@@ -284,6 +295,7 @@ fn route_request<B: Backend>(
     device: &B::Device,
     backend: &str,
     envelope: EnvelopeLimits,
+    infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
     emit_event(
@@ -301,7 +313,15 @@ fn route_request<B: Backend>(
     let response = match (request.method(), request.url()) {
         (&Method::Get, "/healthz") => ok_response("ok\n"),
         (&Method::Post, "/infer") => {
-            handle_infer(request_id, request, model, device, backend, envelope)
+            handle_infer(
+                request_id,
+                request,
+                model,
+                device,
+                backend,
+                envelope,
+                infer_limiter,
+            )
         }
         _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
     };
@@ -377,6 +397,63 @@ impl HttpFailure {
             detail: detail.into(),
         }
     }
+
+    fn service_unavailable(kind: &'static str, detail: impl Into<String>) -> Self {
+        Self {
+            status: StatusCode(503),
+            kind,
+            detail: detail.into(),
+        }
+    }
+}
+
+#[derive(Debug)]
+struct InferConcurrencyLimiter {
+    in_flight: AtomicUsize,
+    max_concurrency: usize,
+}
+
+impl InferConcurrencyLimiter {
+    fn new(max_concurrency: usize) -> Self {
+        Self {
+            in_flight: AtomicUsize::new(0),
+            max_concurrency,
+        }
+    }
+
+    fn try_acquire(&self) -> Option<InferConcurrencyGuard<'_>> {
+        loop {
+            let current = self.in_flight.load(Ordering::Relaxed);
+            if current >= self.max_concurrency {
+                return None;
+            }
+            let next = current + 1;
+            if self
+                .in_flight
+                .compare_exchange_weak(current, next, Ordering::AcqRel, Ordering::Relaxed)
+                .is_ok()
+            {
+                return Some(InferConcurrencyGuard { limiter: self });
+            }
+        }
+    }
+}
+
+struct InferConcurrencyGuard<'a> {
+    limiter: &'a InferConcurrencyLimiter,
+}
+
+impl Drop for InferConcurrencyGuard<'_> {
+    fn drop(&mut self) {
+        self.limiter.in_flight.fetch_sub(1, Ordering::AcqRel);
+    }
+}
+
+fn infer_overload_failure(max_concurrency: usize) -> HttpFailure {
+    HttpFailure::service_unavailable(
+        "server_overloaded",
+        format!("HTTP_MAX_CONCURRENCY={max_concurrency} saturated"),
+    )
 }
 
 #[derive(Clone, Copy)]
@@ -412,7 +489,16 @@ fn handle_infer<B: Backend>(
     device: &B::Device,
     backend: &str,
     envelope: EnvelopeLimits,
+    infer_limiter: &InferConcurrencyLimiter,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
+    let _permit = match infer_limiter.try_acquire() {
+        Some(permit) => permit,
+        None => {
+            let err = infer_overload_failure(envelope.max_concurrency);
+            return json_error(err.status, err.kind, &err.detail);
+        }
+    };
+
     let deadline = Deadline::new(envelope.infer_timeout_ms);
 
     let response = handle_infer_inner(
@@ -648,10 +734,14 @@ fn ok_response(body: &str) -> Response<std::io::Cursor<Vec<u8>>> {
 }
 
 fn json_error(status: StatusCode, kind: &str, detail: &str) -> Response<std::io::Cursor<Vec<u8>>> {
-    let payload = json!({ "error": { "kind": kind, "detail": detail } }).to_string();
+    let payload = error_payload(kind, detail);
     Response::from_string(payload)
         .with_header(content_type_json())
         .with_status_code(status)
+}
+
+fn error_payload(kind: &str, detail: &str) -> String {
+    json!({ "error": { "kind": kind, "detail": detail } }).to_string()
 }
 
 fn content_type_json() -> Header {
@@ -748,9 +838,11 @@ fn emit_error_and_exit(err: &InferError) -> ! {
 #[cfg(test)]
 mod tests {
     use super::{
-        Deadline, RequestIdGenerator, decode_json_inputs, decode_request_inputs,
-        infer_success_payload, parse_positive_u64, parse_positive_usize, request_id_header,
+        Deadline, InferConcurrencyLimiter, RequestIdGenerator, decode_json_inputs,
+        decode_request_inputs, error_payload, infer_overload_failure, infer_success_payload,
+        parse_positive_u64, parse_positive_usize, request_id_header,
     };
+    use tiny_http::StatusCode;
 
     #[test]
     fn decode_single_json_base64() {
@@ -828,6 +920,22 @@ mod tests {
         let rows = vec![vec![0.125f32, 0.25, 0.625], vec![0.5f32, 0.25, 0.25]];
         let actual = infer_success_payload(&rows);
         let expected = include_str!("../../fixtures/http_infer_batch.json").trim();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn infer_saturation_returns_deterministic_503_fixture() {
+        let limiter = InferConcurrencyLimiter::new(1);
+        let _permit = limiter.try_acquire().expect("first permit should acquire");
+        let saturated = limiter.try_acquire();
+        assert!(saturated.is_none(), "second permit should fail when saturated");
+
+        let err = infer_overload_failure(1);
+        assert_eq!(err.status, StatusCode(503));
+        assert_eq!(err.kind, "server_overloaded");
+
+        let actual = error_payload(err.kind, &err.detail);
+        let expected = include_str!("../../fixtures/http_error_overloaded.json").trim();
         assert_eq!(actual, expected);
     }
 }
