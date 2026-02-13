@@ -121,6 +121,7 @@ Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and accepts
 an optional artifact override via `afterburner eval --artifact <path>` (or legacy positional artifact).
+Use `--min-accuracy <f64>` to turn eval into an acceptance gate; `just eval-gate` applies the repository baseline.
 
 Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn persists per-metric logs
 under `artifacts/train/` for auditability.

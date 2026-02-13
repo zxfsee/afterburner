@@ -323,18 +323,33 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
     let artifact_version = read_string(value, "artifact_version")?;
     let artifact_sha256 = read_string(value, "artifact_sha256")?;
 
-    let signature = value
-        .get("signature")
-        .ok_or(ManifestError::MissingField("signature"))?;
-    let signature_scheme = read_string(signature, "scheme")?;
-    let signature_key_id = read_string(signature, "key_id")?;
-    let signature_value = read_string(signature, "value")?;
+    let (signature_scheme, signature_key_id, signature_value) =
+        if let Some(signature) = value.get("signature") {
+            (
+                read_string(signature, "scheme")?,
+                read_string(signature, "key_id")?,
+                read_string(signature, "value")?,
+            )
+        } else {
+            (
+                SIGNATURE_SCHEME_PLACEHOLDER.to_string(),
+                SIGNATURE_KEY_ID_PLACEHOLDER.to_string(),
+                SIGNATURE_VALUE_PLACEHOLDER.to_string(),
+            )
+        };
 
-    let canonicalization = value
-        .get("canonicalization")
-        .ok_or(ManifestError::MissingField("canonicalization"))?;
-    let canonicalization_method = read_string(canonicalization, "method")?;
-    let canonicalization_notes = read_string(canonicalization, "notes")?;
+    let (canonicalization_method, canonicalization_notes) =
+        if let Some(canonicalization) = value.get("canonicalization") {
+            (
+                read_string(canonicalization, "method")?,
+                read_string(canonicalization, "notes")?,
+            )
+        } else {
+            (
+                CANONICALIZATION_METHOD.to_string(),
+                CANONICALIZATION_NOTES.to_string(),
+            )
+        };
 
     let model = value
         .get("model")
@@ -477,4 +492,41 @@ fn infer_artifact_version(weights_path: &Path) -> Option<String> {
         return None;
     }
     Some(version.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, SIGNATURE_KEY_ID_PLACEHOLDER,
+        SIGNATURE_SCHEME_PLACEHOLDER, parse_manifest_value,
+    };
+
+    #[test]
+    fn parse_manifest_backfills_signing_fields_when_absent() {
+        let manifest = r#"
+artifact = "model.mpk"
+artifact_version = "0.1.0"
+artifact_sha256 = "abc"
+
+[model]
+architecture_id = "afterburner.mnist.residual_v1"
+architecture_version = 1
+
+[input]
+shape = [1, 28, 28]
+dtype = "f32"
+
+[normalization]
+dataset = "mnist"
+mean = 0.1307
+std = 0.3081
+notes = "((x / 255.0) - 0.1307) / 0.3081"
+"#;
+        let value: toml::Value = toml::from_str(manifest).expect("valid toml");
+        let parsed = parse_manifest_value(&value).expect("parse manifest");
+        assert_eq!(parsed.signature.scheme, SIGNATURE_SCHEME_PLACEHOLDER);
+        assert_eq!(parsed.signature.key_id, SIGNATURE_KEY_ID_PLACEHOLDER);
+        assert_eq!(parsed.canonicalization.method, CANONICALIZATION_METHOD);
+        assert_eq!(parsed.canonicalization.notes, CANONICALIZATION_NOTES);
+    }
 }

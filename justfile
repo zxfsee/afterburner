@@ -35,7 +35,7 @@ eval:
 
 # CI-friendly eval regression gate
 eval-gate:
-    just eval
+    cargo run --locked --bin afterburner -- eval --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
 
 # run training by default
 run:
