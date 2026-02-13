@@ -505,11 +505,14 @@ fn handle_infer_inner<B: Backend>(
         }),
     );
 
+    Ok(infer_success_payload(&rows))
+}
+
+fn infer_success_payload(rows: &[Vec<f32>]) -> String {
     if rows.len() == 1 {
-        Ok(json!({ "logits": rows[0], "batch_size": 1 }).to_string())
-    } else {
-        Ok(json!({ "logits": rows, "batch_size": rows.len() }).to_string())
+        return json!({ "logits": rows[0], "batch_size": 1 }).to_string();
     }
+    json!({ "logits": rows, "batch_size": rows.len() }).to_string()
 }
 
 fn read_body_limited(
@@ -746,7 +749,7 @@ fn emit_error_and_exit(err: &InferError) -> ! {
 mod tests {
     use super::{
         Deadline, RequestIdGenerator, decode_json_inputs, decode_request_inputs,
-        parse_positive_u64, parse_positive_usize, request_id_header,
+        infer_success_payload, parse_positive_u64, parse_positive_usize, request_id_header,
     };
 
     #[test]
@@ -810,5 +813,21 @@ mod tests {
         let header = request_id_header(42);
         assert!(header.field.equiv("X-Request-Id"));
         assert_eq!(header.value.as_str(), "42");
+    }
+
+    #[test]
+    fn infer_single_response_matches_golden_fixture() {
+        let rows = vec![vec![0.125f32, 0.25, 0.625]];
+        let actual = infer_success_payload(&rows);
+        let expected = include_str!("../../fixtures/http_infer_single.json").trim();
+        assert_eq!(actual, expected);
+    }
+
+    #[test]
+    fn infer_batch_response_matches_golden_fixture() {
+        let rows = vec![vec![0.125f32, 0.25, 0.625], vec![0.5f32, 0.25, 0.25]];
+        let actual = infer_success_payload(&rows);
+        let expected = include_str!("../../fixtures/http_infer_batch.json").trim();
+        assert_eq!(actual, expected);
     }
 }
