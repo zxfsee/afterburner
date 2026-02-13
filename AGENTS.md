@@ -16,6 +16,7 @@
 - Prefer standards at boundaries; keep exporters/SDKs (if any) in adapters only.
 - ADRs live in `docs/adr/` and use sequential numeric filenames: `docs/adr/NNN-title.md` (e.g. `docs/adr/001-training-vs-inference.md`). One decision per ADR.
 - Keep a decisions index at `ARCHITECTURE.md#decisions` and link new ADRs there.
+- Keep ADRs/architecture docs current-state by default; avoid superseded/historical layering unless explicitly requested.
 - Tooling: prefer `just --list` to discover workflows and keep recipes up to date.
 - Recipes/docs must use the canonical contract-resolution mechanism — no hardcoded artifact paths or legacy compatibility shortcuts that bypass active contract selection.
 - Integration policy:
