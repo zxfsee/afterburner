@@ -26,6 +26,7 @@ Training -> Artifact -> Inference
 Training produces artifacts.
 Inference consumes artifacts via the CLI and the optional HTTP wrapper.
 No runtime coupling exists between training and inference.
+The inference manifest includes checksum validation plus signing-ready placeholders and canonicalization metadata.
 
 Training also emits JSONL observability events under `artifacts/train/` to keep
 metrics and runtime metadata inspectable without introducing a logging stack.

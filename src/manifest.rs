@@ -12,12 +12,19 @@ pub const CURRENT_VERSION_FILENAME: &str = "current";
 pub const DEFAULT_ARTIFACT_VERSION: &str = "0.1.0";
 pub const INPUT_DTYPE: &str = "f32";
 pub const INPUT_SHAPE: [usize; 3] = [1, 28, 28];
+pub const SIGNATURE_SCHEME_PLACEHOLDER: &str = "none";
+pub const SIGNATURE_KEY_ID_PLACEHOLDER: &str = "unsigned";
+pub const SIGNATURE_VALUE_PLACEHOLDER: &str = "";
+pub const CANONICALIZATION_METHOD: &str = "toml-manifest-v1";
+pub const CANONICALIZATION_NOTES: &str = "Canonical bytes use UTF-8 with LF line endings and the field order emitted by ArtifactManifest::to_toml_string().";
 
 #[derive(Debug, Clone)]
 pub struct ArtifactManifest {
     pub artifact: String,
     pub artifact_version: String,
     pub artifact_sha256: String,
+    pub signature: ManifestSignature,
+    pub canonicalization: ManifestCanonicalization,
     pub model: ManifestModel,
     pub input: ManifestInput,
     pub normalization: ManifestNormalization,
@@ -33,6 +40,19 @@ pub struct ManifestModel {
 pub struct ManifestInput {
     pub shape: [usize; 3],
     pub dtype: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ManifestSignature {
+    pub scheme: String,
+    pub key_id: String,
+    pub value: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ManifestCanonicalization {
+    pub method: String,
+    pub notes: String,
 }
 
 #[derive(Debug, Clone)]
@@ -66,6 +86,15 @@ impl ArtifactManifest {
             artifact: artifact_filename.to_string(),
             artifact_version: artifact_version.to_string(),
             artifact_sha256,
+            signature: ManifestSignature {
+                scheme: SIGNATURE_SCHEME_PLACEHOLDER.to_string(),
+                key_id: SIGNATURE_KEY_ID_PLACEHOLDER.to_string(),
+                value: SIGNATURE_VALUE_PLACEHOLDER.to_string(),
+            },
+            canonicalization: ManifestCanonicalization {
+                method: CANONICALIZATION_METHOD.to_string(),
+                notes: CANONICALIZATION_NOTES.to_string(),
+            },
             model: ManifestModel {
                 architecture_id: MODEL_ARCH_ID.to_string(),
                 architecture_version: MODEL_ARCH_VERSION,
@@ -88,6 +117,15 @@ impl ArtifactManifest {
         let _ = writeln!(&mut out, "artifact = \"{}\"", self.artifact);
         let _ = writeln!(&mut out, "artifact_version = \"{}\"", self.artifact_version);
         let _ = writeln!(&mut out, "artifact_sha256 = \"{}\"", self.artifact_sha256);
+        let _ = writeln!(&mut out);
+        let _ = writeln!(&mut out, "[signature]");
+        let _ = writeln!(&mut out, "scheme = \"{}\"", self.signature.scheme);
+        let _ = writeln!(&mut out, "key_id = \"{}\"", self.signature.key_id);
+        let _ = writeln!(&mut out, "value = \"{}\"", self.signature.value);
+        let _ = writeln!(&mut out);
+        let _ = writeln!(&mut out, "[canonicalization]");
+        let _ = writeln!(&mut out, "method = \"{}\"", self.canonicalization.method);
+        let _ = writeln!(&mut out, "notes = \"{}\"", self.canonicalization.notes);
         let _ = writeln!(&mut out);
         let _ = writeln!(&mut out, "[model]");
         let _ = writeln!(
@@ -172,6 +210,46 @@ impl ArtifactManifest {
             });
         }
 
+        if self.signature.scheme != SIGNATURE_SCHEME_PLACEHOLDER {
+            return Err(ManifestError::Mismatch {
+                field: "signature.scheme",
+                expected: SIGNATURE_SCHEME_PLACEHOLDER.to_string(),
+                actual: self.signature.scheme.clone(),
+            });
+        }
+
+        if self.signature.key_id != SIGNATURE_KEY_ID_PLACEHOLDER {
+            return Err(ManifestError::Mismatch {
+                field: "signature.key_id",
+                expected: SIGNATURE_KEY_ID_PLACEHOLDER.to_string(),
+                actual: self.signature.key_id.clone(),
+            });
+        }
+
+        if self.signature.value != SIGNATURE_VALUE_PLACEHOLDER {
+            return Err(ManifestError::Mismatch {
+                field: "signature.value",
+                expected: SIGNATURE_VALUE_PLACEHOLDER.to_string(),
+                actual: self.signature.value.clone(),
+            });
+        }
+
+        if self.canonicalization.method != CANONICALIZATION_METHOD {
+            return Err(ManifestError::Mismatch {
+                field: "canonicalization.method",
+                expected: CANONICALIZATION_METHOD.to_string(),
+                actual: self.canonicalization.method.clone(),
+            });
+        }
+
+        if self.canonicalization.notes != CANONICALIZATION_NOTES {
+            return Err(ManifestError::Mismatch {
+                field: "canonicalization.notes",
+                expected: CANONICALIZATION_NOTES.to_string(),
+                actual: self.canonicalization.notes.clone(),
+            });
+        }
+
         if self.model.architecture_id != MODEL_ARCH_ID {
             return Err(ManifestError::Mismatch {
                 field: "model.architecture_id",
@@ -245,6 +323,19 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
     let artifact_version = read_string(value, "artifact_version")?;
     let artifact_sha256 = read_string(value, "artifact_sha256")?;
 
+    let signature = value
+        .get("signature")
+        .ok_or(ManifestError::MissingField("signature"))?;
+    let signature_scheme = read_string(signature, "scheme")?;
+    let signature_key_id = read_string(signature, "key_id")?;
+    let signature_value = read_string(signature, "value")?;
+
+    let canonicalization = value
+        .get("canonicalization")
+        .ok_or(ManifestError::MissingField("canonicalization"))?;
+    let canonicalization_method = read_string(canonicalization, "method")?;
+    let canonicalization_notes = read_string(canonicalization, "notes")?;
+
     let model = value
         .get("model")
         .ok_or(ManifestError::MissingField("model"))?;
@@ -269,6 +360,15 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
         artifact,
         artifact_version,
         artifact_sha256,
+        signature: ManifestSignature {
+            scheme: signature_scheme,
+            key_id: signature_key_id,
+            value: signature_value,
+        },
+        canonicalization: ManifestCanonicalization {
+            method: canonicalization_method,
+            notes: canonicalization_notes,
+        },
         model: ManifestModel {
             architecture_id,
             architecture_version,

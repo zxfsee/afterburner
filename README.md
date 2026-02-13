@@ -104,7 +104,7 @@ Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/ad
 
 Training exports versioned inference artifacts under `artifacts/inference/<version>/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
-- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, artifact version, and checksum
+- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, artifact version, checksum, signature placeholders, and canonicalization metadata
 
 The active version is tracked by `artifacts/inference/current`, enabling safe rollout/rollback without retraining.
 Set `ARTIFACT_VERSION` to control the exported version.

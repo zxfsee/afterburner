@@ -18,6 +18,8 @@ Training must export a `manifest.toml` alongside the inference weights under
 - expected input shape and dtype
 - normalization constants and notes
 - SHA-256 checksum of the weights file
+- signature placeholders (`scheme`, `key_id`, `value`) for future signing
+- canonicalization metadata for deterministic manifest serialization
 
 Inference must load the manifest at startup and fail fast on any mismatch with
 the compiled expectations.

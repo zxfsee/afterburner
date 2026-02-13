@@ -3,8 +3,9 @@ use burn::prelude::*; // brings Module into scope for save_file/load_file
 use burn::record::CompactRecorder;
 
 use afterburner::manifest::{
-    ArtifactManifest, CURRENT_VERSION_FILENAME, INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME,
-    compute_sha256_hex,
+    ArtifactManifest, CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, CURRENT_VERSION_FILENAME,
+    INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME, SIGNATURE_KEY_ID_PLACEHOLDER,
+    SIGNATURE_SCHEME_PLACEHOLDER, SIGNATURE_VALUE_PLACEHOLDER, compute_sha256_hex,
 };
 use afterburner::model::ModelConfig;
 use afterburner::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
@@ -62,6 +63,11 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
     let manifest = ArtifactManifest::load_from_path(&manifest_path).expect("load manifest");
     assert_eq!(manifest.artifact, "model.mpk");
     assert_eq!(manifest.artifact_version, version);
+    assert_eq!(manifest.signature.scheme, SIGNATURE_SCHEME_PLACEHOLDER);
+    assert_eq!(manifest.signature.key_id, SIGNATURE_KEY_ID_PLACEHOLDER);
+    assert_eq!(manifest.signature.value, SIGNATURE_VALUE_PLACEHOLDER);
+    assert_eq!(manifest.canonicalization.method, CANONICALIZATION_METHOD);
+    assert_eq!(manifest.canonicalization.notes, CANONICALIZATION_NOTES);
     assert_eq!(manifest.model.architecture_id, MODEL_ARCH_ID);
     assert_eq!(manifest.model.architecture_version, MODEL_ARCH_VERSION);
     assert_eq!(manifest.input.shape, INPUT_SHAPE);

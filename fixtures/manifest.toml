@@ -2,6 +2,15 @@ artifact = "model.mpk"
 artifact_version = "0.1.0"
 artifact_sha256 = "b3b57b1fea16e57389145b129a3330998bf3c3bc1e412c46779b3e1827fdd55b"
 
+[signature]
+scheme = "none"
+key_id = "unsigned"
+value = ""
+
+[canonicalization]
+method = "toml-manifest-v1"
+notes = "Canonical bytes use UTF-8 with LF line endings and the field order emitted by ArtifactManifest::to_toml_string()."
+
 [model]
 architecture_id = "afterburner.mnist.residual_v1"
 architecture_version = 1

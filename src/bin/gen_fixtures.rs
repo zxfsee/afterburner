@@ -97,6 +97,15 @@ fn write_manifest(path: &PathBuf, checksum: &str) -> Result<(), Box<dyn std::err
 artifact_version = \"{}\"\n\
 artifact_sha256 = \"{}\"\n\
 \n\
+[signature]\n\
+scheme = \"{}\"\n\
+key_id = \"{}\"\n\
+value = \"{}\"\n\
+\n\
+[canonicalization]\n\
+method = \"{}\"\n\
+notes = \"{}\"\n\
+\n\
 [model]\n\
 architecture_id = \"{}\"\n\
 architecture_version = {}\n\
@@ -112,6 +121,11 @@ std = {}\n\
 notes = \"{}\"\n",
         version,
         checksum,
+        afterburner::manifest::SIGNATURE_SCHEME_PLACEHOLDER,
+        afterburner::manifest::SIGNATURE_KEY_ID_PLACEHOLDER,
+        afterburner::manifest::SIGNATURE_VALUE_PLACEHOLDER,
+        afterburner::manifest::CANONICALIZATION_METHOD,
+        afterburner::manifest::CANONICALIZATION_NOTES,
         afterburner::model::MODEL_ARCH_ID,
         afterburner::model::MODEL_ARCH_VERSION,
         afterburner::preprocess::MNIST_MEAN,
