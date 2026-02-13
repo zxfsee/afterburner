@@ -16,7 +16,7 @@ use crate::{
     data::{MnistBatch, test_loader, train_loader},
     manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, compute_sha256_hex},
     model::{Model, ModelConfig},
-    observability::{append_json_line, json_escape},
+    observability::{append_json_line, event_line},
 };
 
 #[derive(Config, Debug)]
@@ -193,12 +193,16 @@ fn write_train_event(
     inference_dir: &Path,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let metrics_dir = json_escape(&metrics_dir.to_string_lossy());
-    let inference_dir = json_escape(&inference_dir.to_string_lossy());
-    let artifact_version = json_escape(artifact_version);
-    let backend = json_escape(backend);
-    let line = format!(
-        r#"{{"event":"{event}","backend":"{backend}","artifact_version":"{artifact_version}","metrics_dir":"{metrics_dir}","inference_dir":"{inference_dir}"}}"#
+    let line = event_line(
+        "info",
+        "train",
+        event,
+        serde_json::json!({
+            "backend": backend,
+            "artifact_version": artifact_version,
+            "metrics_dir": metrics_dir.to_string_lossy().to_string(),
+            "inference_dir": inference_dir.to_string_lossy().to_string()
+        }),
     );
     append_json_line(&path, &line)
 }
@@ -212,13 +216,17 @@ fn write_train_export_event(
     current_path: &Path,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let backend = json_escape(backend);
-    let artifact_version = json_escape(artifact_version);
-    let artifact_path = json_escape(&artifact_path.to_string_lossy());
-    let manifest_path = json_escape(&manifest_path.to_string_lossy());
-    let current_path = json_escape(&current_path.to_string_lossy());
-    let line = format!(
-        r#"{{"event":"artifact_exported","backend":"{backend}","artifact_version":"{artifact_version}","artifact_path":"{artifact_path}","manifest_path":"{manifest_path}","current_path":"{current_path}"}}"#
+    let line = event_line(
+        "info",
+        "train",
+        "artifact_exported",
+        serde_json::json!({
+            "backend": backend,
+            "artifact_version": artifact_version,
+            "artifact_path": artifact_path.to_string_lossy().to_string(),
+            "manifest_path": manifest_path.to_string_lossy().to_string(),
+            "current_path": current_path.to_string_lossy().to_string()
+        }),
     );
     append_json_line(&path, &line)
 }
@@ -230,10 +238,15 @@ fn write_train_done_event(
     elapsed_ms: u128,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let backend = json_escape(backend);
-    let artifact_version = json_escape(artifact_version);
-    let line = format!(
-        r#"{{"event":"train_done","backend":"{backend}","artifact_version":"{artifact_version}","elapsed_ms":{elapsed_ms}}}"#
+    let line = event_line(
+        "info",
+        "train",
+        "train_done",
+        serde_json::json!({
+            "backend": backend,
+            "artifact_version": artifact_version,
+            "elapsed_ms": elapsed_ms
+        }),
     );
     append_json_line(&path, &line)
 }

@@ -116,8 +116,9 @@ printf "0.1.0\n" > artifacts/inference/current
 
 Inference binaries treat this artifact as immutable and consume it as their sole input.  
 Training checkpoints, metrics, and logs are explicitly excluded from the inference contract.
-Inference emits minimal structured events as JSON lines on stderr for artifact loading, backend selection,
-and inference latency without introducing a logging framework.
+Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope fields:
+`ts_ms`, `level`, `source`, `event`, `fields`.
+Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and accepts
 an optional artifact override via `afterburner eval --artifact <path>` (or legacy positional artifact).
 

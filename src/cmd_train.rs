@@ -1,10 +1,12 @@
 use std::any::Any;
 
 use afterburner::model::ModelConfig;
+use afterburner::observability::emit_event;
 use afterburner::train;
 use burn::prelude::*;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
 use burn_autodiff::Autodiff;
+use serde_json::json;
 
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
@@ -40,8 +42,11 @@ where
 
     if let Err(payload) = gpu_result {
         if is_missing_wgpu_adapter_panic(payload.as_ref()) {
-            eprintln!(
-                r#"{{"event":"backend_fallback","from":"wgpu","to":"cpu","reason":"no_adapter"}}"#
+            emit_event(
+                "warn",
+                "train_cli",
+                "backend_fallback",
+                json!({"from":"wgpu","to":"cpu","reason":"no_adapter"}),
             );
             let cpu_config = training_config_from_env();
             let device = <CpuBackend as Backend>::Device::default();

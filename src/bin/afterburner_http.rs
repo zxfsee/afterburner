@@ -7,7 +7,7 @@ use std::thread;
 use std::time::{Duration, Instant};
 
 use afterburner::infer::{InferError, load_model, parse_weights_path_from_args};
-use afterburner::observability::json_escape;
+use afterburner::observability::emit_event;
 use afterburner::preprocess::mnist_image_to_tensor;
 use base64::Engine as _;
 use burn::prelude::*;
@@ -56,12 +56,19 @@ where
     B::Device: Send + 'static,
 {
     ensure_model_loadable::<B>(&weights_path, backend);
-    eprintln!(r#"{{"event":"backend_selected","backend":"{backend}"}}"#);
+    emit_event(
+        "info",
+        "http_adapter",
+        "backend_selected",
+        json!({"backend": backend}),
+    );
 
     let server = Arc::new(Server::http(addr).unwrap_or_else(|err| {
-        eprintln!(
-            r#"{{"event":"http_error","kind":"bind_failed","detail":"{}"}}"#,
-            json_escape(&err.to_string())
+        emit_event(
+            "error",
+            "http_adapter",
+            "http_error",
+            json!({"kind": "bind_failed", "detail": err.to_string()}),
         );
         std::process::exit(2);
     }));
@@ -69,17 +76,26 @@ where
     let envelope = EnvelopeLimits::from_env();
     let shutdown = Arc::new(AtomicBool::new(false));
     let request_ids = Arc::new(RequestIdGenerator::new());
-    eprintln!(
-        r#"{{"event":"http_limits","max_request_bytes":{},"max_batch_size":{},"timeout_ms":{},"max_concurrency":{}}}"#,
-        envelope.max_request_bytes,
-        envelope.max_batch_size,
-        envelope.infer_timeout_ms,
-        envelope.max_concurrency
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_limits",
+        json!({
+            "max_request_bytes": envelope.max_request_bytes,
+            "max_batch_size": envelope.max_batch_size,
+            "timeout_ms": envelope.infer_timeout_ms,
+            "max_concurrency": envelope.max_concurrency
+        }),
     );
-    eprintln!(
-        r#"{{"event":"http_start","backend":"{backend}","addr":"{}","max_concurrency":{}}}"#,
-        json_escape(&addr.to_string()),
-        envelope.max_concurrency
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_start",
+        json!({
+            "backend": backend,
+            "addr": addr.to_string(),
+            "max_concurrency": envelope.max_concurrency
+        }),
     );
 
     install_signal_handler(
@@ -113,7 +129,12 @@ where
         let _ = worker_handle.join();
     }
 
-    eprintln!(r#"{{"event":"http_shutdown","status":"ok"}}"#);
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_shutdown",
+        json!({"status":"ok"}),
+    );
     std::process::exit(0);
 }
 
@@ -121,9 +142,14 @@ fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &s
     let device = B::Device::default();
     match load_model::<B>(&weights_path.to_path_buf(), &device) {
         Ok(_) => {
-            let artifact = json_escape(&weights_path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}"}}"#
+            emit_event(
+                "info",
+                "http_adapter",
+                "artifact_load_ok",
+                json!({
+                    "backend": backend,
+                    "artifact": weights_path.to_string_lossy().to_string()
+                }),
             );
         }
         Err(err) => emit_error_and_exit(&err),
@@ -177,9 +203,11 @@ fn install_signal_handler(shutdown: Arc<AtomicBool>, server: Arc<Server>, max_co
         }
     })
     .unwrap_or_else(|err| {
-        eprintln!(
-            r#"{{"event":"http_error","kind":"signal_handler_install_failed","detail":"{}"}}"#,
-            json_escape(&err.to_string())
+        emit_event(
+            "error",
+            "http_adapter",
+            "http_error",
+            json!({"kind":"signal_handler_install_failed","detail": err.to_string()}),
         );
         std::process::exit(2);
     });
@@ -203,7 +231,12 @@ fn run_worker_loop<B>(
         Ok(model) => model,
         Err(err) => emit_error_and_exit(&err),
     };
-    eprintln!(r#"{{"event":"http_worker_start","worker":{worker_idx}}}"#);
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_worker_start",
+        json!({"worker": worker_idx}),
+    );
 
     while !shutdown.load(Ordering::Relaxed) {
         let mut request = match server.recv_timeout(recv_timeout) {
@@ -213,9 +246,11 @@ fn run_worker_loop<B>(
                 if shutdown.load(Ordering::Relaxed) {
                     break;
                 }
-                eprintln!(
-                    r#"{{"event":"http_error","kind":"recv_failed","detail":"{}"}}"#,
-                    json_escape(&err.to_string())
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "http_error",
+                    json!({"kind":"recv_failed","detail": err.to_string()}),
                 );
                 continue;
             }
@@ -234,7 +269,12 @@ fn run_worker_loop<B>(
         let _ = request.respond(response);
     }
 
-    eprintln!(r#"{{"event":"http_worker_stop","worker":{worker_idx}}}"#);
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_worker_stop",
+        json!({"worker": worker_idx}),
+    );
 }
 
 fn route_request<B: Backend>(
@@ -246,12 +286,16 @@ fn route_request<B: Backend>(
     envelope: EnvelopeLimits,
     worker_idx: usize,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
-    eprintln!(
-        r#"{{"event":"http_request","request_id":"{}","worker":{},"method":"{}","path":"{}"}}"#,
-        request_id,
-        worker_idx,
-        request.method(),
-        json_escape(request.url())
+    emit_event(
+        "info",
+        "http_adapter",
+        "http_request",
+        json!({
+            "request_id": request_id.to_string(),
+            "worker": worker_idx,
+            "method": request.method().as_str(),
+            "path": request.url()
+        }),
     );
 
     let response = match (request.method(), request.url()) {
@@ -375,12 +419,16 @@ fn handle_infer<B: Backend>(
         request, model, device, backend, envelope, deadline, request_id,
     );
     if let Err(err) = &response {
-        eprintln!(
-            r#"{{"event":"http_error","request_id":"{}","kind":"{}","status":{},"detail":"{}"}}"#,
-            request_id,
-            err.kind,
-            err.status.0,
-            json_escape(&err.detail)
+        emit_event(
+            "error",
+            "http_adapter",
+            "http_error",
+            json!({
+                "request_id": request_id.to_string(),
+                "kind": err.kind,
+                "status": err.status.0,
+                "detail": err.detail
+            }),
         );
     }
 
@@ -445,10 +493,16 @@ fn handle_infer_inner<B: Backend>(
     deadline.check("inference")?;
 
     let elapsed_ms = deadline.elapsed_ms();
-    eprintln!(
-        r#"{{"event":"infer_done","request_id":"{}","backend":"{backend}","elapsed_ms":{elapsed_ms},"batch_size":{}}}"#,
-        request_id,
-        images.len()
+    emit_event(
+        "info",
+        "http_adapter",
+        "infer_done",
+        json!({
+            "request_id": request_id.to_string(),
+            "backend": backend,
+            "elapsed_ms": elapsed_ms,
+            "batch_size": images.len()
+        }),
     );
 
     if rows.len() == 1 {
@@ -615,39 +669,52 @@ fn request_id_header(request_id: u64) -> Header {
 fn emit_error_and_exit(err: &InferError) -> ! {
     match err {
         InferError::ArtifactMissing { path } => {
-            let artifact = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"artifact_missing","artifact":"{artifact}"}}"#
+            emit_event(
+                "error",
+                "http_adapter",
+                "infer_error",
+                json!({"kind":"artifact_missing","artifact": path.to_string_lossy().to_string()}),
             );
         }
         InferError::ManifestMissing { path } => {
-            let manifest = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"manifest_missing","manifest":"{manifest}"}}"#
+            emit_event(
+                "error",
+                "http_adapter",
+                "infer_error",
+                json!({"kind":"manifest_missing","manifest": path.to_string_lossy().to_string()}),
             );
         }
         InferError::ManifestInvalid(manifest_err) => match manifest_err {
             afterburner::manifest::ManifestError::Io(err) => {
-                let detail = json_escape(&err.to_string());
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_io_error","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "infer_error",
+                    json!({"kind":"manifest_io_error","detail": err.to_string()}),
                 );
             }
             afterburner::manifest::ManifestError::TomlParse(err) => {
-                let detail = json_escape(&err.to_string());
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_parse_error","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "infer_error",
+                    json!({"kind":"manifest_parse_error","detail": err.to_string()}),
                 );
             }
             afterburner::manifest::ManifestError::MissingField(field) => {
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_missing_field","field":"{field}"}}"#
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "infer_error",
+                    json!({"kind":"manifest_missing_field","field": field}),
                 );
             }
             afterburner::manifest::ManifestError::InvalidField(field, detail) => {
-                let detail = json_escape(detail);
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_invalid_field","field":"{field}","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "infer_error",
+                    json!({"kind":"manifest_invalid_field","field": field, "detail": detail}),
                 );
             }
             afterburner::manifest::ManifestError::Mismatch {
@@ -655,18 +722,20 @@ fn emit_error_and_exit(err: &InferError) -> ! {
                 expected,
                 actual,
             } => {
-                let expected = json_escape(expected);
-                let actual = json_escape(actual);
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_mismatch","field":"{field}","expected":"{expected}","actual":"{actual}"}}"#
+                emit_event(
+                    "error",
+                    "http_adapter",
+                    "infer_error",
+                    json!({"kind":"manifest_mismatch","field": field, "expected": expected, "actual": actual}),
                 );
             }
         },
         InferError::ArtifactLoadFailed { detail, path } => {
-            let detail = json_escape(detail);
-            let artifact = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"artifact_load_failed","artifact":"{artifact}","detail":"{detail}"}}"#
+            emit_event(
+                "error",
+                "http_adapter",
+                "infer_error",
+                json!({"kind":"artifact_load_failed","artifact": path.to_string_lossy().to_string(), "detail": detail}),
             );
         }
     }

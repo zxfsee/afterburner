@@ -4,10 +4,11 @@ use std::time::Instant;
 
 use afterburner::infer::{InferError, load_model, logits_from_model, parse_weights_path_from_args};
 use afterburner::manifest::ManifestError;
-use afterburner::observability::json_escape;
+use afterburner::observability::emit_event;
 use burn::prelude::*;
 use burn::tensor::activation::softmax;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
+use serde_json::json;
 
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
@@ -42,17 +43,20 @@ where
         .unwrap_or(false);
     let backend = if use_cpu { "cpu" } else { "wgpu" };
     let t0 = Instant::now();
-    let artifact = json_escape(weights_path.to_string_lossy().as_ref());
+    let artifact = weights_path.to_string_lossy().to_string();
 
     if use_cpu {
-        run_infer::<CpuBackend>(&weights_path, backend, &artifact)?;
+        run_infer::<CpuBackend>(&weights_path, backend, artifact.as_str())?;
     } else {
-        run_infer::<GpuBackend>(&weights_path, backend, &artifact)?;
+        run_infer::<GpuBackend>(&weights_path, backend, artifact.as_str())?;
     }
 
     let elapsed_ms = t0.elapsed().as_millis();
-    eprintln!(
-        r#"{{"event":"infer_done","backend":"{backend}","artifact":"{artifact}","elapsed_ms":{elapsed_ms}}}"#
+    emit_event(
+        "info",
+        "infer_cli",
+        "infer_done",
+        json!({"backend": backend, "artifact": artifact, "elapsed_ms": elapsed_ms}),
     );
     Ok(())
 }
@@ -68,10 +72,18 @@ fn run_infer<B: Backend>(
     let model = load_model::<B>(weights_path, &device)?;
 
     let load_ms = t_load.elapsed().as_millis();
-    eprintln!(
-        r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}","elapsed_ms":{load_ms}}}"#
+    emit_event(
+        "info",
+        "infer_cli",
+        "artifact_load_ok",
+        json!({"backend": backend, "artifact": artifact, "elapsed_ms": load_ms}),
     );
-    eprintln!(r#"{{"event":"backend_selected","backend":"{backend}"}}"#);
+    emit_event(
+        "info",
+        "infer_cli",
+        "backend_selected",
+        json!({"backend": backend}),
+    );
 
     let image = [[0.0f32; 28]; 28];
     let logits = logits_from_model(&model, &device, image);
@@ -83,39 +95,52 @@ fn run_infer<B: Backend>(
 fn emit_error(err: &InferError) {
     match err {
         InferError::ArtifactMissing { path } => {
-            let artifact = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"artifact_missing","artifact":"{artifact}"}}"#
+            emit_event(
+                "error",
+                "infer_cli",
+                "infer_error",
+                json!({"kind": "artifact_missing", "artifact": path.to_string_lossy().to_string()}),
             );
         }
         InferError::ManifestMissing { path } => {
-            let manifest = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"manifest_missing","manifest":"{manifest}"}}"#
+            emit_event(
+                "error",
+                "infer_cli",
+                "infer_error",
+                json!({"kind": "manifest_missing", "manifest": path.to_string_lossy().to_string()}),
             );
         }
         InferError::ManifestInvalid(manifest_err) => match manifest_err {
             ManifestError::Io(err) => {
-                let detail = json_escape(&err.to_string());
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_io_error","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "infer_cli",
+                    "infer_error",
+                    json!({"kind": "manifest_io_error", "detail": err.to_string()}),
                 );
             }
             ManifestError::TomlParse(err) => {
-                let detail = json_escape(&err.to_string());
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_parse_error","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "infer_cli",
+                    "infer_error",
+                    json!({"kind": "manifest_parse_error", "detail": err.to_string()}),
                 );
             }
             ManifestError::MissingField(field) => {
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_missing_field","field":"{field}"}}"#
+                emit_event(
+                    "error",
+                    "infer_cli",
+                    "infer_error",
+                    json!({"kind": "manifest_missing_field", "field": field}),
                 );
             }
             ManifestError::InvalidField(field, detail) => {
-                let detail = json_escape(detail);
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_invalid_field","field":"{field}","detail":"{detail}"}}"#
+                emit_event(
+                    "error",
+                    "infer_cli",
+                    "infer_error",
+                    json!({"kind": "manifest_invalid_field", "field": field, "detail": detail}),
                 );
             }
             ManifestError::Mismatch {
@@ -123,18 +148,20 @@ fn emit_error(err: &InferError) {
                 expected,
                 actual,
             } => {
-                let expected = json_escape(expected);
-                let actual = json_escape(actual);
-                eprintln!(
-                    r#"{{"event":"infer_error","kind":"manifest_mismatch","field":"{field}","expected":"{expected}","actual":"{actual}"}}"#
+                emit_event(
+                    "error",
+                    "infer_cli",
+                    "infer_error",
+                    json!({"kind": "manifest_mismatch", "field": field, "expected": expected, "actual": actual}),
                 );
             }
         },
         InferError::ArtifactLoadFailed { detail, path } => {
-            let detail = json_escape(detail);
-            let artifact = json_escape(&path.to_string_lossy());
-            eprintln!(
-                r#"{{"event":"infer_error","kind":"artifact_load_failed","artifact":"{artifact}","detail":"{detail}"}}"#
+            emit_event(
+                "error",
+                "infer_cli",
+                "infer_error",
+                json!({"kind": "artifact_load_failed", "artifact": path.to_string_lossy().to_string(), "detail": detail}),
             );
         }
     }

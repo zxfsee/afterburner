@@ -4,9 +4,10 @@ use std::time::Instant;
 
 use afterburner::data::test_loader;
 use afterburner::infer::{default_weights_path, load_model};
-use afterburner::observability::json_escape;
+use afterburner::observability::{emit_event, json_escape};
 use burn::backend::ndarray::NdArray;
 use burn::prelude::*;
+use serde_json::json;
 
 type CpuBackend = NdArray<f32>;
 
@@ -75,9 +76,11 @@ where
     }
 
     if let Err(err) = run_inner(args.into_iter()) {
-        eprintln!(
-            "{{\"event\":\"eval_error\",\"kind\":\"cli\",\"detail\":\"{}\"}}",
-            json_escape(&err.to_string())
+        emit_event(
+            "error",
+            "eval_cli",
+            "eval_error",
+            json!({"kind": "cli", "detail": err.to_string()}),
         );
         return 2;
     }
@@ -148,10 +151,14 @@ where
     }
     fs::write(&args.out_path, summary)?;
 
-    eprintln!(
-        "{{\"event\":\"mnist_eval_written\",\"out\":\"{}\",\"accuracy\":{:.8}}}",
-        json_escape(&args.out_path.display().to_string()),
-        accuracy
+    emit_event(
+        "info",
+        "eval_cli",
+        "mnist_eval_written",
+        json!({
+            "out": args.out_path.display().to_string(),
+            "accuracy": accuracy
+        }),
     );
 
     Ok(())
