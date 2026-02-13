@@ -9,11 +9,12 @@ header = """# Changelog
 
 ## TODO
 
-- HTTP hardening — graceful shutdown, concurrency cap, /healthz, request IDs. [Runtime Infra]
 - Telemetry shaping — normalize JSON event schema + optional JSONL sink. [Runtime Infra]
 - Signing-ready manifest — signature placeholders + canonicalization notes. [Inference]
 - Eval acceptance threshold gate — fail if deterministic accuracy drops below baseline. [Post-training]
 - HTTP response contract fixture gate — golden fixtures for single vs batch `/infer` JSON response compatibility. [Inference, Runtime Infra]
+- HTTP overload fixture gate — deterministic 503 fixture when `HTTP_MAX_CONCURRENCY` is saturated. [Serving/Deployment Infra, Runtime Infra]
+- HTTP graceful-shutdown integration gate — verify in-flight `/infer` requests complete correctly on SIGINT/SIGTERM. [Runtime Infra, Serving/Deployment Infra]
 
 ## [Trunk]
 
@@ -87,6 +88,7 @@ serde_json = "1.0"
 sha2 = "0.10"
 tiny_http = "0.12"
 toml = "0.8"
+ctrlc = "3.4"
 
 [dependencies.burn-autodiff]
 version = "0.20.1"

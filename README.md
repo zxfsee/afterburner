@@ -86,6 +86,12 @@ Envelope limits (env-configurable):
 - `HTTP_MAX_REQUEST_BYTES` (default `65536`)
 - `HTTP_MAX_BATCH_SIZE` (default `16`)
 - `HTTP_INFER_TIMEOUT_MS` (default `1500`)
+- `HTTP_MAX_CONCURRENCY` (default `4`)
+
+Operational behavior:
+- `GET /healthz` is handled in the HTTP adapter path (no tensor decode/preprocess/infer).
+- `SIGINT`/`SIGTERM` triggers graceful shutdown (workers stop receiving new requests).
+- Responses include `X-Request-Id`; logs include matching `request_id` for correlation.
 
 Deterministic failures return JSON with stable `error.kind` values (for example `request_too_large`, `batch_too_large`, `infer_timeout`, `invalid_input`).
 

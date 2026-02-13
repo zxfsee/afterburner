@@ -1,4 +1,9 @@
 use std::net::SocketAddr;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, AtomicU64, Ordering},
+};
+use std::thread;
 use std::time::{Duration, Instant};
 
 use afterburner::infer::{InferError, load_model, parse_weights_path_from_args};
@@ -19,6 +24,8 @@ const LOGIT_CLASSES: usize = 10;
 const DEFAULT_HTTP_MAX_REQUEST_BYTES: usize = 64 * 1024;
 const DEFAULT_HTTP_MAX_BATCH_SIZE: usize = 16;
 const DEFAULT_HTTP_INFER_TIMEOUT_MS: u64 = 1_500;
+const DEFAULT_HTTP_MAX_CONCURRENCY: usize = 4;
+const HTTP_RECV_TIMEOUT_MS: u64 = 200;
 
 fn main() {
     let weights_path = parse_weights_path_from_args(std::env::args());
@@ -43,43 +50,84 @@ fn http_addr() -> SocketAddr {
     SocketAddr::from(([0, 0, 0, 0], port))
 }
 
-fn run_server<B: Backend>(weights_path: std::path::PathBuf, addr: SocketAddr, backend: &str) -> ! {
-    let device = B::Device::default();
-    let model = match load_model::<B>(&weights_path, &device) {
-        Ok(model) => model,
-        Err(err) => emit_error_and_exit(&err),
-    };
-    let artifact = json_escape(&weights_path.to_string_lossy());
-    eprintln!(r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}"}}"#);
+fn run_server<B>(weights_path: std::path::PathBuf, addr: SocketAddr, backend: &'static str) -> !
+where
+    B: Backend + Send + 'static,
+    B::Device: Send + 'static,
+{
+    ensure_model_loadable::<B>(&weights_path, backend);
     eprintln!(r#"{{"event":"backend_selected","backend":"{backend}"}}"#);
 
-    let server = Server::http(addr).unwrap_or_else(|err| {
+    let server = Arc::new(Server::http(addr).unwrap_or_else(|err| {
         eprintln!(
             r#"{{"event":"http_error","kind":"bind_failed","detail":"{}"}}"#,
             json_escape(&err.to_string())
         );
         std::process::exit(2);
-    });
+    }));
 
     let envelope = EnvelopeLimits::from_env();
+    let shutdown = Arc::new(AtomicBool::new(false));
+    let request_ids = Arc::new(RequestIdGenerator::new());
     eprintln!(
-        r#"{{"event":"http_limits","max_request_bytes":{},"max_batch_size":{},"timeout_ms":{}}}"#,
-        envelope.max_request_bytes, envelope.max_batch_size, envelope.infer_timeout_ms
+        r#"{{"event":"http_limits","max_request_bytes":{},"max_batch_size":{},"timeout_ms":{},"max_concurrency":{}}}"#,
+        envelope.max_request_bytes,
+        envelope.max_batch_size,
+        envelope.infer_timeout_ms,
+        envelope.max_concurrency
+    );
+    eprintln!(
+        r#"{{"event":"http_start","backend":"{backend}","addr":"{}","max_concurrency":{}}}"#,
+        json_escape(&addr.to_string()),
+        envelope.max_concurrency
     );
 
-    for request in server.incoming_requests() {
-        let mut request = request;
-        let response = match (request.method(), request.url()) {
-            (&Method::Get, "/healthz") => ok_response("ok\n"),
-            (&Method::Post, "/infer") => {
-                handle_infer(&mut request, &model, &device, backend, envelope)
-            }
-            _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
-        };
-        let _ = request.respond(response);
+    install_signal_handler(
+        Arc::clone(&shutdown),
+        Arc::clone(&server),
+        envelope.max_concurrency,
+    );
+
+    let mut worker_handles = Vec::with_capacity(envelope.max_concurrency);
+    for worker_idx in 0..envelope.max_concurrency {
+        let server = Arc::clone(&server);
+        let shutdown = Arc::clone(&shutdown);
+        let request_ids = Arc::clone(&request_ids);
+        let worker_backend = backend;
+        let worker_weights = weights_path.clone();
+        let worker_handle = thread::spawn(move || {
+            run_worker_loop::<B>(
+                worker_idx,
+                server,
+                shutdown,
+                request_ids,
+                worker_backend,
+                envelope,
+                worker_weights,
+            );
+        });
+        worker_handles.push(worker_handle);
     }
 
-    std::process::exit(2);
+    for worker_handle in worker_handles {
+        let _ = worker_handle.join();
+    }
+
+    eprintln!(r#"{{"event":"http_shutdown","status":"ok"}}"#);
+    std::process::exit(0);
+}
+
+fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &str) {
+    let device = B::Device::default();
+    match load_model::<B>(&weights_path.to_path_buf(), &device) {
+        Ok(_) => {
+            let artifact = json_escape(&weights_path.to_string_lossy());
+            eprintln!(
+                r#"{{"event":"artifact_load_ok","backend":"{backend}","artifact":"{artifact}"}}"#
+            );
+        }
+        Err(err) => emit_error_and_exit(&err),
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -87,6 +135,7 @@ struct EnvelopeLimits {
     max_request_bytes: usize,
     max_batch_size: usize,
     infer_timeout_ms: u64,
+    max_concurrency: usize,
 }
 
 impl EnvelopeLimits {
@@ -98,24 +147,143 @@ impl EnvelopeLimits {
             ),
             max_batch_size: parse_env_usize("HTTP_MAX_BATCH_SIZE", DEFAULT_HTTP_MAX_BATCH_SIZE),
             infer_timeout_ms: parse_env_u64("HTTP_INFER_TIMEOUT_MS", DEFAULT_HTTP_INFER_TIMEOUT_MS),
+            max_concurrency: parse_env_usize("HTTP_MAX_CONCURRENCY", DEFAULT_HTTP_MAX_CONCURRENCY),
         }
     }
+}
+
+#[derive(Debug, Default)]
+struct RequestIdGenerator {
+    next: AtomicU64,
+}
+
+impl RequestIdGenerator {
+    fn new() -> Self {
+        Self {
+            next: AtomicU64::new(1),
+        }
+    }
+
+    fn next_id(&self) -> u64 {
+        self.next.fetch_add(1, Ordering::Relaxed)
+    }
+}
+
+fn install_signal_handler(shutdown: Arc<AtomicBool>, server: Arc<Server>, max_concurrency: usize) {
+    ctrlc::set_handler(move || {
+        shutdown.store(true, Ordering::SeqCst);
+        for _ in 0..max_concurrency {
+            server.unblock();
+        }
+    })
+    .unwrap_or_else(|err| {
+        eprintln!(
+            r#"{{"event":"http_error","kind":"signal_handler_install_failed","detail":"{}"}}"#,
+            json_escape(&err.to_string())
+        );
+        std::process::exit(2);
+    });
+}
+
+fn run_worker_loop<B>(
+    worker_idx: usize,
+    server: Arc<Server>,
+    shutdown: Arc<AtomicBool>,
+    request_ids: Arc<RequestIdGenerator>,
+    backend: &str,
+    envelope: EnvelopeLimits,
+    weights_path: std::path::PathBuf,
+) where
+    B: Backend + Send + 'static,
+    B::Device: Send + 'static,
+{
+    let recv_timeout = Duration::from_millis(HTTP_RECV_TIMEOUT_MS);
+    let device = B::Device::default();
+    let model = match load_model::<B>(&weights_path, &device) {
+        Ok(model) => model,
+        Err(err) => emit_error_and_exit(&err),
+    };
+    eprintln!(r#"{{"event":"http_worker_start","worker":{worker_idx}}}"#);
+
+    while !shutdown.load(Ordering::Relaxed) {
+        let mut request = match server.recv_timeout(recv_timeout) {
+            Ok(Some(request)) => request,
+            Ok(None) => continue,
+            Err(err) => {
+                if shutdown.load(Ordering::Relaxed) {
+                    break;
+                }
+                eprintln!(
+                    r#"{{"event":"http_error","kind":"recv_failed","detail":"{}"}}"#,
+                    json_escape(&err.to_string())
+                );
+                continue;
+            }
+        };
+
+        let request_id = request_ids.next_id();
+        let response = route_request(
+            request_id,
+            &mut request,
+            &model,
+            &device,
+            backend,
+            envelope,
+            worker_idx,
+        );
+        let _ = request.respond(response);
+    }
+
+    eprintln!(r#"{{"event":"http_worker_stop","worker":{worker_idx}}}"#);
+}
+
+fn route_request<B: Backend>(
+    request_id: u64,
+    request: &mut tiny_http::Request,
+    model: &afterburner::model::Model<B>,
+    device: &B::Device,
+    backend: &str,
+    envelope: EnvelopeLimits,
+    worker_idx: usize,
+) -> Response<std::io::Cursor<Vec<u8>>> {
+    eprintln!(
+        r#"{{"event":"http_request","request_id":"{}","worker":{},"method":"{}","path":"{}"}}"#,
+        request_id,
+        worker_idx,
+        request.method(),
+        json_escape(request.url())
+    );
+
+    let response = match (request.method(), request.url()) {
+        (&Method::Get, "/healthz") => ok_response("ok\n"),
+        (&Method::Post, "/infer") => {
+            handle_infer(request_id, request, model, device, backend, envelope)
+        }
+        _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
+    };
+    with_request_id(response, request_id)
 }
 
 fn parse_env_usize(name: &str, default: usize) -> usize {
     std::env::var(name)
         .ok()
-        .and_then(|value| value.parse::<usize>().ok())
-        .filter(|value| *value > 0)
+        .and_then(|value| parse_positive_usize(&value))
         .unwrap_or(default)
 }
 
 fn parse_env_u64(name: &str, default: u64) -> u64 {
     std::env::var(name)
         .ok()
-        .and_then(|value| value.parse::<u64>().ok())
-        .filter(|value| *value > 0)
+        .and_then(|value| parse_positive_u64(&value))
         .unwrap_or(default)
+}
+
+fn parse_positive_usize(value: &str) -> Option<usize> {
+    value.parse::<usize>().ok().filter(|value| *value > 0)
+}
+
+fn parse_positive_u64(value: &str) -> Option<u64> {
+    value.parse::<u64>().ok().filter(|value| *value > 0)
 }
 
 #[derive(Debug)]
@@ -194,6 +362,7 @@ impl Deadline {
 }
 
 fn handle_infer<B: Backend>(
+    request_id: u64,
     request: &mut tiny_http::Request,
     model: &afterburner::model::Model<B>,
     device: &B::Device,
@@ -202,10 +371,13 @@ fn handle_infer<B: Backend>(
 ) -> Response<std::io::Cursor<Vec<u8>>> {
     let deadline = Deadline::new(envelope.infer_timeout_ms);
 
-    let response = handle_infer_inner(request, model, device, backend, envelope, deadline);
+    let response = handle_infer_inner(
+        request, model, device, backend, envelope, deadline, request_id,
+    );
     if let Err(err) = &response {
         eprintln!(
-            r#"{{"event":"http_error","kind":"{}","status":{},"detail":"{}"}}"#,
+            r#"{{"event":"http_error","request_id":"{}","kind":"{}","status":{},"detail":"{}"}}"#,
+            request_id,
             err.kind,
             err.status.0,
             json_escape(&err.detail)
@@ -227,6 +399,7 @@ fn handle_infer_inner<B: Backend>(
     backend: &str,
     envelope: EnvelopeLimits,
     deadline: Deadline,
+    request_id: u64,
 ) -> Result<String, HttpFailure> {
     let body = read_body_limited(request, envelope.max_request_bytes)?;
     deadline.check("request_read")?;
@@ -273,7 +446,8 @@ fn handle_infer_inner<B: Backend>(
 
     let elapsed_ms = deadline.elapsed_ms();
     eprintln!(
-        r#"{{"event":"infer_done","backend":"{backend}","elapsed_ms":{elapsed_ms},"batch_size":{}}}"#,
+        r#"{{"event":"infer_done","request_id":"{}","backend":"{backend}","elapsed_ms":{elapsed_ms},"batch_size":{}}}"#,
+        request_id,
         images.len()
     );
 
@@ -427,6 +601,17 @@ fn content_type_json() -> Header {
     Header::from_bytes("Content-Type", "application/json").expect("valid header")
 }
 
+fn with_request_id(
+    response: Response<std::io::Cursor<Vec<u8>>>,
+    request_id: u64,
+) -> Response<std::io::Cursor<Vec<u8>>> {
+    response.with_header(request_id_header(request_id))
+}
+
+fn request_id_header(request_id: u64) -> Header {
+    Header::from_bytes("X-Request-Id", request_id.to_string()).expect("valid header")
+}
+
 fn emit_error_and_exit(err: &InferError) -> ! {
     match err {
         InferError::ArtifactMissing { path } => {
@@ -490,7 +675,10 @@ fn emit_error_and_exit(err: &InferError) -> ! {
 
 #[cfg(test)]
 mod tests {
-    use super::{Deadline, decode_json_inputs, decode_request_inputs};
+    use super::{
+        Deadline, RequestIdGenerator, decode_json_inputs, decode_request_inputs,
+        parse_positive_u64, parse_positive_usize, request_id_header,
+    };
 
     #[test]
     fn decode_single_json_base64() {
@@ -528,5 +716,30 @@ mod tests {
         std::thread::sleep(std::time::Duration::from_millis(3));
         let err = deadline.check("decode").expect_err("must timeout");
         assert_eq!(err.kind, "infer_timeout");
+    }
+
+    #[test]
+    fn parse_positive_numbers_rejects_zero_and_invalid() {
+        assert_eq!(parse_positive_usize("16"), Some(16));
+        assert_eq!(parse_positive_usize("0"), None);
+        assert_eq!(parse_positive_usize("bad"), None);
+        assert_eq!(parse_positive_u64("1500"), Some(1500));
+        assert_eq!(parse_positive_u64("0"), None);
+        assert_eq!(parse_positive_u64("bad"), None);
+    }
+
+    #[test]
+    fn request_ids_are_monotonic() {
+        let request_ids = RequestIdGenerator::new();
+        assert_eq!(request_ids.next_id(), 1);
+        assert_eq!(request_ids.next_id(), 2);
+        assert_eq!(request_ids.next_id(), 3);
+    }
+
+    #[test]
+    fn request_id_header_uses_expected_name_and_value() {
+        let header = request_id_header(42);
+        assert!(header.field.equiv("X-Request-Id"));
+        assert_eq!(header.value.as_str(), "42");
     }
 }

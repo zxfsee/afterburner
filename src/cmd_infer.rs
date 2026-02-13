@@ -34,9 +34,8 @@ fn run_inner<I>(args: I) -> Result<(), InferError>
 where
     I: Iterator<Item = String>,
 {
-    let weights_path = parse_weights_path_from_args(
-        std::iter::once("infer".to_string()).chain(args),
-    );
+    let weights_path =
+        parse_weights_path_from_args(std::iter::once("infer".to_string()).chain(args));
 
     let use_cpu = env::var("BACKEND")
         .map(|v| v.eq_ignore_ascii_case("cpu"))

@@ -3,7 +3,10 @@ use afterburner::manifest::is_semver;
 
 #[test]
 fn default_path_is_contract_path() {
-    assert_eq!(default_weights_path().to_string_lossy(), expected_default_path());
+    assert_eq!(
+        default_weights_path().to_string_lossy(),
+        expected_default_path()
+    );
 }
 
 #[test]
