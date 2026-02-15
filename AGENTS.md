@@ -53,7 +53,7 @@ Do not include temporary heuristics that reflect a single session correction.
   - Experimentation/Eval Infra
   - Serving/Deployment Infra
 - When adding the next TODO, prefer an underrepresented focus area unless blocked by an explicit dependency. If blocked, state the dependency in the TODO.
-- Maintain human-level review bar for agent output; reject functional-but-poorly-maintainable code.
+- Maintain production-grade maintainability standards; reject code that is correct but structurally poor.
 - When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration):
   - Do not invent a framework or choose a technology implicitly.
   - First check whether a stack is already established in the repo.
