@@ -31,7 +31,7 @@ Do not include temporary heuristics that reflect a single session correction.
   - Each diff must be independently reviewable and independently verifiable (own checks/evidence).
   - The stack must not break trunk/CI; rebase/update as needed to stay current.
   - Parallelize only across independent scopes.
-  - If tasks touch the same contract, shared files, or the TODO queue, serialize them or use stacked diffs.
+  - Tasks that modify the same public contract, architectural boundary, shared files, or the TODO queue must not execute in parallel. Serialize them or land as stacked diffs.
 - `CHANGELOG.md` is generated; treat it as derived output (edit `Cargo.toml` `[package.metadata.git-cliff.*]`, then regenerate).
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
@@ -66,10 +66,9 @@ Do not include temporary heuristics that reflect a single session correction.
 - Follow the architecture already established in-repo and described in `ARCHITECTURE.md`.
 - If work would change architecture boundaries, public contracts, persistence model, runtime model, or introduce a new subsystem/pattern:
   - state the trigger and blast radius,
-	-	choose the smallest reversible option that satisfies current acceptance criteria,
-	-	record trade-offs,
-	-	ask the user only if the choice is irreversible, high-cost to change later, or there are multiple options with materially different outcomes.
-
+  -	choose the smallest reversible option that satisfies current acceptance criteria,
+  -	record trade-offs,
+  -	ask the user only if the choice is irreversible, high-cost to change later, or there are multiple options with materially different outcomes.
 
 ### Patterns
 
