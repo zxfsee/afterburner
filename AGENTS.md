@@ -18,9 +18,12 @@ Do not include temporary heuristics that reflect a single session correction.
 - When changing behavior, update the relevant docs in the references list (including external interfaces and architecture invariants).
 - Core must not depend on adapters (training, HTTP, telemetry, etc.); adapters depend on core.
 - Core must not perform external IO (filesystem/network/process). Time/IDs/randomness must be injected via ports.
+- Prefer explicit state transitions over implicit hidden state. Avoid hidden global state.
 - Public contracts (artifact/CLI/HTTP/event schema) must be explicit, versioned when needed, and protected by compatibility tests (golden fixtures).
+- Backward compatibility is the default for public contracts unless explicitly approved. Breaking changes must be explicit and documented.
 - Prefer standards at boundaries; keep exporters/SDKs (if any) in adapters only.
 - When feasible, enforce core/adapters dependency rules with an automated gate (crate boundaries + lint/test/CI); do not rely on convention alone.
+- Prefer invariants that can be mechanically enforced (types, tests, CI checks, lints) over conventions or comments.
 - ADRs live in `docs/adr/` and use sequential numeric filenames: `docs/adr/NNN-title.md` (e.g. `docs/adr/001-training-vs-inference.md`). One decision per ADR.
 - Keep a decisions index at `ARCHITECTURE.md#decisions` and link new ADRs there.
 - ADRs reflect the current architectural decision. Historical evolution lives in VCS history. Do not create “superseded” ADR chains unless explicitly requested.
