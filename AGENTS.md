@@ -20,7 +20,8 @@ Do not include temporary heuristics that reflect a single session correction.
 - Core must not perform external IO (filesystem/network/process). Time/IDs/randomness must be injected via ports.
 - Prefer explicit state transitions over implicit hidden state. Avoid hidden global state.
 - Public contracts (artifact/CLI/HTTP/event schema) must be explicit, versioned when needed, and protected by compatibility tests (golden fixtures).
-- Backward compatibility is the default for public contracts unless explicitly approved. Breaking changes must be explicit and documented.
+- Cutover is the default: do not add fallback paths, compatibility shims, feature flags, or dual-read/dual-write unless explicitly requested.
+- Public contracts: once declared stable, backward compatibility is required within the same major/version; breaking changes require an explicit version bump or new vN surface, and documentation (plus compatibility tests as applicable).
 - Prefer standards at boundaries; keep exporters/SDKs (if any) in adapters only.
 - When feasible, enforce core/adapters dependency rules with an automated gate (crate boundaries + lint/test/CI); do not rely on convention alone.
 - Prefer invariants that can be mechanically enforced (types, tests, CI checks, lints) over conventions or comments.
