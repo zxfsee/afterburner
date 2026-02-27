@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-metadata/v1",
+  "title": "Distributed Shard Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "shard_id",
+    "shard_index",
+    "shard_count",
+    "owner_worker_id",
+    "owner_worker_rank",
+    "checksum_algorithm",
+    "checksum_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "shard_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shard_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "shard_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "owner_worker_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_worker_rank": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "checksum_algorithm": {
+      "const": "sha256"
+    },
+    "checksum_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

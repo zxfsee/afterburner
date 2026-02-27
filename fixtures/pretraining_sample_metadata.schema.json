@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/pretraining-sample-metadata/v1",
+  "title": "Pretraining Sample Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "split",
+    "checksum"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "split": {
+      "type": "string",
+      "enum": [
+        "train",
+        "validation",
+        "test"
+      ]
+    },
+    "checksum": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

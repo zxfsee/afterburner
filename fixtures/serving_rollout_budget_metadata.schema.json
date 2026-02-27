@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/serving-rollout-budget-metadata/v1",
+  "title": "Serving Rollout Budget Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "service",
+    "latency_budget_ms_p99",
+    "error_budget_ratio",
+    "window"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "service": {
+      "type": "string",
+      "minLength": 1
+    },
+    "latency_budget_ms_p99": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error_budget_ratio": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "window": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

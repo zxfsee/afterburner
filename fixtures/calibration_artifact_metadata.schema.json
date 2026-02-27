@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/calibration-artifact-metadata/v1",
+  "title": "Calibration Artifact Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "calibration_artifact",
+    "artifact_version",
+    "method",
+    "created_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "calibration_artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "method": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}
