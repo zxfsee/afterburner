@@ -2,12 +2,12 @@
 
 ## TODO
 
-- Pretraining sample contract stub — define and fixture-test a minimal pretraining sample metadata schema (source, split, checksum) without wiring loaders yet. [Pre-training, Data Infra]
-- Post-training calibration stub — define a versioned calibration artifact metadata schema and add a fixture parse/validate gate. [Post-training, Inference]
-- Framework adapter registry stub — add a fixture-validated schema for declaring supported runtime framework adapters and versions. [Frameworks, Runtime Infra]
-- Serving rollout budget schema stub — add a fixture-validated schema for latency/error budget metadata used in deployment rollouts. [Serving/Deployment Infra, Runtime Infra]
-- Compiler feature matrix fixture — add a fixture gate that declares and validates supported compile-time backend feature combinations. [Compilers, Kernels]
-- Distributed shard metadata schema stub — add a fixture-validated schema for per-shard ownership/checksum metadata in multi-worker training. [Distributed Training, Data Infra]
+- Pretraining sample validator hook — parse `pretraining_sample_metadata` into a typed contract and reject invalid split/checksum values at boundary validation. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs`; Contracts: `artifact`; Boundary: `core-contract`
+- Post-training calibration consumer stub — load calibration metadata with inference artifacts and emit calibration contract fields in structured events. [Post-training, Inference] Scope: `src/infer.rs, src/cmd_infer.rs, tests/calibration_infer_gate.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
+- Framework adapter registry resolution gate — validate `BACKEND` selection against adapter registry metadata and fail fast on unsupported adapter/version pairs. [Frameworks, Runtime Infra] Scope: `src/main.rs, src/cmd_infer.rs, tests/framework_registry_resolution.rs`; Contracts: `CLI,artifact`; Boundary: `adapter-cli`
+- Serving rollout budget enforcement stub — parse rollout budget metadata and expose HTTP-adapter admission checks for latency/error budget policy. [Serving/Deployment Infra, Runtime Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs`; Contracts: `HTTP`; Boundary: `adapter-http`
+- Compiler feature matrix parity gate — compare effective Cargo feature combinations against fixture-declared supported backend feature matrix in CI tests. [Compilers, Kernels] Scope: `Cargo.toml, tests/compiler_feature_matrix_parity.rs`; Contracts: `none`; Boundary: `build-contract`
+- Distributed shard ownership uniqueness gate — validate shard ownership/rank uniqueness and `shard_index < shard_count` invariants from shard metadata fixtures. [Distributed Training, Data Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs`; Contracts: `artifact`; Boundary: `core-contract`
 
 ## [Trunk]
 
@@ -34,6 +34,8 @@
 - Normalize event schema and add JSONL sink ([5bb4362])
 - Add signing-ready placeholders and canonicalization metadata ([6cad4fe])
 - Add deterministic accuracy threshold gate ([641e796])
+- Add HTTP overload fixture gate ([c0e779b])
+- Validate signed manifest digest input ([e70afe8])
 
 ### Changed
 
@@ -91,6 +93,12 @@
 - Require canonical contract-resolution and TODO focus tags; update README & changelog ([1d3ff39])
 - Add focus-area list to TODOs and polish README/ARCHITECTURE/ADR text ([33b2324])
 - Keep ADRs current-state by default ([dedb601])
+- Add eval baseline refresh flow gate ([2361d4a])
+- Clarify maintainability guideline ([0fe351c])
+- Clarify core constraints and add architecture selection & patterns ([cecd798])
+- Clarify serialization rules for conflicting tasks and fix list formatting ([f060b0a])
+- Add guidance on explicit state, default backward-compat, and enforceable invariants ([90ec1c4])
+- Set cutover as default; require version bump for breaking public contracts ([e092954])
 
 ### Fixed
 
@@ -104,6 +112,17 @@
 ### Tests
 
 - Add golden fixtures for contract stability ([7a104bf])
+- Add infer response golden fixtures ([7238ba4])
+- Add HTTP graceful shutdown integration gate ([ef7d0b0])
+- Add telemetry envelope fixture gate ([885523f])
+- Add HTTP error contract fixtures ([106c08f])
+- Add fixture dataset hash gate ([9529c9a])
+- Add build graph guard gate ([04b7004])
+- Add preprocess numerics guard ([0a84cd9])
+- Add RL rollout schema fixture gate ([0eff34b])
+- Add kernel logits shape guard ([fcd1bc9])
+- Add distributed artifact copy smoke gate ([6f3bb1a])
+- Add schema fixture gates for metadata stubs ([b344f54])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -179,5 +198,24 @@
 [5bb4362]: https://github.com/zxfsee/afterburner/commit/5bb43629cd9c388aa9d378130e69fddd1f149a23
 [6cad4fe]: https://github.com/zxfsee/afterburner/commit/6cad4feeb905714b160b9cab1db94cc8c9ff04d7
 [641e796]: https://github.com/zxfsee/afterburner/commit/641e796dd2fa3667bb9fda4115fe6ce74abb642e
+[7238ba4]: https://github.com/zxfsee/afterburner/commit/7238ba41d79b9a41bd1a91956e7b20d000be0a8c
+[c0e779b]: https://github.com/zxfsee/afterburner/commit/c0e779bfcc7c8f83f9e18d37b5fb984eeb47c837
+[ef7d0b0]: https://github.com/zxfsee/afterburner/commit/ef7d0b0177ce1be6e8456d6c7bb6e3aae233a330
+[885523f]: https://github.com/zxfsee/afterburner/commit/885523f762533cf64e3f03317ebea4178e1f1eb6
+[e70afe8]: https://github.com/zxfsee/afterburner/commit/e70afe847cadaf16b3574c15600505df53e0e8a0
+[2361d4a]: https://github.com/zxfsee/afterburner/commit/2361d4a0f9d73ff805829a0485f342080323be3c
+[106c08f]: https://github.com/zxfsee/afterburner/commit/106c08f77b900011774e471d6aeb99e3558238b4
+[9529c9a]: https://github.com/zxfsee/afterburner/commit/9529c9afab2828de4b9bf1e0f26f7e9eed1e96ad
+[04b7004]: https://github.com/zxfsee/afterburner/commit/04b700436f1da4e66d735dc14a4bfca006e7d79a
+[0a84cd9]: https://github.com/zxfsee/afterburner/commit/0a84cd970070fea8db075e4e05ae0ee689b3d7e8
+[0eff34b]: https://github.com/zxfsee/afterburner/commit/0eff34b2da6c35b4fe708f19fcb7ee6b65bed097
+[fcd1bc9]: https://github.com/zxfsee/afterburner/commit/fcd1bc97339489befc4d568bd5c910c1ad5ada6f
+[6f3bb1a]: https://github.com/zxfsee/afterburner/commit/6f3bb1a8748493d7cdb4b49585fc9c1a3af23f80
+[0fe351c]: https://github.com/zxfsee/afterburner/commit/0fe351ca326595d4fdef30437bdc5f8faade5b8f
+[cecd798]: https://github.com/zxfsee/afterburner/commit/cecd798e26432e519e5215d4d068737da524f741
+[f060b0a]: https://github.com/zxfsee/afterburner/commit/f060b0ade388b94b2de5f9bc0d01a2aaa46cfdb4
+[90ec1c4]: https://github.com/zxfsee/afterburner/commit/90ec1c42b073cbb33f0fe865baa9481ed57fdee6
+[e092954]: https://github.com/zxfsee/afterburner/commit/e09295489879297f738e54f100acdea5ebbe8d23
+[b344f54]: https://github.com/zxfsee/afterburner/commit/b344f5426a888fd3b3925b7ce9f484556fb57a27
 
 <!-- generated by git-cliff -->

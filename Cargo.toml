@@ -9,12 +9,12 @@ header = """# Changelog
 
 ## TODO
 
-- HTTP overload fixture gate — deterministic 503 fixture when `HTTP_MAX_CONCURRENCY` is saturated. [Serving/Deployment Infra, Runtime Infra]
-- HTTP graceful-shutdown integration gate — verify in-flight `/infer` requests complete correctly on SIGINT/SIGTERM. [Runtime Infra, Serving/Deployment Infra]
-- Telemetry envelope fixture gate — assert required keys (`ts_ms`, `level`, `source`, `event`, `fields`) for emitted JSON events. [Runtime Infra, Experimentation/Eval Infra]
-- Manifest signature verification gate — when `signature.scheme != \"none\"`, require non-empty `key_id`/`value` and validate canonicalized-manifest digest input. [Inference, Runtime Infra]
-- Eval baseline refresh flow — document and test the baseline update path when intended model changes move deterministic accuracy. [Experimentation/Eval Infra, Post-training]
-- HTTP error contract fixture gate — golden fixtures for stable JSON error payloads (`invalid_input`, `batch_too_large`, `infer_timeout`). [Inference, Runtime Infra]
+- Pretraining sample validator hook — parse `pretraining_sample_metadata` into a typed contract and reject invalid split/checksum values at boundary validation. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs`; Contracts: `artifact`; Boundary: `core-contract`
+- Post-training calibration consumer stub — load calibration metadata with inference artifacts and emit calibration contract fields in structured events. [Post-training, Inference] Scope: `src/infer.rs, src/cmd_infer.rs, tests/calibration_infer_gate.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
+- Framework adapter registry resolution gate — validate `BACKEND` selection against adapter registry metadata and fail fast on unsupported adapter/version pairs. [Frameworks, Runtime Infra] Scope: `src/main.rs, src/cmd_infer.rs, tests/framework_registry_resolution.rs`; Contracts: `CLI,artifact`; Boundary: `adapter-cli`
+- Serving rollout budget enforcement stub — parse rollout budget metadata and expose HTTP-adapter admission checks for latency/error budget policy. [Serving/Deployment Infra, Runtime Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs`; Contracts: `HTTP`; Boundary: `adapter-http`
+- Compiler feature matrix parity gate — compare effective Cargo feature combinations against fixture-declared supported backend feature matrix in CI tests. [Compilers, Kernels] Scope: `Cargo.toml, tests/compiler_feature_matrix_parity.rs`; Contracts: `none`; Boundary: `build-contract`
+- Distributed shard ownership uniqueness gate — validate shard ownership/rank uniqueness and `shard_index < shard_count` invariants from shard metadata fixtures. [Distributed Training, Data Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs`; Contracts: `artifact`; Boundary: `core-contract`
 
 ## [Trunk]
 
