@@ -3,12 +3,24 @@ use std::path::{Path, PathBuf};
 
 use burn::prelude::*;
 use burn::record::CompactRecorder;
+use serde_json::Value;
 
 use crate::manifest::{
     ArtifactManifest, CURRENT_VERSION_FILENAME, MANIFEST_FILENAME, ManifestError, is_semver,
 };
 use crate::model::ModelConfig;
 use crate::preprocess::mnist_image_to_tensor;
+
+pub const CALIBRATION_METADATA_FILENAME: &str = "calibration_artifact_metadata.json";
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CalibrationMetadata {
+    pub schema_version: u8,
+    pub calibration_artifact: String,
+    pub artifact_version: String,
+    pub method: String,
+    pub created_at_unix_ms: u64,
+}
 
 /// Default inference artifact path (ADR-002).
 pub fn default_weights_path() -> PathBuf {
@@ -64,6 +76,52 @@ pub fn parse_weights_path() -> PathBuf {
 pub fn manifest_path_for_weights(weights_path: &Path) -> PathBuf {
     let parent = weights_path.parent().unwrap_or_else(|| Path::new("."));
     parent.join(MANIFEST_FILENAME)
+}
+
+/// Derive calibration metadata path for a given weights file.
+pub fn calibration_metadata_path_for_weights(weights_path: &Path) -> PathBuf {
+    let parent = weights_path.parent().unwrap_or_else(|| Path::new("."));
+    parent.join(CALIBRATION_METADATA_FILENAME)
+}
+
+/// Load optional calibration metadata sidecar from the artifact directory.
+///
+/// Returns `None` when the sidecar is absent or invalid.
+pub fn load_calibration_metadata(weights_path: &Path) -> Option<CalibrationMetadata> {
+    let metadata_path = calibration_metadata_path_for_weights(weights_path);
+    let contents = std::fs::read_to_string(metadata_path).ok()?;
+    let value: Value = serde_json::from_str(&contents).ok()?;
+    let object = value.as_object()?;
+
+    let schema_version = object.get("schema_version")?.as_str()?;
+    if schema_version != "1" {
+        return None;
+    }
+
+    let calibration_artifact = object.get("calibration_artifact")?.as_str()?;
+    if calibration_artifact.is_empty() {
+        return None;
+    }
+
+    let artifact_version = object.get("artifact_version")?.as_str()?;
+    if artifact_version.is_empty() {
+        return None;
+    }
+
+    let method = object.get("method")?.as_str()?;
+    if method.is_empty() {
+        return None;
+    }
+
+    let created_at_unix_ms = object.get("created_at_unix_ms")?.as_u64()?;
+
+    Some(CalibrationMetadata {
+        schema_version: 1,
+        calibration_artifact: calibration_artifact.to_string(),
+        artifact_version: artifact_version.to_string(),
+        method: method.to_string(),
+        created_at_unix_ms,
+    })
 }
 
 fn read_current_version(inference_root: &Path) -> Option<String> {

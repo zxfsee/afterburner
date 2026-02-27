@@ -9,6 +9,7 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
+use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 use std::{env, io};
 
@@ -166,6 +167,38 @@ pub fn export_inference_artifact(
 
 pub fn inference_version_dir(inference_root: &Path, artifact_version: &str) -> PathBuf {
     inference_root.join(artifact_version)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DistributedShardMetadata {
+    pub shard_index: u64,
+    pub shard_count: u64,
+    pub owner_worker_id: String,
+    pub owner_worker_rank: u64,
+}
+
+pub fn validate_distributed_shard_metadata(
+    metadata: &[DistributedShardMetadata],
+) -> Result<(), String> {
+    let mut seen_owners = BTreeSet::new();
+
+    for (fixture_index, shard) in metadata.iter().enumerate() {
+        if shard.shard_index >= shard.shard_count {
+            return Err(format!(
+                "metadata[{fixture_index}] has shard_index {} not less than shard_count {}",
+                shard.shard_index, shard.shard_count
+            ));
+        }
+
+        if !seen_owners.insert((shard.owner_worker_id.clone(), shard.owner_worker_rank)) {
+            return Err(format!(
+                "metadata[{fixture_index}] duplicates owner_worker_id '{}' and owner_worker_rank {}",
+                shard.owner_worker_id, shard.owner_worker_rank
+            ));
+        }
+    }
+
+    Ok(())
 }
 
 fn write_current_version(inference_root: &Path, artifact_version: &str) -> io::Result<PathBuf> {

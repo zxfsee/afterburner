@@ -5,6 +5,7 @@ use burn::{
     data::dataset::vision::{MnistDataset, MnistItem},
     prelude::*,
 };
+use serde_json::{Map, Value};
 
 use crate::preprocess::mnist_image_to_tensor;
 
@@ -67,4 +68,104 @@ pub fn test_loader<B: Backend>(
         .num_workers(num_workers)
         .set_device(device)
         .build(MnistDataset::test())
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum PretrainingSplit {
+    Train,
+    Validation,
+    Test,
+}
+
+impl PretrainingSplit {
+    fn parse(value: &str) -> Option<Self> {
+        match value {
+            "train" => Some(Self::Train),
+            "validation" => Some(Self::Validation),
+            "test" => Some(Self::Test),
+            _ => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PretrainingSampleMetadata {
+    pub schema_version: u8,
+    pub source: String,
+    pub split: PretrainingSplit,
+    pub checksum: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum PretrainingSampleMetadataError {
+    MissingField(&'static str),
+    InvalidField(&'static str, String),
+}
+
+pub fn parse_pretraining_sample_metadata(
+    value: &Value,
+) -> Result<PretrainingSampleMetadata, PretrainingSampleMetadataError> {
+    let object = value
+        .as_object()
+        .ok_or(PretrainingSampleMetadataError::InvalidField(
+            "pretraining_sample_metadata",
+            "expected object".to_string(),
+        ))?;
+
+    let schema_version = read_required_string(object, "schema_version")?;
+    if schema_version != "1" {
+        return Err(PretrainingSampleMetadataError::InvalidField(
+            "schema_version",
+            "expected \"1\"".to_string(),
+        ));
+    }
+
+    let source = read_required_string(object, "source")?;
+    if source.is_empty() {
+        return Err(PretrainingSampleMetadataError::InvalidField(
+            "source",
+            "must be non-empty".to_string(),
+        ));
+    }
+
+    let split = read_required_string(object, "split")?;
+    let split =
+        PretrainingSplit::parse(split).ok_or(PretrainingSampleMetadataError::InvalidField(
+            "split",
+            "expected one of: train, validation, test".to_string(),
+        ))?;
+
+    let checksum = read_required_string(object, "checksum")?;
+    if !is_lower_hex_sha256(checksum) {
+        return Err(PretrainingSampleMetadataError::InvalidField(
+            "checksum",
+            "expected 64 lowercase hex characters".to_string(),
+        ));
+    }
+
+    Ok(PretrainingSampleMetadata {
+        schema_version: 1,
+        source: source.to_string(),
+        split,
+        checksum: checksum.to_string(),
+    })
+}
+
+fn read_required_string<'a>(
+    object: &'a Map<String, Value>,
+    field: &'static str,
+) -> Result<&'a str, PretrainingSampleMetadataError> {
+    match object.get(field) {
+        Some(value) => value.as_str().ok_or_else(|| {
+            PretrainingSampleMetadataError::InvalidField(field, "expected string".to_string())
+        }),
+        None => Err(PretrainingSampleMetadataError::MissingField(field)),
+    }
+}
+
+fn is_lower_hex_sha256(checksum: &str) -> bool {
+    checksum.len() == 64
+        && checksum
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
 }

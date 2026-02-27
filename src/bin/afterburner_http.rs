@@ -11,7 +11,7 @@ use afterburner::observability::emit_event;
 use afterburner::preprocess::mnist_image_to_tensor;
 use base64::Engine as _;
 use burn::prelude::*;
-use serde_json::json;
+use serde_json::{Value, json};
 use tiny_http::{Header, Method, Response, Server, StatusCode};
 
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
@@ -27,6 +27,9 @@ const DEFAULT_HTTP_INFER_TIMEOUT_MS: u64 = 1_500;
 const DEFAULT_HTTP_MAX_CONCURRENCY: usize = 4;
 const EXTRA_HTTP_ACCEPT_WORKERS: usize = 1;
 const HTTP_RECV_TIMEOUT_MS: u64 = 200;
+const HTTP_ROLLOUT_BUDGET_METADATA_ENV: &str = "HTTP_ROLLOUT_BUDGET_METADATA_JSON";
+const ROLLOUT_LATENCY_HEADER: &str = "X-Rollout-Observed-Latency-P99-Ms";
+const ROLLOUT_ERROR_HEADER: &str = "X-Rollout-Observed-Error-Ratio";
 
 fn main() {
     let weights_path = parse_weights_path_from_args(std::env::args());
@@ -90,9 +93,23 @@ where
             "max_batch_size": envelope.max_batch_size,
             "timeout_ms": envelope.infer_timeout_ms,
             "max_concurrency": envelope.max_concurrency,
+            "rollout_budget_enforced": envelope.rollout_budget.is_some(),
             "worker_count": worker_count
         }),
     );
+    if let Some(rollout_budget) = envelope.rollout_budget.as_ref() {
+        emit_event(
+            "info",
+            "http_adapter",
+            "rollout_budget_loaded",
+            json!({
+                "service": rollout_budget.service,
+                "window": rollout_budget.window,
+                "latency_budget_ms_p99": rollout_budget.latency_budget_ms_p99,
+                "error_budget_ratio": rollout_budget.error_budget_ratio
+            }),
+        );
+    }
     emit_event(
         "info",
         "http_adapter",
@@ -101,15 +118,12 @@ where
             "backend": backend,
             "addr": addr.to_string(),
             "max_concurrency": envelope.max_concurrency,
+            "rollout_budget_enforced": envelope.rollout_budget.is_some(),
             "worker_count": worker_count
         }),
     );
 
-    install_signal_handler(
-        Arc::clone(&shutdown),
-        Arc::clone(&server),
-        worker_count,
-    );
+    install_signal_handler(Arc::clone(&shutdown), Arc::clone(&server), worker_count);
 
     let mut worker_handles = Vec::with_capacity(worker_count);
     for worker_idx in 0..worker_count {
@@ -119,6 +133,7 @@ where
         let infer_limiter = Arc::clone(&infer_limiter);
         let worker_backend = backend;
         let worker_weights = weights_path.clone();
+        let worker_envelope = envelope.clone();
         let worker_handle = thread::spawn(move || {
             run_worker_loop::<B>(
                 worker_idx,
@@ -126,7 +141,7 @@ where
                 shutdown,
                 request_ids,
                 worker_backend,
-                envelope,
+                worker_envelope,
                 infer_limiter,
                 worker_weights,
             );
@@ -165,12 +180,13 @@ fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &s
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 struct EnvelopeLimits {
     max_request_bytes: usize,
     max_batch_size: usize,
     infer_timeout_ms: u64,
     max_concurrency: usize,
+    rollout_budget: Option<RolloutBudgetMetadata>,
 }
 
 impl EnvelopeLimits {
@@ -183,8 +199,17 @@ impl EnvelopeLimits {
             max_batch_size: parse_env_usize("HTTP_MAX_BATCH_SIZE", DEFAULT_HTTP_MAX_BATCH_SIZE),
             infer_timeout_ms: parse_env_u64("HTTP_INFER_TIMEOUT_MS", DEFAULT_HTTP_INFER_TIMEOUT_MS),
             max_concurrency: parse_env_usize("HTTP_MAX_CONCURRENCY", DEFAULT_HTTP_MAX_CONCURRENCY),
+            rollout_budget: load_rollout_budget_metadata_from_env(),
         }
     }
+}
+
+#[derive(Clone, Debug)]
+struct RolloutBudgetMetadata {
+    service: String,
+    latency_budget_ms_p99: u64,
+    error_budget_ratio: f64,
+    window: String,
 }
 
 #[derive(Debug, Default)]
@@ -273,7 +298,7 @@ fn run_worker_loop<B>(
             &model,
             &device,
             backend,
-            envelope,
+            &envelope,
             &infer_limiter,
             worker_idx,
         );
@@ -294,7 +319,7 @@ fn route_request<B: Backend>(
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
-    envelope: EnvelopeLimits,
+    envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
@@ -312,17 +337,15 @@ fn route_request<B: Backend>(
 
     let response = match (request.method(), request.url()) {
         (&Method::Get, "/healthz") => ok_response("ok\n"),
-        (&Method::Post, "/infer") => {
-            handle_infer(
-                request_id,
-                request,
-                model,
-                device,
-                backend,
-                envelope,
-                infer_limiter,
-            )
-        }
+        (&Method::Post, "/infer") => handle_infer(
+            request_id,
+            request,
+            model,
+            device,
+            backend,
+            envelope,
+            infer_limiter,
+        ),
         _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
     };
     with_request_id(response, request_id)
@@ -348,6 +371,84 @@ fn parse_positive_usize(value: &str) -> Option<usize> {
 
 fn parse_positive_u64(value: &str) -> Option<u64> {
     value.parse::<u64>().ok().filter(|value| *value > 0)
+}
+
+fn load_rollout_budget_metadata_from_env() -> Option<RolloutBudgetMetadata> {
+    let raw = match std::env::var(HTTP_ROLLOUT_BUDGET_METADATA_ENV) {
+        Ok(raw) => raw,
+        Err(_) => return None,
+    };
+
+    match parse_rollout_budget_metadata(raw.as_str()) {
+        Ok(metadata) => Some(metadata),
+        Err(detail) => {
+            emit_event(
+                "error",
+                "http_adapter",
+                "http_error",
+                json!({
+                    "kind":"invalid_rollout_budget_metadata",
+                    "detail": detail
+                }),
+            );
+            None
+        }
+    }
+}
+
+fn parse_rollout_budget_metadata(raw: &str) -> Result<RolloutBudgetMetadata, String> {
+    let value: Value = serde_json::from_str(raw).map_err(|err| format!("invalid json: {err}"))?;
+    let object = value
+        .as_object()
+        .ok_or_else(|| "rollout metadata must be an object".to_string())?;
+
+    let schema_version = object
+        .get("schema_version")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "schema_version must be a string".to_string())?;
+    if schema_version != "1" {
+        return Err("schema_version must be \"1\"".to_string());
+    }
+
+    let service = object
+        .get("service")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "service must be a string".to_string())?
+        .trim()
+        .to_string();
+    if service.is_empty() {
+        return Err("service must be non-empty".to_string());
+    }
+
+    let latency_budget_ms_p99 = object
+        .get("latency_budget_ms_p99")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| "latency_budget_ms_p99 must be an integer >= 0".to_string())?;
+
+    let error_budget_ratio = object
+        .get("error_budget_ratio")
+        .and_then(Value::as_f64)
+        .ok_or_else(|| "error_budget_ratio must be a number in [0, 1]".to_string())?;
+    if !error_budget_ratio.is_finite() || !(0.0..=1.0).contains(&error_budget_ratio) {
+        return Err("error_budget_ratio must be a number in [0, 1]".to_string());
+    }
+
+    let window = object
+        .get("window")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "window must be a string".to_string())?
+        .trim()
+        .to_string();
+    if window.is_empty() {
+        return Err("window must be non-empty".to_string());
+    }
+
+    Ok(RolloutBudgetMetadata {
+        service,
+        latency_budget_ms_p99,
+        error_budget_ratio,
+        window,
+    })
 }
 
 #[derive(Debug)]
@@ -488,9 +589,13 @@ fn handle_infer<B: Backend>(
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
-    envelope: EnvelopeLimits,
+    envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
+    if let Err(err) = evaluate_rollout_budget_admission(request_id, request, envelope) {
+        return json_error(err.status, err.kind, &err.detail);
+    }
+
     let _permit = match infer_limiter.try_acquire() {
         Some(permit) => permit,
         None => {
@@ -526,12 +631,124 @@ fn handle_infer<B: Backend>(
     }
 }
 
+fn evaluate_rollout_budget_admission(
+    request_id: u64,
+    request: &tiny_http::Request,
+    envelope: &EnvelopeLimits,
+) -> Result<(), HttpFailure> {
+    let rollout_budget = match envelope.rollout_budget.as_ref() {
+        Some(metadata) => metadata,
+        None => return Ok(()),
+    };
+
+    let observed_latency_ms_p99 =
+        parse_required_rollout_u64_header(request, ROLLOUT_LATENCY_HEADER)?;
+    let observed_error_ratio = parse_required_rollout_f64_header(request, ROLLOUT_ERROR_HEADER)?;
+    if !(0.0..=1.0).contains(&observed_error_ratio) {
+        return Err(HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("{ROLLOUT_ERROR_HEADER} must be in [0, 1]"),
+        ));
+    }
+
+    let admitted = observed_latency_ms_p99 <= rollout_budget.latency_budget_ms_p99
+        && observed_error_ratio <= rollout_budget.error_budget_ratio;
+    emit_event(
+        "info",
+        "http_adapter",
+        "rollout_budget_admission",
+        json!({
+            "request_id": request_id.to_string(),
+            "service": rollout_budget.service,
+            "window": rollout_budget.window,
+            "admitted": admitted,
+            "observed_latency_ms_p99": observed_latency_ms_p99,
+            "latency_budget_ms_p99": rollout_budget.latency_budget_ms_p99,
+            "observed_error_ratio": observed_error_ratio,
+            "error_budget_ratio": rollout_budget.error_budget_ratio
+        }),
+    );
+    if admitted {
+        return Ok(());
+    }
+
+    Err(HttpFailure::service_unavailable(
+        "rollout_budget_exceeded",
+        format!(
+            "rollout budget exceeded: latency_p99_ms={} (budget {}), error_ratio={} (budget {})",
+            observed_latency_ms_p99,
+            rollout_budget.latency_budget_ms_p99,
+            observed_error_ratio,
+            rollout_budget.error_budget_ratio
+        ),
+    ))
+}
+
+fn parse_required_rollout_u64_header(
+    request: &tiny_http::Request,
+    header_name: &str,
+) -> Result<u64, HttpFailure> {
+    let raw = header_value(request, header_name).ok_or_else(|| {
+        HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("missing {header_name} header"),
+        )
+    })?;
+
+    raw.parse::<u64>().map_err(|_| {
+        HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("{header_name} must be an unsigned integer"),
+        )
+    })
+}
+
+fn parse_required_rollout_f64_header(
+    request: &tiny_http::Request,
+    header_name: &str,
+) -> Result<f64, HttpFailure> {
+    let raw = header_value(request, header_name).ok_or_else(|| {
+        HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("missing {header_name} header"),
+        )
+    })?;
+
+    let parsed = raw.parse::<f64>().map_err(|_| {
+        HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("{header_name} must be a number"),
+        )
+    })?;
+    if !parsed.is_finite() {
+        return Err(HttpFailure::bad_request(
+            "invalid_rollout_observation",
+            format!("{header_name} must be finite"),
+        ));
+    }
+    Ok(parsed)
+}
+
+fn header_value<'a>(request: &'a tiny_http::Request, header_name: &str) -> Option<&'a str> {
+    request
+        .headers()
+        .iter()
+        .find(|header| {
+            header
+                .field
+                .as_str()
+                .as_str()
+                .eq_ignore_ascii_case(header_name)
+        })
+        .map(|header| header.value.as_str())
+}
+
 fn handle_infer_inner<B: Backend>(
     request: &mut tiny_http::Request,
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
-    envelope: EnvelopeLimits,
+    envelope: &EnvelopeLimits,
     deadline: Deadline,
     request_id: u64,
 ) -> Result<String, HttpFailure> {
@@ -840,7 +1057,7 @@ mod tests {
     use super::{
         Deadline, InferConcurrencyLimiter, RequestIdGenerator, decode_json_inputs,
         decode_request_inputs, error_payload, infer_overload_failure, infer_success_payload,
-        parse_positive_u64, parse_positive_usize, request_id_header,
+        parse_positive_u64, parse_positive_usize, parse_rollout_budget_metadata, request_id_header,
     };
     use tiny_http::StatusCode;
 
@@ -893,6 +1110,27 @@ mod tests {
     }
 
     #[test]
+    fn rollout_budget_metadata_parses_required_fields() {
+        let metadata = parse_rollout_budget_metadata(
+            r#"{"schema_version":"1","service":"mnist-http","latency_budget_ms_p99":120,"error_budget_ratio":0.05,"window":"5m"}"#,
+        )
+        .expect("metadata must parse");
+        assert_eq!(metadata.service, "mnist-http");
+        assert_eq!(metadata.latency_budget_ms_p99, 120);
+        assert_eq!(metadata.error_budget_ratio, 0.05);
+        assert_eq!(metadata.window, "5m");
+    }
+
+    #[test]
+    fn rollout_budget_metadata_rejects_invalid_error_budget() {
+        let err = parse_rollout_budget_metadata(
+            r#"{"schema_version":"1","service":"mnist-http","latency_budget_ms_p99":120,"error_budget_ratio":1.5,"window":"5m"}"#,
+        )
+        .expect_err("error budget > 1 must fail");
+        assert!(err.contains("error_budget_ratio"));
+    }
+
+    #[test]
     fn request_ids_are_monotonic() {
         let request_ids = RequestIdGenerator::new();
         assert_eq!(request_ids.next_id(), 1);
@@ -928,7 +1166,10 @@ mod tests {
         let limiter = InferConcurrencyLimiter::new(1);
         let _permit = limiter.try_acquire().expect("first permit should acquire");
         let saturated = limiter.try_acquire();
-        assert!(saturated.is_none(), "second permit should fail when saturated");
+        assert!(
+            saturated.is_none(),
+            "second permit should fail when saturated"
+        );
 
         let err = infer_overload_failure(1);
         assert_eq!(err.status, StatusCode(503));
