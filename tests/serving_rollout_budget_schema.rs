@@ -10,8 +10,9 @@ fn fixture_path(name: &str) -> PathBuf {
 
 #[test]
 fn serving_rollout_budget_schema_fixture_has_required_contract_fields() {
-    let schema_text = fs::read_to_string(fixture_path("serving_rollout_budget_metadata.schema.json"))
-        .expect("read serving rollout budget schema fixture");
+    let schema_text =
+        fs::read_to_string(fixture_path("serving_rollout_budget_metadata.schema.json"))
+            .expect("read serving rollout budget schema fixture");
     let schema: serde_json::Value = serde_json::from_str(&schema_text).expect("parse schema json");
 
     assert_eq!(
@@ -24,9 +25,7 @@ fn serving_rollout_budget_schema_fixture_has_required_contract_fields() {
     );
     assert_eq!(schema.get("type").and_then(|v| v.as_str()), Some("object"));
     assert_eq!(
-        schema
-            .get("additionalProperties")
-            .and_then(|v| v.as_bool()),
+        schema.get("additionalProperties").and_then(|v| v.as_bool()),
         Some(false)
     );
 

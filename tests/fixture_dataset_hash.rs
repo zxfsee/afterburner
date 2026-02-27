@@ -21,7 +21,8 @@ fn sha256_hex(bytes: &[u8]) -> String {
 #[test]
 fn fixture_image_and_summary_hashes_are_stable() {
     let image = std::fs::read(fixture_path("mnist_0.png")).expect("read fixture image");
-    let summary = std::fs::read(fixture_path("mnist_0.summary.toml")).expect("read fixture summary");
+    let summary =
+        std::fs::read(fixture_path("mnist_0.summary.toml")).expect("read fixture summary");
 
     assert_eq!(
         sha256_hex(&image),

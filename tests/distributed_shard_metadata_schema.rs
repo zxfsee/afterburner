@@ -24,9 +24,7 @@ fn distributed_shard_metadata_schema_fixture_has_required_contract_fields() {
     );
     assert_eq!(schema.get("type").and_then(|v| v.as_str()), Some("object"));
     assert_eq!(
-        schema
-            .get("additionalProperties")
-            .and_then(|v| v.as_bool()),
+        schema.get("additionalProperties").and_then(|v| v.as_bool()),
         Some(false)
     );
 

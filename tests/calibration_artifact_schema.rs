@@ -24,9 +24,7 @@ fn calibration_artifact_schema_fixture_parses_and_validates_contract() {
     );
     assert_eq!(schema.get("type").and_then(|v| v.as_str()), Some("object"));
     assert_eq!(
-        schema
-            .get("additionalProperties")
-            .and_then(|v| v.as_bool()),
+        schema.get("additionalProperties").and_then(|v| v.as_bool()),
         Some(false)
     );
 

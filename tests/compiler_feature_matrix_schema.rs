@@ -24,9 +24,7 @@ fn compiler_feature_matrix_schema_fixture_has_required_contract_fields() {
     );
     assert_eq!(schema.get("type").and_then(|v| v.as_str()), Some("object"));
     assert_eq!(
-        schema
-            .get("additionalProperties")
-            .and_then(|v| v.as_bool()),
+        schema.get("additionalProperties").and_then(|v| v.as_bool()),
         Some(false)
     );
 
@@ -67,7 +65,10 @@ fn compiler_feature_matrix_schema_fixture_has_required_contract_fields() {
     let item_schema = matrix
         .get("items")
         .expect("schema.properties.backend_feature_matrix.items must exist");
-    assert_eq!(item_schema.get("type").and_then(|v| v.as_str()), Some("object"));
+    assert_eq!(
+        item_schema.get("type").and_then(|v| v.as_str()),
+        Some("object")
+    );
     assert_eq!(
         item_schema
             .get("additionalProperties")

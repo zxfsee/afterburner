@@ -28,7 +28,9 @@ fn wait_for_healthz(port: u16, timeout: Duration) {
     while Instant::now() < deadline {
         if let Ok(mut stream) = TcpStream::connect(("127.0.0.1", port)) {
             let _ = stream.set_read_timeout(Some(Duration::from_millis(250)));
-            let _ = stream.write_all(b"GET /healthz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n");
+            let _ = stream.write_all(
+                b"GET /healthz HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n",
+            );
             let mut buf = String::new();
             let _ = stream.read_to_string(&mut buf);
             if buf.contains("200 OK") {
@@ -44,7 +46,10 @@ fn wait_for_exit_ok(child: &mut Child, timeout: Duration) {
     let deadline = Instant::now() + timeout;
     while Instant::now() < deadline {
         if let Some(status) = child.try_wait().expect("try_wait child") {
-            assert!(status.success(), "server exit status must be success: {status}");
+            assert!(
+                status.success(),
+                "server exit status must be success: {status}"
+            );
             return;
         }
         thread::sleep(Duration::from_millis(25));
@@ -125,9 +130,7 @@ fn in_flight_infer_completes_on_sigint() {
         stream
             .write_all(request_header.as_bytes())
             .expect("write headers");
-        stream
-            .write_all(payload.as_bytes())
-            .expect("write body");
+        stream.write_all(payload.as_bytes()).expect("write body");
         stream.flush().expect("flush request");
 
         let mut response = String::new();
@@ -151,7 +154,10 @@ fn in_flight_infer_completes_on_sigint() {
     assert!(kill_status.success(), "kill -INT must succeed");
 
     let response = infer_handle.join().expect("join infer request thread");
-    assert!(response.contains("200 OK"), "response must be 200: {response}");
+    assert!(
+        response.contains("200 OK"),
+        "response must be 200: {response}"
+    );
     assert!(
         response.contains("\"batch_size\":16"),
         "response must contain batch payload: {response}"

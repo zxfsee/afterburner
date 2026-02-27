@@ -15,7 +15,8 @@ fn fixture_path(name: &str) -> PathBuf {
 fn event_line_matches_required_envelope_fixture_keys() {
     let fixture = fs::read_to_string(fixture_path("observability_envelope_required_keys.json"))
         .expect("read envelope fixture");
-    let fixture: serde_json::Value = serde_json::from_str(&fixture).expect("parse envelope fixture");
+    let fixture: serde_json::Value =
+        serde_json::from_str(&fixture).expect("parse envelope fixture");
     let required = fixture
         .get("required")
         .and_then(|v| v.as_array())
@@ -29,14 +30,22 @@ fn event_line_matches_required_envelope_fixture_keys() {
         })
         .collect::<BTreeSet<_>>();
 
-    let line = event_line("info", "infer_cli", "infer_done", json!({ "elapsed_ms": 1 }));
+    let line = event_line(
+        "info",
+        "infer_cli",
+        "infer_done",
+        json!({ "elapsed_ms": 1 }),
+    );
     let event: serde_json::Value = serde_json::from_str(&line).expect("parse event line");
     let obj = event
         .as_object()
         .expect("event line must be a top-level JSON object");
 
     let actual_keys = obj.keys().cloned().collect::<BTreeSet<_>>();
-    assert_eq!(actual_keys, required_keys, "event envelope keys must match fixture");
+    assert_eq!(
+        actual_keys, required_keys,
+        "event envelope keys must match fixture"
+    );
 
     assert!(
         event.get("ts_ms").and_then(|v| v.as_u64()).is_some(),

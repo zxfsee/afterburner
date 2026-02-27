@@ -330,14 +330,14 @@ impl ArtifactManifest {
             ));
         }
 
-        let digest = self
-            .signature
-            .value
-            .strip_prefix("sha256:")
-            .ok_or(ManifestError::InvalidField(
-                "signature.value",
-                "expected format sha256:<hex-digest>".to_string(),
-            ))?;
+        let digest =
+            self.signature
+                .value
+                .strip_prefix("sha256:")
+                .ok_or(ManifestError::InvalidField(
+                    "signature.value",
+                    "expected format sha256:<hex-digest>".to_string(),
+                ))?;
 
         if digest.len() != 64 || !digest.chars().all(|c| c.is_ascii_hexdigit()) {
             return Err(ManifestError::InvalidField(
@@ -551,8 +551,8 @@ fn infer_artifact_version(weights_path: &Path) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, ManifestError, SIGNATURE_KEY_ID_PLACEHOLDER,
-        SIGNATURE_SCHEME_PLACEHOLDER, parse_manifest_value,
+        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, ManifestError,
+        SIGNATURE_KEY_ID_PLACEHOLDER, SIGNATURE_SCHEME_PLACEHOLDER, parse_manifest_value,
     };
 
     #[test]
@@ -616,7 +616,9 @@ notes = "((x / 255.0) - 0.1307) / 0.3081"
 "#;
         let value: toml::Value = toml::from_str(manifest).expect("valid toml");
         let parsed = parse_manifest_value(&value).expect("parse manifest");
-        let err = parsed.validate_signature().expect_err("empty key id must fail");
+        let err = parsed
+            .validate_signature()
+            .expect_err("empty key id must fail");
         match err {
             ManifestError::InvalidField(field, detail) => {
                 assert_eq!(field, "signature.key_id");

@@ -16,7 +16,10 @@ fn preprocess_values_are_finite_and_denormalize_to_unit_interval() {
     let values: Vec<f32> = tensor.to_data().iter().collect();
 
     for (idx, value) in values.iter().copied().enumerate() {
-        assert!(value.is_finite(), "non-finite normalized value at index {idx}");
+        assert!(
+            value.is_finite(),
+            "non-finite normalized value at index {idx}"
+        );
 
         // Reverse ((x/255)-mean)/std back to x/255 and enforce [0,1] bounds.
         let unit = (value * MNIST_STD) + MNIST_MEAN;
