@@ -2,12 +2,12 @@
 
 ## TODO
 
-- Pretraining sample validator hook — parse `pretraining_sample_metadata` into a typed contract and reject invalid split/checksum values at boundary validation. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs`; Contracts: `artifact`; Boundary: `core-contract`
-- Post-training calibration consumer stub — load calibration metadata with inference artifacts and emit calibration contract fields in structured events. [Post-training, Inference] Scope: `src/infer.rs, src/cmd_infer.rs, tests/calibration_infer_gate.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
-- Framework adapter registry resolution gate — validate `BACKEND` selection against adapter registry metadata and fail fast on unsupported adapter/version pairs. [Frameworks, Runtime Infra] Scope: `src/main.rs, src/cmd_infer.rs, tests/framework_registry_resolution.rs`; Contracts: `CLI,artifact`; Boundary: `adapter-cli`
-- Serving rollout budget enforcement stub — parse rollout budget metadata and expose HTTP-adapter admission checks for latency/error budget policy. [Serving/Deployment Infra, Runtime Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs`; Contracts: `HTTP`; Boundary: `adapter-http`
-- Compiler feature matrix parity gate — compare effective Cargo feature combinations against fixture-declared supported backend feature matrix in CI tests. [Compilers, Kernels] Scope: `Cargo.toml, tests/compiler_feature_matrix_parity.rs`; Contracts: `none`; Boundary: `build-contract`
-- Distributed shard ownership uniqueness gate — validate shard ownership/rank uniqueness and `shard_index < shard_count` invariants from shard metadata fixtures. [Distributed Training, Data Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs`; Contracts: `artifact`; Boundary: `core-contract`
+- Pretraining metadata strict-shape gate — reject unknown keys in `pretraining_sample_metadata` and require exact contract shape at parse boundary. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs`; Contracts: `artifact`; Boundary: `core-contract`
+- Calibration metadata schema gate — validate calibration sidecar shape and emit explicit `calibration_metadata_invalid` event on parse failure. [Post-training, Inference] Scope: `src/infer.rs, src/cmd_infer.rs, tests/calibration_infer_gate.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
+- Adapter registry fixture source — move backend/version support matrix into fixture-backed metadata and keep CLI validation synchronized. [Frameworks, Runtime Infra] Scope: `src/cmd_infer.rs, tests/framework_registry_resolution.rs, tests/framework_adapter_registry_schema.rs`; Contracts: `CLI,artifact`; Boundary: `adapter-cli`
+- Rollout budget schema enforcement gate — enforce typed rollout budget metadata parsing from fixture schema before enabling HTTP admission policy. [Serving/Deployment Infra, Runtime Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs, tests/serving_rollout_budget_schema.rs`; Contracts: `HTTP`; Boundary: `adapter-http`
+- Burn feature matrix drift CI gate — compare runtime-accepted BACKEND set against fixture-declared compiler matrix and fail on divergence. [Compilers, Runtime Infra] Scope: `Cargo.toml, src/cmd_infer.rs, tests/compiler_feature_matrix_parity.rs`; Contracts: `CLI`; Boundary: `build-contract`
+- Distributed shard validator integration gate — run shard ownership/index validation against train-time shard metadata load path and surface structured failure event. [Distributed Training, RL Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs, tests/distributed_shard_metadata_schema.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
 
 ## [Trunk]
 
@@ -36,6 +36,7 @@
 - Add deterministic accuracy threshold gate ([641e796])
 - Add HTTP overload fixture gate ([c0e779b])
 - Validate signed manifest digest input ([e70afe8])
+- Implement changelog queue contract and adapter gates ([f8f847a])
 
 ### Changed
 
@@ -99,6 +100,7 @@
 - Clarify serialization rules for conflicting tasks and fix list formatting ([f060b0a])
 - Add guidance on explicit state, default backward-compat, and enforceable invariants ([90ec1c4])
 - Set cutover as default; require version bump for breaking public contracts ([e092954])
+- Refresh TODO queue and regenerate changelog ([36a1d02])
 
 ### Fixed
 
@@ -122,7 +124,8 @@
 - Add RL rollout schema fixture gate ([0eff34b])
 - Add kernel logits shape guard ([fcd1bc9])
 - Add distributed artifact copy smoke gate ([6f3bb1a])
-- Add schema fixture gates for metadata stubs ([b344f54])
+- Add schema fixture gates for metadata stubs ([2da5431])
+- Align schema fixture validation updates ([ad43da5])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -216,6 +219,9 @@
 [f060b0a]: https://github.com/zxfsee/afterburner/commit/f060b0ade388b94b2de5f9bc0d01a2aaa46cfdb4
 [90ec1c4]: https://github.com/zxfsee/afterburner/commit/90ec1c42b073cbb33f0fe865baa9481ed57fdee6
 [e092954]: https://github.com/zxfsee/afterburner/commit/e09295489879297f738e54f100acdea5ebbe8d23
-[b344f54]: https://github.com/zxfsee/afterburner/commit/b344f5426a888fd3b3925b7ce9f484556fb57a27
+[2da5431]: https://github.com/zxfsee/afterburner/commit/2da543111683141b51f9fd4565681d189b420bb4
+[36a1d02]: https://github.com/zxfsee/afterburner/commit/36a1d02086b97e9720d59c4086cf8da69b262d71
+[f8f847a]: https://github.com/zxfsee/afterburner/commit/f8f847a543a3fb84055a6f93599a119bccb5eae2
+[ad43da5]: https://github.com/zxfsee/afterburner/commit/ad43da5d0f2c6837fc8a0e3ce756bb2686fbe8b3
 
 <!-- generated by git-cliff -->
