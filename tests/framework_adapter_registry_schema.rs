@@ -55,6 +55,52 @@ fn framework_adapter_registry_schema_fixture_has_required_contract_fields() {
         Some("1")
     );
 
+    let supported_pairs = schema
+        .get("x-supported-adapter-version-pairs")
+        .and_then(|v| v.as_array())
+        .expect("schema.x-supported-adapter-version-pairs must be an array");
+    assert!(
+        !supported_pairs.is_empty(),
+        "schema.x-supported-adapter-version-pairs must include at least one pair"
+    );
+
+    let mut seen_pairs = BTreeSet::new();
+    for pair in supported_pairs {
+        let pair = pair
+            .as_object()
+            .expect("supported adapter/version pair entries must be objects");
+        let pair_fields = pair.keys().cloned().collect::<BTreeSet<_>>();
+        let expected_pair_fields = ["adapter", "version"]
+            .into_iter()
+            .map(str::to_string)
+            .collect::<BTreeSet<_>>();
+        assert_eq!(
+            pair_fields, expected_pair_fields,
+            "supported pair entries must contain only adapter/version fields"
+        );
+
+        let adapter = pair
+            .get("adapter")
+            .and_then(|v| v.as_str())
+            .expect("supported pair adapter must be a string");
+        assert!(
+            !adapter.is_empty(),
+            "supported pair adapter values must not be empty"
+        );
+        let version = pair
+            .get("version")
+            .and_then(|v| v.as_str())
+            .expect("supported pair version must be a string");
+        assert!(
+            !version.is_empty(),
+            "supported pair version values must not be empty"
+        );
+        assert!(
+            seen_pairs.insert((adapter.to_string(), version.to_string())),
+            "duplicate supported adapter/version pair: {adapter}:{version}"
+        );
+    }
+
     let adapters = schema
         .get("properties")
         .and_then(|v| v.get("adapters"))

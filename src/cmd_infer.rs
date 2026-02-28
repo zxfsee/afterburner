@@ -3,8 +3,9 @@ use std::path::Path;
 use std::time::Instant;
 
 use afterburner::infer::{
-    CalibrationMetadata, InferError, load_calibration_metadata, load_model, logits_from_model,
-    manifest_path_for_weights, parse_weights_path_from_args, validate_artifacts,
+    CalibrationMetadata, CalibrationMetadataLoadError, InferError, load_calibration_metadata,
+    load_model, logits_from_model, manifest_path_for_weights, parse_weights_path_from_args,
+    validate_artifacts,
 };
 use afterburner::manifest::ArtifactManifest;
 use afterburner::manifest::ManifestError;
@@ -17,38 +18,30 @@ use serde_json::{Value, json};
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
-const ADAPTER_REGISTRY_SCHEMA_VERSION: &str = "1";
-
-const ADAPTER_REGISTRY: AdapterRegistryMetadata = AdapterRegistryMetadata {
-    schema_version: ADAPTER_REGISTRY_SCHEMA_VERSION,
-    adapters: &[
-        AdapterRegistryEntry {
-            adapter: "wgpu",
-            version: "0.1.0",
-        },
-        AdapterRegistryEntry {
-            adapter: "cpu",
-            version: "0.1.0",
-        },
-    ],
-};
+const ADAPTER_REGISTRY_SCHEMA_FIXTURE: &str =
+    include_str!("../fixtures/framework_adapter_registry.schema.json");
+const ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY: &str = "x-supported-adapter-version-pairs";
 
 struct AdapterRegistryMetadata {
-    schema_version: &'static str,
-    adapters: &'static [AdapterRegistryEntry],
+    schema_version: String,
+    adapters: Vec<AdapterRegistryEntry>,
 }
 
 struct AdapterRegistryEntry {
-    adapter: &'static str,
-    version: &'static str,
+    adapter: String,
+    version: String,
 }
 
 #[derive(Debug)]
 enum CmdInferError {
     Infer(InferError),
+    AdapterRegistryInvalid {
+        detail: String,
+    },
     UnsupportedAdapterVersion {
         backend: String,
         artifact_version: String,
+        schema_version: String,
     },
 }
 
@@ -80,9 +73,21 @@ where
     let backend = resolve_backend();
     let t0 = Instant::now();
     let artifact = weights_path.to_string_lossy().to_string();
-    let calibration = load_calibration_metadata(&weights_path);
+    let adapter_registry = load_adapter_registry_metadata()
+        .map_err(|detail| CmdInferError::AdapterRegistryInvalid { detail })?;
+    let calibration = match load_calibration_metadata(&weights_path) {
+        Ok(calibration) => calibration,
+        Err(err) => {
+            emit_calibration_metadata_invalid(&err);
+            None
+        }
+    };
     let artifact_version = load_artifact_version(&weights_path).map_err(CmdInferError::Infer)?;
-    validate_backend_selection(backend.as_str(), artifact_version.as_str())?;
+    validate_backend_selection(
+        &adapter_registry,
+        backend.as_str(),
+        artifact_version.as_str(),
+    )?;
 
     match backend.as_str() {
         "cpu" => {
@@ -107,6 +112,7 @@ where
             return Err(CmdInferError::UnsupportedAdapterVersion {
                 backend,
                 artifact_version,
+                schema_version: adapter_registry.schema_version,
             });
         }
     }
@@ -134,8 +140,97 @@ fn load_artifact_version(weights_path: &Path) -> Result<String, InferError> {
     Ok(manifest.artifact_version)
 }
 
-fn validate_backend_selection(backend: &str, artifact_version: &str) -> Result<(), CmdInferError> {
-    let is_supported = ADAPTER_REGISTRY
+fn load_adapter_registry_metadata() -> Result<AdapterRegistryMetadata, String> {
+    let schema: Value = serde_json::from_str(ADAPTER_REGISTRY_SCHEMA_FIXTURE)
+        .map_err(|err| format!("failed to parse adapter registry schema fixture json: {err}"))?;
+    let root = schema
+        .as_object()
+        .ok_or_else(|| "adapter registry schema fixture must be a json object".to_string())?;
+
+    let properties = root
+        .get("properties")
+        .and_then(Value::as_object)
+        .ok_or_else(|| "adapter registry schema fixture missing `properties` object".to_string())?;
+    let schema_version = properties
+        .get("schema_version")
+        .and_then(|v| v.get("const"))
+        .and_then(Value::as_str)
+        .ok_or_else(|| {
+            "adapter registry schema fixture missing `properties.schema_version.const`".to_string()
+        })?
+        .to_string();
+
+    let adapters = root
+        .get(ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY)
+        .and_then(Value::as_array)
+        .ok_or_else(|| {
+            format!(
+                "adapter registry schema fixture missing `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}` array"
+            )
+        })?;
+
+    if adapters.is_empty() {
+        return Err(format!(
+            "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}` must not be empty"
+        ));
+    }
+
+    let adapters = adapters
+        .iter()
+        .enumerate()
+        .map(|(idx, entry)| {
+            let object = entry.as_object().ok_or_else(|| {
+                format!(
+                    "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}[{idx}]` must be an object"
+                )
+            })?;
+
+            let adapter = object
+                .get("adapter")
+                .and_then(Value::as_str)
+                .ok_or_else(|| {
+                    format!(
+                        "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}[{idx}].adapter` must be a string"
+                    )
+                })?
+                .to_string();
+            if adapter.is_empty() {
+                return Err(format!(
+                    "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}[{idx}].adapter` must not be empty"
+                ));
+            }
+
+            let version = object
+                .get("version")
+                .and_then(Value::as_str)
+                .ok_or_else(|| {
+                    format!(
+                        "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}[{idx}].version` must be a string"
+                    )
+                })?
+                .to_string();
+            if version.is_empty() {
+                return Err(format!(
+                    "adapter registry schema fixture `{ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY}[{idx}].version` must not be empty"
+                ));
+            }
+
+            Ok(AdapterRegistryEntry { adapter, version })
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+
+    Ok(AdapterRegistryMetadata {
+        schema_version,
+        adapters,
+    })
+}
+
+fn validate_backend_selection(
+    adapter_registry: &AdapterRegistryMetadata,
+    backend: &str,
+    artifact_version: &str,
+) -> Result<(), CmdInferError> {
+    let is_supported = adapter_registry
         .adapters
         .iter()
         .any(|entry| entry.adapter == backend && entry.version == artifact_version);
@@ -147,6 +242,7 @@ fn validate_backend_selection(backend: &str, artifact_version: &str) -> Result<(
     Err(CmdInferError::UnsupportedAdapterVersion {
         backend: backend.to_string(),
         artifact_version: artifact_version.to_string(),
+        schema_version: adapter_registry.schema_version.clone(),
     })
 }
 
@@ -199,12 +295,37 @@ fn include_calibration_fields(fields: &mut Value, calibration: Option<&Calibrati
     );
 }
 
+fn emit_calibration_metadata_invalid(err: &CalibrationMetadataLoadError) {
+    emit_event(
+        "error",
+        "infer_cli",
+        "calibration_metadata_invalid",
+        json!({
+            "kind": err.kind(),
+            "metadata": err.path().to_string_lossy().to_string(),
+            "detail": err.detail(),
+        }),
+    );
+}
+
 fn emit_error(err: &CmdInferError) {
     match err {
         CmdInferError::Infer(err) => emit_infer_error(err),
+        CmdInferError::AdapterRegistryInvalid { detail } => {
+            emit_event(
+                "error",
+                "infer_cli",
+                "infer_error",
+                json!({
+                    "kind": "adapter_registry_invalid",
+                    "detail": detail,
+                }),
+            );
+        }
         CmdInferError::UnsupportedAdapterVersion {
             backend,
             artifact_version,
+            schema_version,
         } => {
             emit_event(
                 "error",
@@ -214,7 +335,7 @@ fn emit_error(err: &CmdInferError) {
                     "kind": "adapter_registry_unsupported",
                     "backend": backend,
                     "artifact_version": artifact_version,
-                    "schema_version": ADAPTER_REGISTRY.schema_version,
+                    "schema_version": schema_version,
                 }),
             );
         }

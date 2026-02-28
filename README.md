@@ -121,6 +121,7 @@ Training checkpoints, metrics, and logs are explicitly excluded from the inferen
 Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope fields:
 `ts_ms`, `level`, `source`, `event`, `fields`.
 `afterburner infer` includes optional `fields.calibration` contract fields (`schema_version`, `calibration_artifact`, `artifact_version`, `method`, `created_at_unix_ms`) when `calibration_artifact_metadata.json` is present beside the selected artifact.
+If that sidecar exists but fails schema/parse validation, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and accepts
 an optional artifact override via `afterburner eval --artifact <path>` (or legacy positional artifact).

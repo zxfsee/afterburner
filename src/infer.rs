@@ -1,4 +1,5 @@
 use std::env;
+use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
 use burn::prelude::*;
@@ -20,6 +21,33 @@ pub struct CalibrationMetadata {
     pub artifact_version: String,
     pub method: String,
     pub created_at_unix_ms: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CalibrationMetadataLoadError {
+    Read { path: PathBuf, detail: String },
+    Invalid { path: PathBuf, detail: String },
+}
+
+impl CalibrationMetadataLoadError {
+    pub fn kind(&self) -> &'static str {
+        match self {
+            Self::Read { .. } => "read_error",
+            Self::Invalid { .. } => "parse_error",
+        }
+    }
+
+    pub fn path(&self) -> &Path {
+        match self {
+            Self::Read { path, .. } | Self::Invalid { path, .. } => path.as_path(),
+        }
+    }
+
+    pub fn detail(&self) -> &str {
+        match self {
+            Self::Read { detail, .. } | Self::Invalid { detail, .. } => detail.as_str(),
+        }
+    }
 }
 
 /// Default inference artifact path (ADR-002).
@@ -86,36 +114,96 @@ pub fn calibration_metadata_path_for_weights(weights_path: &Path) -> PathBuf {
 
 /// Load optional calibration metadata sidecar from the artifact directory.
 ///
-/// Returns `None` when the sidecar is absent or invalid.
-pub fn load_calibration_metadata(weights_path: &Path) -> Option<CalibrationMetadata> {
+/// Returns `Ok(None)` when the sidecar is absent.
+pub fn load_calibration_metadata(
+    weights_path: &Path,
+) -> Result<Option<CalibrationMetadata>, CalibrationMetadataLoadError> {
     let metadata_path = calibration_metadata_path_for_weights(weights_path);
-    let contents = std::fs::read_to_string(metadata_path).ok()?;
-    let value: Value = serde_json::from_str(&contents).ok()?;
-    let object = value.as_object()?;
+    let contents = match std::fs::read_to_string(&metadata_path) {
+        Ok(contents) => contents,
+        Err(err) if err.kind() == ErrorKind::NotFound => return Ok(None),
+        Err(err) => {
+            return Err(CalibrationMetadataLoadError::Read {
+                path: metadata_path,
+                detail: err.to_string(),
+            });
+        }
+    };
 
-    let schema_version = object.get("schema_version")?.as_str()?;
+    let metadata = parse_calibration_metadata(contents.as_str()).map_err(|detail| {
+        CalibrationMetadataLoadError::Invalid {
+            path: metadata_path,
+            detail,
+        }
+    })?;
+    Ok(Some(metadata))
+}
+
+fn parse_calibration_metadata(contents: &str) -> Result<CalibrationMetadata, String> {
+    let value: Value =
+        serde_json::from_str(contents).map_err(|err| format!("invalid json: {err}"))?;
+    let object = value
+        .as_object()
+        .ok_or_else(|| "metadata must be a JSON object".to_string())?;
+
+    let required_fields = [
+        "schema_version",
+        "calibration_artifact",
+        "artifact_version",
+        "method",
+        "created_at_unix_ms",
+    ];
+
+    for field in required_fields {
+        if !object.contains_key(field) {
+            return Err(format!("missing required field `{field}`"));
+        }
+    }
+
+    for field in object.keys() {
+        if !required_fields.iter().any(|allowed| allowed == field) {
+            return Err(format!("unknown field `{field}`"));
+        }
+    }
+
+    let schema_version = object
+        .get("schema_version")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "schema_version must be a string".to_string())?;
     if schema_version != "1" {
-        return None;
+        return Err("schema_version must be \"1\"".to_string());
     }
 
-    let calibration_artifact = object.get("calibration_artifact")?.as_str()?;
+    let calibration_artifact = object
+        .get("calibration_artifact")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "calibration_artifact must be a string".to_string())?;
     if calibration_artifact.is_empty() {
-        return None;
+        return Err("calibration_artifact must be non-empty".to_string());
     }
 
-    let artifact_version = object.get("artifact_version")?.as_str()?;
+    let artifact_version = object
+        .get("artifact_version")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "artifact_version must be a string".to_string())?;
     if artifact_version.is_empty() {
-        return None;
+        return Err("artifact_version must be non-empty".to_string());
     }
 
-    let method = object.get("method")?.as_str()?;
+    let method = object
+        .get("method")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "method must be a string".to_string())?;
     if method.is_empty() {
-        return None;
+        return Err("method must be non-empty".to_string());
     }
 
-    let created_at_unix_ms = object.get("created_at_unix_ms")?.as_u64()?;
+    let created_at_unix_ms = object
+        .get("created_at_unix_ms")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| "created_at_unix_ms must be a non-negative integer".to_string())?;
 
-    Some(CalibrationMetadata {
+    Ok(CalibrationMetadata {
         schema_version: 1,
         calibration_artifact: calibration_artifact.to_string(),
         artifact_version: artifact_version.to_string(),

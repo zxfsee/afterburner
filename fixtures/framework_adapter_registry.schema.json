@@ -2,6 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://afterburner.local/schemas/framework-adapter-registry/v1",
   "title": "Framework Adapter Registry v1",
+  "x-supported-adapter-version-pairs": [
+    {
+      "adapter": "wgpu",
+      "version": "0.1.0"
+    },
+    {
+      "adapter": "cpu",
+      "version": "0.1.0"
+    }
+  ],
   "type": "object",
   "additionalProperties": false,
   "required": [

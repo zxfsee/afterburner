@@ -1,0 +1,1 @@
+{"error":{"detail":"rollout budget exceeded: latency_p99_ms=140 (budget 100), error_ratio=0.08 (budget 0.05)","kind":"rollout_budget_exceeded"}}
