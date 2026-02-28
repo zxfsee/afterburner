@@ -43,6 +43,9 @@ Do not include temporary heuristics that reflect a single session correction.
     - a new inspectable artifact/event (structured output under `artifacts/`).
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
   - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
+  - Queue balance rule:
+    - In any top-3 TODO window, at least one TODO must be `Kind: behavior` or `Kind: mixed`.
+    - Do not queue more than two consecutive `Kind: gate` TODOs unless explicitly requested by the user.
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
@@ -60,6 +63,9 @@ Do not include temporary heuristics that reflect a single session correction.
   - Serving/Deployment Infra
 - When adding the next TODO, prefer an underrepresented focus area unless blocked by an explicit dependency. If blocked, state the dependency in the TODO.
 - Maintain production-grade maintainability standards; reject code that is correct but structurally poor.
+- TODO title conventions:
+  - If `Kind: gate`, include “gate/CI/fixture” in the title.
+  - If `Kind: behavior` or `Kind: mixed`, do not label the title as “gate”.
 - When introducing a new subsystem (e.g. UI, persistence layer, RPC/transport, orchestration):
   - Do not invent a framework or choose a technology implicitly.
   - First check whether a stack is already established in the repo.
