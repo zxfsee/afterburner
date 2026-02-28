@@ -9,12 +9,12 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining metadata strict-shape gate — reject unknown keys in `pretraining_sample_metadata` and require exact contract shape at parse boundary. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs`; Contracts: `artifact`; Boundary: `core-contract`
 - Calibration metadata schema gate — validate calibration sidecar shape and emit explicit `calibration_metadata_invalid` event on parse failure. [Post-training, Inference] Scope: `src/infer.rs, src/cmd_infer.rs, tests/calibration_infer_gate.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
 - Adapter registry fixture source — move backend/version support matrix into fixture-backed metadata and keep CLI validation synchronized. [Frameworks, Runtime Infra] Scope: `src/cmd_infer.rs, tests/framework_registry_resolution.rs, tests/framework_adapter_registry_schema.rs`; Contracts: `CLI,artifact`; Boundary: `adapter-cli`
-- Rollout budget schema enforcement gate — enforce typed rollout budget metadata parsing from fixture schema before enabling HTTP admission policy. [Serving/Deployment Infra, Runtime Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs, tests/serving_rollout_budget_schema.rs`; Contracts: `HTTP`; Boundary: `adapter-http`
 - Burn feature matrix drift CI gate — compare runtime-accepted BACKEND set against fixture-declared compiler matrix and fail on divergence. [Compilers, Runtime Infra] Scope: `Cargo.toml, src/cmd_infer.rs, tests/compiler_feature_matrix_parity.rs`; Contracts: `CLI`; Boundary: `build-contract`
 - Distributed shard validator integration gate — run shard ownership/index validation against train-time shard metadata load path and surface structured failure event. [Distributed Training, RL Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs, tests/distributed_shard_metadata_schema.rs`; Contracts: `artifact,event`; Boundary: `core-contract`
+- Pretraining schema-parity drift gate — compare parser-enforced pretraining metadata shape against fixture schema and fail on divergence. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs, tests/pretraining_sample_schema.rs, fixtures/pretraining_sample_metadata.schema.json`; Contracts: `artifact`; Boundary: `core-contract`
+- Rollout admission event contract gate — pin `rollout_budget_admission` and denial payload structure with fixture-backed assertions to prevent HTTP/event drift. [Serving/Deployment Infra, Experimentation/Eval Infra] Scope: `src/bin/afterburner_http.rs, tests/serving_rollout_budget_enforcement.rs, fixtures/serving_rollout_budget_metadata.schema.json`; Contracts: `HTTP,event`; Boundary: `adapter-http`
 
 ## [Trunk]
 
