@@ -46,6 +46,7 @@ Do not include temporary heuristics that reflect a single session correction.
   - Queue balance rule:
     - In any top-3 TODO window, at least one TODO must be `Kind: behavior` or `Kind: mixed`.
     - Do not queue more than two consecutive `Kind: gate` TODOs unless explicitly requested by the user.
+    - Any `Kind: behavior` TODO must introduce or strengthen at least one gate that fails before the change and passes after.
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
