@@ -49,7 +49,7 @@ footer = """
 [package.metadata.git-cliff.git]
 conventional_commits = true
 filter_unconventional = false
-remote = "public"
+remote = "upstream"
 commit_parsers = [
   { message = "^feat", group = "Added" },
   { message = "^fix", group = "Fixed" },

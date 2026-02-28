@@ -18,4 +18,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - If a subagent stops reporting after repeated waits, interrupt once, then inspect the assigned workspace state directly and recover from recorded commits/diffs instead of waiting indefinitely.
 - If `NOTE.md` changes during active work, keep it attached to that same change/commit stream rather than leaving it as an unrelated local edit.
 - In the main repo workspace, assume the shell already inherits required tooling; run `just`/tooling directly first, and only use `direnv exec` for isolated workspace contexts that actually lack deps.
-- For changelog regeneration in this environment, prefer `git-cliff --offline` (or equivalent recipe behavior) to avoid remote metadata/rate-limit/cache-path failures.
+- Do not volunteer half-finished reminders (optional cleanup/follow-up) in normal status updates; report only completed state and required blockers unless the user asks for open items.
