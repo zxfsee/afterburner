@@ -58,3 +58,23 @@ fn pretraining_sample_metadata_rejects_invalid_checksum() {
         )
     );
 }
+
+#[test]
+fn pretraining_sample_metadata_rejects_unknown_key() {
+    let metadata = serde_json::json!({
+        "schema_version": "1",
+        "source": "c4/en",
+        "split": "train",
+        "checksum": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "extra": "unexpected"
+    });
+
+    let err = parse_pretraining_sample_metadata(&metadata).expect_err("unknown key must fail");
+    assert_eq!(
+        err,
+        PretrainingSampleMetadataError::InvalidField(
+            "pretraining_sample_metadata",
+            "unknown field: extra".to_string()
+        )
+    );
+}

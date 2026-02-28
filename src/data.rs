@@ -112,6 +112,18 @@ pub fn parse_pretraining_sample_metadata(
             "expected object".to_string(),
         ))?;
 
+    for key in object.keys() {
+        if !matches!(
+            key.as_str(),
+            "schema_version" | "source" | "split" | "checksum"
+        ) {
+            return Err(PretrainingSampleMetadataError::InvalidField(
+                "pretraining_sample_metadata",
+                format!("unknown field: {key}"),
+            ));
+        }
+    }
+
     let schema_version = read_required_string(object, "schema_version")?;
     if schema_version != "1" {
         return Err(PretrainingSampleMetadataError::InvalidField(
