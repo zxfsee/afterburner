@@ -28,6 +28,8 @@ const DEFAULT_HTTP_MAX_CONCURRENCY: usize = 4;
 const EXTRA_HTTP_ACCEPT_WORKERS: usize = 1;
 const HTTP_RECV_TIMEOUT_MS: u64 = 200;
 const HTTP_ROLLOUT_BUDGET_METADATA_ENV: &str = "HTTP_ROLLOUT_BUDGET_METADATA_JSON";
+const ROLLOUT_BUDGET_SCHEMA_JSON: &str =
+    include_str!("../../fixtures/serving_rollout_budget_metadata.schema.json");
 const ROLLOUT_LATENCY_HEADER: &str = "X-Rollout-Observed-Latency-P99-Ms";
 const ROLLOUT_ERROR_HEADER: &str = "X-Rollout-Observed-Error-Ratio";
 
@@ -210,6 +212,18 @@ struct RolloutBudgetMetadata {
     latency_budget_ms_p99: u64,
     error_budget_ratio: f64,
     window: String,
+}
+
+#[derive(Debug)]
+struct RolloutBudgetSchema {
+    required_fields: Vec<String>,
+    allowed_fields: Vec<String>,
+    schema_version: String,
+    service_min_length: usize,
+    latency_minimum: u64,
+    error_minimum: f64,
+    error_maximum: f64,
+    window_min_length: usize,
 }
 
 #[derive(Debug, Default)]
@@ -397,58 +411,248 @@ fn load_rollout_budget_metadata_from_env() -> Option<RolloutBudgetMetadata> {
 }
 
 fn parse_rollout_budget_metadata(raw: &str) -> Result<RolloutBudgetMetadata, String> {
+    let schema = parse_rollout_budget_schema()?;
     let value: Value = serde_json::from_str(raw).map_err(|err| format!("invalid json: {err}"))?;
     let object = value
         .as_object()
         .ok_or_else(|| "rollout metadata must be an object".to_string())?;
+    for required_field in &schema.required_fields {
+        if !object.contains_key(required_field) {
+            return Err(format!(
+                "missing required field `{required_field}` in rollout metadata"
+            ));
+        }
+    }
+    for key in object.keys() {
+        if !schema.allowed_fields.iter().any(|expected| expected == key) {
+            return Err(format!("unknown field `{key}` in rollout metadata"));
+        }
+    }
 
     let schema_version = object
         .get("schema_version")
         .and_then(Value::as_str)
         .ok_or_else(|| "schema_version must be a string".to_string())?;
-    if schema_version != "1" {
-        return Err("schema_version must be \"1\"".to_string());
+    if schema_version != schema.schema_version.as_str() {
+        return Err(format!(
+            "schema_version must be \"{}\"",
+            schema.schema_version
+        ));
     }
 
     let service = object
         .get("service")
         .and_then(Value::as_str)
-        .ok_or_else(|| "service must be a string".to_string())?
-        .trim()
-        .to_string();
-    if service.is_empty() {
-        return Err("service must be non-empty".to_string());
+        .ok_or_else(|| "service must be a string".to_string())?;
+    if service.chars().count() < schema.service_min_length {
+        return Err(format!(
+            "service must have minLength >= {}",
+            schema.service_min_length
+        ));
     }
 
     let latency_budget_ms_p99 = object
         .get("latency_budget_ms_p99")
         .and_then(Value::as_u64)
-        .ok_or_else(|| "latency_budget_ms_p99 must be an integer >= 0".to_string())?;
+        .ok_or_else(|| "latency_budget_ms_p99 must be an integer".to_string())?;
+    if latency_budget_ms_p99 < schema.latency_minimum {
+        return Err(format!(
+            "latency_budget_ms_p99 must be >= {}",
+            schema.latency_minimum
+        ));
+    }
 
     let error_budget_ratio = object
         .get("error_budget_ratio")
         .and_then(Value::as_f64)
         .ok_or_else(|| "error_budget_ratio must be a number in [0, 1]".to_string())?;
-    if !error_budget_ratio.is_finite() || !(0.0..=1.0).contains(&error_budget_ratio) {
+    if !error_budget_ratio.is_finite()
+        || error_budget_ratio < schema.error_minimum
+        || error_budget_ratio > schema.error_maximum
+    {
         return Err("error_budget_ratio must be a number in [0, 1]".to_string());
     }
 
     let window = object
         .get("window")
         .and_then(Value::as_str)
-        .ok_or_else(|| "window must be a string".to_string())?
-        .trim()
-        .to_string();
-    if window.is_empty() {
-        return Err("window must be non-empty".to_string());
+        .ok_or_else(|| "window must be a string".to_string())?;
+    if window.chars().count() < schema.window_min_length {
+        return Err(format!(
+            "window must have minLength >= {}",
+            schema.window_min_length
+        ));
     }
 
     Ok(RolloutBudgetMetadata {
-        service,
+        service: service.to_string(),
         latency_budget_ms_p99,
         error_budget_ratio,
-        window,
+        window: window.to_string(),
     })
+}
+
+fn parse_rollout_budget_schema() -> Result<RolloutBudgetSchema, String> {
+    let value: Value = serde_json::from_str(ROLLOUT_BUDGET_SCHEMA_JSON)
+        .map_err(|err| format!("invalid rollout budget schema fixture json: {err}"))?;
+    let root = value
+        .as_object()
+        .ok_or_else(|| "rollout budget schema fixture must be a json object".to_string())?;
+
+    let root_type = root
+        .get("type")
+        .and_then(Value::as_str)
+        .ok_or_else(|| "rollout budget schema fixture missing `type`".to_string())?;
+    if root_type != "object" {
+        return Err("rollout budget schema fixture `type` must be `object`".to_string());
+    }
+
+    let additional_properties = root
+        .get("additionalProperties")
+        .and_then(Value::as_bool)
+        .ok_or_else(|| {
+            "rollout budget schema fixture missing `additionalProperties`".to_string()
+        })?;
+    if additional_properties {
+        return Err(
+            "rollout budget schema fixture must set `additionalProperties` to false".to_string(),
+        );
+    }
+
+    let required_fields =
+        root.get("required")
+            .and_then(Value::as_array)
+            .ok_or_else(|| "rollout budget schema fixture missing `required`".to_string())?
+            .iter()
+            .map(|value| {
+                value.as_str().map(ToOwned::to_owned).ok_or_else(|| {
+                    "rollout budget schema `required` items must be strings".to_string()
+                })
+            })
+            .collect::<Result<Vec<_>, _>>()?;
+
+    let properties = root
+        .get("properties")
+        .and_then(Value::as_object)
+        .ok_or_else(|| "rollout budget schema fixture missing `properties`".to_string())?;
+    let allowed_fields = properties.keys().cloned().collect::<Vec<_>>();
+
+    let schema_version = schema_property_const(properties, "schema_version")?;
+    let service_min_length = schema_property_string_min_length(properties, "service")?;
+    let latency_minimum = schema_property_integer_minimum(properties, "latency_budget_ms_p99")?;
+    let (error_minimum, error_maximum) =
+        schema_property_number_range(properties, "error_budget_ratio")?;
+    let window_min_length = schema_property_string_min_length(properties, "window")?;
+
+    Ok(RolloutBudgetSchema {
+        required_fields,
+        allowed_fields,
+        schema_version,
+        service_min_length,
+        latency_minimum,
+        error_minimum,
+        error_maximum,
+        window_min_length,
+    })
+}
+
+fn schema_property_const(
+    properties: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<String, String> {
+    let property = schema_property(properties, field)?;
+    property
+        .get("const")
+        .and_then(Value::as_str)
+        .map(ToOwned::to_owned)
+        .ok_or_else(|| format!("rollout budget schema property `{field}` missing string `const`"))
+}
+
+fn schema_property_string_min_length(
+    properties: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<usize, String> {
+    let property = schema_property(properties, field)?;
+    let field_type = property
+        .get("type")
+        .and_then(Value::as_str)
+        .ok_or_else(|| format!("rollout budget schema property `{field}` missing `type`"))?;
+    if field_type != "string" {
+        return Err(format!(
+            "rollout budget schema property `{field}` must use `type: string`"
+        ));
+    }
+
+    let min_length = property
+        .get("minLength")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| format!("rollout budget schema property `{field}` missing `minLength`"))?;
+    usize::try_from(min_length).map_err(|_| {
+        format!("rollout budget schema property `{field}` minLength {min_length} exceeds usize")
+    })
+}
+
+fn schema_property_integer_minimum(
+    properties: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<u64, String> {
+    let property = schema_property(properties, field)?;
+    let field_type = property
+        .get("type")
+        .and_then(Value::as_str)
+        .ok_or_else(|| format!("rollout budget schema property `{field}` missing `type`"))?;
+    if field_type != "integer" {
+        return Err(format!(
+            "rollout budget schema property `{field}` must use `type: integer`"
+        ));
+    }
+
+    property
+        .get("minimum")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| {
+            format!("rollout budget schema property `{field}` missing integer `minimum`")
+        })
+}
+
+fn schema_property_number_range(
+    properties: &serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<(f64, f64), String> {
+    let property = schema_property(properties, field)?;
+    let field_type = property
+        .get("type")
+        .and_then(Value::as_str)
+        .ok_or_else(|| format!("rollout budget schema property `{field}` missing `type`"))?;
+    if field_type != "number" {
+        return Err(format!(
+            "rollout budget schema property `{field}` must use `type: number`"
+        ));
+    }
+
+    let minimum = property
+        .get("minimum")
+        .and_then(Value::as_f64)
+        .ok_or_else(|| {
+            format!("rollout budget schema property `{field}` missing number `minimum`")
+        })?;
+    let maximum = property
+        .get("maximum")
+        .and_then(Value::as_f64)
+        .ok_or_else(|| {
+            format!("rollout budget schema property `{field}` missing number `maximum`")
+        })?;
+    Ok((minimum, maximum))
+}
+
+fn schema_property<'a>(
+    properties: &'a serde_json::Map<String, Value>,
+    field: &str,
+) -> Result<&'a serde_json::Map<String, Value>, String> {
+    properties
+        .get(field)
+        .and_then(Value::as_object)
+        .ok_or_else(|| format!("rollout budget schema fixture missing `{field}` property"))
 }
 
 #[derive(Debug)]
@@ -1128,6 +1332,25 @@ mod tests {
         )
         .expect_err("error budget > 1 must fail");
         assert!(err.contains("error_budget_ratio"));
+    }
+
+    #[test]
+    fn rollout_budget_metadata_rejects_unknown_fields() {
+        let err = parse_rollout_budget_metadata(
+            r#"{"schema_version":"1","service":"mnist-http","latency_budget_ms_p99":120,"error_budget_ratio":0.05,"window":"5m","unexpected":"nope"}"#,
+        )
+        .expect_err("unknown fields must fail");
+        assert!(err.contains("unknown field"));
+    }
+
+    #[test]
+    fn rollout_budget_metadata_keeps_untrimmed_strings_per_schema() {
+        let metadata = parse_rollout_budget_metadata(
+            r#"{"schema_version":"1","service":"  ","latency_budget_ms_p99":120,"error_budget_ratio":0.05,"window":"  "}"#,
+        )
+        .expect("schema minLength allows non-empty untrimmed strings");
+        assert_eq!(metadata.service, "  ");
+        assert_eq!(metadata.window, "  ");
     }
 
     #[test]
