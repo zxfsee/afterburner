@@ -63,4 +63,4 @@ test-cargo:
 
 # regenerate CHANGELOG.md from git history
 changelog:
-    git-cliff -c Cargo.toml -o CHANGELOG.md
+    git-cliff -o CHANGELOG.md
