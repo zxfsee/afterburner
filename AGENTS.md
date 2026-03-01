@@ -47,6 +47,11 @@ Do not include temporary heuristics that reflect a single session correction.
     - In any top-3 TODO window, at least one TODO must be `Kind: behavior` or `Kind: mixed`.
     - Do not queue more than two consecutive `Kind: gate` TODOs unless explicitly requested by the user.
     - Any `Kind: behavior` TODO must introduce or strengthen at least one gate that fails before the change and passes after.
+  - TODO Kind classification (required):
+    - Every TODO must declare `Kind: gate | behavior | mixed`.
+    - `Kind: gate` = verification-only (tests/fixtures/contracts/CI).
+    - `Kind: behavior` = runtime or training behavior change.
+    - `Kind: mixed` = behavior change plus gate in the same TODO.
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
@@ -90,3 +95,8 @@ Do not include temporary heuristics that reflect a single session correction.
 - Any pattern that materially affects architecture boundaries, public contracts, persistence, runtime model, or build/CI strategy requires an ADR.
 - If ADR required, the trade-off rationale belongs in the ADR; otherwise in the checkpoint report.
 - Avoid pattern-driven refactors unless required to satisfy a TODO or unblock future work.
+
+### Governance edits
+
+- Changes to `AGENTS.md`, TODO policy rules, or governance constraints require explicit user approval.
+- Agents may propose governance changes but must not apply them automatically.

@@ -2,12 +2,47 @@
 
 ## TODO
 
-- Burn feature matrix drift CI parity — compare runtime-accepted BACKEND set against fixture-declared compiler matrix and fail on divergence. [Compilers, Runtime Infra] Scope: `Cargo.toml, src/cmd_infer.rs, tests/compiler_feature_matrix_parity.rs`; Contracts: `CLI`; Boundary: `build-contract`; Kind: `mixed`
-- Distributed shard validator integration — run shard ownership/index validation against train-time shard metadata load path and surface structured failure event. [Distributed Training, RL Infra] Scope: `src/train.rs, tests/distributed_shard_validator.rs, tests/distributed_shard_metadata_schema.rs`; Contracts: `artifact,event`; Boundary: `core-contract`; Kind: `mixed`
-- Pretraining schema-parity drift check — compare parser-enforced pretraining metadata shape against fixture schema and fail on divergence. [Pre-training, Data Infra] Scope: `src/data.rs, tests/pretraining_sample_contract.rs, tests/pretraining_sample_schema.rs, fixtures/pretraining_sample_metadata.schema.json`; Contracts: `artifact`; Boundary: `core-contract`; Kind: `mixed`
-- Inference logits finite-value checks — enforce finite logits/probabilities and deterministic shape in infer path outputs to catch numeric instability regressions. [Numerics, Kernels] Scope: `src/cmd_infer.rs, tests/infer_logits_numerics.rs`; Contracts: `artifact`; Boundary: `core-contract`; Kind: `mixed`
-- Calibration invalid event fixture gate — pin `calibration_metadata_invalid` event payload shape with fixture-backed assertions to prevent infer event drift. [Post-training, Inference] Scope: `tests/calibration_infer_gate.rs, fixtures/infer_calibration_metadata_invalid_event.json`; Contracts: `event`; Boundary: `adapter-cli`; Kind: `gate`
-- Framework adapter registry load-failure fixture gate — pin `adapter_registry_invalid` error payload shape when fixture metadata is malformed. [Frameworks, Runtime Infra] Scope: `tests/framework_registry_resolution.rs, fixtures/infer_error_adapter_registry_invalid.json`; Contracts: `CLI,event`; Boundary: `adapter-cli`; Kind: `gate`
+- Burn feature matrix drift CI parity [Compilers, Runtime Infra]
+- Goal: Compare runtime-accepted `BACKEND` set vs fixture-declared compiler matrix; fail on divergence.
+- Kind: `mixed`
+- Boundary: `build-contract`
+- Contracts: `CLI`
+- Scope: `Cargo.toml`, `src/cmd_infer.rs`, `tests/compiler_feature_matrix_parity.rs`
+
+- Distributed shard validator integration [Distributed Training, RL Infra]
+- Goal: Validate shard ownership/index against train-time shard metadata load path; surface structured failure event.
+- Kind: `mixed`
+- Boundary: `core-contract`
+- Contracts: `artifact`, `event`
+- Scope: `src/train.rs`, `tests/distributed_shard_validator.rs`, `tests/distributed_shard_metadata_schema.rs`
+
+- Pretraining schema-parity drift check [Pre-training, Data Infra]
+- Goal: Compare parser-enforced pretraining metadata shape vs fixture schema; fail on divergence.
+- Kind: `mixed`
+- Boundary: `core-contract`
+- Contracts: `artifact`
+- Scope: `src/data.rs`, `tests/pretraining_sample_contract.rs`, `tests/pretraining_sample_schema.rs`, `fixtures/pretraining_sample_metadata.schema.json`
+
+- Inference logits finite-value checks [Numerics, Kernels]
+- Goal: Enforce finite logits/probabilities + deterministic shape in infer outputs; catch numeric instability regressions.
+- Kind: `mixed`
+- Boundary: `core-contract`
+- Contracts: `artifact`
+- Scope: `src/cmd_infer.rs`, `tests/infer_logits_numerics.rs`
+
+- Calibration invalid event fixture gate [Post-training, Inference]
+- Goal: Pin `calibration_metadata_invalid` event payload shape with fixture-backed assertions; prevent infer event drift.
+- Kind: `gate`
+- Boundary: `adapter-cli`
+- Contracts: `event`
+- Scope: `tests/calibration_infer_gate.rs`, `fixtures/infer_calibration_metadata_invalid_event.json`
+
+- Framework adapter registry load-failure fixture gate [Frameworks, Runtime Infra]
+- Goal: Pin `adapter_registry_invalid` error payload shape when fixture metadata is malformed.
+- Kind: `gate`
+- Boundary: `adapter-cli`
+- Contracts: `CLI`, `event`
+- Scope: `tests/framework_registry_resolution.rs`, `fixtures/infer_error_adapter_registry_invalid.json`
 
 ## [Trunk]
 
@@ -37,6 +72,7 @@
 - Add HTTP overload fixture gate ([c0e779b])
 - Validate signed manifest digest input ([e70afe8])
 - Implement changelog queue contract and adapter gates ([f8f847a])
+- Harden metadata contract validation ([30b6aab])
 
 ### Changed
 
@@ -63,6 +99,7 @@
 - Enable mold linker and clang on Linux ([afbf484])
 - Fix flake checks after input updates ([621a88b])
 - Set git-cliff remote to upstream and clarify NOTE.md guidance ([300dc94])
+- Align queue metadata with updated rules ([faba00b])
 
 ### Documentation
 
@@ -104,6 +141,7 @@
 - Refresh TODO queue and regenerate changelog ([36a1d02])
 - Refresh TODO queue and regenerate ([900bb60])
 - Advance TODO queue and regenerate ([cc117d9])
+- Require behavior TODOs to introduce/strengthen gates ([f6b3365])
 
 ### Fixed
 
@@ -233,5 +271,8 @@
 [f7b370f]: https://github.com/zxfsee/afterburner/commit/f7b370f6d0017b31f3c5144b0e9c37a3386ed039
 [cc117d9]: https://github.com/zxfsee/afterburner/commit/cc117d926c4a47c878c83febb72b0e3eb4a2d8f1
 [300dc94]: https://github.com/zxfsee/afterburner/commit/300dc949407455ba05a7c3fa2443f2e86a4db1d8
+[30b6aab]: https://github.com/zxfsee/afterburner/commit/30b6aab36931e0c35893f6cd1c3e49f5f67411ce
+[faba00b]: https://github.com/zxfsee/afterburner/commit/faba00bd2b19ab342427d7e0d7d6be2b50535f20
+[f6b3365]: https://github.com/zxfsee/afterburner/commit/f6b3365b762b2bd5cf94c3e517f434f14a4b5db9
 
 <!-- generated by git-cliff -->
