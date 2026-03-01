@@ -1,0 +1,10 @@
+{
+  "event": "infer_error",
+  "fields": {
+    "artifact": "does-not-exist.mpk",
+    "kind": "artifact_not_found"
+  },
+  "level": "error",
+  "source": "http_adapter",
+  "ts_ms": 0
+}

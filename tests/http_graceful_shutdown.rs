@@ -8,6 +8,8 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
 
+use serde_json::{Value, json};
+
 fn fixture_model_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("artifacts")
@@ -87,6 +89,28 @@ fn infer_batch_payload(batch_size: usize) -> String {
     format!("{{\"batch\":[{}]}}", batch)
 }
 
+fn infer_error_artifact_not_found_fixture() -> Value {
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join("infer_error_artifact_not_found.json");
+    let text = std::fs::read_to_string(path).expect("read infer error fixture");
+    serde_json::from_str(&text).expect("parse infer error fixture")
+}
+
+fn normalize_infer_error_line(line: &str) -> Value {
+    let mut value: Value = serde_json::from_str(line).expect("parse infer error event");
+    let object = value
+        .as_object_mut()
+        .expect("infer error event must be an object");
+    object.insert("ts_ms".to_string(), json!(0));
+    let fields = object
+        .get_mut("fields")
+        .and_then(Value::as_object_mut)
+        .expect("infer error event fields must be an object");
+    fields.insert("artifact".to_string(), json!("does-not-exist.mpk"));
+    value
+}
+
 #[test]
 fn in_flight_infer_completes_on_sigint() {
     let port = reserve_port();
@@ -162,7 +186,45 @@ fn in_flight_infer_completes_on_sigint() {
         response.contains("\"batch_size\":16"),
         "response must contain batch payload: {response}"
     );
+    let body = response
+        .split_once("\r\n\r\n")
+        .map(|(_, body)| body)
+        .expect("response must include headers and body");
+    let payload: Value = serde_json::from_str(body).expect("response body must be json");
+    let payload_object = payload
+        .as_object()
+        .expect("success response envelope must be a json object");
+    assert_eq!(
+        payload_object.keys().collect::<Vec<_>>(),
+        vec!["batch_size", "logits"],
+        "success envelope fields drifted"
+    );
 
     wait_for_exit_ok(&mut child, Duration::from_secs(5));
     stderr_thread.join().expect("join stderr reader");
+}
+
+#[test]
+fn startup_missing_artifact_infer_error_matches_fixture() {
+    let output = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
+        .arg("does-not-exist.mpk")
+        .env("BACKEND", "cpu")
+        .env("PORT", reserve_port().to_string())
+        .output()
+        .expect("run afterburner-http with missing artifact");
+
+    assert_eq!(
+        output.status.code(),
+        Some(2),
+        "missing artifact must fail fast with exit code 2"
+    );
+    let stderr = String::from_utf8(output.stderr).expect("stderr must be utf-8");
+    let infer_error_line = stderr
+        .lines()
+        .find(|line| line.contains(r#""event":"infer_error""#))
+        .expect("infer_error event line must be emitted");
+
+    let actual = normalize_infer_error_line(infer_error_line);
+    let expected = infer_error_artifact_not_found_fixture();
+    assert_eq!(actual, expected, "infer_error event envelope drifted");
 }

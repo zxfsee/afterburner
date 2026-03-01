@@ -1,3 +1,7 @@
+use afterburner::data::{
+    PRETRAINING_SAMPLE_METADATA_CHECKSUM_PATTERN, PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS,
+    PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION, PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES,
+};
 use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
@@ -40,9 +44,9 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
                 .to_string()
         })
         .collect::<BTreeSet<_>>();
-    let expected = ["schema_version", "source", "split", "checksum"]
+    let expected = PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS
         .into_iter()
-        .map(str::to_string)
+        .map(|field| field.to_string())
         .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
@@ -55,7 +59,7 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
             .get("schema_version")
             .and_then(|v| v.get("const"))
             .and_then(|v| v.as_str()),
-        Some("1")
+        Some(PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION)
     );
     assert_eq!(
         properties
@@ -87,9 +91,9 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
                     .collect::<BTreeSet<_>>()
             }),
         Some(
-            ["train", "validation", "test"]
+            PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES
                 .into_iter()
-                .map(str::to_string)
+                .map(|value| value.to_string())
                 .collect::<BTreeSet<_>>()
         )
     );
@@ -98,6 +102,6 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
             .get("checksum")
             .and_then(|v| v.get("pattern"))
             .and_then(|v| v.as_str()),
-        Some("^[a-f0-9]{64}$")
+        Some(PRETRAINING_SAMPLE_METADATA_CHECKSUM_PATTERN)
     );
 }

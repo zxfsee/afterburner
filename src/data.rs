@@ -9,6 +9,12 @@ use serde_json::{Map, Value};
 
 use crate::preprocess::mnist_image_to_tensor;
 
+pub const PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION: &str = "1";
+pub const PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS: [&str; 4] =
+    ["schema_version", "source", "split", "checksum"];
+pub const PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES: [&str; 3] = ["train", "validation", "test"];
+pub const PRETRAINING_SAMPLE_METADATA_CHECKSUM_PATTERN: &str = "^[a-f0-9]{64}$";
+
 /// Batched MNIST tensors ready for a convolutional classifier.
 #[derive(Clone, Debug)]
 pub struct MnistBatch<B: Backend> {
@@ -79,11 +85,14 @@ pub enum PretrainingSplit {
 
 impl PretrainingSplit {
     fn parse(value: &str) -> Option<Self> {
-        match value {
-            "train" => Some(Self::Train),
-            "validation" => Some(Self::Validation),
-            "test" => Some(Self::Test),
-            _ => None,
+        if value == PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES[0] {
+            Some(Self::Train)
+        } else if value == PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES[1] {
+            Some(Self::Validation)
+        } else if value == PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES[2] {
+            Some(Self::Test)
+        } else {
+            None
         }
     }
 }
@@ -113,10 +122,7 @@ pub fn parse_pretraining_sample_metadata(
         ))?;
 
     for key in object.keys() {
-        if !matches!(
-            key.as_str(),
-            "schema_version" | "source" | "split" | "checksum"
-        ) {
+        if !PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS.contains(&key.as_str()) {
             return Err(PretrainingSampleMetadataError::InvalidField(
                 "pretraining_sample_metadata",
                 format!("unknown field: {key}"),
@@ -125,10 +131,10 @@ pub fn parse_pretraining_sample_metadata(
     }
 
     let schema_version = read_required_string(object, "schema_version")?;
-    if schema_version != "1" {
+    if schema_version != PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION {
         return Err(PretrainingSampleMetadataError::InvalidField(
             "schema_version",
-            "expected \"1\"".to_string(),
+            format!("expected \"{PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION}\""),
         ));
     }
 

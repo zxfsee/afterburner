@@ -289,9 +289,44 @@ fn run_infer<B: Backend>(
 
     let image = [[0.0f32; 28]; 28];
     let logits = logits_from_model(&model, &device, image);
-    let probs = softmax(logits, 1);
-    println!("Probabilities: {probs}");
+    let probabilities = softmax(logits.clone(), 1);
+    let logits = extract_single_row(logits, "logits")?;
+    let probabilities = extract_single_row(probabilities, "probabilities")?;
+    println!(
+        "{}",
+        json!({"logits": [logits], "probabilities": [probabilities]})
+    );
     Ok(())
+}
+
+fn extract_single_row<B: Backend>(
+    tensor: Tensor<B, 2>,
+    field: &'static str,
+) -> Result<Vec<f32>, InferError> {
+    let data = tensor.to_data();
+    let values: Vec<f32> = data.iter().collect();
+    if values.len() != 10 {
+        return Err(InferError::ArtifactLoadFailed {
+            detail: format!(
+                "infer output shape invalid for {field}: expected 10 values, got {}",
+                values.len()
+            ),
+            path: Path::new(field).to_path_buf(),
+        });
+    }
+
+    for (index, value) in values.iter().enumerate() {
+        if !value.is_finite() {
+            return Err(InferError::ArtifactLoadFailed {
+                detail: format!(
+                    "infer output numerics invalid for {field}[{index}]: value is not finite ({value})"
+                ),
+                path: Path::new(field).to_path_buf(),
+            });
+        }
+    }
+
+    Ok(values)
 }
 
 fn include_calibration_fields(fields: &mut Value, calibration: Option<&CalibrationMetadata>) {

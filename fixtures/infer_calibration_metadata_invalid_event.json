@@ -1,0 +1,11 @@
+{
+  "event": "calibration_metadata_invalid",
+  "fields": {
+    "detail": "invalid json: EOF while parsing an object at line 1 column 48",
+    "kind": "parse_error",
+    "metadata": "<artifact>/calibration_artifact_metadata.json"
+  },
+  "level": "error",
+  "source": "infer_cli",
+  "ts_ms": 0
+}

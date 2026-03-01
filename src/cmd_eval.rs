@@ -38,7 +38,7 @@ impl std::fmt::Display for EvalError {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner eval [artifact_path] [--artifact PATH] [--seed N] [--batch-size N] [--max-batches N] [--min-accuracy F64] [--out PATH]"
+    "usage: afterburner eval [artifact_path] [--artifact PATH|--artifact=PATH] [--seed N] [--batch-size N] [--max-batches N] [--min-accuracy F64] [--out PATH]"
 }
 
 fn baseline_refresh_flow() -> &'static str {
@@ -224,6 +224,14 @@ where
                 })?;
                 artifact = PathBuf::from(value);
             }
+            _ if arg.starts_with("--artifact=") => {
+                let value = arg.trim_start_matches("--artifact=");
+                artifact = if value.is_empty() {
+                    default_weights_path()
+                } else {
+                    PathBuf::from(value)
+                };
+            }
             "--seed" => seed = parse_value(&mut args, "--seed")?,
             "--batch-size" => batch_size = parse_value(&mut args, "--batch-size")?,
             "--max-batches" => max_batches = parse_value(&mut args, "--max-batches")?,
@@ -338,6 +346,22 @@ mod tests {
         assert_eq!(
             parsed.artifact,
             PathBuf::from("artifacts/inference/0.2.0/model.mpk")
+        );
+        assert_eq!(parsed.max_batches, 4);
+    }
+
+    #[test]
+    fn parse_args_accepts_inline_named_artifact_flag() {
+        let args = vec![
+            "--artifact=artifacts/inference/0.3.0/model.mpk".to_string(),
+            "--max-batches".to_string(),
+            "4".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse args");
+        assert_eq!(
+            parsed.artifact,
+            PathBuf::from("artifacts/inference/0.3.0/model.mpk")
         );
         assert_eq!(parsed.max_batches, 4);
     }

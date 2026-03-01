@@ -17,7 +17,7 @@ just eval-gate
 ```
 
 `just infer` and `just eval` resolve the artifact through `artifacts/inference/current` by default.
-Override with `--artifact <path>` (or positional `[artifact_path]` for compatibility).
+Override with `--artifact <path>`, `--artifact=<path>`, or positional `[artifact_path]` for compatibility.
 The canonical CLI is `afterburner <train|infer|eval>`.
 
 ## What this is
@@ -70,6 +70,7 @@ Inference is executed via the `afterburner infer` subcommand.
 
 It consumes **only** the inference artifact and has no access to training internals.  
 This enforces a strict boundary between model development and runtime execution.
+On success, `afterburner infer` writes a JSON object to stdout containing `logits` and `probabilities`.
 
 ## HTTP wrapper (optional)
 

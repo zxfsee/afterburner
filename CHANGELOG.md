@@ -2,47 +2,34 @@
 
 ## TODO
 
-- Pretraining schema-parity drift check [Pre-training, Data Infra]
-  - Goal: Compare parser-enforced pretraining metadata shape vs fixture schema; fail on divergence.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/data.rs`, `tests/pretraining_sample_contract.rs`, `tests/pretraining_sample_schema.rs`, `fixtures/pretraining_sample_metadata.schema.json`
-
-- Inference logits finite-value checks [Numerics, Kernels]
-  - Goal: Enforce finite logits/probabilities + deterministic shape in infer outputs; catch numeric instability regressions.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/cmd_infer.rs`, `tests/infer_logits_numerics.rs`
-
-- Calibration invalid event fixture gate [Post-training, Inference]
-  - Goal: Pin `calibration_metadata_invalid` event payload shape with fixture-backed assertions; prevent infer event drift.
+- Infer stdout success fixture gate [Inference, Runtime Infra]
+  - Goal: Pin `afterburner infer` stdout payload shape (`logits`/`probabilities`) with fixture-backed assertions; fail on output contract drift.
   - Kind: `gate`
   - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `tests/calibration_infer_gate.rs`, `fixtures/infer_calibration_metadata_invalid_event.json`
+  - Contracts: `CLI`, `artifact`
+  - Scope: `tests/infer_logits_numerics.rs`, `fixtures/infer_stdout_success.json`
 
-- Framework adapter registry load-failure fixture gate [Frameworks, Runtime Infra]
-  - Goal: Pin `adapter_registry_invalid` error payload shape when fixture metadata is malformed.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `CLI`, `event`
-  - Scope: `tests/framework_registry_resolution.rs`, `fixtures/infer_error_adapter_registry_invalid.json`
-
-- HTTP infer envelope drift check [Serving/Deployment Infra, Inference]
-  - Goal: Ensure HTTP infer success/error envelope fields remain fixture-aligned; fail on drift.
-  - Kind: `mixed`
-  - Boundary: `adapter-http`
-  - Contracts: `HTTP`, `event`
-  - Scope: `src/bin/afterburner_http.rs`, `tests/infer_cli.rs`, `tests/http_graceful_shutdown.rs`, `fixtures/infer_error_artifact_not_found.json`
-
-- Eval artifact version parity checks [Experimentation/Eval Infra, Inference]
-  - Goal: Validate eval command reads artifact version/current pointer consistently with infer contract selection; fail on drift.
+- Eval summary includes artifact version parity [Experimentation/Eval Infra, Inference]
+  - Goal: Include resolved `artifact_version` in eval summary/event output and assert parity with infer contract resolution.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `CLI`, `artifact`
   - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `tests/infer_path.rs`
+
+- Eval pipeline monitoring contract definition [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Define and gate a stable eval monitoring contract (event/artifact fields for accuracy and runtime telemetry) before broadening pipeline instrumentation.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`, `artifact`
+  - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `fixtures/eval_pipeline_monitoring_event.json`, `artifacts/eval/mnist_eval_summary.json`
+  - Blocked-by: Decision needed on monitoring contract scope (event-only vs event+artifact) and required metric set.
+
+- HTTP infer success fixture gate [Serving/Deployment Infra, Inference]
+  - Goal: Pin HTTP `/infer` success envelope fields/shape with fixture-backed assertions to prevent adapter drift.
+  - Kind: `gate`
+  - Boundary: `adapter-http`
+  - Contracts: `HTTP`
+  - Scope: `tests/http_graceful_shutdown.rs`, `fixtures/http_infer_success_envelope.json`
 
 ## [Trunk]
 
@@ -73,6 +60,7 @@
 - Validate signed manifest digest input ([e70afe8])
 - Implement changelog queue contract and adapter gates ([f8f847a])
 - Harden metadata contract validation ([30b6aab])
+- Enforce backend parity and shard metadata load validation ([9fc29da])
 
 ### Changed
 
@@ -101,6 +89,7 @@
 - Set git-cliff remote to upstream and clarify NOTE.md guidance ([300dc94])
 - Align queue metadata with updated rules ([faba00b])
 - Normalize CHANGELOG list formatting, add TODO entry, and update git-cliff config/invocation ([6e763c9])
+- Use git-cliff --offline when regenerating CHANGELOG ([d087302])
 
 ### Documentation
 
@@ -144,6 +133,7 @@
 - Advance TODO queue and regenerate ([cc117d9])
 - Require behavior TODOs to introduce/strengthen gates ([f6b3365])
 - Require TODO Kind field and governance approval; refresh TODOs in CHANGELOG/Cargo.toml ([4fb323d])
+- Require ephemeral parallel workspaces under /tmp/<repo>/workspaces/ ([2fbdb3c])
 
 ### Fixed
 
@@ -278,5 +268,8 @@
 [f6b3365]: https://github.com/zxfsee/afterburner/commit/f6b3365b762b2bd5cf94c3e517f434f14a4b5db9
 [4fb323d]: https://github.com/zxfsee/afterburner/commit/4fb323de80df3f2f4bf25e8213a737b6edf4e9d7
 [6e763c9]: https://github.com/zxfsee/afterburner/commit/6e763c93251c2d49f8ba28b21485e2d41086d279
+[9fc29da]: https://github.com/zxfsee/afterburner/commit/9fc29da9df910b48c1e877d1e6d98b49a6837ac5
+[d087302]: https://github.com/zxfsee/afterburner/commit/d087302b2ae1f29bee5efaf00258ac71443816ca
+[2fbdb3c]: https://github.com/zxfsee/afterburner/commit/2fbdb3c26ef0870f047fb99c754d9d0977ae405a
 
 <!-- generated by git-cliff -->

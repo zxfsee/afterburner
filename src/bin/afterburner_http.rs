@@ -1187,7 +1187,7 @@ fn emit_error_and_exit(err: &InferError) -> ! {
                 "error",
                 "http_adapter",
                 "infer_error",
-                json!({"kind":"artifact_missing","artifact": path.to_string_lossy().to_string()}),
+                json!({"kind":"artifact_not_found","artifact": path.to_string_lossy().to_string()}),
             );
         }
         InferError::ManifestMissing { path } => {

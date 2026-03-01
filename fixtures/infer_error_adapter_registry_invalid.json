@@ -1,0 +1,10 @@
+{
+  "event": "infer_error",
+  "fields": {
+    "detail": "adapter registry schema fixture missing `properties` object",
+    "kind": "adapter_registry_invalid"
+  },
+  "level": "error",
+  "source": "infer_cli",
+  "ts_ms": 0
+}

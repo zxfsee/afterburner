@@ -1,14 +1,41 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use assert_cmd::cargo::cargo_bin_cmd;
+use burn::{backend::ndarray::NdArray, prelude::*, record::CompactRecorder};
+use serde_json::json;
 
-fn fixture_path(name: &str) -> PathBuf {
+type CpuBackend = NdArray<f32>;
+
+fn event_fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
+        .join("fixtures")
         .join(name)
+}
+
+fn event_fixture(name: &str) -> serde_json::Value {
+    let text = fs::read_to_string(event_fixture_path(name)).expect("read event fixture");
+    serde_json::from_str(&text).expect("parse event fixture")
+}
+
+fn write_runtime_model_artifact(artifact_dir: &Path) -> PathBuf {
+    let weights_path = artifact_dir.join("model.mpk");
+
+    let device = <CpuBackend as Backend>::Device::default();
+    let model = afterburner::model::ModelConfig::new(10).init::<CpuBackend>(&device);
+    model
+        .save_file(&weights_path, &CompactRecorder::new())
+        .expect("write model artifact");
+
+    let checksum =
+        afterburner::manifest::compute_sha256_hex(&weights_path).expect("compute model checksum");
+    let manifest =
+        afterburner::manifest::ArtifactManifest::for_current("model.mpk", "0.1.0", checksum);
+    manifest
+        .write_to_dir(artifact_dir)
+        .expect("write model manifest");
+
+    weights_path
 }
 
 #[test]
@@ -17,13 +44,7 @@ fn infer_emits_calibration_contract_fields_when_metadata_is_present() {
     let artifact_dir = tmp.path().join("artifact");
     fs::create_dir_all(&artifact_dir).expect("create artifact dir");
 
-    let weights_path = artifact_dir.join("model.mpk");
-    fs::copy(fixture_path("model.mpk"), &weights_path).expect("copy model fixture");
-    fs::copy(
-        fixture_path("manifest.toml"),
-        artifact_dir.join("manifest.toml"),
-    )
-    .expect("copy manifest fixture");
+    let weights_path = write_runtime_model_artifact(&artifact_dir);
 
     fs::write(
         artifact_dir.join("calibration_artifact_metadata.json"),
@@ -54,13 +75,7 @@ fn infer_emits_calibration_metadata_invalid_event_on_parse_failure() {
     let artifact_dir = tmp.path().join("artifact");
     fs::create_dir_all(&artifact_dir).expect("create artifact dir");
 
-    let weights_path = artifact_dir.join("model.mpk");
-    fs::copy(fixture_path("model.mpk"), &weights_path).expect("copy model fixture");
-    fs::copy(
-        fixture_path("manifest.toml"),
-        artifact_dir.join("manifest.toml"),
-    )
-    .expect("copy manifest fixture");
+    let weights_path = write_runtime_model_artifact(&artifact_dir);
 
     fs::write(
         artifact_dir.join("calibration_artifact_metadata.json"),
@@ -82,20 +97,11 @@ fn infer_emits_calibration_metadata_invalid_event_on_parse_failure() {
         .collect();
 
     let invalid = find_event(&events, "calibration_metadata_invalid");
-    let invalid_fields = invalid
-        .get("fields")
-        .and_then(|value| value.as_object())
-        .expect("event fields must be an object");
+    let normalized = normalize_calibration_metadata_invalid_event(invalid);
+    let expected = event_fixture("infer_calibration_metadata_invalid_event.json");
     assert_eq!(
-        invalid_fields.get("kind").and_then(|v| v.as_str()),
-        Some("parse_error")
-    );
-    assert!(
-        invalid_fields
-            .get("detail")
-            .and_then(|v| v.as_str())
-            .is_some_and(|detail| detail.contains("invalid json")),
-        "expected parse error detail"
+        normalized, expected,
+        "calibration_metadata_invalid event payload must match fixture"
     );
 
     assert_no_calibration_fields(find_event(&events, "artifact_load_ok"));
@@ -154,4 +160,25 @@ fn assert_no_calibration_fields(event: &serde_json::Value) {
         !fields.contains_key("calibration"),
         "calibration field must be absent"
     );
+}
+
+fn normalize_calibration_metadata_invalid_event(event: &serde_json::Value) -> serde_json::Value {
+    let mut normalized = event.clone();
+    let object = normalized
+        .as_object_mut()
+        .expect("event must be represented as an object");
+
+    object.insert("ts_ms".to_string(), json!(0));
+
+    let fields = object
+        .get_mut("fields")
+        .and_then(|value| value.as_object_mut())
+        .expect("event fields must be an object");
+
+    fields.insert(
+        "metadata".to_string(),
+        json!("<artifact>/calibration_artifact_metadata.json"),
+    );
+
+    normalized
 }

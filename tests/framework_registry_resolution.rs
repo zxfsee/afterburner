@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use afterburner::manifest::{MANIFEST_FILENAME, compute_sha256_hex};
 use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::*;
+use serde_json::{Value, json};
 
 #[path = "fixture_support.rs"]
 mod fixture_support;
@@ -85,6 +86,16 @@ fn infer_fails_fast_on_unsupported_backend_artifact_version_pair() {
     );
 }
 
+#[test]
+fn infer_error_payload_matches_fixture_when_adapter_registry_metadata_is_malformed() {
+    let expected = event_fixture("infer_error_adapter_registry_invalid.json");
+    let emitted = normalize_adapter_registry_invalid_event(malformed_registry_metadata_detail());
+    assert_eq!(
+        emitted, expected,
+        "adapter_registry_invalid infer_error payload must match fixture contract"
+    );
+}
+
 fn load_supported_pairs_from_fixture() -> Vec<(String, String)> {
     let schema_text = fs::read_to_string(fixture_path("framework_adapter_registry.schema.json"))
         .expect("read framework adapter registry schema fixture");
@@ -119,6 +130,28 @@ fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
         .join(name)
+}
+
+fn event_fixture(name: &str) -> Value {
+    let text = fs::read_to_string(fixture_path(name)).expect("read event fixture");
+    serde_json::from_str(&text).expect("parse event fixture")
+}
+
+fn malformed_registry_metadata_detail() -> String {
+    "adapter registry schema fixture missing `properties` object".to_string()
+}
+
+fn normalize_adapter_registry_invalid_event(detail: String) -> Value {
+    json!({
+        "ts_ms": 0,
+        "level": "error",
+        "source": "infer_cli",
+        "event": "infer_error",
+        "fields": {
+            "kind": "adapter_registry_invalid",
+            "detail": detail,
+        },
+    })
 }
 
 fn manifest_with(weights_path: &Path, artifact_version: &str) -> String {
