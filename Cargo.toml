@@ -9,20 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn feature matrix drift CI parity [Compilers, Runtime Infra]
-  - Goal: Compare runtime-accepted `BACKEND` set vs fixture-declared compiler matrix; fail on divergence.
-  - Kind: `mixed`
-  - Boundary: `build-contract`
-  - Contracts: `CLI`
-  - Scope: `Cargo.toml`, `src/cmd_infer.rs`, `tests/compiler_feature_matrix_parity.rs`
-
-- Distributed shard validator integration [Distributed Training, RL Infra]
-  - Goal: Validate shard ownership/index against train-time shard metadata load path; surface structured failure event.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/train.rs`, `tests/distributed_shard_validator.rs`, `tests/distributed_shard_metadata_schema.rs`
-
 - Pretraining schema-parity drift check [Pre-training, Data Infra]
   - Goal: Compare parser-enforced pretraining metadata shape vs fixture schema; fail on divergence.
   - Kind: `mixed`
@@ -50,6 +36,20 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `CLI`, `event`
   - Scope: `tests/framework_registry_resolution.rs`, `fixtures/infer_error_adapter_registry_invalid.json`
+
+- HTTP infer envelope drift check [Serving/Deployment Infra, Inference]
+  - Goal: Ensure HTTP infer success/error envelope fields remain fixture-aligned; fail on drift.
+  - Kind: `mixed`
+  - Boundary: `adapter-http`
+  - Contracts: `HTTP`, `event`
+  - Scope: `src/bin/afterburner_http.rs`, `tests/infer_cli.rs`, `tests/http_graceful_shutdown.rs`, `fixtures/infer_error_artifact_not_found.json`
+
+- Eval artifact version parity checks [Experimentation/Eval Infra, Inference]
+  - Goal: Validate eval command reads artifact version/current pointer consistently with infer contract selection; fail on drift.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `CLI`, `artifact`
+  - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `tests/infer_path.rs`
 
 ## [Trunk]
 """

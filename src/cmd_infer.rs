@@ -18,6 +18,10 @@ use serde_json::{Value, json};
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
+const BACKEND_CPU: &str = "cpu";
+const BACKEND_WGPU: &str = "wgpu";
+const RUNTIME_SUPPORTED_BACKENDS: [&str; 2] = [BACKEND_CPU, BACKEND_WGPU];
+
 const ADAPTER_REGISTRY_SCHEMA_FIXTURE: &str =
     include_str!("../fixtures/framework_adapter_registry.schema.json");
 const ADAPTER_REGISTRY_SUPPORTED_PAIRS_KEY: &str = "x-supported-adapter-version-pairs";
@@ -83,6 +87,16 @@ where
         }
     };
     let artifact_version = load_artifact_version(&weights_path).map_err(CmdInferError::Infer)?;
+    if !runtime_supported_backends()
+        .iter()
+        .any(|candidate| *candidate == backend.as_str())
+    {
+        return Err(CmdInferError::UnsupportedAdapterVersion {
+            backend,
+            artifact_version,
+            schema_version: adapter_registry.schema_version,
+        });
+    }
     validate_backend_selection(
         &adapter_registry,
         backend.as_str(),
@@ -90,7 +104,7 @@ where
     )?;
 
     match backend.as_str() {
-        "cpu" => {
+        BACKEND_CPU => {
             run_infer::<CpuBackend>(
                 &weights_path,
                 backend.as_str(),
@@ -99,7 +113,7 @@ where
             )
             .map_err(CmdInferError::Infer)?;
         }
-        "wgpu" => {
+        BACKEND_WGPU => {
             run_infer::<GpuBackend>(
                 &weights_path,
                 backend.as_str(),
@@ -125,11 +139,16 @@ where
 }
 
 fn resolve_backend() -> String {
+    let default_backend = BACKEND_WGPU;
     env::var("BACKEND")
         .ok()
         .map(|value| value.trim().to_ascii_lowercase())
         .filter(|value| !value.is_empty())
-        .unwrap_or_else(|| "wgpu".to_string())
+        .unwrap_or_else(|| default_backend.to_string())
+}
+
+pub(crate) fn runtime_supported_backends() -> &'static [&'static str] {
+    &RUNTIME_SUPPORTED_BACKENDS
 }
 
 fn load_artifact_version(weights_path: &Path) -> Result<String, InferError> {

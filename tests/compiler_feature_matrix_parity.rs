@@ -3,6 +3,10 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
+#[allow(dead_code)]
+#[path = "../src/cmd_infer.rs"]
+mod cmd_infer;
+
 fn cargo_manifest_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml")
 }
@@ -66,7 +70,10 @@ fn compiler_feature_matrix_fixture_matches_effective_burn_features() {
         }
     }
 
-    let expected_backends = ["cpu", "wgpu"].into_iter().collect::<BTreeSet<_>>();
+    let expected_backends = cmd_infer::runtime_supported_backends()
+        .iter()
+        .copied()
+        .collect::<BTreeSet<_>>();
     let declared_backends = backends.iter().map(String::as_str).collect::<BTreeSet<_>>();
     assert_eq!(
         declared_backends, expected_backends,
