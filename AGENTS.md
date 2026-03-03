@@ -11,6 +11,7 @@ Do not include temporary heuristics that reflect a single session correction.
 - [Architecture](./ARCHITECTURE.md)
 - [ADRs](./docs/adr/)
 - [Changelog](./CHANGELOG.md)
+- [Backlog](./docs/backlog.md)
 - [Notes](./NOTE.md)
 
 ## Project-specific constraints
@@ -37,6 +38,22 @@ Do not include temporary heuristics that reflect a single session correction.
   - Parallelize only across independent scopes.
   - For ephemeral parallel workspaces, create them under `/tmp/<repo>/workspaces/<name>/` (stable parent directory), not as top-level `/tmp/...` directories.
   - Tasks that modify the same public contract, architectural boundary, shared files, or the TODO queue must not execute in parallel. Serialize them or land as stacked diffs.
+- Verification model:
+  - Spec-first gate:
+    - For non-trivial TODOs, define explicit acceptance criteria and deterministic verification commands in the TODO entry or checkpoint before modifying code.
+    - Acceptance criteria must be:
+      - observable (produce measurable output: test result, artifact, event, exit code),
+      - deterministic (same input -> same result),
+      - executable via explicit commands,
+      - tied to the contract or invariant being modified.
+  - Verification is the review:
+    - Prefer fixture/schema/tests as the primary acceptance mechanism.
+    - Narrative or stylistic review is secondary to pass/fail evidence.
+  - Verifier separation:
+    - When using subagents, implementation and verification must be separate roles.
+    - The verifier must validate the same revision/workspace snapshot.
+    - The verifier must not modify code.
+    - The verifier reports only: pass/fail and concrete mismatches.
 - `CHANGELOG.md` is generated; treat it as derived output (edit `Cargo.toml` `[package.metadata.git-cliff.*]`, then regenerate).
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
@@ -56,6 +73,12 @@ Do not include temporary heuristics that reflect a single session correction.
   - TODO decomposition discipline:
     - Avoid splitting TODOs into separate implementation and gate tasks when both can be completed within the same scope and contracts.
     - Split only when the follow-on gate or contract work is independently valuable, parallelizable, or blocked by an external decision.
+  - Queue priority discipline:
+    - Keep the TODO queue strictly priority-ranked.
+    - Maintain a stable visible horizon (default: 6 items).
+    - Park parked/blocked long-horizon items in `docs/backlog.md` (not in the active TODO queue).
+    - Backlog items must keep full TODO metadata and use `Blocked-by:` where applicable.
+    - Promote backlog items into the active TODO queue only when they become priority-relevant and unblocked.
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
