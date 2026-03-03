@@ -60,7 +60,7 @@ Do not include temporary heuristics that reflect a single session correction.
     - a new gate (test/CI check), or
     - a new inspectable artifact/event (structured output under `artifacts/`).
   - Any new gate must fail before implementation and pass after (prove via tests/CI output).
-  - After completing a TODO, append the next smallest unlocked TODO to the template/source TODO list.
+  - After completing a TODO, append the next highest-priority unlocked TODO to the template/source TODO list.
   - Queue balance rule:
     - In any top-3 TODO window, at least one TODO must be `Kind: behavior` or `Kind: mixed`.
     - Do not queue more than two consecutive `Kind: gate` TODOs unless explicitly requested by the user.
@@ -78,7 +78,11 @@ Do not include temporary heuristics that reflect a single session correction.
     - Maintain a stable visible horizon (default: 6 items).
     - Park parked/blocked long-horizon items in `docs/backlog.md` (not in the active TODO queue).
     - Backlog items must keep full TODO metadata and use `Blocked-by:` where applicable.
-    - Promote backlog items into the active TODO queue only when they become priority-relevant and unblocked.
+    - Default promotion: move the highest-priority runnable backlog item into the active TODO horizon; humans may reprioritize explicitly.
+    - Default placement for new items:
+      - If runnable now and clearly next (unblocker/critical fix/small high-confidence): add to the active TODO queue.
+      - Otherwise: add to `docs/backlog.md`.
+    - Backlog ordering may change as new information arrives; active TODO reordering requires a one-line justification (unblock/defect/ROI).
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
@@ -127,3 +131,4 @@ Do not include temporary heuristics that reflect a single session correction.
 
 - Changes to `AGENTS.md`, TODO policy rules, or governance constraints require explicit user approval.
 - Agents may propose governance changes but must not apply them automatically.
+- Prefer calibrating workflow at the skill layer over expanding `AGENTS.md`, unless the rule is truly global and permanent.
