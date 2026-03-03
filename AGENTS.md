@@ -53,6 +53,9 @@ Do not include temporary heuristics that reflect a single session correction.
     - `Kind: gate` = verification-only (tests/fixtures/contracts/CI).
     - `Kind: behavior` = runtime or training behavior change.
     - `Kind: mixed` = behavior change plus gate in the same TODO.
+  - TODO decomposition discipline:
+    - Avoid splitting TODOs into separate implementation and gate tasks when both can be completed within the same scope and contracts.
+    - Split only when the follow-on gate or contract work is independently valuable, parallelizable, or blocked by an external decision.
 - TODOs must be tagged with one or more focus areas (see list below) to keep the queue aligned with project goals.
 - Focus areas (research infra domains) for TODO tagging:
   - Numerics
