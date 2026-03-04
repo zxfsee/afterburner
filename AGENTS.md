@@ -36,7 +36,6 @@ Do not include temporary heuristics that reflect a single session correction.
   - Each diff must be independently reviewable and independently verifiable (own checks/evidence).
   - The stack must not break trunk/CI; rebase/update as needed to stay current.
   - Parallelize only across independent scopes.
-  - For ephemeral parallel workspaces, create them under `/tmp/<repo>/workspaces/<name>/` (stable parent directory), not as top-level `/tmp/...` directories.
   - Tasks that modify the same public contract, architectural boundary, shared files, or the TODO queue must not execute in parallel. Serialize them or land as stacked diffs.
 - Verification model:
   - Spec-first gate:
