@@ -2,34 +2,12 @@
 
 ## TODO
 
-- Infer stdout success fixture gate [Inference, Runtime Infra]
-  - Goal: Pin `afterburner infer` stdout payload shape (`logits`/`probabilities`) with fixture-backed assertions; fail on output contract drift.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `CLI`, `artifact`
-  - Scope: `tests/infer_logits_numerics.rs`, `fixtures/infer_stdout_success.json`
-
-- Eval summary includes artifact version parity [Experimentation/Eval Infra, Inference]
-  - Goal: Include resolved `artifact_version` in eval summary/event output and assert parity with infer contract resolution.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `CLI`, `artifact`
-  - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `tests/infer_path.rs`
-
-- HTTP infer success fixture gate [Serving/Deployment Infra, Inference]
-  - Goal: Pin HTTP `/infer` success envelope fields/shape with fixture-backed assertions to prevent adapter drift.
-  - Kind: `gate`
-  - Boundary: `adapter-http`
-  - Contracts: `HTTP`
-  - Scope: `tests/http_graceful_shutdown.rs`, `fixtures/http_infer_success_envelope.json`
-
 - Eval pipeline monitoring contract definition [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Define and gate a stable eval monitoring contract using RED (rate/errors/duration) plus eval quality/context fields (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`), including the fixture-backed event contract in this same task.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `event`, `artifact`
   - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `fixtures/eval_pipeline_monitoring_event.json`, `artifacts/eval/mnist_eval_summary.json`
-  - Blocked-by: Eval summary includes artifact version parity
 
 - Eval pipeline monitoring artifact schema gate [Experimentation/Eval Infra, Data Infra]
   - Goal: Pin eval summary artifact schema/required monitoring fields so downstream tooling sees stable contract shape.
@@ -46,6 +24,27 @@
   - Contracts: `artifact`, `event`
   - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/training_scalability_readiness.rs`, `fixtures/training_scalability_contract.json`
   - Blocked-by: Eval pipeline monitoring contract definition
+
+- Infer done event fixture gate [Inference, Runtime Infra]
+  - Goal: Pin `infer_done` event field contract (`backend`, `artifact`, `artifact_version`, `elapsed_ms`) with fixture-backed assertions to prevent observability drift.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `tests/infer_cli.rs`, `fixtures/infer_done_event.json`
+
+- Eval summary JSON fixture gate [Experimentation/Eval Infra, Data Infra]
+  - Goal: Pin eval summary JSON top-level field contract (including `artifact_version`) with fixture-backed assertions for downstream parser stability.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`
+  - Scope: `tests/eval_cli.rs`, `fixtures/eval_summary_success.json`
+
+- HTTP infer single-response envelope consistency [Serving/Deployment Infra, Inference]
+  - Goal: Align HTTP `/infer` single-item success envelope shape with the batch contract and add fixture-backed assertions (`batch_size`, logits row width) to prevent adapter drift.
+  - Kind: `mixed`
+  - Boundary: `adapter-http`
+  - Contracts: `HTTP`
+  - Scope: `tests/http_graceful_shutdown.rs`, `fixtures/http_infer_single_success_envelope.json`
 
 ## [Trunk]
 
@@ -152,7 +151,11 @@
 - Require TODO Kind field and governance approval; refresh TODOs in CHANGELOG/Cargo.toml ([4fb323d])
 - Require ephemeral parallel workspaces under /tmp/<repo>/workspaces/ ([2fbdb3c])
 - Stabilize TODO horizon and park deploy-rs ([1157d1a])
-- Align TODO decomposition policy and metadata ([3b91a30])
+- Align TODO decomposition policy and metadata ([22a3839])
+- Add backlog and park long-horizon items ([bb98e59])
+- Add promotion rollback orchestration gate ([c2d8837])
+- Align TODO promotion and backlog semantics ([04449f7])
+- Remove ephemeral workspace /tmp path recommendation ([97e7620])
 
 ### Fixed
 
@@ -292,6 +295,10 @@
 [2fbdb3c]: https://github.com/zxfsee/afterburner/commit/2fbdb3c26ef0870f047fb99c754d9d0977ae405a
 [1cbcdd7]: https://github.com/zxfsee/afterburner/commit/1cbcdd70f04e29d39172ad73e27a0dbbc5c6a024
 [1157d1a]: https://github.com/zxfsee/afterburner/commit/1157d1aca6ab8330b957ee80a7f84600a258ade9
-[3b91a30]: https://github.com/zxfsee/afterburner/commit/3b91a307f1ab5493a88b42b30704f15fdcc6896c
+[22a3839]: https://github.com/zxfsee/afterburner/commit/22a3839e861d6235a6f9b949e28bd9276e14e28a
+[bb98e59]: https://github.com/zxfsee/afterburner/commit/bb98e598e703e8eb9f59286a7d757c9bf5f8d3bd
+[c2d8837]: https://github.com/zxfsee/afterburner/commit/c2d88375b5c49462fb78db535d405642cf0814cc
+[04449f7]: https://github.com/zxfsee/afterburner/commit/04449f7d08c39b8b29879b34aef326ac0c76478d
+[97e7620]: https://github.com/zxfsee/afterburner/commit/97e7620df8de7687d26a40004bafc9ca46aad0db
 
 <!-- generated by git-cliff -->

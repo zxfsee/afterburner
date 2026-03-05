@@ -30,6 +30,12 @@ fn parse_path_accepts_inline_named_artifact_flag() {
     assert_eq!(p.to_string_lossy(), "x.mpk");
 }
 
+#[test]
+fn parse_path_empty_inline_artifact_flag_falls_back_to_default() {
+    let p = parse_weights_path_from_args(["infer", "--artifact="]);
+    assert_eq!(p.to_string_lossy(), expected_default_path());
+}
+
 fn expected_default_path() -> String {
     let current_path = std::path::Path::new("artifacts/inference/current");
     let version = std::fs::read_to_string(current_path)

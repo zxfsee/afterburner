@@ -1,9 +1,12 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use afterburner::data::test_loader;
-use afterburner::infer::{default_weights_path, load_model};
+use afterburner::infer::{
+    InferError, default_weights_path, load_model, manifest_path_for_weights, validate_artifacts,
+};
+use afterburner::manifest::ArtifactManifest;
 use afterburner::observability::{emit_event, json_escape};
 use burn::backend::ndarray::NdArray;
 use burn::prelude::*;
@@ -107,6 +110,7 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
+    let artifact_version = load_artifact_version(args.artifact.as_path())?;
     let device = <CpuBackend as Backend>::Device::default();
     <CpuBackend as Backend>::seed(&device, args.seed);
 
@@ -148,8 +152,9 @@ where
     let accuracy = correct as f64 / total as f64;
     let elapsed_ms = start.elapsed().as_millis();
     let summary = format!(
-        "{{\n  \"event\": \"mnist_eval_summary\",\n  \"artifact\": \"{}\",\n  \"seed\": {},\n  \"batch_size\": {},\n  \"max_batches\": {},\n  \"batches_evaluated\": {},\n  \"samples\": {},\n  \"correct\": {},\n  \"accuracy\": {:.8},\n  \"elapsed_ms\": {}\n}}",
+        "{{\n  \"event\": \"mnist_eval_summary\",\n  \"artifact\": \"{}\",\n  \"artifact_version\": \"{}\",\n  \"seed\": {},\n  \"batch_size\": {},\n  \"max_batches\": {},\n  \"batches_evaluated\": {},\n  \"samples\": {},\n  \"correct\": {},\n  \"accuracy\": {:.8},\n  \"elapsed_ms\": {}\n}}",
         json_escape(&args.artifact.display().to_string()),
+        json_escape(&artifact_version),
         args.seed,
         args.batch_size,
         args.max_batches,
@@ -171,6 +176,8 @@ where
         "mnist_eval_written",
         json!({
             "out": args.out_path.display().to_string(),
+            "artifact": args.artifact.display().to_string(),
+            "artifact_version": artifact_version,
             "accuracy": accuracy
         }),
     );
@@ -194,6 +201,14 @@ where
     }
 
     Ok(())
+}
+
+fn load_artifact_version(weights_path: &Path) -> Result<String, InferError> {
+    validate_artifacts(weights_path)?;
+    let manifest_path = manifest_path_for_weights(weights_path);
+    let manifest =
+        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
+    Ok(manifest.artifact_version)
 }
 
 fn parse_args<I>(args: I) -> Result<EvalArgs, EvalError>

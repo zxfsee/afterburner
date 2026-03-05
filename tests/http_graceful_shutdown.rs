@@ -97,6 +97,86 @@ fn infer_error_artifact_not_found_fixture() -> Value {
     serde_json::from_str(&text).expect("parse infer error fixture")
 }
 
+fn infer_success_envelope_fixture() -> Value {
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join("http_infer_success_envelope.json");
+    let text = std::fs::read_to_string(path).expect("read infer success envelope fixture");
+    serde_json::from_str(&text).expect("parse infer success envelope fixture")
+}
+
+fn assert_success_payload_matches_fixture(payload: &Value) {
+    let fixture = infer_success_envelope_fixture();
+    let fixture_obj = fixture
+        .as_object()
+        .expect("success envelope fixture must be an object");
+    let required_top_level_keys = fixture_obj
+        .get("required_top_level_keys")
+        .and_then(Value::as_array)
+        .expect("fixture must define required_top_level_keys array")
+        .iter()
+        .map(|v| {
+            v.as_str()
+                .expect("required_top_level_keys values must be strings")
+                .to_string()
+        })
+        .collect::<Vec<_>>();
+    let expected_batch_size = fixture_obj
+        .get("batch_size")
+        .and_then(Value::as_u64)
+        .expect("fixture batch_size must be u64");
+    let expected_row_width = fixture_obj
+        .get("row_width")
+        .and_then(Value::as_u64)
+        .expect("fixture row_width must be u64");
+
+    let payload_obj = payload
+        .as_object()
+        .expect("success response envelope must be a json object");
+    let mut keys = payload_obj.keys().cloned().collect::<Vec<_>>();
+    let mut expected_keys = required_top_level_keys.clone();
+    keys.sort();
+    expected_keys.sort();
+    assert_eq!(keys, expected_keys, "success envelope fields drifted");
+
+    let batch_size = payload_obj
+        .get("batch_size")
+        .and_then(Value::as_u64)
+        .expect("batch_size must be numeric");
+    assert_eq!(
+        batch_size, expected_batch_size,
+        "batch_size must match fixture contract"
+    );
+    let logits = payload_obj
+        .get("logits")
+        .and_then(Value::as_array)
+        .expect("logits must be an array");
+    assert_eq!(
+        logits.len() as u64,
+        expected_batch_size,
+        "logits outer length must match batch_size"
+    );
+    for (idx, row) in logits.iter().enumerate() {
+        let row = row
+            .as_array()
+            .unwrap_or_else(|| panic!("logits[{idx}] must be an array"));
+        assert_eq!(
+            row.len() as u64,
+            expected_row_width,
+            "logits[{idx}] width must match fixture"
+        );
+        for (value_idx, value) in row.iter().enumerate() {
+            let number = value
+                .as_f64()
+                .unwrap_or_else(|| panic!("logits[{idx}][{value_idx}] must be numeric"));
+            assert!(
+                number.is_finite(),
+                "logits[{idx}][{value_idx}] must be finite"
+            );
+        }
+    }
+}
+
 fn normalize_infer_error_line(line: &str) -> Value {
     let mut value: Value = serde_json::from_str(line).expect("parse infer error event");
     let object = value
@@ -191,14 +271,7 @@ fn in_flight_infer_completes_on_sigint() {
         .map(|(_, body)| body)
         .expect("response must include headers and body");
     let payload: Value = serde_json::from_str(body).expect("response body must be json");
-    let payload_object = payload
-        .as_object()
-        .expect("success response envelope must be a json object");
-    assert_eq!(
-        payload_object.keys().collect::<Vec<_>>(),
-        vec!["batch_size", "logits"],
-        "success envelope fields drifted"
-    );
+    assert_success_payload_matches_fixture(&payload);
 
     wait_for_exit_ok(&mut child, Duration::from_secs(5));
     stderr_thread.join().expect("join stderr reader");
