@@ -99,10 +99,12 @@ commit_parsers = [
 ]
 tag_pattern = "v*"
 
+[package.metadata.git-cliff.remote]
+offline = true
+
 [package.metadata.git-cliff.remote.github]
 owner = "zxfsee"
 repo = "afterburner"
-offline = true
 
 [package.metadata.afterburner.compiler_feature_matrix]
 schema_version = "1"
