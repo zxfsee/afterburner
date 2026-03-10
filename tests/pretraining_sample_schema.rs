@@ -24,7 +24,7 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
     );
     assert_eq!(
         schema.get("$id").and_then(|v| v.as_str()),
-        Some("https://afterburner.local/schemas/pretraining-sample-metadata/v1")
+        Some("https://afterburner.local/schemas/pretraining-sample-metadata/v2")
     );
     assert_eq!(schema.get("type").and_then(|v| v.as_str()), Some("object"));
     assert_eq!(
@@ -71,6 +71,34 @@ fn pretraining_sample_schema_fixture_has_required_contract_fields() {
     assert_eq!(
         properties
             .get("source")
+            .and_then(|v| v.get("minLength"))
+            .and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    assert_eq!(
+        properties
+            .get("source_revision")
+            .and_then(|v| v.get("type"))
+            .and_then(|v| v.as_str()),
+        Some("string")
+    );
+    assert_eq!(
+        properties
+            .get("source_revision")
+            .and_then(|v| v.get("minLength"))
+            .and_then(|v| v.as_u64()),
+        Some(1)
+    );
+    assert_eq!(
+        properties
+            .get("sample_id")
+            .and_then(|v| v.get("type"))
+            .and_then(|v| v.as_str()),
+        Some("string")
+    );
+    assert_eq!(
+        properties
+            .get("sample_id")
             .and_then(|v| v.get("minLength"))
             .and_then(|v| v.as_u64()),
         Some(1)

@@ -9,9 +9,15 @@ use serde_json::{Map, Value};
 
 use crate::preprocess::mnist_image_to_tensor;
 
-pub const PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION: &str = "1";
-pub const PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS: [&str; 4] =
-    ["schema_version", "source", "split", "checksum"];
+pub const PRETRAINING_SAMPLE_METADATA_SCHEMA_VERSION: &str = "2";
+pub const PRETRAINING_SAMPLE_METADATA_REQUIRED_FIELDS: [&str; 6] = [
+    "schema_version",
+    "source",
+    "source_revision",
+    "sample_id",
+    "split",
+    "checksum",
+];
 pub const PRETRAINING_SAMPLE_METADATA_SPLIT_VALUES: [&str; 3] = ["train", "validation", "test"];
 pub const PRETRAINING_SAMPLE_METADATA_CHECKSUM_PATTERN: &str = "^[a-f0-9]{64}$";
 
@@ -101,6 +107,8 @@ impl PretrainingSplit {
 pub struct PretrainingSampleMetadata {
     pub schema_version: u8,
     pub source: String,
+    pub source_revision: String,
+    pub sample_id: String,
     pub split: PretrainingSplit,
     pub checksum: String,
 }
@@ -146,6 +154,22 @@ pub fn parse_pretraining_sample_metadata(
         ));
     }
 
+    let source_revision = read_required_string(object, "source_revision")?;
+    if source_revision.is_empty() {
+        return Err(PretrainingSampleMetadataError::InvalidField(
+            "source_revision",
+            "must be non-empty".to_string(),
+        ));
+    }
+
+    let sample_id = read_required_string(object, "sample_id")?;
+    if sample_id.is_empty() {
+        return Err(PretrainingSampleMetadataError::InvalidField(
+            "sample_id",
+            "must be non-empty".to_string(),
+        ));
+    }
+
     let split = read_required_string(object, "split")?;
     let split =
         PretrainingSplit::parse(split).ok_or(PretrainingSampleMetadataError::InvalidField(
@@ -162,8 +186,10 @@ pub fn parse_pretraining_sample_metadata(
     }
 
     Ok(PretrainingSampleMetadata {
-        schema_version: 1,
+        schema_version: 2,
         source: source.to_string(),
+        source_revision: source_revision.to_string(),
+        sample_id: sample_id.to_string(),
         split,
         checksum: checksum.to_string(),
     })

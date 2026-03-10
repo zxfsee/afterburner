@@ -33,13 +33,6 @@ Rules:
   - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
   - Blocked-by: Backend performance profile gate (depends on established backend performance baselines).
 
-- OpenTelemetry semantic alignment gate [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Align local eval/infer monitoring event names, units, and required fields with OpenTelemetry semantic conventions, without adding OTel SDK/exporter runtime dependencies yet.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `event`
-  - Scope: `fixtures/eval_pipeline_monitoring_event.json`, `tests/eval_cli.rs`, `tests/http_graceful_shutdown.rs`, `ARCHITECTURE.md`
-
 - Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
   - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
   - Kind: `behavior`
