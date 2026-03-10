@@ -1,0 +1,12 @@
+{
+  "ts_ms": 0,
+  "level": "info",
+  "source": "infer_cli",
+  "event": "infer_done",
+  "fields": {
+    "backend": "cpu",
+    "artifact": "<artifact>/artifacts/inference/0.1.0/model.mpk",
+    "artifact_version": "0.1.0",
+    "elapsed_ms": 1
+  }
+}

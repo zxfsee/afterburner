@@ -41,13 +41,6 @@ Rules:
   - Scope: `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Backend performance profile gate (runtime decision should be evidence-based, not assumption-based).
 
-- Cargo workspace boundary split + dependency gate [Frameworks, Runtime Infra]
-  - Goal: Split into Cargo workspace boundaries (`core` and adapters) and add an enforceable dependency gate so codebase growth remains maintainable and CI can target crates.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `Cargo.toml`, `crates/`, `tests/`, `justfile`, `ARCHITECTURE.md`
-
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
   - Kind: `mixed`

@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Infer done event fixture gate [Inference, Runtime Infra]
-  - Goal: Pin `infer_done` event field contract (`backend`, `artifact`, `artifact_version`, `elapsed_ms`) with fixture-backed assertions to prevent observability drift.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `tests/infer_cli.rs`, `fixtures/infer_done_event.json`
-
 - Eval summary JSON fixture gate [Experimentation/Eval Infra, Data Infra]
   - Goal: Pin eval summary JSON top-level field contract (including `artifact_version`) with fixture-backed assertions for downstream parser stability.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `event`
   - Scope: `fixtures/eval_pipeline_monitoring_event.json`, `tests/eval_cli.rs`, `tests/http_graceful_shutdown.rs`, `ARCHITECTURE.md`
+
+- Cargo workspace boundary split + dependency gate [Frameworks, Runtime Infra]
+  - Goal: Split into Cargo workspace boundaries (`core` and adapters) and add an enforceable dependency gate so codebase growth remains maintainable and CI can target crates.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `Cargo.toml`, `crates/`, `tests/`, `justfile`, `ARCHITECTURE.md`
 
 ## [Trunk]
 """
