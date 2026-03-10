@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Eval pipeline monitoring artifact schema gate [Experimentation/Eval Infra, Data Infra]
-  - Goal: Pin eval summary artifact schema/required monitoring fields so downstream tooling sees stable contract shape.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`
-  - Scope: `tests/eval_cli.rs`, `fixtures/eval_pipeline_monitoring_artifact.schema.json`, `artifacts/eval/mnist_eval_summary.json`
-
 - Training scalability-readiness contract [Distributed Training, Runtime Infra]
   - Goal: Make training path scalability-ready (not scaled yet) by defining/validating contract-level controls and observability for batch size, worker parallelism, and deterministic throughput reporting.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `ops`
   - Scope: `justfile`, `tests/perf_backend_profile.rs`, `artifacts/eval/`, `README.md`
+
+- Burn TUI observability dashboard adapter [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Add a lightweight dashboard adapter over existing structured events (without coupling core to UI runtime) for operator-facing eval/training monitoring.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `src/bin/`, `tests/`, `README.md`
 
 ## [Trunk]
 """

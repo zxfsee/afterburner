@@ -1,6 +1,7 @@
 use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::*;
 use serde_json::Value;
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
@@ -178,6 +179,182 @@ fn eval_emits_monitoring_contract_event_and_summary_fields() {
             .is_some(),
         "summary rate_samples_per_sec must be numeric"
     );
+}
+
+#[test]
+fn eval_summary_schema_fixture_has_required_monitoring_fields() {
+    let schema = fixture_json("eval_pipeline_monitoring_artifact.schema.json");
+
+    assert_eq!(
+        schema.get("$schema").and_then(Value::as_str),
+        Some("https://json-schema.org/draft/2020-12/schema")
+    );
+    assert_eq!(
+        schema.get("$id").and_then(Value::as_str),
+        Some("https://afterburner.local/schemas/eval-pipeline-monitoring-artifact/v1")
+    );
+    assert_eq!(schema.get("type").and_then(Value::as_str), Some("object"));
+    assert_eq!(
+        schema.get("additionalProperties").and_then(Value::as_bool),
+        Some(false)
+    );
+
+    let required = schema
+        .get("required")
+        .and_then(Value::as_array)
+        .expect("schema.required must be an array")
+        .iter()
+        .map(|value| {
+            value
+                .as_str()
+                .expect("schema.required items must be strings")
+                .to_string()
+        })
+        .collect::<BTreeSet<_>>();
+    let expected = [
+        "event",
+        "artifact",
+        "artifact_version",
+        "seed",
+        "batch_size",
+        "max_batches",
+        "batches_evaluated",
+        "samples",
+        "correct",
+        "accuracy",
+        "error_count",
+        "duration_ms",
+        "rate_samples_per_sec",
+    ]
+    .into_iter()
+    .map(str::to_string)
+    .collect::<BTreeSet<_>>();
+    assert_eq!(required, expected);
+
+    let properties = schema
+        .get("properties")
+        .and_then(Value::as_object)
+        .expect("schema.properties must be an object");
+    assert_eq!(
+        properties
+            .get("event")
+            .and_then(|value| value.get("const"))
+            .and_then(Value::as_str),
+        Some("mnist_eval_summary")
+    );
+    assert_eq!(
+        properties
+            .get("artifact")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("string")
+    );
+    assert_eq!(
+        properties
+            .get("artifact_version")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("string")
+    );
+    assert_eq!(
+        properties
+            .get("accuracy")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("number")
+    );
+    assert_eq!(
+        properties
+            .get("error_count")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("integer")
+    );
+    assert_eq!(
+        properties
+            .get("duration_ms")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("integer")
+    );
+    assert_eq!(
+        properties
+            .get("rate_samples_per_sec")
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str),
+        Some("number")
+    );
+}
+
+#[test]
+fn eval_checked_in_summary_matches_monitoring_schema_contract() {
+    let schema = fixture_json("eval_pipeline_monitoring_artifact.schema.json");
+    let summary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("artifacts")
+        .join("eval")
+        .join("mnist_eval_summary.json");
+    let summary_text = fs::read_to_string(summary_path).expect("read eval summary sample artifact");
+    let summary: Value = serde_json::from_str(&summary_text).expect("parse eval summary json");
+    let summary = summary
+        .as_object()
+        .expect("eval summary sample must be a top-level object");
+
+    let required = schema
+        .get("required")
+        .and_then(Value::as_array)
+        .expect("schema.required must be an array")
+        .iter()
+        .map(|value| {
+            value
+                .as_str()
+                .expect("schema.required items must be strings")
+                .to_string()
+        })
+        .collect::<BTreeSet<_>>();
+    let actual = summary.keys().cloned().collect::<BTreeSet<_>>();
+    assert_eq!(actual, required, "summary keys must match schema.required");
+
+    assert_eq!(
+        summary.get("event").and_then(Value::as_str),
+        Some("mnist_eval_summary")
+    );
+    for key in ["artifact", "artifact_version"] {
+        let value = summary
+            .get(key)
+            .and_then(Value::as_str)
+            .unwrap_or_else(|| panic!("{key} must be a string"));
+        assert!(!value.is_empty(), "{key} must be non-empty");
+    }
+    for key in [
+        "seed",
+        "batch_size",
+        "max_batches",
+        "batches_evaluated",
+        "samples",
+        "correct",
+        "error_count",
+        "duration_ms",
+    ] {
+        summary
+            .get(key)
+            .and_then(Value::as_u64)
+            .unwrap_or_else(|| panic!("{key} must be an integer"));
+    }
+
+    let accuracy = summary
+        .get("accuracy")
+        .and_then(Value::as_f64)
+        .expect("accuracy must be numeric");
+    assert!(
+        (0.0..=1.0).contains(&accuracy),
+        "accuracy must be normalized"
+    );
+
+    let rate = summary
+        .get("rate_samples_per_sec")
+        .and_then(Value::as_f64)
+        .expect("rate_samples_per_sec must be numeric");
+    assert!(rate >= 0.0, "rate_samples_per_sec must be non-negative");
 }
 
 fn stderr_event(stderr: &str, event_name: &str) -> Value {

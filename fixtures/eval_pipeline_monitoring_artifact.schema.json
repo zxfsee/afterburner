@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/eval-pipeline-monitoring-artifact/v1",
+  "title": "Eval Pipeline Monitoring Artifact v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "event",
+    "artifact",
+    "artifact_version",
+    "seed",
+    "batch_size",
+    "max_batches",
+    "batches_evaluated",
+    "samples",
+    "correct",
+    "accuracy",
+    "error_count",
+    "duration_ms",
+    "rate_samples_per_sec"
+  ],
+  "properties": {
+    "event": {
+      "const": "mnist_eval_summary"
+    },
+    "artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "batch_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_batches": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "batches_evaluated": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "samples": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "correct": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "accuracy": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "duration_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rate_samples_per_sec": {
+      "type": "number",
+      "minimum": 0.0
+    }
+  }
+}

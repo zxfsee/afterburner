@@ -41,13 +41,6 @@ Rules:
   - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
   - Blocked-by: Backend performance profile gate (depends on established backend performance baselines).
 
-- Burn TUI observability dashboard adapter [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Add a lightweight dashboard adapter over existing structured events (without coupling core to UI runtime) for operator-facing eval/training monitoring.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `src/bin/`, `tests/`, `README.md`
-
 - OpenTelemetry semantic alignment gate [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Align local eval/infer monitoring event names, units, and required fields with OpenTelemetry semantic conventions, without adding OTel SDK/exporter runtime dependencies yet.
   - Kind: `gate`
@@ -76,7 +69,7 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: HTTP infer success fixture gate; Eval pipeline monitoring artifact schema gate; deployment target profile model and artifact rollout ownership decision.
+  - Blocked-by: HTTP infer success fixture gate; deployment target profile model and artifact rollout ownership decision.
 
 - Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
@@ -84,4 +77,4 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`, `event`
   - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Deploy-rs baseline deployment contract; Artifact upload adapter contract; Eval pipeline monitoring artifact schema gate.
+  - Blocked-by: Deploy-rs baseline deployment contract; Artifact upload adapter contract.
