@@ -9,12 +9,12 @@ header = """# Changelog
 
 ## TODO
 
-- Training scalability-readiness contract [Distributed Training, Runtime Infra]
-  - Goal: Make training path scalability-ready (not scaled yet) by defining/validating contract-level controls and observability for batch size, worker parallelism, and deterministic throughput reporting.
+- Dataset contract hardening for scale readiness [Data Infra, Pre-training]
+  - Goal: Define and gate dataset ingestion/lineage contracts (source identity, split semantics, checksums, schema versioning) so higher-throughput training can scale without data ambiguity.
   - Kind: `mixed`
-  - Boundary: `adapter-cli`
+  - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
-  - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/training_scalability_readiness.rs`, `fixtures/training_scalability_contract.json`
+  - Scope: `src/data.rs`, `tests/pretraining_sample_contract.rs`, `tests/pretraining_sample_schema.rs`, `fixtures/pretraining_sample_metadata.schema.json`
 
 - Infer done event fixture gate [Inference, Runtime Infra]
   - Goal: Pin `infer_done` event field contract (`backend`, `artifact`, `artifact_version`, `elapsed_ms`) with fixture-backed assertions to prevent observability drift.

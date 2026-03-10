@@ -57,10 +57,13 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 ## Training
 
 Training is executed via the `afterburner train` subcommand.
+Use `--batch-size <N>` and `--num-workers <N>` to exercise the explicit training scalability controls.
 
 It produces artifacts under `artifacts/`, including:
 - a trained model output under `artifacts/train/`
 - a stable, inference-ready model artifact under `artifacts/inference/`
+- a versioned training scalability contract at `artifacts/train/training_scalability_contract.json`
+  capturing `batch_size`, `worker_parallelism`, `planned_samples`, and `throughput_samples_per_sec`
 
 Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
 
@@ -135,7 +138,9 @@ Baseline refresh flow when intended model changes shift deterministic accuracy:
 3. Update `justfile` `eval-gate` `--min-accuracy` to the approved deterministic value.
 
 Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn persists per-metric logs
-under `artifacts/train/` for auditability.
+under `artifacts/train/` for auditability. `train_done` mirrors the training scalability contract
+fields (`batch_size`, `worker_parallelism`, `num_epochs`, `planned_samples`, `elapsed_ms`,
+`throughput_samples_per_sec`) for stable operator-facing observability.
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 

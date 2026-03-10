@@ -21,6 +21,9 @@ use crate::{
 };
 
 const DISTRIBUTED_SHARD_METADATA_PATH_ENV: &str = "AFTERBURNER_DISTRIBUTED_SHARD_METADATA_PATH";
+const MNIST_TRAIN_SAMPLES_PER_EPOCH: u64 = 60_000;
+pub const TRAINING_SCALABILITY_CONTRACT_FILENAME: &str = "training_scalability_contract.json";
+pub const TRAINING_SCALABILITY_CONTRACT_SCHEMA_VERSION: &str = "1";
 
 #[derive(Config, Debug)]
 pub struct TrainingConfig {
@@ -86,7 +89,7 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
         &train_dir,
         "train_start",
         &backend,
-        &config.artifact_version,
+        &config,
         &train_dir,
         &inference_dir,
     )
@@ -158,8 +161,18 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     .expect("write train export event");
 
     let elapsed_ms = start.elapsed().as_millis();
-    write_train_done_event(&train_dir, &backend, &config.artifact_version, elapsed_ms)
-        .expect("write train done event");
+    let elapsed_ms = u64::try_from(elapsed_ms).unwrap_or(u64::MAX);
+    let contract = training_scalability_contract_value(
+        &backend,
+        &config.artifact_version,
+        config.batch_size,
+        config.num_workers,
+        config.num_epochs,
+        elapsed_ms,
+    );
+    write_training_scalability_contract(&train_dir, &contract)
+        .expect("write training scalability contract");
+    write_train_done_event(&train_dir, &contract).expect("write train done event");
 }
 
 pub fn artifact_dirs(root: &Path) -> (PathBuf, PathBuf) {
@@ -386,18 +399,23 @@ fn write_train_event(
     train_dir: &Path,
     event: &str,
     backend: &str,
-    artifact_version: &str,
+    config: &TrainingConfig,
     metrics_dir: &Path,
     inference_dir: &Path,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
+    let planned_samples = planned_training_samples(config.num_epochs);
     let line = event_line(
         "info",
         "train",
         event,
         serde_json::json!({
             "backend": backend,
-            "artifact_version": artifact_version,
+            "artifact_version": config.artifact_version,
+            "batch_size": config.batch_size,
+            "worker_parallelism": config.num_workers,
+            "num_epochs": config.num_epochs,
+            "planned_samples": planned_samples,
             "metrics_dir": metrics_dir.to_string_lossy().to_string(),
             "inference_dir": inference_dir.to_string_lossy().to_string()
         }),
@@ -429,23 +447,9 @@ fn write_train_export_event(
     append_json_line(&path, &line)
 }
 
-fn write_train_done_event(
-    train_dir: &Path,
-    backend: &str,
-    artifact_version: &str,
-    elapsed_ms: u128,
-) -> io::Result<()> {
+fn write_train_done_event(train_dir: &Path, contract: &serde_json::Value) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let line = event_line(
-        "info",
-        "train",
-        "train_done",
-        serde_json::json!({
-            "backend": backend,
-            "artifact_version": artifact_version,
-            "elapsed_ms": elapsed_ms
-        }),
-    );
+    let line = train_done_event_line(contract);
     append_json_line(&path, &line)
 }
 
@@ -477,4 +481,50 @@ pub fn distributed_shard_metadata_invalid_event_line(
             "detail": err.detail(),
         }),
     )
+}
+
+pub fn training_scalability_contract_value(
+    backend: &str,
+    artifact_version: &str,
+    batch_size: usize,
+    worker_parallelism: usize,
+    num_epochs: usize,
+    elapsed_ms: u64,
+) -> serde_json::Value {
+    let samples_per_epoch = MNIST_TRAIN_SAMPLES_PER_EPOCH;
+    let planned_samples = planned_training_samples(num_epochs);
+    let throughput_samples_per_sec = (planned_samples as f64 * 1000.0) / elapsed_ms.max(1) as f64;
+
+    serde_json::json!({
+        "schema_version": TRAINING_SCALABILITY_CONTRACT_SCHEMA_VERSION,
+        "backend": backend,
+        "artifact_version": artifact_version,
+        "batch_size": batch_size,
+        "worker_parallelism": worker_parallelism,
+        "num_epochs": num_epochs,
+        "samples_per_epoch": samples_per_epoch,
+        "planned_samples": planned_samples,
+        "elapsed_ms": elapsed_ms,
+        "throughput_samples_per_sec": throughput_samples_per_sec
+    })
+}
+
+pub fn write_training_scalability_contract(
+    train_dir: &Path,
+    contract: &serde_json::Value,
+) -> io::Result<PathBuf> {
+    let path = train_dir.join(TRAINING_SCALABILITY_CONTRACT_FILENAME);
+    let json = serde_json::to_string_pretty(contract).map_err(|err| {
+        io::Error::other(format!("serialize training scalability contract: {err}"))
+    })?;
+    std::fs::write(&path, json)?;
+    Ok(path)
+}
+
+pub fn train_done_event_line(contract: &serde_json::Value) -> String {
+    event_line("info", "train", "train_done", contract.clone())
+}
+
+fn planned_training_samples(num_epochs: usize) -> u64 {
+    MNIST_TRAIN_SAMPLES_PER_EPOCH.saturating_mul(num_epochs as u64)
 }

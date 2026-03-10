@@ -17,14 +17,6 @@ Rules:
 
 ## Items
 
-- Dataset contract hardening for scale readiness [Data Infra, Pre-training]
-  - Goal: Define and gate dataset ingestion/lineage contracts (source identity, split semantics, checksums, schema versioning) so higher-throughput training can scale without data ambiguity.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/data.rs`, `tests/pretraining_sample_contract.rs`, `tests/pretraining_sample_schema.rs`, `fixtures/pretraining_sample_metadata.schema.json`
-  - Blocked-by: Training scalability-readiness contract (needs ingestion/throughput observability fields declared first).
-
 - Artifact upload adapter contract [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define a provider-agnostic artifact upload contract and gate, with optional Hugging Face adapter later, while keeping core runtime/storage-independent.
   - Kind: `mixed`

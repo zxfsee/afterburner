@@ -13,21 +13,29 @@ type CpuBackend = NdArray<f32>;
 type GpuAutodiff = Autodiff<GpuBackend>;
 type CpuAutodiff = Autodiff<CpuBackend>;
 
-pub fn run<I>(mut args: I) -> i32
+pub fn run<I>(args: I) -> i32
 where
     I: Iterator<Item = String>,
 {
-    if let Some(arg) = args.next() {
-        eprintln!("unknown argument for train: {arg}");
-        eprintln!("{}", usage());
-        return 2;
+    let args: Vec<String> = args.collect();
+    if args.iter().any(|arg| arg == "--help" || arg == "-h") {
+        println!("{}", usage());
+        return 0;
     }
 
     let backend = std::env::var("BACKEND")
         .map(|v| v.to_ascii_lowercase())
         .unwrap_or_else(|_| "wgpu".to_string());
 
-    let config = training_config_from_env();
+    let parsed = match parse_args(args.into_iter()) {
+        Ok(parsed) => parsed,
+        Err(err) => {
+            eprintln!("{err}");
+            return 2;
+        }
+    };
+
+    let config = training_config_from_env(&parsed);
 
     if backend == "cpu" {
         let device = <CpuBackend as Backend>::Device::default();
@@ -48,7 +56,7 @@ where
                 "backend_fallback",
                 json!({"from":"wgpu","to":"cpu","reason":"no_adapter"}),
             );
-            let cpu_config = training_config_from_env();
+            let cpu_config = training_config_from_env(&parsed);
             let device = <CpuBackend as Backend>::Device::default();
             train::train::<CpuAutodiff>(cpu_config, device);
             return 0;
@@ -60,7 +68,13 @@ where
     0
 }
 
-fn training_config_from_env() -> train::TrainingConfig {
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TrainArgs {
+    batch_size: Option<usize>,
+    num_workers: Option<usize>,
+}
+
+fn training_config_from_env(args: &TrainArgs) -> train::TrainingConfig {
     // Explicit runtime knob to mirror production deployment variance:
     // same code + same artifact contract, different execution target.
     // Single override point so CI / experiments can redirect outputs without code changes.
@@ -75,8 +89,71 @@ fn training_config_from_env() -> train::TrainingConfig {
     if let Some(version) = artifact_version {
         config.artifact_version = version;
     }
+    if let Some(batch_size) = args.batch_size {
+        config.batch_size = batch_size;
+    }
+    if let Some(num_workers) = args.num_workers {
+        config.num_workers = num_workers;
+    }
 
     config
+}
+
+fn parse_args<I>(args: I) -> Result<TrainArgs, String>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut parsed = TrainArgs {
+        batch_size: None,
+        num_workers: None,
+    };
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--batch-size" => parsed.batch_size = Some(parse_value(&mut args, "--batch-size")?),
+            "--num-workers" => parsed.num_workers = Some(parse_value(&mut args, "--num-workers")?),
+            _ if arg.starts_with("--batch-size=") => {
+                parsed.batch_size = Some(parse_inline_value(
+                    arg.trim_start_matches("--batch-size="),
+                    "--batch-size",
+                )?)
+            }
+            _ if arg.starts_with("--num-workers=") => {
+                parsed.num_workers = Some(parse_inline_value(
+                    arg.trim_start_matches("--num-workers="),
+                    "--num-workers",
+                )?)
+            }
+            _ => return Err(format!("unknown argument for train: {arg}\n{}", usage())),
+        }
+    }
+
+    if matches!(parsed.batch_size, Some(0)) {
+        return Err(format!("--batch-size must be > 0\n{}", usage()));
+    }
+
+    Ok(parsed)
+}
+
+fn parse_value<T, I>(args: &mut I, flag: &str) -> Result<T, String>
+where
+    T: std::str::FromStr,
+    I: Iterator<Item = String>,
+{
+    let value = args
+        .next()
+        .ok_or_else(|| format!("missing value for {flag}\n{}", usage()))?;
+    parse_inline_value(value.as_str(), flag)
+}
+
+fn parse_inline_value<T>(value: &str, flag: &str) -> Result<T, String>
+where
+    T: std::str::FromStr,
+{
+    value
+        .parse::<T>()
+        .map_err(|_| format!("invalid value for {flag}: {value}\n{}", usage()))
 }
 
 fn is_missing_wgpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
@@ -90,5 +167,42 @@ fn is_missing_wgpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner train"
+    "usage: afterburner train [--batch-size N] [--num-workers N]"
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{TrainArgs, parse_args};
+
+    #[test]
+    fn parse_args_accepts_scalability_controls() {
+        let args = vec![
+            "--batch-size".to_string(),
+            "32".to_string(),
+            "--num-workers=4".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse args");
+        assert_eq!(
+            parsed,
+            TrainArgs {
+                batch_size: Some(32),
+                num_workers: Some(4),
+            }
+        );
+    }
+
+    #[test]
+    fn parse_args_rejects_zero_batch_size() {
+        let args = vec!["--batch-size".to_string(), "0".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("zero batch size must fail");
+        assert!(err.contains("--batch-size must be > 0"));
+    }
+
+    #[test]
+    fn parse_args_rejects_unknown_flag() {
+        let args = vec!["--bogus".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("unknown flag must fail");
+        assert!(err.contains("unknown argument for train: --bogus"));
+    }
 }
