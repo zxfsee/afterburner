@@ -7,7 +7,7 @@ use afterburner::infer::{
     InferError, default_weights_path, load_model, manifest_path_for_weights, validate_artifacts,
 };
 use afterburner::manifest::ArtifactManifest;
-use afterburner::observability::{emit_event, json_escape};
+use afterburner::observability::emit_event;
 use burn::backend::ndarray::NdArray;
 use burn::prelude::*;
 use serde_json::json;
@@ -150,35 +150,47 @@ where
     }
 
     let accuracy = correct as f64 / total as f64;
-    let elapsed_ms = start.elapsed().as_millis();
-    let summary = format!(
-        "{{\n  \"event\": \"mnist_eval_summary\",\n  \"artifact\": \"{}\",\n  \"artifact_version\": \"{}\",\n  \"seed\": {},\n  \"batch_size\": {},\n  \"max_batches\": {},\n  \"batches_evaluated\": {},\n  \"samples\": {},\n  \"correct\": {},\n  \"accuracy\": {:.8},\n  \"elapsed_ms\": {}\n}}",
-        json_escape(&args.artifact.display().to_string()),
-        json_escape(&artifact_version),
-        args.seed,
-        args.batch_size,
-        args.max_batches,
-        seen_batches,
-        total,
-        correct,
-        accuracy,
-        elapsed_ms
-    );
+    let duration_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX);
+    let rate_samples_per_sec = (total as f64 * 1000.0) / duration_ms.max(1) as f64;
+    let summary = json!({
+        "event": "mnist_eval_summary",
+        "artifact": args.artifact.display().to_string(),
+        "artifact_version": artifact_version,
+        "seed": args.seed,
+        "batch_size": args.batch_size,
+        "max_batches": args.max_batches,
+        "batches_evaluated": seen_batches,
+        "samples": total,
+        "correct": correct,
+        "accuracy": accuracy,
+        "error_count": 0,
+        "duration_ms": duration_ms,
+        "rate_samples_per_sec": rate_samples_per_sec
+    });
 
     if let Some(parent) = args.out_path.parent() {
         fs::create_dir_all(parent)?;
     }
+    let summary = serde_json::to_string_pretty(&summary).map_err(|err| {
+        EvalError::invalid_arg(format!("failed to serialize eval summary json: {err}"))
+    })?;
     fs::write(&args.out_path, summary)?;
 
     emit_event(
         "info",
         "eval_cli",
-        "mnist_eval_written",
+        "eval_done",
         json!({
-            "out": args.out_path.display().to_string(),
             "artifact": args.artifact.display().to_string(),
             "artifact_version": artifact_version,
-            "accuracy": accuracy
+            "accuracy": accuracy,
+            "samples": total,
+            "batches_evaluated": seen_batches,
+            "batch_size": args.batch_size,
+            "seed": args.seed,
+            "error_count": 0,
+            "duration_ms": duration_ms,
+            "rate_samples_per_sec": rate_samples_per_sec
         }),
     );
 

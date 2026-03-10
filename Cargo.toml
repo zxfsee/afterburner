@@ -9,20 +9,12 @@ header = """# Changelog
 
 ## TODO
 
-- Eval pipeline monitoring contract definition [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Define and gate a stable eval monitoring contract using RED (rate/errors/duration) plus eval quality/context fields (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`), including the fixture-backed event contract in this same task.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`, `artifact`
-  - Scope: `src/cmd_eval.rs`, `tests/eval_cli.rs`, `fixtures/eval_pipeline_monitoring_event.json`, `artifacts/eval/mnist_eval_summary.json`
-
 - Eval pipeline monitoring artifact schema gate [Experimentation/Eval Infra, Data Infra]
   - Goal: Pin eval summary artifact schema/required monitoring fields so downstream tooling sees stable contract shape.
   - Kind: `gate`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`
   - Scope: `tests/eval_cli.rs`, `fixtures/eval_pipeline_monitoring_artifact.schema.json`, `artifacts/eval/mnist_eval_summary.json`
-  - Blocked-by: Eval pipeline monitoring contract definition
 
 - Training scalability-readiness contract [Distributed Training, Runtime Infra]
   - Goal: Make training path scalability-ready (not scaled yet) by defining/validating contract-level controls and observability for batch size, worker parallelism, and deterministic throughput reporting.
@@ -30,7 +22,6 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`
   - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/training_scalability_readiness.rs`, `fixtures/training_scalability_contract.json`
-  - Blocked-by: Eval pipeline monitoring contract definition
 
 - Infer done event fixture gate [Inference, Runtime Infra]
   - Goal: Pin `infer_done` event field contract (`backend`, `artifact`, `artifact_version`, `elapsed_ms`) with fixture-backed assertions to prevent observability drift.
@@ -52,6 +43,13 @@ header = """# Changelog
   - Boundary: `adapter-http`
   - Contracts: `HTTP`
   - Scope: `tests/http_graceful_shutdown.rs`, `fixtures/http_infer_single_success_envelope.json`
+
+- Backend performance profile gate [Kernels, Runtime Infra]
+  - Goal: Add benchmark/acceptance gates that identify when `wgpu` is not the best runtime choice and define objective criteria for introducing a native backend.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `ops`
+  - Scope: `justfile`, `tests/perf_backend_profile.rs`, `artifacts/eval/`, `README.md`
 
 ## [Trunk]
 """

@@ -1,0 +1,18 @@
+{
+  "ts_ms": 0,
+  "level": "info",
+  "source": "eval_cli",
+  "event": "eval_done",
+  "fields": {
+    "artifact": "<artifact>/artifacts/inference/0.1.0/model.mpk",
+    "artifact_version": "0.1.0",
+    "accuracy": 1.0,
+    "samples": 16,
+    "batches_evaluated": 1,
+    "batch_size": 16,
+    "seed": 42,
+    "error_count": 0,
+    "duration_ms": 1,
+    "rate_samples_per_sec": 1.0
+  }
+}

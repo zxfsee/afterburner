@@ -33,14 +33,6 @@ Rules:
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Deploy-rs baseline deployment contract (upload authority/provenance model must be decided first).
 
-- Backend performance profile gate [Kernels, Runtime Infra]
-  - Goal: Add benchmark/acceptance gates that identify when `wgpu` is not the best runtime choice and define objective criteria for introducing a native backend.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `ops`
-  - Scope: `justfile`, `tests/perf_backend_profile.rs`, `artifacts/eval/`, `README.md`
-  - Blocked-by: Eval pipeline monitoring contract definition (requires stable duration/error metric fields).
-
 - Custom kernel adoption threshold contract [Kernels, Numerics]
   - Goal: Define measurable thresholds and compatibility gates for custom kernel introduction so optimization work is evidence-driven and reversible.
   - Kind: `mixed`
@@ -55,7 +47,6 @@ Rules:
   - Boundary: `adapter-cli`
   - Contracts: `event`
   - Scope: `src/bin/`, `tests/`, `README.md`
-  - Blocked-by: Eval pipeline monitoring contract definition (needs stable RED + eval context event schema).
 
 - OpenTelemetry semantic alignment gate [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Align local eval/infer monitoring event names, units, and required fields with OpenTelemetry semantic conventions, without adding OTel SDK/exporter runtime dependencies yet.
@@ -63,7 +54,6 @@ Rules:
   - Boundary: `none`
   - Contracts: `event`
   - Scope: `fixtures/eval_pipeline_monitoring_event.json`, `tests/eval_cli.rs`, `tests/http_graceful_shutdown.rs`, `ARCHITECTURE.md`
-  - Blocked-by: Eval pipeline monitoring contract definition (requires stable local event contract before semantic mapping).
 
 - Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
   - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
@@ -79,7 +69,6 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `Cargo.toml`, `crates/`, `tests/`, `justfile`, `ARCHITECTURE.md`
-  - Blocked-by: Eval pipeline monitoring contract definition (avoid structural churn while core monitoring contracts are still moving).
 
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
