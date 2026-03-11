@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Custom kernel adoption threshold contract [Kernels, Numerics]
-  - Goal: Define measurable thresholds and compatibility gates for custom kernel introduction so optimization work is evidence-driven and reversible.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_shape_guard.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
-
 - Backend performance profile gate [Kernels, Runtime Infra]
   - Goal: Keep the native-backend adoption decision artifact objective and current so kernel/runtime optimization work stays measurement-driven.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `fixtures/artifact_rollout_ownership.schema.json`, `tests/artifact_rollout_ownership.rs`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Train epoch override contract [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Add an explicit epoch override to the train CLI so training-side contract artifacts can be regenerated deterministically in short CI/test runs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `CLI`, `artifact`
+  - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/`, `README.md`
 
 ## [Trunk]
 """

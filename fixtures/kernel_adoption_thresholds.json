@@ -1,0 +1,104 @@
+{
+  "schema_version": "1",
+  "artifact_version": "0.1.0",
+  "decision": "defer_custom_kernels",
+  "model": {
+    "architecture_id": "afterburner.mnist.residual_v1",
+    "architecture_version": 1,
+    "input_dtype": "f32",
+    "conv_site_count": 7,
+    "kernel_shape_coverage": [
+      {
+        "kernel_size": "1x1",
+        "site_count": 2
+      },
+      {
+        "kernel_size": "3x3",
+        "site_count": 4
+      },
+      {
+        "kernel_size": "5x5",
+        "site_count": 1
+      }
+    ],
+    "kernel_sites": [
+      {
+        "name": "stem",
+        "kind": "conv2d",
+        "kernel_size": [
+          5,
+          5
+        ],
+        "padding": "valid"
+      },
+      {
+        "name": "block1.conv1",
+        "kind": "conv2d",
+        "kernel_size": [
+          3,
+          3
+        ],
+        "padding": "same"
+      },
+      {
+        "name": "block1.conv2",
+        "kind": "conv2d",
+        "kernel_size": [
+          3,
+          3
+        ],
+        "padding": "same"
+      },
+      {
+        "name": "block2.conv1",
+        "kind": "conv2d",
+        "kernel_size": [
+          3,
+          3
+        ],
+        "padding": "same"
+      },
+      {
+        "name": "block2.conv2",
+        "kind": "conv2d",
+        "kernel_size": [
+          3,
+          3
+        ],
+        "padding": "same"
+      },
+      {
+        "name": "block2.shortcut",
+        "kind": "conv2d",
+        "kernel_size": [
+          1,
+          1
+        ],
+        "padding": "valid"
+      },
+      {
+        "name": "projector",
+        "kind": "conv2d",
+        "kernel_size": [
+          1,
+          1
+        ],
+        "padding": "valid"
+      }
+    ]
+  },
+  "adoption_guard": {
+    "minimum_conv_site_coverage_ratio": 0.75,
+    "required_padding_modes": [
+      "same",
+      "valid"
+    ],
+    "forbid_grouped_convolution": true,
+    "forbid_dilated_convolution": true,
+    "supporting_evidence": {
+      "profile_artifact": "artifacts/eval/backend_performance_profile.json",
+      "minimum_profile_batch_size": 128,
+      "required_consecutive_regressions": 2
+    }
+  }
+}

@@ -11,6 +11,59 @@ use burn::{
 pub const MODEL_ARCH_ID: &str = "afterburner.mnist.residual_v1";
 pub const MODEL_ARCH_VERSION: u32 = 1;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct KernelSiteSpec {
+    pub name: &'static str,
+    pub kind: &'static str,
+    pub kernel_size: [usize; 2],
+    pub padding: &'static str,
+}
+
+pub const MODEL_KERNEL_SITES: [KernelSiteSpec; 7] = [
+    KernelSiteSpec {
+        name: "stem",
+        kind: "conv2d",
+        kernel_size: [5, 5],
+        padding: "valid",
+    },
+    KernelSiteSpec {
+        name: "block1.conv1",
+        kind: "conv2d",
+        kernel_size: [3, 3],
+        padding: "same",
+    },
+    KernelSiteSpec {
+        name: "block1.conv2",
+        kind: "conv2d",
+        kernel_size: [3, 3],
+        padding: "same",
+    },
+    KernelSiteSpec {
+        name: "block2.conv1",
+        kind: "conv2d",
+        kernel_size: [3, 3],
+        padding: "same",
+    },
+    KernelSiteSpec {
+        name: "block2.conv2",
+        kind: "conv2d",
+        kernel_size: [3, 3],
+        padding: "same",
+    },
+    KernelSiteSpec {
+        name: "block2.shortcut",
+        kind: "conv2d",
+        kernel_size: [1, 1],
+        padding: "valid",
+    },
+    KernelSiteSpec {
+        name: "projector",
+        kind: "conv2d",
+        kernel_size: [1, 1],
+        padding: "valid",
+    },
+];
+
 #[derive(Module, Debug)]
 pub struct Model<B: Backend> {
     stem: Conv2d<B>,

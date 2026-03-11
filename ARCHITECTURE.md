@@ -30,6 +30,10 @@ The inference manifest includes checksum validation plus signing-ready placehold
 
 Training also emits JSONL observability events under `artifacts/train/` to keep
 metrics and runtime metadata inspectable without introducing a logging stack.
+Training-side contract artifacts also capture optimization decision guards
+separately from runtime contracts. For example, custom kernel adoption is gated
+by a checked contract that records the current convolution footprint plus the
+objective evidence required before replacing backend-provided kernels.
 
 ### Trade-offs
 
@@ -57,6 +61,10 @@ auto-versioning, embedded serving) are intentionally absent.
   (`duration_ms`, `batch_size`, `artifact_version`) so adapter-local logs can be mapped
   deliberately onto OpenTelemetry conventions later without claiming full semconv naming or
   pulling an SDK into core.
+- Optimization policy changes must be expressed as explicit artifacts or gates before
+  introducing new execution paths. Custom kernels are justified only when the checked
+  kernel-adoption contract is refreshed with current model coverage and supporting
+  backend profile evidence.
 
 ### Assumptions
 
@@ -68,3 +76,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md)
 - [ADR-003: Artifact Manifest](./docs/adr/003-artifact-manifest.md)
 - [ADR-004: Versioned Inference Artifacts](./docs/adr/004-artifact-versioning.md)
+- [ADR-005: Custom Kernel Adoption Threshold](./docs/adr/005-custom-kernel-adoption-threshold.md)

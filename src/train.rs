@@ -9,14 +9,14 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::{env, io};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
-    manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, compute_sha256_hex},
-    model::{Model, ModelConfig},
+    manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, INPUT_DTYPE, compute_sha256_hex},
+    model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION, MODEL_KERNEL_SITES, Model, ModelConfig},
     observability::{append_json_line, event_line},
 };
 
@@ -24,6 +24,12 @@ const DISTRIBUTED_SHARD_METADATA_PATH_ENV: &str = "AFTERBURNER_DISTRIBUTED_SHARD
 const MNIST_TRAIN_SAMPLES_PER_EPOCH: u64 = 60_000;
 pub const TRAINING_SCALABILITY_CONTRACT_FILENAME: &str = "training_scalability_contract.json";
 pub const TRAINING_SCALABILITY_CONTRACT_SCHEMA_VERSION: &str = "1";
+pub const KERNEL_ADOPTION_CONTRACT_FILENAME: &str = "kernel_adoption_thresholds.json";
+pub const KERNEL_ADOPTION_CONTRACT_SCHEMA_VERSION: &str = "1";
+const KERNEL_ADOPTION_MIN_CONV_SITE_COVERAGE_RATIO: f64 = 0.75;
+const KERNEL_ADOPTION_MIN_PROFILE_BATCH_SIZE: u64 = 128;
+const KERNEL_ADOPTION_REQUIRED_CONSECUTIVE_REGRESSIONS: u64 = 2;
+const KERNEL_ADOPTION_PROFILE_ARTIFACT: &str = "artifacts/eval/backend_performance_profile.json";
 
 #[derive(Config, Debug)]
 pub struct TrainingConfig {
@@ -172,6 +178,9 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     );
     write_training_scalability_contract(&train_dir, &contract)
         .expect("write training scalability contract");
+    let kernel_contract = kernel_adoption_threshold_contract_value(&config.artifact_version);
+    write_kernel_adoption_threshold_contract(&train_dir, &kernel_contract)
+        .expect("write kernel adoption threshold contract");
     write_train_done_event(&train_dir, &contract).expect("write train done event");
 }
 
@@ -509,6 +518,64 @@ pub fn training_scalability_contract_value(
     })
 }
 
+pub fn kernel_adoption_threshold_contract_value(artifact_version: &str) -> serde_json::Value {
+    let mut kernel_site_counts = BTreeMap::<String, u64>::new();
+    let mut padding_modes = BTreeSet::<String>::new();
+
+    for site in MODEL_KERNEL_SITES {
+        let key = format!("{}x{}", site.kernel_size[0], site.kernel_size[1]);
+        *kernel_site_counts.entry(key).or_insert(0) += 1;
+        padding_modes.insert(site.padding.to_string());
+    }
+
+    let kernel_sites = MODEL_KERNEL_SITES
+        .iter()
+        .map(|site| {
+            serde_json::json!({
+                "name": site.name,
+                "kind": site.kind,
+                "kernel_size": site.kernel_size,
+                "padding": site.padding,
+            })
+        })
+        .collect::<Vec<_>>();
+
+    let kernel_shape_coverage = kernel_site_counts
+        .into_iter()
+        .map(|(kernel_size, site_count)| {
+            serde_json::json!({
+                "kernel_size": kernel_size,
+                "site_count": site_count,
+            })
+        })
+        .collect::<Vec<_>>();
+
+    serde_json::json!({
+        "schema_version": KERNEL_ADOPTION_CONTRACT_SCHEMA_VERSION,
+        "artifact_version": artifact_version,
+        "decision": "defer_custom_kernels",
+        "model": {
+            "architecture_id": MODEL_ARCH_ID,
+            "architecture_version": MODEL_ARCH_VERSION,
+            "input_dtype": INPUT_DTYPE,
+            "conv_site_count": MODEL_KERNEL_SITES.len(),
+            "kernel_shape_coverage": kernel_shape_coverage,
+            "kernel_sites": kernel_sites,
+        },
+        "adoption_guard": {
+            "minimum_conv_site_coverage_ratio": KERNEL_ADOPTION_MIN_CONV_SITE_COVERAGE_RATIO,
+            "required_padding_modes": padding_modes.into_iter().collect::<Vec<_>>(),
+            "forbid_grouped_convolution": true,
+            "forbid_dilated_convolution": true,
+            "supporting_evidence": {
+                "profile_artifact": KERNEL_ADOPTION_PROFILE_ARTIFACT,
+                "minimum_profile_batch_size": KERNEL_ADOPTION_MIN_PROFILE_BATCH_SIZE,
+                "required_consecutive_regressions": KERNEL_ADOPTION_REQUIRED_CONSECUTIVE_REGRESSIONS,
+            }
+        }
+    })
+}
+
 pub fn write_training_scalability_contract(
     train_dir: &Path,
     contract: &serde_json::Value,
@@ -516,6 +583,20 @@ pub fn write_training_scalability_contract(
     let path = train_dir.join(TRAINING_SCALABILITY_CONTRACT_FILENAME);
     let json = serde_json::to_string_pretty(contract).map_err(|err| {
         io::Error::other(format!("serialize training scalability contract: {err}"))
+    })?;
+    std::fs::write(&path, json)?;
+    Ok(path)
+}
+
+pub fn write_kernel_adoption_threshold_contract(
+    train_dir: &Path,
+    contract: &serde_json::Value,
+) -> io::Result<PathBuf> {
+    let path = train_dir.join(KERNEL_ADOPTION_CONTRACT_FILENAME);
+    let json = serde_json::to_string_pretty(contract).map_err(|err| {
+        io::Error::other(format!(
+            "serialize kernel adoption threshold contract: {err}"
+        ))
     })?;
     std::fs::write(&path, json)?;
     Ok(path)

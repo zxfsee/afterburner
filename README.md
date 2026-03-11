@@ -64,6 +64,8 @@ It produces artifacts under `artifacts/`, including:
 - a stable, inference-ready model artifact under `artifacts/inference/`
 - a versioned training scalability contract at `artifacts/train/training_scalability_contract.json`
   capturing `batch_size`, `worker_parallelism`, `planned_samples`, and `throughput_samples_per_sec`
+- a kernel adoption threshold contract at `artifacts/train/kernel_adoption_thresholds.json`
+  capturing the current convolution footprint and the evidence threshold for custom kernel work
 
 Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
 
@@ -141,6 +143,9 @@ Use `--min-accuracy <f64>` to turn eval into an acceptance gate; `just eval-gate
 `artifacts/eval/backend_performance_profile.json` pins the current runtime decision rule for `wgpu`
 versus `cpu`, and `just backend-profile-gate` validates the objective thresholds for introducing a
 native backend instead of extending the current stack by assumption.
+`artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
+the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
+and backend profile regressions must remain sustained before replacing backend-provided kernels.
 Baseline refresh flow when intended model changes shift deterministic accuracy:
 1. Run `just eval`.
 2. Review `artifacts/eval/mnist_eval_summary.json` and confirm the change is expected.
