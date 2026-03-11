@@ -1,0 +1,5 @@
+{
+  "required_top_level_keys": ["batch_size", "logits"],
+  "batch_size": 1,
+  "row_width": 10
+}

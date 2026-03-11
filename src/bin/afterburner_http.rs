@@ -1016,9 +1016,6 @@ fn handle_infer_inner<B: Backend>(
 }
 
 fn infer_success_payload(rows: &[Vec<f32>]) -> String {
-    if rows.len() == 1 {
-        return json!({ "logits": rows[0], "batch_size": 1 }).to_string();
-    }
     json!({ "logits": rows, "batch_size": rows.len() }).to_string()
 }
 

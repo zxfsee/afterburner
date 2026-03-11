@@ -89,6 +89,11 @@ fn infer_batch_payload(batch_size: usize) -> String {
     format!("{{\"batch\":[{}]}}", batch)
 }
 
+fn infer_single_payload() -> String {
+    let single = "0,".repeat((28usize * 28).saturating_sub(1)) + "0";
+    format!("{{\"bytes\":[{}]}}", single)
+}
+
 fn infer_error_artifact_not_found_fixture() -> Value {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
@@ -97,16 +102,16 @@ fn infer_error_artifact_not_found_fixture() -> Value {
     serde_json::from_str(&text).expect("parse infer error fixture")
 }
 
-fn infer_success_envelope_fixture() -> Value {
+fn infer_success_envelope_fixture(name: &str) -> Value {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
-        .join("http_infer_success_envelope.json");
+        .join(name);
     let text = std::fs::read_to_string(path).expect("read infer success envelope fixture");
     serde_json::from_str(&text).expect("parse infer success envelope fixture")
 }
 
-fn assert_success_payload_matches_fixture(payload: &Value) {
-    let fixture = infer_success_envelope_fixture();
+fn assert_success_payload_matches_fixture(payload: &Value, fixture_name: &str) {
+    let fixture = infer_success_envelope_fixture(fixture_name);
     let fixture_obj = fixture
         .as_object()
         .expect("success envelope fixture must be an object");
@@ -271,8 +276,81 @@ fn in_flight_infer_completes_on_sigint() {
         .map(|(_, body)| body)
         .expect("response must include headers and body");
     let payload: Value = serde_json::from_str(body).expect("response body must be json");
-    assert_success_payload_matches_fixture(&payload);
+    assert_success_payload_matches_fixture(&payload, "http_infer_success_envelope.json");
 
+    wait_for_exit_ok(&mut child, Duration::from_secs(5));
+    stderr_thread.join().expect("join stderr reader");
+}
+
+#[test]
+fn single_item_infer_response_matches_single_success_fixture() {
+    let port = reserve_port();
+    let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
+        .arg(fixture_model_path())
+        .env("BACKEND", "cpu")
+        .env("PORT", port.to_string())
+        .env("HTTP_MAX_CONCURRENCY", "1")
+        .env("HTTP_MAX_BATCH_SIZE", "16")
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("spawn afterburner-http");
+    let stderr = child.stderr.take().expect("take child stderr");
+    let logs = Arc::new(Mutex::new(Vec::<String>::new()));
+    let logs_reader = Arc::clone(&logs);
+    let stderr_thread = thread::spawn(move || {
+        let reader = std::io::BufReader::new(stderr);
+        for line in std::io::BufRead::lines(reader) {
+            if let Ok(line) = line {
+                logs_reader.lock().expect("lock logs").push(line);
+            }
+        }
+    });
+
+    wait_for_healthz(port, Duration::from_secs(20));
+
+    let mut stream = TcpStream::connect(("127.0.0.1", port)).expect("connect infer");
+    stream
+        .set_read_timeout(Some(Duration::from_secs(10)))
+        .expect("set read timeout");
+
+    let payload = infer_single_payload();
+    let request_header = format!(
+        "POST /infer HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        payload.len()
+    );
+    stream
+        .write_all(request_header.as_bytes())
+        .expect("write headers");
+    stream.write_all(payload.as_bytes()).expect("write body");
+    stream.flush().expect("flush request");
+
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .expect("read infer response");
+    assert!(
+        response.contains("200 OK"),
+        "response must be 200: {response}"
+    );
+    assert!(
+        response.contains("\"batch_size\":1"),
+        "response must contain single payload batch_size: {response}"
+    );
+
+    let body = response
+        .split_once("\r\n\r\n")
+        .map(|(_, body)| body)
+        .expect("response must include headers and body");
+    let payload: Value = serde_json::from_str(body).expect("response body must be json");
+    assert_success_payload_matches_fixture(&payload, "http_infer_single_success_envelope.json");
+
+    let pid = child.id().to_string();
+    let kill_status = Command::new("kill")
+        .args(["-INT", &pid])
+        .status()
+        .expect("send SIGINT");
+    assert!(kill_status.success(), "kill -INT must succeed");
     wait_for_exit_ok(&mut child, Duration::from_secs(5));
     stderr_thread.join().expect("join stderr reader");
 }

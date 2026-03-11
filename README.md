@@ -86,6 +86,10 @@ Afterburner includes a minimal HTTP wrapper binary (`afterburner-http`) that exp
 - `application/json`: single input (`{"base64":"..."}` or `{"bytes":[...]}`)
 - `application/json`: batch input (`{"batch":[{"base64":"..."},{"bytes":[...]}]}`)
 
+Success responses always use the batch-shaped envelope:
+- single input: `{"batch_size":1,"logits":[[...]]}`
+- batch input: `{"batch_size":N,"logits":[[...], ...]}`
+
 Envelope limits (env-configurable):
 - `HTTP_MAX_REQUEST_BYTES` (default `65536`)
 - `HTTP_MAX_BATCH_SIZE` (default `16`)

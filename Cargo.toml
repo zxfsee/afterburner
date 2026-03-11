@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- HTTP infer single-response envelope consistency [Serving/Deployment Infra, Inference]
-  - Goal: Align HTTP `/infer` single-item success envelope shape with the batch contract and add fixture-backed assertions (`batch_size`, logits row width) to prevent adapter drift.
-  - Kind: `mixed`
-  - Boundary: `adapter-http`
-  - Contracts: `HTTP`
-  - Scope: `tests/http_graceful_shutdown.rs`, `fixtures/http_infer_single_success_envelope.json`
-
 - Backend performance profile gate [Kernels, Runtime Infra]
   - Goal: Add benchmark/acceptance gates that identify when `wgpu` is not the best runtime choice and define objective criteria for introducing a native backend.
   - Kind: `gate`

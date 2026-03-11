@@ -47,7 +47,7 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: HTTP infer success fixture gate; deployment target profile model and artifact rollout ownership decision.
+  - Blocked-by: deployment target profile model and artifact rollout ownership decision.
 
 - Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
