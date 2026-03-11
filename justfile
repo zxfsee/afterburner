@@ -37,6 +37,10 @@ eval:
 eval-gate:
     cargo run --locked --bin afterburner -- eval --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
 
+# validate backend performance decision thresholds
+backend-profile-gate:
+    cargo test --test perf_backend_profile
+
 # run training by default
 run:
     just train

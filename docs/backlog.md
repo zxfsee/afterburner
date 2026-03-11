@@ -25,21 +25,12 @@ Rules:
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Deploy-rs baseline deployment contract (upload authority/provenance model must be decided first).
 
-- Custom kernel adoption threshold contract [Kernels, Numerics]
-  - Goal: Define measurable thresholds and compatibility gates for custom kernel introduction so optimization work is evidence-driven and reversible.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
-  - Blocked-by: Backend performance profile gate (depends on established backend performance baselines).
-
 - Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
   - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
   - Kind: `behavior`
   - Boundary: `adapter-http`
   - Contracts: `none`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Backend performance profile gate (runtime decision should be evidence-based, not assumption-based).
 
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.

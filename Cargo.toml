@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Backend performance profile gate [Kernels, Runtime Infra]
-  - Goal: Add benchmark/acceptance gates that identify when `wgpu` is not the best runtime choice and define objective criteria for introducing a native backend.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `ops`
-  - Scope: `justfile`, `tests/perf_backend_profile.rs`, `artifacts/eval/`, `README.md`
-
 - Burn TUI observability dashboard adapter [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Add a lightweight dashboard adapter over existing structured events (without coupling core to UI runtime) for operator-facing eval/training monitoring.
   - Kind: `mixed`
@@ -36,6 +29,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `Cargo.toml`, `crates/`, `tests/`, `justfile`, `ARCHITECTURE.md`
+
+- Custom kernel adoption threshold contract [Kernels, Numerics]
+  - Goal: Define measurable thresholds and compatibility gates for custom kernel introduction so optimization work is evidence-driven and reversible.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
 
 ## [Trunk]
 """

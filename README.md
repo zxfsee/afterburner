@@ -136,6 +136,9 @@ an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).
 It accepts an optional artifact override via `afterburner eval --artifact <path>` (or legacy positional artifact).
 Use `--min-accuracy <f64>` to turn eval into an acceptance gate; `just eval-gate` applies the repository baseline.
+`artifacts/eval/backend_performance_profile.json` pins the current runtime decision rule for `wgpu`
+versus `cpu`, and `just backend-profile-gate` validates the objective thresholds for introducing a
+native backend instead of extending the current stack by assumption.
 Baseline refresh flow when intended model changes shift deterministic accuracy:
 1. Run `just eval`.
 2. Review `artifacts/eval/mnist_eval_summary.json` and confirm the change is expected.
