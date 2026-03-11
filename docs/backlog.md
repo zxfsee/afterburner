@@ -17,21 +17,20 @@ Rules:
 
 ## Items
 
+- Arrow/DataFusion/Ballista/Parquet fit investigation gate [Data Infra, Frameworks]
+  - Goal: Evaluate whether Arrow/DataFusion/Ballista/Parquet should back future dataset, eval, or deployment-side artifacts before introducing a columnar or distributed query dependency or contract change.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
 - Artifact upload adapter contract [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define a provider-agnostic artifact upload contract and gate, with optional Hugging Face adapter later, while keeping core runtime/storage-independent.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Artifact rollout ownership contract; Deploy-rs baseline deployment contract.
-
-- Deploy-rs baseline deployment contract [Serving/Deployment Infra]
-  - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Deployment target profile contract gate; Artifact rollout ownership contract.
+  - Blocked-by: Deploy-rs baseline deployment contract.
 
 - Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.

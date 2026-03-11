@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/artifact-rollout-ownership/v1",
+  "title": "Artifact Rollout Ownership v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_version",
+    "artifact_manifest",
+    "provenance_source",
+    "rollout_owner",
+    "approved_by",
+    "approved_operations",
+    "approval_ticket",
+    "approved_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_manifest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "provenance_source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rollout_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_operations": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": ["upload", "promote", "deploy"]
+      }
+    },
+    "approval_ticket": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

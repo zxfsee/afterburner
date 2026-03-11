@@ -30,6 +30,37 @@ fn backend_performance_profile_has_objective_native_backend_criteria() {
         profile.get("comparison_command").and_then(Value::as_str),
         Some("afterburner eval --seed 42 --batch-size 128 --max-batches 8")
     );
+    assert_eq!(
+        profile.get("profile_artifact").and_then(Value::as_str),
+        Some("artifacts/eval/mnist_eval_summary.json")
+    );
+
+    let comparison_baseline = profile
+        .get("comparison_baseline")
+        .and_then(Value::as_object)
+        .expect("comparison_baseline must be an object");
+    assert_eq!(
+        comparison_baseline.get("seed").and_then(Value::as_u64),
+        Some(42)
+    );
+    assert_eq!(
+        comparison_baseline
+            .get("batch_size")
+            .and_then(Value::as_u64),
+        Some(128)
+    );
+    assert_eq!(
+        comparison_baseline
+            .get("max_batches")
+            .and_then(Value::as_u64),
+        Some(8)
+    );
+    assert_eq!(
+        comparison_baseline
+            .get("samples_per_profile")
+            .and_then(Value::as_u64),
+        Some(1024)
+    );
 
     let native_backend = profile
         .get("native_backend_adoption")
@@ -46,6 +77,15 @@ fn backend_performance_profile_has_objective_native_backend_criteria() {
             .get("minimum_samples_per_profile")
             .and_then(Value::as_u64),
         Some(1024)
+    );
+    assert_eq!(
+        comparison_baseline
+            .get("samples_per_profile")
+            .and_then(Value::as_u64),
+        native_backend
+            .get("minimum_samples_per_profile")
+            .and_then(Value::as_u64),
+        "baseline samples_per_profile must stay aligned with the adoption threshold"
     );
 
     let triggers = native_backend
@@ -73,5 +113,30 @@ fn backend_performance_profile_has_objective_native_backend_criteria() {
             .get("threshold_multiplier_vs_cpu")
             .and_then(Value::as_f64),
         Some(1.25)
+    );
+
+    let refresh_when = profile
+        .get("refresh_when")
+        .and_then(Value::as_array)
+        .expect("refresh_when must be an array");
+    assert!(
+        refresh_when.iter().all(|value| value.as_str().is_some()),
+        "refresh_when entries must be strings"
+    );
+    assert!(
+        refresh_when.iter().any(|value| {
+            value
+                .as_str()
+                .is_some_and(|text| text.contains("comparison_command"))
+        }),
+        "refresh_when must mention comparison_command drift"
+    );
+    assert!(
+        refresh_when.iter().any(|value| {
+            value
+                .as_str()
+                .is_some_and(|text| text.contains("recommended_backend"))
+        }),
+        "refresh_when must mention recommended_backend drift"
     );
 }

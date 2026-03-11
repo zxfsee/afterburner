@@ -13,47 +13,55 @@ header = """# Changelog
 
 ## TODO
 
-- Backend performance profile gate [Kernels, Runtime Infra]
-  - Goal: Keep the native-backend adoption decision artifact objective and current so kernel/runtime optimization work stays measurement-driven.
+- Host profiler availability gate [Inference, Runtime Infra]
+  - Goal: Make the host-profiler prerequisite for `cargo flamegraph` explicit so profiling recipes fail early when `xctrace` or an equivalent macOS profiler path is unavailable.
   - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `artifacts/eval/backend_performance_profile.json`, `tests/perf_backend_profile.rs`, `README.md`
+  - Boundary: `adapter-cli`
+  - Contracts: `ops`
+  - Scope: `justfile`, `tests/`, `README.md`
 
-- Quantized inference artifact contract [Inference, Numerics]
-  - Goal: Define an explicit reduced-precision inference artifact contract and acceptance gate before introducing quantized runtime paths.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/manifest.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/infer_cli.rs`, `tests/http_graceful_shutdown.rs`, `fixtures/`, `docs/adr/`, `ARCHITECTURE.md`, `README.md`
-
-- Async/runtime decision record gate (Tokio ecosystem) [Runtime Infra, Frameworks]
-  - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
-  - Kind: `gate`
-  - Boundary: `adapter-http`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`
-
-- Deployment target profile contract gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define named deployment target profiles and validation rules so deploy wiring has explicit, testable inputs instead of ad-hoc host config.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `fixtures/deployment_target_profile.schema.json`, `tests/deployment_target_profile.rs`, `docs/adr/`, `ARCHITECTURE.md`
-
-- Artifact rollout ownership contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define artifact rollout ownership/provenance fields and approval handoff so upload/promote/deploy adapters share a single authority model.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `fixtures/artifact_rollout_ownership.schema.json`, `tests/artifact_rollout_ownership.rs`, `docs/adr/`, `ARCHITECTURE.md`
-
-- Train epoch override contract [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Add an explicit epoch override to the train CLI so training-side contract artifacts can be regenerated deterministically in short CI/test runs.
+- Inference hotspot profiling artifact [Inference, Runtime Infra, Kernels]
+  - Goal: Capture reproducible hotspot evidence for `infer`/`eval` via `cargo flamegraph` so backend, kernel, and quantization decisions use measured operator cost instead of aggregate latency alone.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
-  - Contracts: `CLI`, `artifact`
-  - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/`, `README.md`
+  - Contracts: `artifact`
+  - Scope: `justfile`, `tests/`, `artifacts/profiling/`, `README.md`
+  - Blocked-by: Host profiler availability gate
+
+- Calibration artifact version compatibility contract [Inference, Experimentation/Eval Infra]
+  - Goal: Prevent calibration sidecars from attaching to the wrong inference artifact by validating artifact-version compatibility before calibration metadata is surfaced.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/infer.rs`, `src/cmd_infer.rs`, `tests/calibration_infer_gate.rs`, `fixtures/`, `README.md`
+
+- Inference precision event surfacing contract [Inference, Numerics]
+  - Goal: Surface manifest precision metadata in adapter events so operators can distinguish legacy and reduced-precision artifacts without manually reading manifests.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/`, `README.md`
+
+- Deployment target profile example fixture gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Keep a canonical deployment target profile example alongside the schema so deploy-rs wiring has one inspectable reference profile.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`
+  - Scope: `fixtures/`, `tests/deployment_target_profile.rs`, `README.md`
+
+- Deploy-rs baseline deployment contract [Serving/Deployment Infra]
+  - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`
+  - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Train start event fixture gate [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Pin the `train_start` event fields so CLI overrides stay visible and stable in operator-facing observability.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `fixtures/`, `tests/`, `README.md`
 
 ## [Trunk]
 """

@@ -102,6 +102,13 @@ fn infer_error_artifact_not_found_fixture() -> Value {
     serde_json::from_str(&text).expect("parse infer error fixture")
 }
 
+fn manifest_fixture_text() -> String {
+    let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join("manifest.toml");
+    std::fs::read_to_string(path).expect("read manifest fixture")
+}
+
 fn json_fixture(name: &str) -> Value {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
@@ -485,4 +492,60 @@ fn startup_missing_artifact_infer_error_matches_fixture() {
     let actual = normalize_infer_error_line(infer_error_line);
     let expected = infer_error_artifact_not_found_fixture();
     assert_eq!(actual, expected, "infer_error event envelope drifted");
+}
+
+#[test]
+fn startup_quantized_manifest_fails_fast_with_manifest_invalid_field() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let dir = tmp.path();
+    let weights = dir.join("model.mpk");
+    std::fs::write(&weights, "").expect("write weights");
+    let checksum = afterburner::manifest::compute_sha256_hex(&weights).expect("checksum");
+    let manifest = manifest_fixture_text()
+        .replace(
+            r#"artifact_sha256 = "b3b57b1fea16e57389145b129a3330998bf3c3bc1e412c46779b3e1827fdd55b""#,
+            &format!(r#"artifact_sha256 = "{checksum}""#),
+        )
+        .replace(r#"quantization = "none""#, r#"quantization = "int8""#);
+    std::fs::write(dir.join("manifest.toml"), manifest).expect("write manifest");
+
+    let output = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
+        .arg(&weights)
+        .env("BACKEND", "cpu")
+        .env("PORT", reserve_port().to_string())
+        .output()
+        .expect("run afterburner-http with unsupported quantized artifact");
+
+    assert_eq!(
+        output.status.code(),
+        Some(2),
+        "unsupported quantized artifact must fail fast with exit code 2"
+    );
+    let stderr = String::from_utf8(output.stderr).expect("stderr must be utf-8");
+    let infer_error_line = stderr
+        .lines()
+        .find(|line| line.contains(r#""event":"infer_error""#))
+        .expect("infer_error event line must be emitted");
+
+    let actual: Value = serde_json::from_str(infer_error_line).expect("parse infer error event");
+    assert_eq!(
+        actual.get("source").and_then(Value::as_str),
+        Some("http_adapter")
+    );
+    assert_eq!(
+        actual.get("event").and_then(Value::as_str),
+        Some("infer_error")
+    );
+    let fields = actual
+        .get("fields")
+        .and_then(Value::as_object)
+        .expect("infer error event fields must be object");
+    assert_eq!(
+        fields.get("kind").and_then(Value::as_str),
+        Some("manifest_invalid_field")
+    );
+    assert_eq!(
+        fields.get("field").and_then(Value::as_str),
+        Some("precision.quantization")
+    );
 }

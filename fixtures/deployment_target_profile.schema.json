@@ -1,0 +1,45 @@
+{
+  "$id": "https://afterburner.local/schemas/deployment-target-profile/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_name",
+    "deploy_hostname",
+    "ssh_user",
+    "system",
+    "artifact_root",
+    "activation_strategy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deploy_hostname": {
+      "type": "string",
+      "minLength": 1
+    },
+    "ssh_user": {
+      "type": "string",
+      "minLength": 1
+    },
+    "system": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activation_strategy": {
+      "type": "string",
+      "enum": [
+        "current-pointer"
+      ]
+    }
+  }
+}

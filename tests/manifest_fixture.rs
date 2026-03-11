@@ -1,6 +1,7 @@
 use afterburner::manifest::{
-    ArtifactManifest, CANONICALIZATION_METHOD, SIGNATURE_KEY_ID_PLACEHOLDER,
-    SIGNATURE_SCHEME_PLACEHOLDER, SIGNATURE_VALUE_PLACEHOLDER,
+    ACTIVATION_DTYPE, ArtifactManifest, CANONICALIZATION_METHOD, QUANTIZATION_KIND_NONE,
+    SIGNATURE_KEY_ID_PLACEHOLDER, SIGNATURE_SCHEME_PLACEHOLDER, SIGNATURE_VALUE_PLACEHOLDER,
+    WEIGHTS_DTYPE,
 };
 
 #[path = "fixture_support.rs"]
@@ -16,6 +17,9 @@ fn manifest_fixture_parses_and_validates() {
     assert_eq!(parsed.signature.key_id, SIGNATURE_KEY_ID_PLACEHOLDER);
     assert_eq!(parsed.signature.value, SIGNATURE_VALUE_PLACEHOLDER);
     assert_eq!(parsed.canonicalization.method, CANONICALIZATION_METHOD);
+    assert_eq!(parsed.precision.weights_dtype, WEIGHTS_DTYPE);
+    assert_eq!(parsed.precision.activation_dtype, ACTIVATION_DTYPE);
+    assert_eq!(parsed.precision.quantization, QUANTIZATION_KIND_NONE);
     parsed
         .validate_against_current(&weights)
         .expect("validate manifest");

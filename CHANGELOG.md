@@ -2,47 +2,55 @@
 
 ## TODO
 
-- Backend performance profile gate [Kernels, Runtime Infra]
-  - Goal: Keep the native-backend adoption decision artifact objective and current so kernel/runtime optimization work stays measurement-driven.
+- Host profiler availability gate [Inference, Runtime Infra]
+  - Goal: Make the host-profiler prerequisite for `cargo flamegraph` explicit so profiling recipes fail early when `xctrace` or an equivalent macOS profiler path is unavailable.
   - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `artifacts/eval/backend_performance_profile.json`, `tests/perf_backend_profile.rs`, `README.md`
+  - Boundary: `adapter-cli`
+  - Contracts: `ops`
+  - Scope: `justfile`, `tests/`, `README.md`
 
-- Quantized inference artifact contract [Inference, Numerics]
-  - Goal: Define an explicit reduced-precision inference artifact contract and acceptance gate before introducing quantized runtime paths.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/manifest.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/infer_cli.rs`, `tests/http_graceful_shutdown.rs`, `fixtures/`, `docs/adr/`, `ARCHITECTURE.md`, `README.md`
-
-- Async/runtime decision record gate (Tokio ecosystem) [Runtime Infra, Frameworks]
-  - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
-  - Kind: `gate`
-  - Boundary: `adapter-http`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`
-
-- Deployment target profile contract gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define named deployment target profiles and validation rules so deploy wiring has explicit, testable inputs instead of ad-hoc host config.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `fixtures/deployment_target_profile.schema.json`, `tests/deployment_target_profile.rs`, `docs/adr/`, `ARCHITECTURE.md`
-
-- Artifact rollout ownership contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define artifact rollout ownership/provenance fields and approval handoff so upload/promote/deploy adapters share a single authority model.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `fixtures/artifact_rollout_ownership.schema.json`, `tests/artifact_rollout_ownership.rs`, `docs/adr/`, `ARCHITECTURE.md`
-
-- Train epoch override contract [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Add an explicit epoch override to the train CLI so training-side contract artifacts can be regenerated deterministically in short CI/test runs.
+- Inference hotspot profiling artifact [Inference, Runtime Infra, Kernels]
+  - Goal: Capture reproducible hotspot evidence for `infer`/`eval` via `cargo flamegraph` so backend, kernel, and quantization decisions use measured operator cost instead of aggregate latency alone.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
-  - Contracts: `CLI`, `artifact`
-  - Scope: `src/cmd_train.rs`, `src/train.rs`, `tests/`, `README.md`
+  - Contracts: `artifact`
+  - Scope: `justfile`, `tests/`, `artifacts/profiling/`, `README.md`
+  - Blocked-by: Host profiler availability gate
+
+- Calibration artifact version compatibility contract [Inference, Experimentation/Eval Infra]
+  - Goal: Prevent calibration sidecars from attaching to the wrong inference artifact by validating artifact-version compatibility before calibration metadata is surfaced.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/infer.rs`, `src/cmd_infer.rs`, `tests/calibration_infer_gate.rs`, `fixtures/`, `README.md`
+
+- Inference precision event surfacing contract [Inference, Numerics]
+  - Goal: Surface manifest precision metadata in adapter events so operators can distinguish legacy and reduced-precision artifacts without manually reading manifests.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/`, `README.md`
+
+- Deployment target profile example fixture gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Keep a canonical deployment target profile example alongside the schema so deploy-rs wiring has one inspectable reference profile.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`
+  - Scope: `fixtures/`, `tests/deployment_target_profile.rs`, `README.md`
+
+- Deploy-rs baseline deployment contract [Serving/Deployment Infra]
+  - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`
+  - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Train start event fixture gate [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Pin the `train_start` event fields so CLI overrides stay visible and stable in operator-facing observability.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `fixtures/`, `tests/`, `README.md`
 
 ## [Trunk]
 
@@ -79,11 +87,12 @@
 - Define monitoring contract ([e283856])
 - Add scalability readiness contract ([5b80b82])
 - Harden pretraining metadata contract ([6495bbe])
-- Add observability dashboard adapter ([33fe53e])
-- Align infer eval monitoring semantics ([49d584c])
-- Align infer event semantics ([06a0891])
-- Split workspace and add dependency gate ([a2dba7a])
-- Split workspace and add dependency gate ([567c461])
+- Add observability dashboard adapter ([cb0efd1])
+- Align infer eval monitoring semantics ([09f053a])
+- Align infer event semantics ([183bbd5])
+- Split workspace and add dependency gate ([277391f])
+- Split workspace and add dependency gate ([5f70ebf])
+- Define custom kernel adoption contract\n\nWrite a training-side kernel threshold artifact, gate it against the current model footprint, and document the decision in ADR-005. ([df702e0])
 
 ### Changed
 
@@ -196,7 +205,7 @@
 - Add infer_done event fixture gate ([30201db])
 - Add summary success fixture gate ([b0b12a5])
 - Add backend profile gate ([6f7b290])
-- Restore active horizon gate ([4e5fc84])
+- Restore active horizon gate ([b084fab])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -324,11 +333,12 @@
 [b0b12a5]: https://github.com/zxfsee/afterburner/commit/b0b12a57ef92d69d6892d433bf82ba8372a95885
 [1040623]: https://github.com/zxfsee/afterburner/commit/10406230ea17b4278f535cb41c8c0bf6157aa970
 [6f7b290]: https://github.com/zxfsee/afterburner/commit/6f7b29028d52195a4c0057bdfcf3ebd270a6991c
-[33fe53e]: https://github.com/zxfsee/afterburner/commit/33fe53e5e96293831fa2fd3494340a3a560a5c81
-[49d584c]: https://github.com/zxfsee/afterburner/commit/49d584c17e1f7d55f9ee35cb060d7a4d73811343
-[06a0891]: https://github.com/zxfsee/afterburner/commit/06a089137e81390962054580e72c78b3f4955965
-[a2dba7a]: https://github.com/zxfsee/afterburner/commit/a2dba7adbd5137d7225dc40d818396206d2e2227
-[567c461]: https://github.com/zxfsee/afterburner/commit/567c4611cda56b997d3d052dc83237a121a784ae
-[4e5fc84]: https://github.com/zxfsee/afterburner/commit/4e5fc8424ea166cd20ffa3ac98568a104ae7087f
+[cb0efd1]: https://github.com/zxfsee/afterburner/commit/cb0efd1c84fc7bc0b4b13a5b005553864fbad08e
+[09f053a]: https://github.com/zxfsee/afterburner/commit/09f053adb59dd310e65d29a6bf7f66f3d82ae2e5
+[183bbd5]: https://github.com/zxfsee/afterburner/commit/183bbd58c632d25e0a47e8739acb4148b61ef490
+[277391f]: https://github.com/zxfsee/afterburner/commit/277391fdbe8ed734f351e548d0de4d203dc1ebaf
+[5f70ebf]: https://github.com/zxfsee/afterburner/commit/5f70ebf6fd0db4795677699d0b5a1664b008eda8
+[b084fab]: https://github.com/zxfsee/afterburner/commit/b084fab8279a58ed4cdaa08380f1bccc23447b4f
+[df702e0]: https://github.com/zxfsee/afterburner/commit/df702e0b7ad7a32e56eaae2e81bab36d8700a1d3
 
 <!-- generated by git-cliff -->

@@ -19,6 +19,11 @@ architecture_version = 1
 shape = [1, 28, 28]
 dtype = "f32"
 
+[precision]
+weights_dtype = "f32"
+activation_dtype = "f32"
+quantization = "none"
+
 [normalization]
 dataset = "mnist"
 mean = 0.1307

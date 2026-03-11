@@ -12,6 +12,9 @@ pub const CURRENT_VERSION_FILENAME: &str = "current";
 pub const DEFAULT_ARTIFACT_VERSION: &str = "0.1.0";
 pub const INPUT_DTYPE: &str = "f32";
 pub const INPUT_SHAPE: [usize; 3] = [1, 28, 28];
+pub const WEIGHTS_DTYPE: &str = "f32";
+pub const ACTIVATION_DTYPE: &str = "f32";
+pub const QUANTIZATION_KIND_NONE: &str = "none";
 pub const SIGNATURE_SCHEME_PLACEHOLDER: &str = "none";
 pub const SIGNATURE_KEY_ID_PLACEHOLDER: &str = "unsigned";
 pub const SIGNATURE_VALUE_PLACEHOLDER: &str = "";
@@ -27,6 +30,7 @@ pub struct ArtifactManifest {
     pub canonicalization: ManifestCanonicalization,
     pub model: ManifestModel,
     pub input: ManifestInput,
+    pub precision: ManifestPrecision,
     pub normalization: ManifestNormalization,
 }
 
@@ -40,6 +44,13 @@ pub struct ManifestModel {
 pub struct ManifestInput {
     pub shape: [usize; 3],
     pub dtype: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ManifestPrecision {
+    pub weights_dtype: String,
+    pub activation_dtype: String,
+    pub quantization: String,
 }
 
 #[derive(Debug, Clone)]
@@ -103,6 +114,11 @@ impl ArtifactManifest {
                 shape: INPUT_SHAPE,
                 dtype: INPUT_DTYPE.to_string(),
             },
+            precision: ManifestPrecision {
+                weights_dtype: WEIGHTS_DTYPE.to_string(),
+                activation_dtype: ACTIVATION_DTYPE.to_string(),
+                quantization: QUANTIZATION_KIND_NONE.to_string(),
+            },
             normalization: ManifestNormalization {
                 dataset: "mnist".to_string(),
                 mean: MNIST_MEAN,
@@ -146,6 +162,23 @@ impl ArtifactManifest {
             self.input.shape[0], self.input.shape[1], self.input.shape[2]
         );
         let _ = writeln!(&mut out, "dtype = \"{}\"", self.input.dtype);
+        let _ = writeln!(&mut out);
+        let _ = writeln!(&mut out, "[precision]");
+        let _ = writeln!(
+            &mut out,
+            "weights_dtype = \"{}\"",
+            self.precision.weights_dtype
+        );
+        let _ = writeln!(
+            &mut out,
+            "activation_dtype = \"{}\"",
+            self.precision.activation_dtype
+        );
+        let _ = writeln!(
+            &mut out,
+            "quantization = \"{}\"",
+            self.precision.quantization
+        );
         let _ = writeln!(&mut out);
         let _ = writeln!(&mut out, "[normalization]");
         let _ = writeln!(&mut out, "dataset = \"{}\"", self.normalization.dataset);
@@ -258,6 +291,36 @@ impl ArtifactManifest {
                 expected: INPUT_DTYPE.to_string(),
                 actual: self.input.dtype.clone(),
             });
+        }
+
+        if self.precision.weights_dtype != WEIGHTS_DTYPE {
+            return Err(ManifestError::InvalidField(
+                "precision.weights_dtype",
+                format!(
+                    "unsupported weights dtype `{}`",
+                    self.precision.weights_dtype
+                ),
+            ));
+        }
+
+        if self.precision.activation_dtype != ACTIVATION_DTYPE {
+            return Err(ManifestError::InvalidField(
+                "precision.activation_dtype",
+                format!(
+                    "unsupported activation dtype `{}`",
+                    self.precision.activation_dtype
+                ),
+            ));
+        }
+
+        if self.precision.quantization != QUANTIZATION_KIND_NONE {
+            return Err(ManifestError::InvalidField(
+                "precision.quantization",
+                format!(
+                    "unsupported quantization `{}`; current runtime requires `{}`",
+                    self.precision.quantization, QUANTIZATION_KIND_NONE
+                ),
+            ));
         }
 
         if self.normalization.mean != MNIST_MEAN {
@@ -417,6 +480,20 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
     let shape = read_shape(input, "shape")?;
     let dtype = read_string(input, "dtype")?;
 
+    let precision = value.get("precision");
+    let weights_dtype = precision
+        .map(|precision| read_string(precision, "weights_dtype"))
+        .transpose()?
+        .unwrap_or_else(|| WEIGHTS_DTYPE.to_string());
+    let activation_dtype = precision
+        .map(|precision| read_string(precision, "activation_dtype"))
+        .transpose()?
+        .unwrap_or_else(|| ACTIVATION_DTYPE.to_string());
+    let quantization = precision
+        .map(|precision| read_string(precision, "quantization"))
+        .transpose()?
+        .unwrap_or_else(|| QUANTIZATION_KIND_NONE.to_string());
+
     let normalization = value
         .get("normalization")
         .ok_or(ManifestError::MissingField("normalization"))?;
@@ -443,6 +520,11 @@ fn parse_manifest_value(value: &toml::Value) -> Result<ArtifactManifest, Manifes
             architecture_version,
         },
         input: ManifestInput { shape, dtype },
+        precision: ManifestPrecision {
+            weights_dtype,
+            activation_dtype,
+            quantization,
+        },
         normalization: ManifestNormalization {
             dataset,
             mean,
@@ -551,8 +633,9 @@ fn infer_artifact_version(weights_path: &Path) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, ManifestError,
-        SIGNATURE_KEY_ID_PLACEHOLDER, SIGNATURE_SCHEME_PLACEHOLDER, parse_manifest_value,
+        ACTIVATION_DTYPE, CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, ManifestError,
+        QUANTIZATION_KIND_NONE, SIGNATURE_KEY_ID_PLACEHOLDER, SIGNATURE_SCHEME_PLACEHOLDER,
+        WEIGHTS_DTYPE, parse_manifest_value,
     };
 
     #[test]
@@ -582,6 +665,9 @@ notes = "((x / 255.0) - 0.1307) / 0.3081"
         assert_eq!(parsed.signature.key_id, SIGNATURE_KEY_ID_PLACEHOLDER);
         assert_eq!(parsed.canonicalization.method, CANONICALIZATION_METHOD);
         assert_eq!(parsed.canonicalization.notes, CANONICALIZATION_NOTES);
+        assert_eq!(parsed.precision.weights_dtype, WEIGHTS_DTYPE);
+        assert_eq!(parsed.precision.activation_dtype, ACTIVATION_DTYPE);
+        assert_eq!(parsed.precision.quantization, QUANTIZATION_KIND_NONE);
     }
 
     #[test]

@@ -41,6 +41,11 @@ eval-gate:
 backend-profile-gate:
     cargo test --test perf_backend_profile
 
+# capture a deterministic infer flamegraph into artifacts/profiling
+profile-infer:
+    mkdir -p artifacts/profiling
+    cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk
+
 # validate workspace/core dependency boundaries
 workspace-gate:
     cargo test --test workspace_dependency_gate

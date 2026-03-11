@@ -26,7 +26,8 @@ Training -> Artifact -> Inference
 Training produces artifacts.
 Inference consumes artifacts via the CLI and the optional HTTP wrapper.
 No runtime coupling exists between training and inference.
-The inference manifest includes checksum validation plus signing-ready placeholders and canonicalization metadata.
+The inference manifest includes checksum validation, explicit precision metadata,
+signing-ready placeholders, and canonicalization metadata.
 
 Training also emits JSONL observability events under `artifacts/train/` to keep
 metrics and runtime metadata inspectable without introducing a logging stack.
@@ -54,6 +55,18 @@ auto-versioning, embedded serving) are intentionally absent.
   - explicit and versioned when needed,
   - validated at boundaries,
   - protected by compatibility tests (e.g. golden fixtures).
+- Inference artifact precision is explicit in the manifest. The current runtime accepts only
+  `f32` weights/activations with `quantization = none`; any reduced-precision artifact must
+  declare itself explicitly and remain rejected until a dedicated runtime path is introduced.
+- No async runtime is adopted. The current HTTP adapter remains synchronous and `tiny_http`-based
+  until profiling or deployment requirements show that a Tokio-class runtime is necessary.
+- Deployment adapters must resolve through an explicit deployment target profile contract before
+  introducing deploy tooling. Target host, user, system, artifact root, and activation strategy
+  are contract data, not ad-hoc shell configuration.
+- Deployment adapters must also consume an explicit artifact rollout ownership contract before
+  upload, promotion, or deployment. Artifact provenance plus `rollout_owner`, `approved_by`,
+  `approved_operations`, `approval_ticket`, and `approved_at_unix_ms` are contract data, not
+  inferred CI/session state.
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
@@ -77,3 +90,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-003: Artifact Manifest](./docs/adr/003-artifact-manifest.md)
 - [ADR-004: Versioned Inference Artifacts](./docs/adr/004-artifact-versioning.md)
 - [ADR-005: Custom Kernel Adoption Threshold](./docs/adr/005-custom-kernel-adoption-threshold.md)
+- [ADR-006: Quantized Inference Artifact Contract](./docs/adr/006-quantized-inference-artifact-contract.md)
+- [ADR-007: Async Runtime Decision](./docs/adr/007-async-runtime-decision.md)
+- [ADR-008: Deployment Target Profile](./docs/adr/008-deployment-target-profile.md)
+- [ADR-009: Artifact Rollout Ownership](./docs/adr/009-artifact-rollout-ownership.md)

@@ -203,6 +203,7 @@
             packages =
               with pkgs;
               [
+                cargo-flamegraph
                 git-cliff
                 just
                 nushell

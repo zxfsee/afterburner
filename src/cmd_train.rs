@@ -72,6 +72,7 @@ where
 struct TrainArgs {
     batch_size: Option<usize>,
     num_workers: Option<usize>,
+    num_epochs: Option<usize>,
 }
 
 fn training_config_from_env(args: &TrainArgs) -> train::TrainingConfig {
@@ -89,14 +90,21 @@ fn training_config_from_env(args: &TrainArgs) -> train::TrainingConfig {
     if let Some(version) = artifact_version {
         config.artifact_version = version;
     }
+    apply_cli_overrides(&mut config, args);
+
+    config
+}
+
+fn apply_cli_overrides(config: &mut train::TrainingConfig, args: &TrainArgs) {
     if let Some(batch_size) = args.batch_size {
         config.batch_size = batch_size;
     }
     if let Some(num_workers) = args.num_workers {
         config.num_workers = num_workers;
     }
-
-    config
+    if let Some(num_epochs) = args.num_epochs {
+        config.num_epochs = num_epochs;
+    }
 }
 
 fn parse_args<I>(args: I) -> Result<TrainArgs, String>
@@ -107,12 +115,14 @@ where
     let mut parsed = TrainArgs {
         batch_size: None,
         num_workers: None,
+        num_epochs: None,
     };
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--batch-size" => parsed.batch_size = Some(parse_value(&mut args, "--batch-size")?),
             "--num-workers" => parsed.num_workers = Some(parse_value(&mut args, "--num-workers")?),
+            "--num-epochs" => parsed.num_epochs = Some(parse_value(&mut args, "--num-epochs")?),
             _ if arg.starts_with("--batch-size=") => {
                 parsed.batch_size = Some(parse_inline_value(
                     arg.trim_start_matches("--batch-size="),
@@ -125,12 +135,21 @@ where
                     "--num-workers",
                 )?)
             }
+            _ if arg.starts_with("--num-epochs=") => {
+                parsed.num_epochs = Some(parse_inline_value(
+                    arg.trim_start_matches("--num-epochs="),
+                    "--num-epochs",
+                )?)
+            }
             _ => return Err(format!("unknown argument for train: {arg}\n{}", usage())),
         }
     }
 
     if matches!(parsed.batch_size, Some(0)) {
         return Err(format!("--batch-size must be > 0\n{}", usage()));
+    }
+    if matches!(parsed.num_epochs, Some(0)) {
+        return Err(format!("--num-epochs must be > 0\n{}", usage()));
     }
 
     Ok(parsed)
@@ -167,18 +186,20 @@ fn is_missing_wgpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner train [--batch-size N] [--num-workers N]"
+    "usage: afterburner train [--batch-size N] [--num-workers N] [--num-epochs N]"
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{TrainArgs, parse_args};
+    use super::{TrainArgs, parse_args, training_config_from_env};
 
     #[test]
     fn parse_args_accepts_scalability_controls() {
         let args = vec![
             "--batch-size".to_string(),
             "32".to_string(),
+            "--num-epochs".to_string(),
+            "1".to_string(),
             "--num-workers=4".to_string(),
         ];
 
@@ -188,6 +209,7 @@ mod tests {
             TrainArgs {
                 batch_size: Some(32),
                 num_workers: Some(4),
+                num_epochs: Some(1),
             }
         );
     }
@@ -197,6 +219,23 @@ mod tests {
         let args = vec!["--batch-size".to_string(), "0".to_string()];
         let err = parse_args(args.into_iter()).expect_err("zero batch size must fail");
         assert!(err.contains("--batch-size must be > 0"));
+    }
+
+    #[test]
+    fn parse_args_rejects_zero_num_epochs() {
+        let args = vec!["--num-epochs".to_string(), "0".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("zero num epochs must fail");
+        assert!(err.contains("--num-epochs must be > 0"));
+    }
+
+    #[test]
+    fn training_config_from_env_applies_epoch_override() {
+        let config = training_config_from_env(&TrainArgs {
+            batch_size: None,
+            num_workers: None,
+            num_epochs: Some(1),
+        });
+        assert_eq!(config.num_epochs, 1);
     }
 
     #[test]

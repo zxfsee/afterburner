@@ -114,6 +114,11 @@ architecture_version = {}\n\
 shape = [1, 28, 28]\n\
 dtype = \"f32\"\n\
 \n\
+[precision]\n\
+weights_dtype = \"f32\"\n\
+activation_dtype = \"f32\"\n\
+quantization = \"none\"\n\
+\n\
 [normalization]\n\
 dataset = \"mnist\"\n\
 mean = {}\n\

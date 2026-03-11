@@ -3,9 +3,10 @@ use burn::prelude::*; // brings Module into scope for save_file/load_file
 use burn::record::CompactRecorder;
 
 use afterburner::manifest::{
-    ArtifactManifest, CANONICALIZATION_METHOD, CANONICALIZATION_NOTES, CURRENT_VERSION_FILENAME,
-    INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME, SIGNATURE_KEY_ID_PLACEHOLDER,
-    SIGNATURE_SCHEME_PLACEHOLDER, SIGNATURE_VALUE_PLACEHOLDER, compute_sha256_hex,
+    ACTIVATION_DTYPE, ArtifactManifest, CANONICALIZATION_METHOD, CANONICALIZATION_NOTES,
+    CURRENT_VERSION_FILENAME, INPUT_DTYPE, INPUT_SHAPE, MANIFEST_FILENAME, QUANTIZATION_KIND_NONE,
+    SIGNATURE_KEY_ID_PLACEHOLDER, SIGNATURE_SCHEME_PLACEHOLDER, SIGNATURE_VALUE_PLACEHOLDER,
+    WEIGHTS_DTYPE, compute_sha256_hex,
 };
 use afterburner::model::ModelConfig;
 use afterburner::model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION};
@@ -72,6 +73,9 @@ fn training_exports_inference_artifact_and_it_is_loadable() {
     assert_eq!(manifest.model.architecture_version, MODEL_ARCH_VERSION);
     assert_eq!(manifest.input.shape, INPUT_SHAPE);
     assert_eq!(manifest.input.dtype, INPUT_DTYPE);
+    assert_eq!(manifest.precision.weights_dtype, WEIGHTS_DTYPE);
+    assert_eq!(manifest.precision.activation_dtype, ACTIVATION_DTYPE);
+    assert_eq!(manifest.precision.quantization, QUANTIZATION_KIND_NONE);
     assert_eq!(manifest.normalization.dataset, "mnist");
     assert_eq!(manifest.normalization.mean, MNIST_MEAN);
     assert_eq!(manifest.normalization.std, MNIST_STD);

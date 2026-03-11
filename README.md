@@ -114,12 +114,15 @@ Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/ad
 
 Training exports versioned inference artifacts under `artifacts/inference/<version>/`, consisting of:
 - serialized model weights (Burn `CompactRecorder`)
-- a lightweight `manifest.toml` describing input shape/dtype, normalization, model architecture identity, artifact version, checksum, signature placeholders, and canonicalization metadata
+- a lightweight `manifest.toml` describing input shape/dtype, precision metadata, normalization, model architecture identity, artifact version, checksum, signature placeholders, and canonicalization metadata
 
 The active version is tracked by `artifacts/inference/current`, enabling safe rollout/rollback without retraining.
 Set `ARTIFACT_VERSION` to control the exported version.
 If `signature.scheme != "none"`, inference requires non-empty `signature.key_id` and
 `signature.value = "sha256:<hex>"`, where the digest matches canonicalized manifest input bytes.
+The manifest now also carries a `[precision]` section. The current runtime requires
+`weights_dtype = "f32"`, `activation_dtype = "f32"`, and `quantization = "none"`;
+unsupported reduced-precision artifacts fail fast at startup in both CLI and HTTP adapters.
 
 Rollback example:
 ```sh
@@ -142,7 +145,11 @@ It accepts an optional artifact override via `afterburner eval --artifact <path>
 Use `--min-accuracy <f64>` to turn eval into an acceptance gate; `just eval-gate` applies the repository baseline.
 `artifacts/eval/backend_performance_profile.json` pins the current runtime decision rule for `wgpu`
 versus `cpu`, and `just backend-profile-gate` validates the objective thresholds for introducing a
-native backend instead of extending the current stack by assumption.
+native backend instead of extending the current stack by assumption. The profile now also carries a
+parsed `comparison_baseline` block (`seed`, `batch_size`, `max_batches`, `samples_per_profile`) and
+explicit `refresh_when` conditions so command drift and backend-decision drift fail mechanically.
+For hotspot work, use `just profile-infer` to write a deterministic infer flamegraph
+under `artifacts/profiling/`.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.
@@ -155,6 +162,9 @@ Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn p
 under `artifacts/train/` for auditability. `train_done` mirrors the training scalability contract
 fields (`batch_size`, `worker_parallelism`, `num_epochs`, `planned_samples`, `elapsed_ms`,
 `throughput_samples_per_sec`) for stable operator-facing observability.
+Use `afterburner train --num-epochs 1` when you need to regenerate the training-side contract
+artifacts in a short deterministic CI or local verification run without changing the default
+training horizon.
 `afterburner-dashboard` provides a terminal adapter over the same structured event stream:
 ```sh
 cargo run --bin afterburner-dashboard -- --input artifacts/train/observability.jsonl
