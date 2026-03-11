@@ -18,14 +18,42 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`
-  - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
+  - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_shape_guard.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
 
-- Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
+- Backend performance profile gate [Kernels, Runtime Infra]
+  - Goal: Keep the native-backend adoption decision artifact objective and current so kernel/runtime optimization work stays measurement-driven.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `artifacts/eval/backend_performance_profile.json`, `tests/perf_backend_profile.rs`, `README.md`
+
+- Quantized inference artifact contract [Inference, Numerics]
+  - Goal: Define an explicit reduced-precision inference artifact contract and acceptance gate before introducing quantized runtime paths.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `src/manifest.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/infer_cli.rs`, `tests/http_graceful_shutdown.rs`, `fixtures/`, `docs/adr/`, `ARCHITECTURE.md`, `README.md`
+
+- Async/runtime decision record gate (Tokio ecosystem) [Runtime Infra, Frameworks]
   - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
-  - Kind: `behavior`
+  - Kind: `gate`
   - Boundary: `adapter-http`
   - Contracts: `none`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`
+
+- Deployment target profile contract gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define named deployment target profiles and validation rules so deploy wiring has explicit, testable inputs instead of ad-hoc host config.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`
+  - Scope: `fixtures/deployment_target_profile.schema.json`, `tests/deployment_target_profile.rs`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Artifact rollout ownership contract [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Define artifact rollout ownership/provenance fields and approval handoff so upload/promote/deploy adapters share a single authority model.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`
+  - Scope: `fixtures/artifact_rollout_ownership.schema.json`, `tests/artifact_rollout_ownership.rs`, `docs/adr/`, `ARCHITECTURE.md`
 
 ## [Trunk]
 """

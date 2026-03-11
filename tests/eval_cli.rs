@@ -323,11 +323,15 @@ fn architecture_documents_adapter_only_semconv_alignment() {
     let architecture = fs::read_to_string(architecture_path).expect("read architecture");
 
     assert!(
-        architecture.contains("OpenTelemetry-style semantics"),
-        "architecture must document the semconv alignment rationale"
+        architecture.contains("mapped"),
+        "architecture must document how adapter-local fields relate to OpenTelemetry"
     );
     assert!(
-        architecture.contains("without pulling an SDK into core"),
+        architecture.contains("without claiming full semconv naming"),
+        "architecture must not overclaim full semconv compliance"
+    );
+    assert!(
+        architecture.contains("SDK into core"),
         "architecture must preserve the no-SDK adapter-only constraint"
     );
 }

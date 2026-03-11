@@ -23,7 +23,7 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Deploy-rs baseline deployment contract (upload authority/provenance model must be decided first).
+  - Blocked-by: Artifact rollout ownership contract; Deploy-rs baseline deployment contract.
 
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
@@ -31,7 +31,7 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `flake.nix`, `justfile`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: deployment target profile model and artifact rollout ownership decision.
+  - Blocked-by: Deployment target profile contract gate; Artifact rollout ownership contract.
 
 - Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
