@@ -148,6 +148,14 @@ Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn p
 under `artifacts/train/` for auditability. `train_done` mirrors the training scalability contract
 fields (`batch_size`, `worker_parallelism`, `num_epochs`, `planned_samples`, `elapsed_ms`,
 `throughput_samples_per_sec`) for stable operator-facing observability.
+`afterburner-dashboard` provides a terminal adapter over the same structured event stream:
+```sh
+cargo run --bin afterburner-dashboard -- --input artifacts/train/observability.jsonl
+```
+Press `q` or `Esc` to exit live mode. For deterministic CI coverage, use:
+```sh
+cargo run --bin afterburner-dashboard -- --input fixtures/dashboard_events.jsonl --snapshot --width 80 --height 18
+```
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.
 

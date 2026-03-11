@@ -25,13 +25,6 @@ Rules:
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Deploy-rs baseline deployment contract (upload authority/provenance model must be decided first).
 
-- Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
-  - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
-  - Kind: `behavior`
-  - Boundary: `adapter-http`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`
-
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
   - Kind: `mixed`

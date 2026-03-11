@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn TUI observability dashboard adapter [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Add a lightweight dashboard adapter over existing structured events (without coupling core to UI runtime) for operator-facing eval/training monitoring.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `src/bin/`, `tests/`, `README.md`
-
 - OpenTelemetry semantic alignment gate [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Align local eval/infer monitoring event names, units, and required fields with OpenTelemetry semantic conventions, without adding OTel SDK/exporter runtime dependencies yet.
   - Kind: `gate`
@@ -36,6 +29,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `src/train.rs`, `src/model.rs`, `tests/kernel_logits_shape.rs`, `fixtures/kernel_adoption_thresholds.json`, `docs/adr/`
+
+- Async/runtime decision record (Tokio ecosystem) [Runtime Infra, Frameworks]
+  - Goal: Decide if async runtime adoption is required for adapters and document constraints/trade-offs before introducing Tokio-dependent code.
+  - Kind: `behavior`
+  - Boundary: `adapter-http`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`
 
 ## [Trunk]
 """
@@ -105,6 +105,10 @@ enabled_features = ["wgpu"]
 name = "afterburner-http"
 path = "src/bin/afterburner_http.rs"
 
+[[bin]]
+name = "afterburner-dashboard"
+path = "src/bin/afterburner_dashboard.rs"
+
 [dependencies]
 base64 = "0.22"
 burn = { version = "0.20.1", features = [
@@ -118,6 +122,7 @@ burn = { version = "0.20.1", features = [
 ] }
 ctrlc = "3.4"
 png = "0.17"
+ratatui = "0.29.0"
 serde_json = "1.0"
 sha2 = "0.10"
 tiny_http = "0.12"
