@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- OpenTelemetry semantic alignment gate [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Align local eval/infer monitoring event names, units, and required fields with OpenTelemetry semantic conventions, without adding OTel SDK/exporter runtime dependencies yet.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `event`
-  - Scope: `fixtures/eval_pipeline_monitoring_event.json`, `tests/eval_cli.rs`, `tests/http_graceful_shutdown.rs`, `ARCHITECTURE.md`
-
 - Cargo workspace boundary split + dependency gate [Frameworks, Runtime Infra]
   - Goal: Split into Cargo workspace boundaries (`core` and adapters) and add an enforceable dependency gate so codebase growth remains maintainable and CI can target crates.
   - Kind: `mixed`

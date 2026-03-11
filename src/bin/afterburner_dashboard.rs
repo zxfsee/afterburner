@@ -507,7 +507,10 @@ fn infer_lines(state: &DashboardState) -> Vec<String> {
             field_string(&event.fields, "artifact_version")
         ),
         format!("Batch: {}", field_string(&event.fields, "batch_size")),
-        format!("Elapsed: {} ms", field_string(&event.fields, "elapsed_ms")),
+        format!(
+            "Duration: {} ms",
+            field_string(&event.fields, "duration_ms")
+        ),
     ]
 }
 

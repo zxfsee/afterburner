@@ -131,6 +131,8 @@ Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope
 `afterburner infer` includes optional `fields.calibration` contract fields (`schema_version`, `calibration_artifact`, `artifact_version`, `method`, `created_at_unix_ms`) when `calibration_artifact_metadata.json` is present beside the selected artifact.
 If that sidecar exists but fails schema/parse validation, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
+`infer_done` now uses the same duration and identity vocabulary as `eval_done`: both infer adapters emit
+`artifact_version`, `batch_size`, and `duration_ms`; the HTTP adapter also includes `request_id` for per-request correlation.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).

@@ -71,11 +71,17 @@ fn normalize_infer_done_event(event: &Value) -> Value {
     );
 
     let elapsed_ms = fields
-        .get("elapsed_ms")
+        .get("duration_ms")
         .and_then(Value::as_u64)
-        .expect("elapsed_ms must be numeric");
-    assert!(elapsed_ms >= 1, "elapsed_ms must be positive");
-    fields.insert("elapsed_ms".to_string(), Value::from(1));
+        .expect("duration_ms must be numeric");
+    assert!(elapsed_ms >= 1, "duration_ms must be positive");
+    fields.insert("duration_ms".to_string(), Value::from(1));
+
+    assert_eq!(
+        fields.get("batch_size").and_then(Value::as_u64),
+        Some(1),
+        "cli infer_done must report batch_size=1"
+    );
 
     normalized
 }

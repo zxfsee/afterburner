@@ -6,7 +6,11 @@ use std::sync::{
 use std::thread;
 use std::time::{Duration, Instant};
 
-use afterburner::infer::{InferError, load_model, parse_weights_path_from_args};
+use afterburner::infer::{
+    InferError, load_model, manifest_path_for_weights, parse_weights_path_from_args,
+    validate_artifacts,
+};
+use afterburner::manifest::ArtifactManifest;
 use afterburner::observability::emit_event;
 use afterburner::preprocess::mnist_image_to_tensor;
 use base64::Engine as _;
@@ -61,6 +65,9 @@ where
     B: Backend + Send + 'static,
     B::Device: Send + 'static,
 {
+    let artifact_version = load_artifact_version(&weights_path).unwrap_or_else(|err| {
+        emit_error_and_exit(&err);
+    });
     ensure_model_loadable::<B>(&weights_path, backend);
     emit_event(
         "info",
@@ -135,6 +142,7 @@ where
         let infer_limiter = Arc::clone(&infer_limiter);
         let worker_backend = backend;
         let worker_weights = weights_path.clone();
+        let worker_artifact_version = artifact_version.clone();
         let worker_envelope = envelope.clone();
         let worker_handle = thread::spawn(move || {
             run_worker_loop::<B>(
@@ -146,6 +154,7 @@ where
                 worker_envelope,
                 infer_limiter,
                 worker_weights,
+                worker_artifact_version,
             );
         });
         worker_handles.push(worker_handle);
@@ -180,6 +189,14 @@ fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &s
         }
         Err(err) => emit_error_and_exit(&err),
     }
+}
+
+fn load_artifact_version(weights_path: &std::path::Path) -> Result<String, InferError> {
+    validate_artifacts(weights_path)?;
+    let manifest_path = manifest_path_for_weights(weights_path);
+    let manifest =
+        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
+    Ok(manifest.artifact_version)
 }
 
 #[derive(Clone, Debug)]
@@ -270,6 +287,7 @@ fn run_worker_loop<B>(
     envelope: EnvelopeLimits,
     infer_limiter: Arc<InferConcurrencyLimiter>,
     weights_path: std::path::PathBuf,
+    artifact_version: String,
 ) where
     B: Backend + Send + 'static,
     B::Device: Send + 'static,
@@ -312,6 +330,7 @@ fn run_worker_loop<B>(
             &model,
             &device,
             backend,
+            artifact_version.as_str(),
             &envelope,
             &infer_limiter,
             worker_idx,
@@ -333,6 +352,7 @@ fn route_request<B: Backend>(
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
+    artifact_version: &str,
     envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
@@ -357,6 +377,7 @@ fn route_request<B: Backend>(
             model,
             device,
             backend,
+            artifact_version,
             envelope,
             infer_limiter,
         ),
@@ -793,6 +814,7 @@ fn handle_infer<B: Backend>(
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
+    artifact_version: &str,
     envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
@@ -811,7 +833,14 @@ fn handle_infer<B: Backend>(
     let deadline = Deadline::new(envelope.infer_timeout_ms);
 
     let response = handle_infer_inner(
-        request, model, device, backend, envelope, deadline, request_id,
+        request,
+        model,
+        device,
+        backend,
+        artifact_version,
+        envelope,
+        deadline,
+        request_id,
     );
     if let Err(err) = &response {
         emit_event(
@@ -952,6 +981,7 @@ fn handle_infer_inner<B: Backend>(
     model: &afterburner::model::Model<B>,
     device: &B::Device,
     backend: &str,
+    artifact_version: &str,
     envelope: &EnvelopeLimits,
     deadline: Deadline,
     request_id: u64,
@@ -999,7 +1029,7 @@ fn handle_infer_inner<B: Backend>(
     let rows = logits_to_rows(logits, images.len())?;
     deadline.check("inference")?;
 
-    let elapsed_ms = deadline.elapsed_ms();
+    let duration_ms = deadline.elapsed_ms();
     emit_event(
         "info",
         "http_adapter",
@@ -1007,7 +1037,8 @@ fn handle_infer_inner<B: Backend>(
         json!({
             "request_id": request_id.to_string(),
             "backend": backend,
-            "elapsed_ms": elapsed_ms,
+            "artifact_version": artifact_version,
+            "duration_ms": duration_ms,
             "batch_size": images.len()
         }),
     );

@@ -287,6 +287,52 @@ fn eval_summary_schema_fixture_has_required_monitoring_fields() {
 }
 
 #[test]
+fn infer_and_eval_monitoring_fixtures_share_duration_and_identity_fields() {
+    let infer = fixture_json("infer_done_event.json");
+    let eval = fixture_json("eval_pipeline_monitoring_event.json");
+
+    let infer_fields = infer
+        .get("fields")
+        .and_then(Value::as_object)
+        .expect("infer fixture fields must be an object");
+    let eval_fields = eval
+        .get("fields")
+        .and_then(Value::as_object)
+        .expect("eval fixture fields must be an object");
+
+    for required in ["artifact_version", "batch_size", "duration_ms"] {
+        assert!(
+            infer_fields.contains_key(required),
+            "infer fixture must carry `{required}`"
+        );
+        assert!(
+            eval_fields.contains_key(required),
+            "eval fixture must carry `{required}`"
+        );
+    }
+
+    assert!(
+        !infer_fields.contains_key("elapsed_ms"),
+        "infer fixture must not use legacy elapsed_ms naming"
+    );
+}
+
+#[test]
+fn architecture_documents_adapter_only_semconv_alignment() {
+    let architecture_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("ARCHITECTURE.md");
+    let architecture = fs::read_to_string(architecture_path).expect("read architecture");
+
+    assert!(
+        architecture.contains("OpenTelemetry-style semantics"),
+        "architecture must document the semconv alignment rationale"
+    );
+    assert!(
+        architecture.contains("without pulling an SDK into core"),
+        "architecture must preserve the no-SDK adapter-only constraint"
+    );
+}
+
+#[test]
 fn eval_checked_in_summary_matches_monitoring_schema_contract() {
     let schema = fixture_json("eval_pipeline_monitoring_artifact.schema.json");
     let summary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))

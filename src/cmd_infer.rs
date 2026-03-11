@@ -131,8 +131,14 @@ where
         }
     }
 
-    let elapsed_ms = t0.elapsed().as_millis();
-    let mut fields = json!({"backend": backend, "artifact": artifact, "elapsed_ms": elapsed_ms, "artifact_version": artifact_version});
+    let duration_ms = t0.elapsed().as_millis();
+    let mut fields = json!({
+        "backend": backend,
+        "artifact": artifact,
+        "artifact_version": artifact_version,
+        "batch_size": 1,
+        "duration_ms": duration_ms
+    });
     include_calibration_fields(&mut fields, calibration.as_ref());
     emit_event("info", "infer_cli", "infer_done", fields);
     Ok(())

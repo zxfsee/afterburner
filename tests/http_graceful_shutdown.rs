@@ -102,12 +102,16 @@ fn infer_error_artifact_not_found_fixture() -> Value {
     serde_json::from_str(&text).expect("parse infer error fixture")
 }
 
-fn infer_success_envelope_fixture(name: &str) -> Value {
+fn json_fixture(name: &str) -> Value {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
         .join(name);
-    let text = std::fs::read_to_string(path).expect("read infer success envelope fixture");
-    serde_json::from_str(&text).expect("parse infer success envelope fixture")
+    let text = std::fs::read_to_string(path).expect("read json fixture");
+    serde_json::from_str(&text).expect("parse json fixture")
+}
+
+fn infer_success_envelope_fixture(name: &str) -> Value {
+    json_fixture(name)
 }
 
 fn assert_success_payload_matches_fixture(payload: &Value, fixture_name: &str) {
@@ -194,6 +198,38 @@ fn normalize_infer_error_line(line: &str) -> Value {
         .expect("infer error event fields must be an object");
     fields.insert("artifact".to_string(), json!("does-not-exist.mpk"));
     value
+}
+
+fn stderr_event_from_logs(logs: &Arc<Mutex<Vec<String>>>, event_name: &str) -> Value {
+    logs.lock()
+        .expect("lock logs")
+        .iter()
+        .filter_map(|line| serde_json::from_str::<Value>(line).ok())
+        .find(|event| event.get("event").and_then(Value::as_str) == Some(event_name))
+        .unwrap_or_else(|| panic!("missing event `{event_name}` in server logs"))
+}
+
+fn normalize_http_infer_done_event(event: &Value) -> Value {
+    let mut normalized = event.clone();
+    let object = normalized
+        .as_object_mut()
+        .expect("http infer_done event must be an object");
+    object.insert("ts_ms".to_string(), json!(0));
+
+    let fields = object
+        .get_mut("fields")
+        .and_then(Value::as_object_mut)
+        .expect("http infer_done fields must be an object");
+    fields.insert("request_id".to_string(), json!("<request_id>"));
+
+    let duration_ms = fields
+        .get("duration_ms")
+        .and_then(Value::as_u64)
+        .expect("duration_ms must be numeric");
+    assert!(duration_ms >= 1, "duration_ms must be positive");
+    fields.insert("duration_ms".to_string(), json!(1));
+
+    normalized
 }
 
 #[test]
@@ -344,6 +380,77 @@ fn single_item_infer_response_matches_single_success_fixture() {
         .expect("response must include headers and body");
     let payload: Value = serde_json::from_str(body).expect("response body must be json");
     assert_success_payload_matches_fixture(&payload, "http_infer_single_success_envelope.json");
+
+    let pid = child.id().to_string();
+    let kill_status = Command::new("kill")
+        .args(["-INT", &pid])
+        .status()
+        .expect("send SIGINT");
+    assert!(kill_status.success(), "kill -INT must succeed");
+    wait_for_exit_ok(&mut child, Duration::from_secs(5));
+    stderr_thread.join().expect("join stderr reader");
+}
+
+#[test]
+fn single_item_http_infer_done_event_matches_fixture() {
+    let port = reserve_port();
+    let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
+        .arg(fixture_model_path())
+        .env("BACKEND", "cpu")
+        .env("PORT", port.to_string())
+        .env("HTTP_MAX_CONCURRENCY", "1")
+        .env("HTTP_MAX_BATCH_SIZE", "16")
+        .stdout(Stdio::null())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("spawn afterburner-http");
+    let stderr = child.stderr.take().expect("take child stderr");
+    let logs = Arc::new(Mutex::new(Vec::<String>::new()));
+    let logs_reader = Arc::clone(&logs);
+    let stderr_thread = thread::spawn(move || {
+        let reader = std::io::BufReader::new(stderr);
+        for line in std::io::BufRead::lines(reader) {
+            if let Ok(line) = line {
+                logs_reader.lock().expect("lock logs").push(line);
+            }
+        }
+    });
+
+    wait_for_healthz(port, Duration::from_secs(20));
+
+    let mut stream = TcpStream::connect(("127.0.0.1", port)).expect("connect infer");
+    stream
+        .set_read_timeout(Some(Duration::from_secs(10)))
+        .expect("set read timeout");
+
+    let payload = infer_single_payload();
+    let request_header = format!(
+        "POST /infer HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        payload.len()
+    );
+    stream
+        .write_all(request_header.as_bytes())
+        .expect("write headers");
+    stream.write_all(payload.as_bytes()).expect("write body");
+    stream.flush().expect("flush request");
+
+    let mut response = String::new();
+    stream
+        .read_to_string(&mut response)
+        .expect("read infer response");
+    assert!(
+        response.contains("200 OK"),
+        "response must be 200: {response}"
+    );
+
+    wait_for_log(&logs, r#""event":"infer_done""#, Duration::from_secs(5));
+    let infer_done = stderr_event_from_logs(&logs, "infer_done");
+    let normalized = normalize_http_infer_done_event(&infer_done);
+    let expected = json_fixture("http_infer_done_event.json");
+    assert_eq!(
+        normalized, expected,
+        "http infer_done event must match the fixture-backed contract"
+    );
 
     let pid = child.id().to_string();
     let kill_status = Command::new("kill")

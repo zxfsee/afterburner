@@ -49,6 +49,10 @@ auto-versioning, embedded serving) are intentionally absent.
   - protected by compatibility tests (e.g. golden fixtures).
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
+- Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
+  infer/eval monitoring fields should align on explicit units and stable identity keys
+  (`duration_ms`, `batch_size`, `artifact_version`) so adapter-local logs can map cleanly onto
+  OpenTelemetry-style semantics without pulling an SDK into core.
 
 ### Assumptions
 
