@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.9892578125,
+  "artifact": "artifacts/inference/0.1.0/model.mpk",
+  "artifact_version": "0.1.0",
+  "batch_size": 128,
+  "batches_evaluated": 8,
+  "correct": 1013,
+  "duration_ms": 97055,
+  "error_count": 0,
+  "event": "mnist_eval_summary",
+  "max_batches": 8,
+  "rate_samples_per_sec": 10.550718664674669,
+  "samples": 1024,
+  "seed": 42
+}

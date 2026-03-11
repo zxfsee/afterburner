@@ -357,6 +357,39 @@ fn eval_checked_in_summary_matches_monitoring_schema_contract() {
     assert!(rate >= 0.0, "rate_samples_per_sec must be non-negative");
 }
 
+#[test]
+fn eval_summary_success_fixture_pins_top_level_contract() {
+    let fixture = fixture_json("eval_summary_success.json");
+    let summary_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("artifacts")
+        .join("eval")
+        .join("mnist_eval_summary.json");
+    let summary_text = fs::read_to_string(summary_path).expect("read eval summary sample artifact");
+    let summary: Value = serde_json::from_str(&summary_text).expect("parse eval summary json");
+
+    let fixture_object = fixture
+        .as_object()
+        .expect("eval summary success fixture must be an object");
+    let summary_object = summary
+        .as_object()
+        .expect("eval summary sample must be an object");
+
+    let fixture_keys = fixture_object.keys().cloned().collect::<BTreeSet<_>>();
+    let summary_keys = summary_object.keys().cloned().collect::<BTreeSet<_>>();
+    assert_eq!(
+        summary_keys, fixture_keys,
+        "eval summary top-level keys must match fixture contract"
+    );
+
+    for key in ["event", "artifact_version"] {
+        assert_eq!(
+            summary_object.get(key),
+            fixture_object.get(key),
+            "{key} must match fixture contract"
+        );
+    }
+}
+
 fn stderr_event(stderr: &str, event_name: &str) -> Value {
     stderr
         .lines()

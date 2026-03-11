@@ -9,13 +9,6 @@ header = """# Changelog
 
 ## TODO
 
-- Eval summary JSON fixture gate [Experimentation/Eval Infra, Data Infra]
-  - Goal: Pin eval summary JSON top-level field contract (including `artifact_version`) with fixture-backed assertions for downstream parser stability.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`
-  - Scope: `tests/eval_cli.rs`, `fixtures/eval_summary_success.json`
-
 - HTTP infer single-response envelope consistency [Serving/Deployment Infra, Inference]
   - Goal: Align HTTP `/infer` single-item success envelope shape with the batch contract and add fixture-backed assertions (`batch_size`, logits row width) to prevent adapter drift.
   - Kind: `mixed`
