@@ -41,6 +41,12 @@ eval-gate:
 backend-profile-gate:
     cargo test --test perf_backend_profile
 
+# validate workspace/core dependency boundaries
+workspace-gate:
+    cargo test --test workspace_dependency_gate
+    cargo test --test build_graph_guard
+    cargo test -p afterburner-core
+
 # run training by default
 run:
     just train

@@ -4,17 +4,14 @@ version = "0.1.0"
 edition = "2024"
 license = "MIT"
 
+[workspace]
+members = [".", "crates/afterburner-core"]
+resolver = "2"
+
 [package.metadata.git-cliff.changelog]
 header = """# Changelog
 
 ## TODO
-
-- Cargo workspace boundary split + dependency gate [Frameworks, Runtime Infra]
-  - Goal: Split into Cargo workspace boundaries (`core` and adapters) and add an enforceable dependency gate so codebase growth remains maintainable and CI can target crates.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `Cargo.toml`, `crates/`, `tests/`, `justfile`, `ARCHITECTURE.md`
 
 - Custom kernel adoption threshold contract [Kernels, Numerics]
   - Goal: Define measurable thresholds and compatibility gates for custom kernel introduction so optimization work is evidence-driven and reversible.
@@ -103,6 +100,7 @@ name = "afterburner-dashboard"
 path = "src/bin/afterburner_dashboard.rs"
 
 [dependencies]
+afterburner-core = { path = "crates/afterburner-core" }
 base64 = "0.22"
 burn = { version = "0.20.1", features = [
   "fusion",

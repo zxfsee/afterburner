@@ -43,6 +43,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - “Core” = library modules implementing artifact contract + preprocessing + inference logic.
   - “Adapters” = binaries/transport layers (CLI, HTTP wrapper) and any integration glue.
   - Any new adapter must call a stable core API; do not import adapter modules from core.
+  - The current mechanical boundary is a Cargo workspace split:
+    `crates/afterburner-core` holds shared library modules, while the root `afterburner`
+    package is the adapter package that depends on and re-exports core modules.
 - Public contracts (artifact format, CLI surface, HTTP surface, event schema) must be:
   - explicit and versioned when needed,
   - validated at boundaries,

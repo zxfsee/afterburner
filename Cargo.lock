@@ -32,6 +32,7 @@ dependencies = [
 name = "afterburner"
 version = "0.1.0"
 dependencies = [
+ "afterburner-core",
  "assert_cmd",
  "base64",
  "burn",
@@ -45,6 +46,14 @@ dependencies = [
  "tempfile",
  "tiny_http",
  "toml 0.8.23",
+]
+
+[[package]]
+name = "afterburner-core"
+version = "0.1.0"
+dependencies = [
+ "burn",
+ "serde_json",
 ]
 
 [[package]]

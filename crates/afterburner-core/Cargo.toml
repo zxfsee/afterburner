@@ -1,0 +1,9 @@
+[package]
+name = "afterburner-core"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+burn = { version = "0.20.1", features = ["std", "train", "vision"] }
+serde_json = "1.0"
