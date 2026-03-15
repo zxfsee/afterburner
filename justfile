@@ -42,8 +42,11 @@ backend-profile-gate:
     cargo test --test perf_backend_profile
 
 # capture a deterministic infer flamegraph into artifacts/profiling
-# on macOS this requires full Xcode selected so `xcrun xctrace version` works;
-# cargo flamegraph will fail naturally if the host profiler backend is unavailable.
+# on macOS this requires `xcrun xctrace version` to succeed under full Xcode
+# plus a cargo-flamegraph/xctrace template pairing that works for the active
+# Xcode release. cargo-flamegraph 0.6.11 still asks xctrace for `Time Profiler`;
+# this host currently exposes `CPU Profiler`, so the recipe remains blocked
+# until that mismatch is resolved.
 profile-infer:
     mkdir artifacts/profiling
     cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk

@@ -150,8 +150,10 @@ parsed `comparison_baseline` block (`seed`, `batch_size`, `max_batches`, `sample
 explicit `refresh_when` conditions so command drift and backend-decision drift fail mechanically.
 For hotspot work, use `just profile-infer` to write a deterministic infer flamegraph
 under `artifacts/profiling/`. On macOS, this requires full Xcode selected so
-`xcrun xctrace version` succeeds; Command Line Tools alone are not enough for
-`cargo flamegraph`.
+`xcrun xctrace version` succeeds, but that is not sufficient by itself: the
+current `cargo-flamegraph 0.6.11` path still asks `xctrace` for `Time Profiler`,
+while this Xcode 26 CLI exposes `CPU Profiler`, so the profiling workflow
+remains blocked until that tool mismatch is resolved.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.

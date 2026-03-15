@@ -37,6 +37,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
         justfile.contains("full Xcode"),
         "profiling workflow must document the full Xcode requirement on macOS"
     );
+    assert!(
+        justfile.contains("Time Profiler") && justfile.contains("CPU Profiler"),
+        "profiling workflow must document the current xctrace template mismatch"
+    );
 
     let readme = repo_file("README.md");
     for workflow in [
@@ -56,5 +60,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
     assert!(
         readme.contains("full Xcode"),
         "README must document the full Xcode requirement on macOS"
+    );
+    assert!(
+        readme.contains("Time Profiler") && readme.contains("CPU Profiler"),
+        "README must document the current xctrace template mismatch"
     );
 }
