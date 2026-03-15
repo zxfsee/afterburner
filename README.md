@@ -149,7 +149,8 @@ native backend instead of extending the current stack by assumption. The profile
 parsed `comparison_baseline` block (`seed`, `batch_size`, `max_batches`, `samples_per_profile`) and
 explicit `refresh_when` conditions so command drift and backend-decision drift fail mechanically.
 For hotspot work, use `just profile-infer` to write a deterministic infer flamegraph
-under `artifacts/profiling/`.
+under `artifacts/profiling/`. On macOS, confirm `xcrun xctrace version` works in
+the active shell first; `cargo flamegraph` relies on that host profiler path.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.

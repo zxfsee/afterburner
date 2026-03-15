@@ -13,20 +13,13 @@ header = """# Changelog
 
 ## TODO
 
-- Host profiler availability gate [Inference, Runtime Infra]
-  - Goal: Make the host-profiler prerequisite for `cargo flamegraph` explicit so profiling recipes fail early when `xctrace` or an equivalent macOS profiler path is unavailable.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `ops`
-  - Scope: `justfile`, `tests/`, `README.md`
-
 - Inference hotspot profiling artifact [Inference, Runtime Infra, Kernels]
   - Goal: Capture reproducible hotspot evidence for `infer`/`eval` via `cargo flamegraph` so backend, kernel, and quantization decisions use measured operator cost instead of aggregate latency alone.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`
   - Scope: `justfile`, `tests/`, `artifacts/profiling/`, `README.md`
-  - Blocked-by: Host profiler availability gate
+  - Blocked-by: resolve `xcrun xctrace` under the current macOS/Nix toolchain
 
 - Calibration artifact version compatibility contract [Inference, Experimentation/Eval Infra]
   - Goal: Prevent calibration sidecars from attaching to the wrong inference artifact by validating artifact-version compatibility before calibration metadata is surfaced.

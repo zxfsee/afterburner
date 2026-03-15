@@ -47,6 +47,7 @@ Do not include temporary heuristics that reflect a single session correction.
       - tied to the contract or invariant being modified.
   - Verification is the review:
     - Prefer fixture/schema/tests as the primary acceptance mechanism.
+    - New tests/gates must protect a durable invariant (public contract, architectural boundary, or repo workflow). Avoid TODO-local one-off tests when command-level verification or an existing broader guard is sufficient.
     - Narrative or stylistic review is secondary to pass/fail evidence.
   - Verifier separation:
     - When using subagents, implementation and verification must be separate roles.
