@@ -26,6 +26,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
     for recipe in [
         "eval-gate:",
         "backend-profile-gate:",
+        "dashboard:",
         "deploy-check:",
         "profile-infer:",
         "workspace-gate:",
@@ -55,6 +56,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
     for workflow in [
         "just eval-gate",
         "just backend-profile-gate",
+        "just dashboard",
         "just profile-infer",
     ] {
         assert!(

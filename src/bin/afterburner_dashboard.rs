@@ -48,6 +48,7 @@ fn main() {
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct DashboardArgs {
     input: PathBuf,
+    profiling_summary: Option<PathBuf>,
     snapshot: bool,
     width: u16,
     height: u16,
@@ -66,6 +67,7 @@ struct DashboardEvent {
 #[derive(Debug, Default, Clone)]
 struct DashboardState {
     input_label: String,
+    profiling_label: Option<String>,
     total_events: usize,
     error_events: usize,
     counts: BTreeMap<String, usize>,
@@ -73,6 +75,20 @@ struct DashboardState {
     latest_train: Option<DashboardEvent>,
     latest_eval: Option<DashboardEvent>,
     latest_infer: Option<DashboardEvent>,
+    latest_profile: Option<ProfilingSummary>,
+}
+
+#[derive(Debug, Clone)]
+struct ProfilingSummary {
+    total_samples: u64,
+    top_hotspot: Option<ProfilingHotspot>,
+}
+
+#[derive(Debug, Clone)]
+struct ProfilingHotspot {
+    symbol: String,
+    samples: u64,
+    percent: f64,
 }
 
 fn run<I>(args: I) -> Result<(), String>
@@ -81,7 +97,7 @@ where
 {
     let args = parse_args(args)?;
     if args.snapshot {
-        let state = load_dashboard_state(args.input.as_path())?;
+        let state = load_dashboard_state(args.input.as_path(), args.profiling_summary.as_deref())?;
         let snapshot = render_snapshot(&state, args.width, args.height)
             .map_err(|err| format!("render dashboard snapshot: {err}"))?;
         print!("{snapshot}");
@@ -103,7 +119,7 @@ fn run_live(args: DashboardArgs) -> Result<(), String> {
     let _restore = RestoreTerminal;
 
     loop {
-        let state = load_dashboard_state(args.input.as_path())?;
+        let state = load_dashboard_state(args.input.as_path(), args.profiling_summary.as_deref())?;
         terminal
             .draw(|frame| render_dashboard(frame, &state))
             .map_err(|err| format!("draw dashboard frame: {err}"))?;
@@ -139,7 +155,7 @@ impl Drop for RestoreTerminal {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner-dashboard [--input PATH] [--snapshot] [--width N] [--height N] [--refresh-ms N]"
+    "usage: afterburner-dashboard [--input PATH] [--profiling-summary PATH] [--snapshot] [--width N] [--height N] [--refresh-ms N]"
 }
 
 fn parse_args<I>(args: I) -> Result<DashboardArgs, String>
@@ -149,6 +165,7 @@ where
     let mut args = args.peekable();
     let mut parsed = DashboardArgs {
         input: PathBuf::from("artifacts/train/observability.jsonl"),
+        profiling_summary: None,
         snapshot: false,
         width: 80,
         height: 18,
@@ -161,12 +178,21 @@ where
                 let value: String = parse_value(&mut args, "--input")?;
                 parsed.input = PathBuf::from(value);
             }
+            "--profiling-summary" => {
+                let value: String = parse_value(&mut args, "--profiling-summary")?;
+                parsed.profiling_summary = Some(PathBuf::from(value));
+            }
             "--snapshot" => parsed.snapshot = true,
             "--width" => parsed.width = parse_value(&mut args, "--width")?,
             "--height" => parsed.height = parse_value(&mut args, "--height")?,
             "--refresh-ms" => parsed.refresh_ms = parse_value(&mut args, "--refresh-ms")?,
             _ if arg.starts_with("--input=") => {
                 parsed.input = PathBuf::from(arg.trim_start_matches("--input="))
+            }
+            _ if arg.starts_with("--profiling-summary=") => {
+                parsed.profiling_summary = Some(PathBuf::from(
+                    arg.trim_start_matches("--profiling-summary="),
+                ))
             }
             _ if arg.starts_with("--width=") => {
                 parsed.width = parse_inline_value(arg.trim_start_matches("--width="), "--width")?
@@ -220,7 +246,10 @@ where
         .map_err(|_| format!("invalid value for {flag}: {value}\n{}", usage()))
 }
 
-fn load_dashboard_state(path: &Path) -> Result<DashboardState, String> {
+fn load_dashboard_state(
+    path: &Path,
+    profiling_summary: Option<&Path>,
+) -> Result<DashboardState, String> {
     let contents = fs::read_to_string(path)
         .map_err(|err| format!("read dashboard input {}: {err}", path.display()))?;
     let mut state = DashboardState {
@@ -240,7 +269,47 @@ fn load_dashboard_state(path: &Path) -> Result<DashboardState, String> {
         ingest_event(&mut state, event);
     }
 
+    if let Some(path) = profiling_summary {
+        state.profiling_label = Some(
+            path.file_name()
+                .map(|name| name.to_string_lossy().to_string())
+                .unwrap_or_else(|| path.display().to_string()),
+        );
+        state.latest_profile = Some(load_profiling_summary(path)?);
+    }
+
     Ok(state)
+}
+
+fn load_profiling_summary(path: &Path) -> Result<ProfilingSummary, String> {
+    let contents = fs::read_to_string(path)
+        .map_err(|err| format!("read profiling summary {}: {err}", path.display()))?;
+    let value: Value = serde_json::from_str(&contents)
+        .map_err(|err| format!("parse profiling summary {}: {err}", path.display()))?;
+    let object = value
+        .as_object()
+        .ok_or_else(|| "profiling summary must be a json object".to_string())?;
+    let total_samples = object
+        .get("total_samples")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| "profiling summary missing integer total_samples".to_string())?;
+    let top_hotspot = object
+        .get("top_hotspots")
+        .and_then(Value::as_array)
+        .and_then(|items| items.first())
+        .and_then(|value| {
+            let object = value.as_object()?;
+            Some(ProfilingHotspot {
+                symbol: object.get("symbol")?.as_str()?.to_string(),
+                samples: object.get("samples")?.as_u64()?,
+                percent: object.get("percent")?.as_f64()?,
+            })
+        });
+
+    Ok(ProfilingSummary {
+        total_samples,
+        top_hotspot,
+    })
 }
 
 fn parse_event_line(line: &str) -> Result<DashboardEvent, String> {
@@ -427,12 +496,13 @@ fn header_lines(state: &DashboardState) -> Vec<String> {
         ),
     ];
 
+    if let Some(label) = state.profiling_label.as_ref() {
+        lines.push(format!("Profile: {}", label));
+    }
+
     if let Some(event) = state.last_event.as_ref() {
-        lines.push(format!(
-            "Last: {} from {} at {}",
-            event.event, event.source, event.ts_ms
-        ));
-        lines.push(format!("Level: {}", event.level));
+        lines.push(format!("Last: {} from {}", event.event, event.source));
+        lines.push(format!("Level: {}  Ts: {}", event.level, event.ts_ms));
     } else {
         lines.push("Last: none".to_string());
         lines.push("Level: n/a".to_string());
@@ -499,19 +569,37 @@ fn infer_lines(state: &DashboardState) -> Vec<String> {
         return vec!["No infer events loaded.".to_string()];
     };
 
-    vec![
+    let mut lines = vec![
         format!("Event: {}", event.event),
-        format!("Backend: {}", field_string(&event.fields, "backend")),
         format!(
-            "Artifact: {}",
+            "Backend: {}  Artifact: {}",
+            field_string(&event.fields, "backend"),
             field_string(&event.fields, "artifact_version")
         ),
-        format!("Batch: {}", field_string(&event.fields, "batch_size")),
         format!(
-            "Duration: {} ms",
+            "Batch: {}  Duration: {} ms",
+            field_string(&event.fields, "batch_size"),
             field_string(&event.fields, "duration_ms")
         ),
-    ]
+    ];
+
+    if let Some(profile) = state.latest_profile.as_ref() {
+        if let Some(hotspot) = profile.top_hotspot.as_ref() {
+            lines.push(format!(
+                "Hotspot: {} {}/{} {:.0}%",
+                truncate_middle(hotspot.symbol.as_str(), 14),
+                hotspot.samples,
+                profile.total_samples,
+                hotspot.percent,
+            ));
+        } else {
+            lines.push(format!("Hotspot: none / {}", profile.total_samples));
+        }
+    } else {
+        lines.push("Hotspot: n/a".to_string());
+    }
+
+    lines
 }
 
 fn count_lines(state: &DashboardState) -> Vec<String> {
@@ -534,6 +622,28 @@ fn field_string(fields: &Map<String, Value>, key: &str) -> String {
         Some(Value::Null) | None => "n/a".to_string(),
         Some(other) => other.to_string(),
     }
+}
+
+fn truncate_middle(value: &str, max_chars: usize) -> String {
+    if value.chars().count() <= max_chars {
+        return value.to_string();
+    }
+    if max_chars <= 3 {
+        return "...".to_string();
+    }
+
+    let prefix_len = (max_chars - 3) / 2;
+    let suffix_len = max_chars - 3 - prefix_len;
+    let prefix = value.chars().take(prefix_len).collect::<String>();
+    let suffix = value
+        .chars()
+        .rev()
+        .take(suffix_len)
+        .collect::<Vec<_>>()
+        .into_iter()
+        .rev()
+        .collect::<String>();
+    format!("{prefix}...{suffix}")
 }
 
 #[cfg(test)]

@@ -188,9 +188,11 @@ training horizon.
 ```sh
 cargo run --bin afterburner-dashboard -- --input artifacts/train/observability.jsonl
 ```
+Use `just dashboard` to open the same dashboard with the current infer profiling summary
+loaded through `--profiling-summary artifacts/profiling/infer_hotspot_summary.json`.
 Press `q` or `Esc` to exit live mode. For deterministic CI coverage, use:
 ```sh
-cargo run --bin afterburner-dashboard -- --input fixtures/dashboard_events.jsonl --snapshot --width 80 --height 18
+cargo run --bin afterburner-dashboard -- --input fixtures/dashboard_events.jsonl --profiling-summary fixtures/dashboard_profiling_summary.json --snapshot --width 80 --height 18
 ```
 
 This mirrors real-world model deployment, where training pipelines and serving environments are cleanly separated.

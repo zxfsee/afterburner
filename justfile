@@ -62,6 +62,10 @@ profile-infer:
     {{profile-infer-command}}
     cargo run --locked --bin afterburner_profile_summary -- --input {{profile-infer-flamegraph}} --output {{profile-infer-summary}} --weights-artifact {{profile-infer-artifact}} --backend {{profile-infer-backend}} --profile-command '{{profile-infer-command}}'
 
+# open the terminal dashboard with profiling summary context
+dashboard:
+    cargo run --locked --bin afterburner-dashboard -- --input artifacts/train/observability.jsonl --profiling-summary artifacts/profiling/infer_hotspot_summary.json
+
 # validate workspace/core dependency boundaries
 workspace-gate:
     cargo test --test workspace_dependency_gate

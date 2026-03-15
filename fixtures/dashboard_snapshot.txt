@@ -12,7 +12,7 @@
 +------------------------------------------------------------------------------+
 +Infer---------------------------------++Event Counts--------------------------+
 |Event: infer_done                     ||eval_done x1                          |
-|Backend: cpu                          ||infer_done x1                         |
-|Artifact: 0.1.0                       ||train_done x1                         |
-|Batch: 1                              ||train_start x1                        |
+|Backend: cpu  Artifact: 0.1.0         ||infer_done x1                         |
+|Batch: 1  Duration: 14 ms             ||train_done x1                         |
+|Hotspot: after..._infer 30/42 71%     ||train_start x1                        |
 +--------------------------------------++--------------------------------------+

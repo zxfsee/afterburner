@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Unified profiling dashboard adapter [Runtime Infra, Experimentation/Eval Infra, Inference]
-  - Goal: Extend the existing terminal observability dashboard so profiling runs and summaries share the same operator surface as training and inference events.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/bin/afterburner_dashboard.rs`, `justfile`, `artifacts/profiling/`, `tests/`, `README.md`
-
 - CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
   - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
+  - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

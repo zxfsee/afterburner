@@ -17,6 +17,8 @@ fn dashboard_snapshot_matches_fixture() {
     let assert = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-dashboard"))
         .arg("--input")
         .arg(fixture_path("dashboard_events.jsonl"))
+        .arg("--profiling-summary")
+        .arg(fixture_path("dashboard_profiling_summary.json"))
         .args(["--snapshot", "--width", "80", "--height", "18"])
         .assert()
         .success();
