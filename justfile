@@ -1,6 +1,12 @@
 set shell := ["nu", "-c"]
 set dotenv-load := true
 
+profile-infer-artifact := "artifacts/inference/0.1.0/model.mpk"
+profile-infer-flamegraph := "artifacts/profiling/infer_flamegraph.svg"
+profile-infer-summary := "artifacts/profiling/infer_hotspot_summary.json"
+profile-infer-backend := "wgpu"
+profile-infer-command := "env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk"
+
 # build the project via nix (reproducible)
 build:
     nix build
@@ -48,8 +54,8 @@ backend-profile-gate:
 profile-infer:
     mkdir artifacts/profiling
     rm -rf cargo-flamegraph.trace
-    env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk
-    cargo run --locked --bin afterburner_profile_summary -- --input artifacts/profiling/infer_flamegraph.svg --output artifacts/profiling/infer_hotspot_summary.json --weights-artifact artifacts/inference/0.1.0/model.mpk --backend wgpu --profile-command 'env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk'
+    {{profile-infer-command}}
+    cargo run --locked --bin afterburner_profile_summary -- --input {{profile-infer-flamegraph}} --output {{profile-infer-summary}} --weights-artifact {{profile-infer-artifact}} --backend {{profile-infer-backend}} --profile-command '{{profile-infer-command}}'
 
 # validate workspace/core dependency boundaries
 workspace-gate:

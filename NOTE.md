@@ -24,3 +24,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - If a repo mutation is rejected as `unacceptable risk`, treat it as a fresh policy gate: ask again with an explicit approval prompt instead of relying on prior or plain-text approval.
 - Do not add environment-preflight or host-availability gate recipes to `justfile`; keep `just` focused on the composable workflow entrypoints and let prerequisites fail naturally or live in tests/TODOs.
 - Do not split one environment/tooling blocker into multiple active gate TODOs. If the issue is host-specific or transient, keep one contract/workflow gate at most, then record the remaining problem as an inline `Blocked-by:` note on the real TODO.
+- Park profiling/flamegraph work unless a near-term runtime/kernel/quantization decision actually depends on measured hotspot evidence; otherwise it is easy to over-invest in tooling before the next leverage point is ready.

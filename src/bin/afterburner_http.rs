@@ -10,7 +10,7 @@ use afterburner::infer::{
     InferError, load_model, manifest_path_for_weights, parse_weights_path_from_args,
     validate_artifacts,
 };
-use afterburner::manifest::ArtifactManifest;
+use afterburner::manifest::{ArtifactManifest, ManifestPrecision};
 use afterburner::observability::emit_event;
 use afterburner::preprocess::mnist_image_to_tensor;
 use base64::Engine as _;
@@ -65,10 +65,12 @@ where
     B: Backend + Send + 'static,
     B::Device: Send + 'static,
 {
-    let artifact_version = load_artifact_version(&weights_path).unwrap_or_else(|err| {
+    let manifest = load_artifact_manifest(&weights_path).unwrap_or_else(|err| {
         emit_error_and_exit(&err);
     });
-    ensure_model_loadable::<B>(&weights_path, backend);
+    let artifact_version = manifest.artifact_version.clone();
+    let precision = manifest.precision.clone();
+    ensure_model_loadable::<B>(&weights_path, backend, &precision);
     emit_event(
         "info",
         "http_adapter",
@@ -143,6 +145,7 @@ where
         let worker_backend = backend;
         let worker_weights = weights_path.clone();
         let worker_artifact_version = artifact_version.clone();
+        let worker_precision = precision.clone();
         let worker_envelope = envelope.clone();
         let worker_handle = thread::spawn(move || {
             run_worker_loop::<B>(
@@ -155,6 +158,7 @@ where
                 infer_limiter,
                 worker_weights,
                 worker_artifact_version,
+                worker_precision,
             );
         });
         worker_handles.push(worker_handle);
@@ -173,7 +177,11 @@ where
     std::process::exit(0);
 }
 
-fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &str) {
+fn ensure_model_loadable<B: Backend>(
+    weights_path: &std::path::Path,
+    backend: &str,
+    precision: &ManifestPrecision,
+) {
     let device = B::Device::default();
     match load_model::<B>(&weights_path.to_path_buf(), &device) {
         Ok(_) => {
@@ -183,7 +191,8 @@ fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &s
                 "artifact_load_ok",
                 json!({
                     "backend": backend,
-                    "artifact": weights_path.to_string_lossy().to_string()
+                    "artifact": weights_path.to_string_lossy().to_string(),
+                    "precision": precision_json(precision)
                 }),
             );
         }
@@ -191,12 +200,10 @@ fn ensure_model_loadable<B: Backend>(weights_path: &std::path::Path, backend: &s
     }
 }
 
-fn load_artifact_version(weights_path: &std::path::Path) -> Result<String, InferError> {
+fn load_artifact_manifest(weights_path: &std::path::Path) -> Result<ArtifactManifest, InferError> {
     validate_artifacts(weights_path)?;
     let manifest_path = manifest_path_for_weights(weights_path);
-    let manifest =
-        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
-    Ok(manifest.artifact_version)
+    ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)
 }
 
 #[derive(Clone, Debug)]
@@ -288,6 +295,7 @@ fn run_worker_loop<B>(
     infer_limiter: Arc<InferConcurrencyLimiter>,
     weights_path: std::path::PathBuf,
     artifact_version: String,
+    precision: ManifestPrecision,
 ) where
     B: Backend + Send + 'static,
     B::Device: Send + 'static,
@@ -331,6 +339,7 @@ fn run_worker_loop<B>(
             &device,
             backend,
             artifact_version.as_str(),
+            &precision,
             &envelope,
             &infer_limiter,
             worker_idx,
@@ -353,6 +362,7 @@ fn route_request<B: Backend>(
     device: &B::Device,
     backend: &str,
     artifact_version: &str,
+    precision: &ManifestPrecision,
     envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
@@ -378,6 +388,7 @@ fn route_request<B: Backend>(
             device,
             backend,
             artifact_version,
+            precision,
             envelope,
             infer_limiter,
         ),
@@ -815,6 +826,7 @@ fn handle_infer<B: Backend>(
     device: &B::Device,
     backend: &str,
     artifact_version: &str,
+    precision: &ManifestPrecision,
     envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
@@ -838,6 +850,7 @@ fn handle_infer<B: Backend>(
         device,
         backend,
         artifact_version,
+        precision,
         envelope,
         deadline,
         request_id,
@@ -982,6 +995,7 @@ fn handle_infer_inner<B: Backend>(
     device: &B::Device,
     backend: &str,
     artifact_version: &str,
+    precision: &ManifestPrecision,
     envelope: &EnvelopeLimits,
     deadline: Deadline,
     request_id: u64,
@@ -1038,12 +1052,21 @@ fn handle_infer_inner<B: Backend>(
             "request_id": request_id.to_string(),
             "backend": backend,
             "artifact_version": artifact_version,
+            "precision": precision_json(precision),
             "duration_ms": duration_ms,
             "batch_size": images.len()
         }),
     );
 
     Ok(infer_success_payload(&rows))
+}
+
+fn precision_json(precision: &ManifestPrecision) -> Value {
+    json!({
+        "weights_dtype": precision.weights_dtype,
+        "activation_dtype": precision.activation_dtype,
+        "quantization": precision.quantization,
+    })
 }
 
 fn infer_success_payload(rows: &[Vec<f32>]) -> String {

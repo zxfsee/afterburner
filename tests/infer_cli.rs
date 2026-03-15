@@ -29,7 +29,20 @@ fn infer_done_event_matches_fixture_contract() {
     let assert = cmd.assert().success();
     let stderr =
         String::from_utf8(assert.get_output().stderr.clone()).expect("infer stderr must be utf8");
+    let artifact_load_ok = stderr_event(&stderr, "artifact_load_ok");
+    assert_precision_fields(
+        artifact_load_ok
+            .get("fields")
+            .and_then(Value::as_object)
+            .expect("artifact_load_ok fields must be an object"),
+    );
     let infer_done = stderr_event(&stderr, "infer_done");
+    assert_precision_fields(
+        infer_done
+            .get("fields")
+            .and_then(Value::as_object)
+            .expect("infer_done fields must be an object"),
+    );
     let normalized = normalize_infer_done_event(&infer_done);
     let expected = fixture_json("infer_done_event.json");
     assert_eq!(
@@ -84,4 +97,23 @@ fn normalize_infer_done_event(event: &Value) -> Value {
     );
 
     normalized
+}
+
+fn assert_precision_fields(fields: &serde_json::Map<String, Value>) {
+    let precision = fields
+        .get("precision")
+        .and_then(Value::as_object)
+        .expect("precision fields must be present");
+    assert_eq!(
+        precision.get("weights_dtype").and_then(Value::as_str),
+        Some("f32")
+    );
+    assert_eq!(
+        precision.get("activation_dtype").and_then(Value::as_str),
+        Some("f32")
+    );
+    assert_eq!(
+        precision.get("quantization").and_then(Value::as_str),
+        Some("none")
+    );
 }

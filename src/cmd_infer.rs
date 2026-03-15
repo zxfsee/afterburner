@@ -7,8 +7,8 @@ use afterburner::infer::{
     ensure_calibration_metadata_compatible, load_calibration_metadata, load_model,
     logits_from_model, manifest_path_for_weights, parse_weights_path_from_args, validate_artifacts,
 };
-use afterburner::manifest::ArtifactManifest;
 use afterburner::manifest::ManifestError;
+use afterburner::manifest::{ArtifactManifest, ManifestPrecision};
 use afterburner::observability::emit_event;
 use burn::prelude::*;
 use burn::tensor::activation::softmax;
@@ -79,7 +79,9 @@ where
     let artifact = weights_path.to_string_lossy().to_string();
     let adapter_registry = load_adapter_registry_metadata()
         .map_err(|detail| CmdInferError::AdapterRegistryInvalid { detail })?;
-    let artifact_version = load_artifact_version(&weights_path).map_err(CmdInferError::Infer)?;
+    let manifest = load_artifact_manifest(&weights_path).map_err(CmdInferError::Infer)?;
+    let artifact_version = manifest.artifact_version.clone();
+    let precision = manifest.precision.clone();
     let calibration = match load_calibration_metadata(&weights_path) {
         Ok(calibration) => calibration,
         Err(err) => {
@@ -123,6 +125,7 @@ where
                 &weights_path,
                 backend.as_str(),
                 artifact.as_str(),
+                &precision,
                 calibration.as_ref(),
             )
             .map_err(CmdInferError::Infer)?;
@@ -132,6 +135,7 @@ where
                 &weights_path,
                 backend.as_str(),
                 artifact.as_str(),
+                &precision,
                 calibration.as_ref(),
             )
             .map_err(CmdInferError::Infer)?;
@@ -153,6 +157,7 @@ where
         "batch_size": 1,
         "duration_ms": duration_ms
     });
+    include_precision_fields(&mut fields, &precision);
     include_calibration_fields(&mut fields, calibration.as_ref());
     emit_event("info", "infer_cli", "infer_done", fields);
     Ok(())
@@ -171,12 +176,10 @@ pub(crate) fn runtime_supported_backends() -> &'static [&'static str] {
     &RUNTIME_SUPPORTED_BACKENDS
 }
 
-fn load_artifact_version(weights_path: &Path) -> Result<String, InferError> {
+fn load_artifact_manifest(weights_path: &Path) -> Result<ArtifactManifest, InferError> {
     validate_artifacts(weights_path)?;
     let manifest_path = manifest_path_for_weights(weights_path);
-    let manifest =
-        ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)?;
-    Ok(manifest.artifact_version)
+    ArtifactManifest::load_from_path(&manifest_path).map_err(InferError::ManifestInvalid)
 }
 
 fn load_adapter_registry_metadata() -> Result<AdapterRegistryMetadata, String> {
@@ -289,6 +292,7 @@ fn run_infer<B: Backend>(
     weights_path: &Path,
     backend: &str,
     artifact: &str,
+    precision: &ManifestPrecision,
     calibration: Option<&CalibrationMetadata>,
 ) -> Result<(), InferError> {
     let device = B::Device::default();
@@ -298,6 +302,7 @@ fn run_infer<B: Backend>(
 
     let load_ms = t_load.elapsed().as_millis();
     let mut fields = json!({"backend": backend, "artifact": artifact, "elapsed_ms": load_ms});
+    include_precision_fields(&mut fields, precision);
     include_calibration_fields(&mut fields, calibration);
     emit_event("info", "infer_cli", "artifact_load_ok", fields);
     emit_event(
@@ -347,6 +352,21 @@ fn extract_single_row<B: Backend>(
     }
 
     Ok(values)
+}
+
+fn include_precision_fields(fields: &mut Value, precision: &ManifestPrecision) {
+    let Some(object) = fields.as_object_mut() else {
+        return;
+    };
+
+    object.insert(
+        "precision".to_string(),
+        json!({
+            "weights_dtype": precision.weights_dtype,
+            "activation_dtype": precision.activation_dtype,
+            "quantization": precision.quantization,
+        }),
+    );
 }
 
 fn include_calibration_fields(fields: &mut Value, calibration: Option<&CalibrationMetadata>) {

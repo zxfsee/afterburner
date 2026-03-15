@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Inference precision event surfacing contract [Inference, Numerics]
-  - Goal: Surface manifest precision metadata in adapter events so operators can distinguish legacy and reduced-precision artifacts without manually reading manifests.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/`, `README.md`
-
 - Deployment target profile example fixture gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Keep a canonical deployment target profile example alongside the schema so deploy-rs wiring has one inspectable reference profile.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`
   - Scope: `src/bin/afterburner_dashboard.rs`, `justfile`, `artifacts/profiling/`, `tests/`, `README.md`
+
+- CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
+  - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
 """

@@ -39,15 +39,7 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-  - Blocked-by: Inference hotspot profiling artifact; Unified profiling dashboard adapter.
-
-- CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
-  - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-  - Blocked-by: Inference hotspot profiling artifact.
+  - Blocked-by: Unified profiling dashboard adapter.
 
 - Multibillion-scale system target envelope gate [Distributed Training, Inference, Serving/Deployment Infra]
   - Goal: Define the minimum training, inference, and deployment constraints for eventual multibillion-parameter support so sharding, checkpointing, precision, and rollout contracts evolve intentionally instead of piecemeal.

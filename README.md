@@ -137,7 +137,10 @@ Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope
 If that sidecar exists but fails schema/parse validation, or its `artifact_version` does not match the selected runtime artifact manifest, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 `infer_done` now uses the same duration and identity vocabulary as `eval_done`: both infer adapters emit
-`artifact_version`, `batch_size`, and `duration_ms`; the HTTP adapter also includes `request_id` for per-request correlation.
+`artifact_version`, `batch_size`, `duration_ms`, and a `precision` block
+(`weights_dtype`, `activation_dtype`, `quantization`); the HTTP adapter also includes `request_id`
+for per-request correlation. `artifact_load_ok` in both infer adapters mirrors the same `precision`
+block so reduced-precision artifacts are visible at load time, not only after inference completes.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).
