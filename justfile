@@ -42,8 +42,8 @@ backend-profile-gate:
     cargo test --test perf_backend_profile
 
 # capture a deterministic infer flamegraph into artifacts/profiling
-# requires a working `xcrun xctrace version` path on macOS; cargo flamegraph
-# will fail naturally if the host toolchain cannot resolve the profiler backend.
+# on macOS this requires full Xcode selected so `xcrun xctrace version` works;
+# cargo flamegraph will fail naturally if the host profiler backend is unavailable.
 profile-infer:
     mkdir artifacts/profiling
     cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk

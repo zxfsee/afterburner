@@ -19,14 +19,7 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `artifact`
   - Scope: `justfile`, `tests/`, `artifacts/profiling/`, `README.md`
-  - Blocked-by: resolve `xcrun xctrace` under the current macOS/Nix toolchain
-
-- Calibration artifact version compatibility contract [Inference, Experimentation/Eval Infra]
-  - Goal: Prevent calibration sidecars from attaching to the wrong inference artifact by validating artifact-version compatibility before calibration metadata is surfaced.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/infer.rs`, `src/cmd_infer.rs`, `tests/calibration_infer_gate.rs`, `fixtures/`, `README.md`
+  - Blocked-by: install/select full Xcode so `xcrun xctrace version` succeeds on macOS; Command Line Tools alone are insufficient
 
 - Inference precision event surfacing contract [Inference, Numerics]
   - Goal: Surface manifest precision metadata in adapter events so operators can distinguish legacy and reduced-precision artifacts without manually reading manifests.
@@ -55,6 +48,13 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `event`
   - Scope: `fixtures/`, `tests/`, `README.md`
+
+- Arrow/DataFusion/Ballista/Parquet fit investigation gate [Data Infra, Frameworks]
+  - Goal: Evaluate whether Arrow/DataFusion/Ballista/Parquet should back future dataset, eval, or deployment-side artifacts before introducing a columnar or distributed query dependency or contract change.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
 """

@@ -1,0 +1,11 @@
+{
+  "event": "calibration_metadata_invalid",
+  "fields": {
+    "detail": "calibration metadata artifact_version `9.9.9` does not match runtime artifact_version `0.1.0`",
+    "kind": "artifact_version_mismatch",
+    "metadata": "<artifact>/calibration_artifact_metadata.json"
+  },
+  "level": "error",
+  "source": "infer_cli",
+  "ts_ms": 0
+}

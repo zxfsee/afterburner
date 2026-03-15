@@ -48,7 +48,7 @@ fn infer_emits_calibration_contract_fields_when_metadata_is_present() {
 
     fs::write(
         artifact_dir.join("calibration_artifact_metadata.json"),
-        r#"{"schema_version":"1","calibration_artifact":"artifacts/calibration/default.calib","artifact_version":"v1","method":"temperature-scaling","created_at_unix_ms":1735689600000}"#,
+        r#"{"schema_version":"1","calibration_artifact":"artifacts/calibration/default.calib","artifact_version":"0.1.0","method":"temperature-scaling","created_at_unix_ms":1735689600000}"#,
     )
     .expect("write calibration metadata");
 
@@ -108,6 +108,45 @@ fn infer_emits_calibration_metadata_invalid_event_on_parse_failure() {
     assert_no_calibration_fields(find_event(&events, "infer_done"));
 }
 
+#[test]
+fn infer_omits_calibration_when_metadata_targets_different_artifact_version() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let artifact_dir = tmp.path().join("artifact");
+    fs::create_dir_all(&artifact_dir).expect("create artifact dir");
+
+    let weights_path = write_runtime_model_artifact(&artifact_dir);
+
+    fs::write(
+        artifact_dir.join("calibration_artifact_metadata.json"),
+        r#"{"schema_version":"1","calibration_artifact":"artifacts/calibration/default.calib","artifact_version":"9.9.9","method":"temperature-scaling","created_at_unix_ms":1735689600000}"#,
+    )
+    .expect("write mismatched calibration metadata");
+
+    let mut cmd = cargo_bin_cmd!("afterburner");
+    cmd.arg("infer")
+        .arg("--artifact")
+        .arg(&weights_path)
+        .env("BACKEND", "cpu");
+    let assert = cmd.assert().success().code(0);
+
+    let stderr = String::from_utf8_lossy(&assert.get_output().stderr);
+    let events: Vec<serde_json::Value> = stderr
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("parse event line"))
+        .collect();
+
+    let invalid = find_event(&events, "calibration_metadata_invalid");
+    let normalized = normalize_calibration_metadata_invalid_event(invalid);
+    let expected = event_fixture("infer_calibration_version_mismatch_event.json");
+    assert_eq!(
+        normalized, expected,
+        "artifact-version mismatch event payload must match fixture"
+    );
+
+    assert_no_calibration_fields(find_event(&events, "artifact_load_ok"));
+    assert_no_calibration_fields(find_event(&events, "infer_done"));
+}
+
 fn find_event<'a>(events: &'a [serde_json::Value], event: &str) -> &'a serde_json::Value {
     events
         .iter()
@@ -137,7 +176,7 @@ fn assert_calibration_fields(event: &serde_json::Value) {
     );
     assert_eq!(
         calibration.get("artifact_version").and_then(|v| v.as_str()),
-        Some("v1")
+        Some("0.1.0")
     );
     assert_eq!(
         calibration.get("method").and_then(|v| v.as_str()),

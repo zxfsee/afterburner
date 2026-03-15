@@ -33,6 +33,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
         justfile.contains("xcrun xctrace version"),
         "profiling workflow must document the host-profiler prerequisite"
     );
+    assert!(
+        justfile.contains("full Xcode"),
+        "profiling workflow must document the full Xcode requirement on macOS"
+    );
 
     let readme = repo_file("README.md");
     for workflow in [
@@ -48,5 +52,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
     assert!(
         readme.contains("xcrun xctrace version"),
         "README must document the host-profiler prerequisite"
+    );
+    assert!(
+        readme.contains("full Xcode"),
+        "README must document the full Xcode requirement on macOS"
     );
 }

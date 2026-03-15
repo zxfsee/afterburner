@@ -134,7 +134,7 @@ Training checkpoints, metrics, and logs are explicitly excluded from the inferen
 Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope fields:
 `ts_ms`, `level`, `source`, `event`, `fields`.
 `afterburner infer` includes optional `fields.calibration` contract fields (`schema_version`, `calibration_artifact`, `artifact_version`, `method`, `created_at_unix_ms`) when `calibration_artifact_metadata.json` is present beside the selected artifact.
-If that sidecar exists but fails schema/parse validation, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
+If that sidecar exists but fails schema/parse validation, or its `artifact_version` does not match the selected runtime artifact manifest, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 `infer_done` now uses the same duration and identity vocabulary as `eval_done`: both infer adapters emit
 `artifact_version`, `batch_size`, and `duration_ms`; the HTTP adapter also includes `request_id` for per-request correlation.
@@ -149,8 +149,9 @@ native backend instead of extending the current stack by assumption. The profile
 parsed `comparison_baseline` block (`seed`, `batch_size`, `max_batches`, `samples_per_profile`) and
 explicit `refresh_when` conditions so command drift and backend-decision drift fail mechanically.
 For hotspot work, use `just profile-infer` to write a deterministic infer flamegraph
-under `artifacts/profiling/`. On macOS, confirm `xcrun xctrace version` works in
-the active shell first; `cargo flamegraph` relies on that host profiler path.
+under `artifacts/profiling/`. On macOS, this requires full Xcode selected so
+`xcrun xctrace version` succeeds; Command Line Tools alone are not enough for
+`cargo flamegraph`.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.

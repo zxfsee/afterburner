@@ -17,13 +17,6 @@ Rules:
 
 ## Items
 
-- Arrow/DataFusion/Ballista/Parquet fit investigation gate [Data Infra, Frameworks]
-  - Goal: Evaluate whether Arrow/DataFusion/Ballista/Parquet should back future dataset, eval, or deployment-side artifacts before introducing a columnar or distributed query dependency or contract change.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Artifact upload adapter contract [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define a provider-agnostic artifact upload contract and gate, with optional Hugging Face adapter later, while keeping core runtime/storage-independent.
   - Kind: `mixed`
@@ -39,3 +32,42 @@ Rules:
   - Contracts: `artifact`, `ops`, `event`
   - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Deploy-rs baseline deployment contract; Artifact upload adapter contract.
+
+- Unified profiling dashboard adapter [Runtime Infra, Experimentation/Eval Infra, Inference]
+  - Goal: Extend the existing terminal observability dashboard so profiling runs and summaries share the same operator surface as training and inference events.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/bin/afterburner_dashboard.rs`, `justfile`, `artifacts/profiling/`, `tests/`, `README.md`
+  - Blocked-by: Inference hotspot profiling artifact.
+
+- OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
+  - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+  - Blocked-by: Inference hotspot profiling artifact; Unified profiling dashboard adapter.
+
+- CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
+  - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+  - Blocked-by: Inference hotspot profiling artifact.
+
+- Multibillion-scale system target envelope gate [Distributed Training, Inference, Serving/Deployment Infra]
+  - Goal: Define the minimum training, inference, and deployment constraints for eventual multibillion-parameter support so sharding, checkpointing, precision, and rollout contracts evolve intentionally instead of piecemeal.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+  - Blocked-by: Deploy-rs baseline deployment contract; Arrow/DataFusion/Ballista/Parquet fit investigation gate.
+
+- RL environment fit investigation gate [RL Infra, Frameworks]
+  - Goal: Evaluate the smallest viable environment/runtime shape for future RL work before introducing simulator bindings, vectorized env orchestration, or rollout-data contracts.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`

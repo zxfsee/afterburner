@@ -3,9 +3,9 @@ use std::path::Path;
 use std::time::Instant;
 
 use afterburner::infer::{
-    CalibrationMetadata, CalibrationMetadataLoadError, InferError, load_calibration_metadata,
-    load_model, logits_from_model, manifest_path_for_weights, parse_weights_path_from_args,
-    validate_artifacts,
+    CalibrationMetadata, CalibrationMetadataLoadError, InferError,
+    ensure_calibration_metadata_compatible, load_calibration_metadata, load_model,
+    logits_from_model, manifest_path_for_weights, parse_weights_path_from_args, validate_artifacts,
 };
 use afterburner::manifest::ArtifactManifest;
 use afterburner::manifest::ManifestError;
@@ -79,6 +79,7 @@ where
     let artifact = weights_path.to_string_lossy().to_string();
     let adapter_registry = load_adapter_registry_metadata()
         .map_err(|detail| CmdInferError::AdapterRegistryInvalid { detail })?;
+    let artifact_version = load_artifact_version(&weights_path).map_err(CmdInferError::Infer)?;
     let calibration = match load_calibration_metadata(&weights_path) {
         Ok(calibration) => calibration,
         Err(err) => {
@@ -86,7 +87,20 @@ where
             None
         }
     };
-    let artifact_version = load_artifact_version(&weights_path).map_err(CmdInferError::Infer)?;
+    let calibration = match calibration {
+        Some(calibration) => match ensure_calibration_metadata_compatible(
+            &weights_path,
+            calibration,
+            artifact_version.as_str(),
+        ) {
+            Ok(calibration) => Some(calibration),
+            Err(err) => {
+                emit_calibration_metadata_invalid(&err);
+                None
+            }
+        },
+        None => None,
+    };
     if !runtime_supported_backends()
         .iter()
         .any(|candidate| *candidate == backend.as_str())

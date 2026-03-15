@@ -27,6 +27,7 @@ pub struct CalibrationMetadata {
 pub enum CalibrationMetadataLoadError {
     Read { path: PathBuf, detail: String },
     Invalid { path: PathBuf, detail: String },
+    Incompatible { path: PathBuf, detail: String },
 }
 
 impl CalibrationMetadataLoadError {
@@ -34,18 +35,23 @@ impl CalibrationMetadataLoadError {
         match self {
             Self::Read { .. } => "read_error",
             Self::Invalid { .. } => "parse_error",
+            Self::Incompatible { .. } => "artifact_version_mismatch",
         }
     }
 
     pub fn path(&self) -> &Path {
         match self {
-            Self::Read { path, .. } | Self::Invalid { path, .. } => path.as_path(),
+            Self::Read { path, .. }
+            | Self::Invalid { path, .. }
+            | Self::Incompatible { path, .. } => path.as_path(),
         }
     }
 
     pub fn detail(&self) -> &str {
         match self {
-            Self::Read { detail, .. } | Self::Invalid { detail, .. } => detail.as_str(),
+            Self::Read { detail, .. }
+            | Self::Invalid { detail, .. }
+            | Self::Incompatible { detail, .. } => detail.as_str(),
         }
     }
 }
@@ -137,6 +143,24 @@ pub fn load_calibration_metadata(
         }
     })?;
     Ok(Some(metadata))
+}
+
+pub fn ensure_calibration_metadata_compatible(
+    weights_path: &Path,
+    metadata: CalibrationMetadata,
+    runtime_artifact_version: &str,
+) -> Result<CalibrationMetadata, CalibrationMetadataLoadError> {
+    if metadata.artifact_version == runtime_artifact_version {
+        return Ok(metadata);
+    }
+
+    Err(CalibrationMetadataLoadError::Incompatible {
+        path: calibration_metadata_path_for_weights(weights_path),
+        detail: format!(
+            "calibration metadata artifact_version `{}` does not match runtime artifact_version `{runtime_artifact_version}`",
+            metadata.artifact_version
+        ),
+    })
 }
 
 fn parse_calibration_metadata(contents: &str) -> Result<CalibrationMetadata, String> {
