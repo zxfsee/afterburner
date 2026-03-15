@@ -13,6 +13,11 @@
       flake = false;
     };
 
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     rust-overlay = {
       url = "https://flakehub.com/f/oxalica/rust-overlay/0.1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,15 +33,33 @@
       crane,
       flake-parts,
       advisory-db,
+      deploy-rs,
       rust-overlay,
       treefmt-nix,
       ...
     }:
+    let
+      deploymentProfile = builtins.fromJSON (builtins.readFile ./fixtures/deployment_target_profile.example.json);
+    in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
         "aarch64-darwin"
       ];
+
+      flake = {
+        deploy.nodes.${deploymentProfile.profile_name} = {
+          hostname = deploymentProfile.deploy_hostname;
+          sshUser = deploymentProfile.ssh_user;
+          profiles.afterburner = {
+            user = deploymentProfile.ssh_user;
+            profilePath = "${deploymentProfile.artifact_root}/profiles/afterburner";
+            path = deploy-rs.lib.${deploymentProfile.system}.activate.custom
+              self.packages.${deploymentProfile.system}.default
+              "./bin/afterburner";
+          };
+        };
+      };
 
       imports = [
         treefmt-nix.flakeModule
@@ -173,7 +196,10 @@
                 cargoNextestPartitionsExtraArgs = "--no-tests=pass";
               }
             );
-          };
+          }
+          // lib.optionalAttrs (system == deploymentProfile.system) (
+            deploy-rs.lib.${system}.deployChecks self.deploy
+          );
 
           packages = {
             default = afterburner.overrideAttrs (old: {
@@ -204,6 +230,7 @@
               with pkgs;
               [
                 cargo-flamegraph
+                deploy-rs.packages.${system}.default
                 git-cliff
                 just
                 nushell

@@ -9,7 +9,13 @@ fn repo_file(path: &str) -> String {
 #[test]
 fn developer_workflows_are_repo_managed_and_documented() {
     let flake = repo_file("flake.nix");
-    for tool in ["cargo-flamegraph", "git-cliff", "just", "nushell"] {
+    for tool in [
+        "cargo-flamegraph",
+        "deploy-rs",
+        "git-cliff",
+        "just",
+        "nushell",
+    ] {
         assert!(
             flake.contains(tool),
             "flake dev shell must provide `{tool}`"
@@ -20,6 +26,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
     for recipe in [
         "eval-gate:",
         "backend-profile-gate:",
+        "deploy-check:",
         "profile-infer:",
         "workspace-gate:",
     ] {

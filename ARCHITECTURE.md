@@ -63,6 +63,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Deployment adapters must resolve through an explicit deployment target profile contract before
   introducing deploy tooling. Target host, user, system, artifact root, and activation strategy
   are contract data, not ad-hoc shell configuration.
+- The baseline deploy-rs adapter consumes the deployment target profile contract directly from the
+  checked fixture/example and uses `activate.custom` against the packaged `afterburner` binary
+  rather than inventing a NixOS system deployment surface.
 - Deployment adapters must also consume an explicit artifact rollout ownership contract before
   upload, promotion, or deployment. Artifact provenance plus `rollout_owner`, `approved_by`,
   `approved_operations`, `approval_ticket`, and `approved_at_unix_ms` are contract data, not
@@ -94,3 +97,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-007: Async Runtime Decision](./docs/adr/007-async-runtime-decision.md)
 - [ADR-008: Deployment Target Profile](./docs/adr/008-deployment-target-profile.md)
 - [ADR-009: Artifact Rollout Ownership](./docs/adr/009-artifact-rollout-ownership.md)
+- [ADR-010: Deploy-rs Baseline](./docs/adr/010-deploy-rs-baseline.md)

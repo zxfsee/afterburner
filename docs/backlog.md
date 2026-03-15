@@ -17,21 +17,13 @@ Rules:
 
 ## Items
 
-- Artifact upload adapter contract [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define a provider-agnostic artifact upload contract and gate, with optional Hugging Face adapter later, while keeping core runtime/storage-independent.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Deploy-rs baseline deployment contract.
-
 - Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`, `event`
   - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Deploy-rs baseline deployment contract; Artifact upload adapter contract.
+  - Blocked-by: Artifact upload adapter contract.
 
 - OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
   - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
@@ -47,4 +39,4 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-  - Blocked-by: Deploy-rs baseline deployment contract; Arrow/DataFusion/Ballista/Parquet fit investigation gate.
+  - Blocked-by: Arrow/DataFusion/Ballista/Parquet fit investigation gate.

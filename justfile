@@ -47,6 +47,11 @@ eval-gate:
 backend-profile-gate:
     cargo test --test perf_backend_profile
 
+# validate deploy-rs baseline deployment definitions
+deploy-check:
+    nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
+    nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
+
 # capture a deterministic infer flamegraph into artifacts/profiling
 # on macOS this requires `xcrun xctrace version` under full Xcode. The repo
 # shell clears Nix Apple SDK overrides and forces `/usr/bin/xctrace` so the

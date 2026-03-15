@@ -126,6 +126,8 @@ unsupported reduced-precision artifacts fail fast at startup in both CLI and HTT
 Deployment-side work now has a canonical example target profile at
 `fixtures/deployment_target_profile.example.json` alongside the schema fixture, so
 future deploy-rs wiring can reference one inspectable baseline profile.
+`just deploy-check` validates the baseline deploy-rs wiring from that profile contract
+without requiring a real deployment target.
 
 Rollback example:
 ```sh
