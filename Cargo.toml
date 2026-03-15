@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment target profile example fixture gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Keep a canonical deployment target profile example alongside the schema so deploy-rs wiring has one inspectable reference profile.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`
-  - Scope: `fixtures/`, `tests/deployment_target_profile.rs`, `README.md`
-
 - Deploy-rs baseline deployment contract [Serving/Deployment Infra]
   - Goal: Introduce a minimal `serokell/deploy-rs` flake contract and validation gate so deployment wiring is explicit, testable, and adapter-scoped.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- RL environment fit investigation gate [RL Infra, Frameworks]
+  - Goal: Evaluate the smallest viable environment/runtime shape for future RL work before introducing simulator bindings, vectorized env orchestration, or rollout-data contracts.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

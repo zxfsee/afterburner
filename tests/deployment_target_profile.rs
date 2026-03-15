@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use serde_json::{Value, json};
+use serde_json::Value;
 
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -55,15 +55,10 @@ fn deployment_target_profile_schema_and_adr_are_explicit() {
         Some("1")
     );
 
-    let sample = json!({
-        "schema_version": "1",
-        "profile_name": "staging-a",
-        "deploy_hostname": "staging.example.net",
-        "ssh_user": "deploy",
-        "system": "aarch64-linux",
-        "artifact_root": "/srv/afterburner/artifacts",
-        "activation_strategy": "current-pointer"
-    });
+    let sample_text = fs::read_to_string(fixture_path("deployment_target_profile.example.json"))
+        .expect("read deployment target profile example fixture");
+    let sample: Value = serde_json::from_str(&sample_text)
+        .expect("parse deployment target profile example fixture");
 
     let sample = sample.as_object().expect("sample must be object");
     for key in [

@@ -123,6 +123,9 @@ If `signature.scheme != "none"`, inference requires non-empty `signature.key_id`
 The manifest now also carries a `[precision]` section. The current runtime requires
 `weights_dtype = "f32"`, `activation_dtype = "f32"`, and `quantization = "none"`;
 unsupported reduced-precision artifacts fail fast at startup in both CLI and HTTP adapters.
+Deployment-side work now has a canonical example target profile at
+`fixtures/deployment_target_profile.example.json` alongside the schema fixture, so
+future deploy-rs wiring can reference one inspectable baseline profile.
 
 Rollback example:
 ```sh
