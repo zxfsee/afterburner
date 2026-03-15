@@ -1,0 +1,33 @@
+{
+  "schema_version": "1",
+  "profile_kind": "infer",
+  "profiler": "cargo-flamegraph",
+  "weights_artifact": "artifacts/inference/0.1.0/model.mpk",
+  "artifact_version": "0.1.0",
+  "backend": "wgpu",
+  "profile_command": "cargo flamegraph --dev --deterministic --bin afterburner -- infer artifacts/inference/0.1.0/model.mpk",
+  "flamegraph_svg": "/tmp/fixture.svg",
+  "total_samples": 42,
+  "top_hotspots": [
+    {
+      "symbol": "afterburner::cmd_infer::run_infer",
+      "samples": 30,
+      "percent": 71.43
+    },
+    {
+      "symbol": "burn_tensor::tensor::activation::base::softmax",
+      "samples": 12,
+      "percent": 28.57
+    },
+    {
+      "symbol": "cubecl_wgpu::compiler::base::AutoCompiler::compile",
+      "samples": 5,
+      "percent": 11.9
+    },
+    {
+      "symbol": "<alloc::vec::Vec<u8> as core::fmt::Debug>::fmt",
+      "samples": 3,
+      "percent": 7.14
+    }
+  ]
+}

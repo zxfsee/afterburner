@@ -13,14 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Inference hotspot profiling artifact [Inference, Runtime Infra, Kernels]
-  - Goal: Capture reproducible hotspot evidence for `infer`/`eval` via `cargo flamegraph` so backend, kernel, and quantization decisions use measured operator cost instead of aggregate latency alone.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`
-  - Scope: `justfile`, `tests/`, `artifacts/profiling/`, `README.md`
-  - Blocked-by: cargo-flamegraph 0.6.11 hardcodes `xctrace` `Time Profiler` on macOS, while the current Xcode 26 CLI exposes `CPU Profiler`
-
 - Inference precision event surfacing contract [Inference, Numerics]
   - Goal: Surface manifest precision metadata in adapter events so operators can distinguish legacy and reduced-precision artifacts without manually reading manifests.
   - Kind: `mixed`
@@ -55,6 +47,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Unified profiling dashboard adapter [Runtime Infra, Experimentation/Eval Infra, Inference]
+  - Goal: Extend the existing terminal observability dashboard so profiling runs and summaries share the same operator surface as training and inference events.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/bin/afterburner_dashboard.rs`, `justfile`, `artifacts/profiling/`, `tests/`, `README.md`
 
 ## [Trunk]
 """

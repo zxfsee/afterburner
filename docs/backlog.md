@@ -33,14 +33,6 @@ Rules:
   - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
   - Blocked-by: Deploy-rs baseline deployment contract; Artifact upload adapter contract.
 
-- Unified profiling dashboard adapter [Runtime Infra, Experimentation/Eval Infra, Inference]
-  - Goal: Extend the existing terminal observability dashboard so profiling runs and summaries share the same operator surface as training and inference events.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/bin/afterburner_dashboard.rs`, `justfile`, `artifacts/profiling/`, `tests/`, `README.md`
-  - Blocked-by: Inference hotspot profiling artifact.
-
 - OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
   - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
   - Kind: `gate`

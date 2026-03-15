@@ -42,14 +42,14 @@ backend-profile-gate:
     cargo test --test perf_backend_profile
 
 # capture a deterministic infer flamegraph into artifacts/profiling
-# on macOS this requires `xcrun xctrace version` to succeed under full Xcode
-# plus a cargo-flamegraph/xctrace template pairing that works for the active
-# Xcode release. cargo-flamegraph 0.6.11 still asks xctrace for `Time Profiler`;
-# this host currently exposes `CPU Profiler`, so the recipe remains blocked
-# until that mismatch is resolved.
+# on macOS this requires `xcrun xctrace version` under full Xcode. The repo
+# shell clears Nix Apple SDK overrides and forces `/usr/bin/xctrace` so the
+# system Instruments templates win over the xcbuild wrapper environment.
 profile-infer:
     mkdir artifacts/profiling
-    cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk
+    rm -rf cargo-flamegraph.trace
+    env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk
+    cargo run --locked --bin afterburner_profile_summary -- --input artifacts/profiling/infer_flamegraph.svg --output artifacts/profiling/infer_hotspot_summary.json --weights-artifact artifacts/inference/0.1.0/model.mpk --backend wgpu --profile-command 'env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk'
 
 # validate workspace/core dependency boundaries
 workspace-gate:

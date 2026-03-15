@@ -1,0 +1,40 @@
+{
+  "$id": "https://afterburner.local/schemas/profiling-hotspot-summary/v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "profile_kind",
+    "profiler",
+    "weights_artifact",
+    "artifact_version",
+    "backend",
+    "profile_command",
+    "flamegraph_svg",
+    "total_samples",
+    "top_hotspots"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "profile_kind": { "const": "infer" },
+    "profiler": { "const": "cargo-flamegraph" },
+    "weights_artifact": { "type": "string" },
+    "artifact_version": { "type": "string" },
+    "backend": { "type": "string" },
+    "profile_command": { "type": "string" },
+    "flamegraph_svg": { "type": "string" },
+    "total_samples": { "type": "integer", "minimum": 1 },
+    "top_hotspots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["symbol", "samples", "percent"],
+        "properties": {
+          "symbol": { "type": "string" },
+          "samples": { "type": "integer", "minimum": 1 },
+          "percent": { "type": "number", "minimum": 0.0 }
+        }
+      }
+    }
+  }
+}

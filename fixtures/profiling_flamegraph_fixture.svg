@@ -1,0 +1,10 @@
+<svg version="1.1">
+  <svg id="frames" total_samples="42">
+    <g><title>afterburner::cmd_infer::run_infer (30 samples, 71.43%)</title></g>
+    <g><title>burn_tensor::tensor::activation::base::softmax (12 samples, 28.57%)</title></g>
+    <g><title>cubecl_wgpu::compiler::base::AutoCompiler::compile (5 samples, 11.90%)</title></g>
+    <g><title>0x10f4b505b (4 samples, 9.52%)</title></g>
+    <g><title>afterburner::cmd_infer::run_infer (25 samples, 59.52%)</title></g>
+    <g><title>&lt;alloc::vec::Vec&lt;u8&gt; as core::fmt::Debug&gt;::fmt (3 samples, 7.14%)</title></g>
+  </svg>
+</svg>

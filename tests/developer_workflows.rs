@@ -38,8 +38,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "profiling workflow must document the full Xcode requirement on macOS"
     );
     assert!(
-        justfile.contains("Time Profiler") && justfile.contains("CPU Profiler"),
-        "profiling workflow must document the current xctrace template mismatch"
+        justfile.contains("XCTRACE=/usr/bin/xctrace")
+            && justfile.contains("DEVELOPER_DIR")
+            && justfile.contains("SDKROOT"),
+        "profiling workflow must document the macOS xctrace override path"
     );
 
     let readme = repo_file("README.md");
@@ -62,7 +64,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "README must document the full Xcode requirement on macOS"
     );
     assert!(
-        readme.contains("Time Profiler") && readme.contains("CPU Profiler"),
-        "README must document the current xctrace template mismatch"
+        readme.contains("XCTRACE=/usr/bin/xctrace")
+            && readme.contains("DEVELOPER_DIR")
+            && readme.contains("SDKROOT"),
+        "README must document the macOS xctrace override path"
     );
 }
