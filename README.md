@@ -128,6 +128,10 @@ Deployment-side work now has a canonical example target profile at
 future deploy-rs wiring can reference one inspectable baseline profile.
 `just deploy-check` validates the baseline deploy-rs wiring from that profile contract
 without requiring a real deployment target.
+For future data-oriented artifact surfaces, the current fit decision is conservative:
+`Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
+JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or
+distributed query problem. No Arrow/DataFusion/Ballista dependency is added yet.
 
 Rollback example:
 ```sh

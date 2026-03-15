@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Arrow/DataFusion/Ballista/Parquet fit investigation gate [Data Infra, Frameworks]
-  - Goal: Evaluate whether Arrow/DataFusion/Ballista/Parquet should back future dataset, eval, or deployment-side artifacts before introducing a columnar or distributed query dependency or contract change.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Unified profiling dashboard adapter [Runtime Infra, Experimentation/Eval Infra, Inference]
   - Goal: Extend the existing terminal observability dashboard so profiling runs and summaries share the same operator surface as training and inference events.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `event`
   - Scope: `fixtures/`, `tests/`, `README.md`
+
+- Multibillion-scale system target envelope gate [Distributed Training, Inference, Serving/Deployment Infra]
+  - Goal: Define the minimum training, inference, and deployment constraints for eventual multibillion-parameter support so sharding, checkpointing, precision, and rollout contracts evolve intentionally instead of piecemeal.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
 """
