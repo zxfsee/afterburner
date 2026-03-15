@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Train start event fixture gate [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Pin the `train_start` event fields so CLI overrides stay visible and stable in operator-facing observability.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `fixtures/`, `tests/`, `README.md`
-
 - Arrow/DataFusion/Ballista/Parquet fit investigation gate [Data Infra, Frameworks]
   - Goal: Evaluate whether Arrow/DataFusion/Ballista/Parquet should back future dataset, eval, or deployment-side artifacts before introducing a columnar or distributed query dependency or contract change.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`
   - Scope: `src/bin/`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Artifact exported event fixture gate [Experimentation/Eval Infra, Serving/Deployment Infra]
+  - Goal: Pin the `artifact_exported` event fields so versioned inference artifact promotion inputs stay stable in operator-facing observability.
+  - Kind: `gate`
+  - Boundary: `adapter-cli`
+  - Contracts: `event`
+  - Scope: `fixtures/`, `tests/`, `README.md`
 
 ## [Trunk]
 """

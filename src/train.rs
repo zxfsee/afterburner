@@ -413,8 +413,19 @@ fn write_train_event(
     inference_dir: &Path,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
+    let line = train_start_event_line(backend, event, config, metrics_dir, inference_dir);
+    append_json_line(&path, &line)
+}
+
+pub fn train_start_event_line(
+    backend: &str,
+    event: &str,
+    config: &TrainingConfig,
+    metrics_dir: &Path,
+    inference_dir: &Path,
+) -> String {
     let planned_samples = planned_training_samples(config.num_epochs);
-    let line = event_line(
+    event_line(
         "info",
         "train",
         event,
@@ -428,8 +439,7 @@ fn write_train_event(
             "metrics_dir": metrics_dir.to_string_lossy().to_string(),
             "inference_dir": inference_dir.to_string_lossy().to_string()
         }),
-    );
-    append_json_line(&path, &line)
+    )
 }
 
 fn write_train_export_event(
