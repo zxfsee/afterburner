@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-transport-locator/v1",
+  "title": "Infer Output Drift Baseline Transport Locator",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_path",
+    "artifact",
+    "artifact_version",
+    "policy_profile"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "handoff_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_profile": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

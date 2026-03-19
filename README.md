@@ -195,6 +195,10 @@ Use `just drift-export-baseline-handoff <bundle>` to materialize
 `artifacts/eval/infer_output_drift_baseline_handoff.json`, the smaller stable manifest for
 transport layers that only need the approved baseline handoff surface and should not depend on the
 full bundle shape.
+Use `just drift-point-baseline-transport-locator <handoff>` to materialize
+`artifacts/eval/infer_output_drift_baseline_transport_locator.json`, the stable transport-facing
+locator that resolves the current handoff manifest without making deployment-side consumers depend
+on the bundle contract directly.
 Use `just drift-rollback-approved-baseline <current-pointer> <restored-approval> <rolled-back-at-unix-ms>`
 to restore the approved-baseline pointer to a prior approval and write
 `artifacts/eval/infer_output_drift_baseline_rollback.json`, keeping rollback decisions explicit and

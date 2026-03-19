@@ -90,6 +90,10 @@ drift-export-baseline-bundle pointer history:
 drift-export-baseline-handoff bundle:
     cargo run --locked --bin afterburner -- drift-export-baseline-handoff --bundle {{bundle}} --out artifacts/eval/infer_output_drift_baseline_handoff.json
 
+# point transport-facing workflows at the current baseline handoff manifest
+drift-point-baseline-transport-locator handoff:
+    cargo run --locked --bin afterburner -- drift-point-baseline-transport-locator --handoff {{handoff}} --out artifacts/eval/infer_output_drift_baseline_transport_locator.json
+
 # restore the approved baseline pointer to a previous approval and write a rollback record
 drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-rollback-approved-baseline --current-pointer {{current_pointer}} --restored-approval {{restored_approval}} --rolled-back-at-unix-ms {{rolled_back_at_unix_ms}} --out-pointer artifacts/eval/infer_output_drift_baseline_pointer.json --out-record artifacts/eval/infer_output_drift_baseline_rollback.json

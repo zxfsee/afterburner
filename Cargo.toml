@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline transport locator contract [Inference, Serving/Deployment Infra]
-  - Goal: Define a transport-facing locator artifact for the approved drift baseline handoff so deployment-side workflows can resolve one stable handoff entrypoint without reading the full drift-management bundle directly.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - Pretraining source registry gate [Data Infra, Pre-training]
   - Goal: Define the minimum source-registry contract for pretraining datasets so manifests can reference approved corpus identities without relying on free-form source naming alone.
   - Kind: `gate`
@@ -33,6 +26,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Artifact cleanup inventory contract [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize a structured cleanup-candidate inventory so retention workflows can distinguish retained versus prunable artifacts before any future dry-run receipt summarizes deletion intent.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Distributed shard lineage gate [Distributed Training, Data Infra]
   - Goal: Define the minimum lineage fields needed to trace each distributed shard back to its source dataset revision and checkpoint group without relying on host-local naming or directory conventions.
