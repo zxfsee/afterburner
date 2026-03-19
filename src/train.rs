@@ -451,7 +451,24 @@ fn write_train_export_event(
     current_path: &Path,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let line = event_line(
+    let line = artifact_exported_event_line(
+        backend,
+        artifact_version,
+        artifact_path,
+        manifest_path,
+        current_path,
+    );
+    append_json_line(&path, &line)
+}
+
+pub fn artifact_exported_event_line(
+    backend: &str,
+    artifact_version: &str,
+    artifact_path: &Path,
+    manifest_path: &Path,
+    current_path: &Path,
+) -> String {
+    event_line(
         "info",
         "train",
         "artifact_exported",
@@ -462,8 +479,7 @@ fn write_train_export_event(
             "manifest_path": manifest_path.to_string_lossy().to_string(),
             "current_path": current_path.to_string_lossy().to_string()
         }),
-    );
-    append_json_line(&path, &line)
+    )
 }
 
 fn write_train_done_event(train_dir: &Path, contract: &serde_json::Value) -> io::Result<()> {

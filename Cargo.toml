@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Artifact exported event fixture gate [Experimentation/Eval Infra, Serving/Deployment Infra]
-  - Goal: Pin the `artifact_exported` event fields so versioned inference artifact promotion inputs stay stable in operator-facing observability.
-  - Kind: `gate`
-  - Boundary: `adapter-cli`
-  - Contracts: `event`
-  - Scope: `fixtures/`, `tests/`, `README.md`
-
 - Multibillion-scale system target envelope gate [Distributed Training, Inference, Serving/Deployment Infra]
   - Goal: Define the minimum training, inference, and deployment constraints for eventual multibillion-parameter support so sharding, checkpointing, precision, and rollout contracts evolve intentionally instead of piecemeal.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`, `event`
   - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
+
+- Inference output drift summary contract [Inference, Numerics]
+  - Goal: Define a compact output-drift summary artifact so promotion and rollback checks can compare inference stability without persisting full logits for every run.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
 
 ## [Trunk]
 """

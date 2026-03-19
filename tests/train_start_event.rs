@@ -2,7 +2,7 @@ use std::fs;
 use std::path::PathBuf;
 
 use afterburner::model::ModelConfig;
-use afterburner::train::{TrainingConfig, train_start_event_line};
+use afterburner::train::{TrainingConfig, artifact_exported_event_line, train_start_event_line};
 use serde_json::{Value, json};
 
 fn fixture_path(name: &str) -> PathBuf {
@@ -36,6 +36,33 @@ fn train_start_event_matches_fixture_contract() {
     assert_eq!(
         normalized, expected,
         "train_start event must match the fixture-backed contract"
+    );
+}
+
+#[test]
+fn artifact_exported_event_matches_fixture_contract() {
+    let line = artifact_exported_event_line(
+        "cpu",
+        "0.1.0",
+        PathBuf::from("artifacts/inference/0.1.0/model.mpk").as_path(),
+        PathBuf::from("artifacts/inference/0.1.0/manifest.toml").as_path(),
+        PathBuf::from("artifacts/inference/current").as_path(),
+    );
+    let normalized = normalize_train_start_event_line(line.as_str());
+    let expected_text = fs::read_to_string(fixture_path("artifact_exported_event.json"))
+        .expect("read artifact_exported fixture");
+    let expected: Value =
+        serde_json::from_str(&expected_text).expect("parse artifact_exported fixture");
+    assert_eq!(
+        normalized, expected,
+        "artifact_exported event must match the fixture-backed contract"
+    );
+
+    let readme = fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("README.md"))
+        .expect("read README");
+    assert!(
+        readme.contains("artifact_exported"),
+        "README must mention artifact_exported event fields"
     );
 }
 

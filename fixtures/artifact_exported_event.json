@@ -1,0 +1,13 @@
+{
+  "ts_ms": 0,
+  "level": "info",
+  "source": "train",
+  "event": "artifact_exported",
+  "fields": {
+    "backend": "cpu",
+    "artifact_version": "0.1.0",
+    "artifact_path": "artifacts/inference/0.1.0/model.mpk",
+    "manifest_path": "artifacts/inference/0.1.0/manifest.toml",
+    "current_path": "artifacts/inference/current"
+  }
+}

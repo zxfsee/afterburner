@@ -189,6 +189,9 @@ Training writes JSONL events to `artifacts/train/observability.jsonl` and Burn p
 under `artifacts/train/` for auditability. `train_done` mirrors the training scalability contract
 fields (`batch_size`, `worker_parallelism`, `num_epochs`, `planned_samples`, `elapsed_ms`,
 `throughput_samples_per_sec`) for stable operator-facing observability.
+`artifact_exported` also has a pinned fixture-backed shape: `backend`, `artifact_version`,
+`artifact_path`, `manifest_path`, and `current_path` stay stable so promotion-facing tooling can
+consume one explicit export event contract.
 `train_start` is now fixture-gated as well, pinning the operator-facing start-of-run fields
 (`batch_size`, `worker_parallelism`, `num_epochs`, `planned_samples`, `metrics_dir`, `inference_dir`)
 before any training work completes.
