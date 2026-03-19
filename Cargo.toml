@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling hotspot taxonomy gate [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum hotspot taxonomy expected from profiling summaries so performance regressions can be triaged consistently without coupling the repo to one profiler implementation.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Inference drift baseline transport locator contract [Inference, Serving/Deployment Infra]
   - Goal: Define a transport-facing locator artifact for the approved drift baseline handoff so deployment-side workflows can resolve one stable handoff entrypoint without reading the full drift-management bundle directly.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Profiling environment provenance gate [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum host and profiler provenance fields needed for profiling artifacts so hotspot comparisons do not rely on unstated local environment assumptions.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

@@ -90,6 +90,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
   (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
   OpenTelemetry trace/resource fields or SDK/runtime dependencies yet.
+- Profiling summaries also use a lightweight hotspot taxonomy for interpretation:
+  execution (`afterburner::...`), framework (`burn_tensor::...`), compiler/runtime (`cubecl...`),
+  and incidental support work. The raw symbol remains the contract; the taxonomy is for triage.
 - Optimization policy changes must be expressed as explicit artifacts or gates before
   introducing new execution paths. Custom kernels are justified only when the checked
   kernel-adoption contract is refreshed with current model coverage and supporting
@@ -138,3 +141,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-017: Promotion And Rollback Orchestration](./docs/adr/017-promotion-orchestration.md)
 - [ADR-018: Distributed Checkpoint Index](./docs/adr/018-distributed-checkpoint-index.md)
 - [ADR-019: Artifact Retention Envelope](./docs/adr/019-artifact-retention-envelope.md)
+- [ADR-020: Profiling Hotspot Taxonomy](./docs/adr/020-profiling-hotspot-taxonomy.md)

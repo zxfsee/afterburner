@@ -230,6 +230,9 @@ The current profiling summary intentionally stops short of OpenTelemetry trace/r
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
 `profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
 extension if a concrete workflow needs it.
+For interpretation, use this profiling hotspot taxonomy: execution (`afterburner::...`),
+framework (`burn_tensor::...`), compiler/runtime (`cubecl...`), and incidental support work.
+The raw symbol list stays authoritative; the taxonomy is for triage.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.
