@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift approved baseline pointer contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a single selected approved-baseline pointer so rollout tooling can resolve the current approved baseline directly instead of searching or inferring across multiple approval and supersession artifacts.
+- Inference approved baseline rollback contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a rollback record for switching the selected approved baseline back to the previous one so drift-management state changes remain reversible and explicit.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-pointer/v1",
+  "title": "Infer Output Drift Baseline Pointer v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "approval_path",
+    "artifact",
+    "artifact_version",
+    "policy_profile"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "approval_path": { "type": "string", "minLength": 1 },
+    "artifact": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 }
+  }
+}

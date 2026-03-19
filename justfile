@@ -70,6 +70,10 @@ drift-baseline summary receipt:
 drift-approve-baseline baseline approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-approve-baseline --baseline {{baseline}} --approved-by {{approved_by}} --approval-ticket {{approval_ticket}} --approved-at-unix-ms {{approved_at_unix_ms}} --out artifacts/eval/infer_output_drift_baseline_approval.json
 
+# point rollout tooling at the currently approved baseline approval record
+drift-point-approved-baseline approval:
+    cargo run --locked --bin afterburner -- drift-point-approved-baseline --approval {{approval}} --out artifacts/eval/infer_output_drift_baseline_pointer.json
+
 # supersede an older baseline approval with a newer approved baseline
 drift-supersede-baseline-approval previous_approval next_approval superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-supersede-baseline-approval --previous-approval {{previous_approval}} --next-approval {{next_approval}} --superseded-at-unix-ms {{superseded_at_unix_ms}} --out artifacts/eval/infer_output_drift_baseline_supersession.json
