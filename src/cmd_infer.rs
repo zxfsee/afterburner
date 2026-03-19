@@ -1,5 +1,6 @@
 use std::env;
-use std::path::Path;
+use std::fs;
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 use afterburner::infer::{
@@ -14,6 +15,7 @@ use burn::prelude::*;
 use burn::tensor::activation::softmax;
 use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
 use serde_json::{Value, json};
+use sha2::{Digest, Sha256};
 
 type GpuBackend = Wgpu<f32, i32>;
 type CpuBackend = NdArray<f32>;
@@ -21,6 +23,7 @@ type CpuBackend = NdArray<f32>;
 const BACKEND_CPU: &str = "cpu";
 const BACKEND_WGPU: &str = "wgpu";
 const RUNTIME_SUPPORTED_BACKENDS: [&str; 2] = [BACKEND_CPU, BACKEND_WGPU];
+const INFER_OUTPUT_DRIFT_SUMMARY_PATH: &str = "artifacts/eval/infer_output_drift_summary.json";
 
 const ADAPTER_REGISTRY_SCHEMA_FIXTURE: &str =
     include_str!("../fixtures/framework_adapter_registry.schema.json");
@@ -125,6 +128,7 @@ where
                 &weights_path,
                 backend.as_str(),
                 artifact.as_str(),
+                artifact_version.as_str(),
                 &precision,
                 calibration.as_ref(),
             )
@@ -135,6 +139,7 @@ where
                 &weights_path,
                 backend.as_str(),
                 artifact.as_str(),
+                artifact_version.as_str(),
                 &precision,
                 calibration.as_ref(),
             )
@@ -292,6 +297,7 @@ fn run_infer<B: Backend>(
     weights_path: &Path,
     backend: &str,
     artifact: &str,
+    artifact_version: &str,
     precision: &ManifestPrecision,
     calibration: Option<&CalibrationMetadata>,
 ) -> Result<(), InferError> {
@@ -317,6 +323,28 @@ fn run_infer<B: Backend>(
     let probabilities = softmax(logits.clone(), 1);
     let logits = extract_single_row(logits, "logits")?;
     let probabilities = extract_single_row(probabilities, "probabilities")?;
+    let drift_summary =
+        infer_output_drift_summary(artifact, artifact_version, backend, &logits, &probabilities)
+            .map_err(|detail| InferError::ArtifactLoadFailed {
+                detail,
+                path: PathBuf::from(INFER_OUTPUT_DRIFT_SUMMARY_PATH),
+            })?;
+    write_infer_output_drift_summary(&drift_summary).map_err(|err| {
+        InferError::ArtifactLoadFailed {
+            detail: format!("write infer output drift summary: {err}"),
+            path: PathBuf::from(INFER_OUTPUT_DRIFT_SUMMARY_PATH),
+        }
+    })?;
+    emit_event(
+        "info",
+        "infer_cli",
+        "infer_output_drift_summary_written",
+        json!({
+            "artifact": artifact,
+            "summary_path": INFER_OUTPUT_DRIFT_SUMMARY_PATH,
+            "summary": drift_summary,
+        }),
+    );
     println!(
         "{}",
         json!({"logits": [logits], "probabilities": [probabilities]})
@@ -400,6 +428,67 @@ fn emit_calibration_metadata_invalid(err: &CalibrationMetadataLoadError) {
             "detail": err.detail(),
         }),
     );
+}
+
+fn infer_output_drift_summary(
+    artifact: &str,
+    artifact_version: &str,
+    backend: &str,
+    logits: &[f32],
+    probabilities: &[f32],
+) -> Result<Value, String> {
+    if logits.len() != probabilities.len() {
+        return Err(format!(
+            "infer output drift summary requires equal logits/probability widths, got {} and {}",
+            logits.len(),
+            probabilities.len()
+        ));
+    }
+    if logits.is_empty() {
+        return Err("infer output drift summary requires at least one class".to_string());
+    }
+
+    let mut ranked = probabilities
+        .iter()
+        .copied()
+        .enumerate()
+        .collect::<Vec<_>>();
+    ranked.sort_by(|lhs, rhs| rhs.1.total_cmp(&lhs.1).then_with(|| lhs.0.cmp(&rhs.0)));
+
+    let predicted_class = ranked[0].0 as u64;
+    let top_probability = f64::from(ranked[0].1);
+    let second_probability = ranked.get(1).map(|(_, value)| *value).unwrap_or(0.0);
+    let margin_to_second = f64::from(ranked[0].1 - second_probability);
+
+    Ok(json!({
+        "schema_version": "1",
+        "artifact": artifact,
+        "artifact_version": artifact_version,
+        "backend": backend,
+        "predicted_class": predicted_class,
+        "top_probability": top_probability,
+        "margin_to_second": margin_to_second,
+        "logits_sha256": sha256_json_array(logits)?,
+        "probabilities_sha256": sha256_json_array(probabilities)?,
+    }))
+}
+
+fn sha256_json_array(values: &[f32]) -> Result<String, String> {
+    let bytes =
+        serde_json::to_vec(values).map_err(|err| format!("serialize summary array: {err}"))?;
+    let digest = Sha256::digest(bytes);
+    Ok(format!("{digest:x}"))
+}
+
+fn write_infer_output_drift_summary(summary: &Value) -> Result<(), std::io::Error> {
+    let path = PathBuf::from(INFER_OUTPUT_DRIFT_SUMMARY_PATH);
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    let json = serde_json::to_string_pretty(summary)
+        .map_err(|err| std::io::Error::other(format!("serialize infer drift summary: {err}")))?;
+    fs::write(path, json)?;
+    Ok(())
 }
 
 fn emit_error(err: &CmdInferError) {

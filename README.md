@@ -165,6 +165,10 @@ Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optiona
 (`weights_dtype`, `activation_dtype`, `quantization`); the HTTP adapter also includes `request_id`
 for per-request correlation. `artifact_load_ok` in both infer adapters mirrors the same `precision`
 block so reduced-precision artifacts are visible at load time, not only after inference completes.
+CLI infer now also writes `artifacts/eval/infer_output_drift_summary.json` plus an
+`infer_output_drift_summary_written` event, giving promotion and rollback checks a compact
+comparison artifact (`predicted_class`, `top_probability`, `margin_to_second`, and output digests)
+without persisting the full logits from every run.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).

@@ -13,19 +13,19 @@ header = """# Changelog
 
 ## TODO
 
-- Inference output drift summary contract [Inference, Numerics]
-  - Goal: Define a compact output-drift summary artifact so promotion and rollback checks can compare inference stability without persisting full logits for every run.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
-
 - Distributed checkpoint index gate [Distributed Training, Runtime Infra]
   - Goal: Define the minimum checkpoint index contract for multi-shard training so recovery and promotion flows can reason about shard membership without inferring from directory layout alone.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Inference drift comparison receipt contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a pass/fail receipt for comparing candidate and current infer-output drift summaries so rollout checks can make explicit promotion decisions without parsing raw logits or ad-hoc diffs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Artifact retention envelope gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum retention and cleanup envelope for train, infer, upload, and rollback artifacts so operator workflows can prune storage without breaking active contracts.
