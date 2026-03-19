@@ -152,6 +152,9 @@ The future stable audit output for `rollout-verify` should be
 paired with a `deployment_verification_receipt_written` event and carrying at
 least `artifact_version`, `profile_name`, `verification_status`,
 `verified_at_unix_ms`, and `evidence`.
+That receipt should also converge on explicit evidence provenance, with
+`evidence_sources` entries that can at least identify `artifact_path`,
+`event_name`, and `observed_at_unix_ms` for each verification input.
 For future data-oriented artifact surfaces, the current fit decision is conservative:
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or

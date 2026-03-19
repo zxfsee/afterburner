@@ -129,6 +129,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - Deployment verification should also converge on one explicit deployment verification receipt
   per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
   and matching event instead of raw logs alone.
+- Deployment verification evidence provenance should also be explicit: future deployment
+  verification receipts should carry deployment verification evidence provenance through
+  structured `evidence_sources` references instead of treating the `evidence` field as an
+  untyped log dump.
 - Pretraining dataset manifests should treat `source` as a source registry key
   and `source_revision` as the approved snapshot selector within that source,
   so corpus identity does not degrade into free-form manifest labels as
@@ -169,3 +173,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-024: Artifact Cleanup Dry-Run Receipt](./docs/adr/024-artifact-cleanup-dry-run-receipt.md)
 - [ADR-025: Profiling Environment Provenance](./docs/adr/025-profiling-environment-provenance.md)
 - [ADR-026: Pretraining Source Approval Receipt](./docs/adr/026-pretraining-source-approval-receipt.md)
+- [ADR-027: Deployment Verification Evidence Provenance](./docs/adr/027-deployment-verification-evidence-provenance.md)

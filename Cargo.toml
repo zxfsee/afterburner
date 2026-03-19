@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence provenance gate [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum evidence-reference and provenance fields for deployment verification receipts so each verification outcome can point back to the exact rollout checks and artifacts it relied on without embedding raw logs.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Distributed shard lineage receipt gate [Distributed Training, Data Infra]
   - Goal: Define the minimum receipt fields for recording when distributed shard lineage metadata was checked or refreshed so provenance updates remain auditable separately from the shard metadata payload itself.
   - Kind: `gate`
@@ -40,6 +33,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Deployment verification evidence bundle contract [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Materialize a compact evidence bundle artifact for deployment verification so later deployment-side tooling can package receipt-referenced evidence sources without rewalking raw logs and artifact trees ad hoc.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Pretraining source provenance receipt gate [Data Infra, Pre-training]
   - Goal: Define the minimum provenance-reference fields for pretraining source approval receipts so later dataset and registry workflows can trace each approval back to the reviewed source metadata without reading surrounding process logs.
