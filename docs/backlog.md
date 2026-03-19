@@ -31,3 +31,10 @@ Rules:
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Burn dependency refresh gate.
+
+- JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
+  - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
