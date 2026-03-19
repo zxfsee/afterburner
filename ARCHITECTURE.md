@@ -77,6 +77,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - The first upload adapter remains provider-neutral: it validates the manifest plus rollout
   ownership contracts and materializes an `artifact_upload_request.json` artifact instead of
   binding core or adapter code directly to a storage SDK.
+- Promotion and rollback orchestration are currently local justfile contracts over the explicit
+  eval, upload, deploy-check, and current-pointer surfaces; they are not a separate long-running
+  deployment subsystem.
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
@@ -124,3 +127,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-014: Artifact Upload Adapter Contract](./docs/adr/014-artifact-upload-adapter.md)
 - [ADR-015: Multibillion-Scale Target Envelope](./docs/adr/015-multibillion-target-envelope.md)
 - [ADR-016: OpenTelemetry Profiling Fit](./docs/adr/016-otel-profiling-fit.md)
+- [ADR-017: Promotion And Rollback Orchestration](./docs/adr/017-promotion-orchestration.md)

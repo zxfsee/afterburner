@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Promotion/rollback orchestration contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`, `event`
-  - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-
 - Inference output drift summary contract [Inference, Numerics]
   - Goal: Define a compact output-drift summary artifact so promotion and rollback checks can compare inference stability without persisting full logits for every run.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Deployment verification receipt gate [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum verification receipt contract for promoted artifacts so post-deploy checks can be audited without reconstructing the rollout outcome from raw logs alone.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

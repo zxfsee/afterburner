@@ -52,6 +52,27 @@ deploy-check:
     nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 
+# validate a candidate artifact before promotion
+rollout-check candidate_artifact candidate_manifest ownership provider destination:
+    cargo run --locked --bin afterburner -- eval --artifact {{candidate_artifact}} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
+    cargo run --locked --bin afterburner -- upload --manifest {{candidate_manifest}} --ownership {{ownership}} --provider {{provider}} --destination {{destination}} --out artifacts/deploy/candidate_upload_request.json
+    just deploy-check
+
+# promote a vetted artifact version by updating the current pointer and saving the previous one
+rollout-promote artifact_version:
+    mkdir artifacts/deploy
+    open artifacts/inference/current | str trim | save --force artifacts/deploy/previous_current_version.txt
+    "{{artifact_version}}" | save --force artifacts/inference/current
+
+# verify the promoted current pointer still resolves and passes the eval gate
+rollout-verify candidate_artifact:
+    cargo run --locked --bin afterburner -- infer
+    cargo run --locked --bin afterburner -- eval --artifact {{candidate_artifact}} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
+
+# restore the previous current pointer after a failed rollout or explicit rollback
+rollout-rollback:
+    open artifacts/deploy/previous_current_version.txt | str trim | save --force artifacts/inference/current
+
 # capture a deterministic infer flamegraph into artifacts/profiling
 # on macOS this requires `xcrun xctrace version` under full Xcode. The repo
 # shell clears Nix Apple SDK overrides and forces `/usr/bin/xctrace` so the

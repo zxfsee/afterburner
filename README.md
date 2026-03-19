@@ -132,6 +132,9 @@ without requiring a real deployment target.
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
+For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
+and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
+rollback all stay explicit and reversible.
 For future data-oriented artifact surfaces, the current fit decision is conservative:
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or
