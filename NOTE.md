@@ -21,7 +21,8 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - If `NOTE.md` changes during active work, keep it attached to that same change/commit stream rather than leaving it as an unrelated local edit.
 - In the main repo workspace, assume the shell already inherits required tooling; run `just`/tooling directly first, and only use `direnv exec` for isolated workspace contexts that actually lack deps.
 - Prefer `cargo nextest` (or `just test` when it maps to nextest) over plain `cargo test` for verification unless a specific test flow requires `cargo test` semantics.
-- When completing a top-queue mixed item, do not silently keep a same-theme follow-on at the top if that effectively defers the next unrelated queued item; call out the reprioritization explicitly or keep strict queue order.
+- Keep strict active-queue order by default. After completing the top TODO, the next pre-existing queued item should become top unless there is a real blocker or the user explicitly approves reprioritization.
+- If a same-theme follow-on mixed item is worth tracking, prefer adding it below the already-queued next item or parking it in backlog; do not silently insert it at the top just to satisfy queue-balance preferences.
 - Do not volunteer half-finished reminders (optional cleanup/follow-up) in normal status updates; report only completed state and required blockers unless the user asks for open items.
 - If a repo mutation is rejected as `unacceptable risk`, treat it as a fresh policy gate: ask again with an explicit approval prompt instead of relying on prior or plain-text approval.
 - Do not add environment-preflight or host-availability gate recipes to `justfile`; keep `just` focused on the composable workflow entrypoints and let prerequisites fail naturally or live in tests/TODOs.

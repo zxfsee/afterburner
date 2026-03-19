@@ -13,19 +13,19 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline handoff manifest contract [Inference, Serving/Deployment Infra]
-  - Goal: Define a minimal handoff manifest for exporting the current approved drift baseline state into deployment workflows so transport layers can consume one stable manifest instead of inferring which bundle fields are required.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - Artifact retention envelope gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum retention and cleanup envelope for train, infer, upload, and rollback artifacts so operator workflows can prune storage without breaking active contracts.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Inference drift baseline handoff manifest contract [Inference, Serving/Deployment Infra]
+  - Goal: Define a minimal handoff manifest for exporting the current approved drift baseline state into deployment workflows so transport layers can consume one stable manifest instead of inferring which bundle fields are required.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Profiling hotspot taxonomy gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum hotspot taxonomy expected from profiling summaries so performance regressions can be triaged consistently without coupling the repo to one profiler implementation.
