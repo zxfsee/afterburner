@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Calibration sidecar export contract [Post-training, Serving/Deployment Infra]
-  - Goal: Define how optional calibration metadata attaches to exported inference artifacts and export-time events so later upload/promote/deploy steps consume explicit post-training state instead of inferring local side files.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
-
 - OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
   - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Artifact retention envelope gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define the minimum retention and cleanup envelope for train, infer, upload, and rollback artifacts so operator workflows can prune storage without breaking active contracts.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

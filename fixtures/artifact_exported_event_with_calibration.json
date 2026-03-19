@@ -1,0 +1,21 @@
+{
+  "ts_ms": 0,
+  "level": "info",
+  "source": "train",
+  "event": "artifact_exported",
+  "fields": {
+    "backend": "cpu",
+    "artifact_version": "0.1.0",
+    "artifact_path": "artifacts/inference/0.1.0/model.mpk",
+    "manifest_path": "artifacts/inference/0.1.0/manifest.toml",
+    "current_path": "artifacts/inference/current",
+    "calibration_metadata_path": "artifacts/inference/0.1.0/calibration_artifact_metadata.json",
+    "calibration": {
+      "schema_version": "1",
+      "calibration_artifact": "artifacts/calibration/default.calib",
+      "artifact_version": "0.1.0",
+      "method": "temperature-scaling",
+      "created_at_unix_ms": 1735689600000
+    }
+  }
+}

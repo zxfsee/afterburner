@@ -47,6 +47,7 @@ fn artifact_exported_event_matches_fixture_contract() {
         PathBuf::from("artifacts/inference/0.1.0/model.mpk").as_path(),
         PathBuf::from("artifacts/inference/0.1.0/manifest.toml").as_path(),
         PathBuf::from("artifacts/inference/current").as_path(),
+        None,
     );
     let normalized = normalize_train_start_event_line(line.as_str());
     let expected_text = fs::read_to_string(fixture_path("artifact_exported_event.json"))

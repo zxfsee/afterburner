@@ -148,6 +148,10 @@ Inference/HTTP/eval adapters emit normalized JSON events on stderr with envelope
 `ts_ms`, `level`, `source`, `event`, `fields`.
 `afterburner infer` includes optional `fields.calibration` contract fields (`schema_version`, `calibration_artifact`, `artifact_version`, `method`, `created_at_unix_ms`) when `calibration_artifact_metadata.json` is present beside the selected artifact.
 If that sidecar exists but fails schema/parse validation, or its `artifact_version` does not match the selected runtime artifact manifest, infer emits a `calibration_metadata_invalid` event and continues without `fields.calibration`.
+If `artifacts/train/calibration_artifact_metadata.json` exists during export, training copies it into the
+versioned inference artifact directory and `artifact_exported` surfaces both `calibration_metadata_path`
+and the same calibration fields explicitly, so later upload/promote/deploy steps do not have to infer
+post-training calibration state from an untracked local side file.
 Set `AFTERBURNER_OBS_JSONL_PATH` to mirror the same event stream into an optional JSONL sink file.
 `infer_done` now uses the same duration and identity vocabulary as `eval_done`: both infer adapters emit
 `artifact_version`, `batch_size`, `duration_ms`, and a `precision` block

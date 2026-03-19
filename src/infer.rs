@@ -1,5 +1,4 @@
 use std::env;
-use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
 use burn::prelude::*;
@@ -125,24 +124,28 @@ pub fn load_calibration_metadata(
     weights_path: &Path,
 ) -> Result<Option<CalibrationMetadata>, CalibrationMetadataLoadError> {
     let metadata_path = calibration_metadata_path_for_weights(weights_path);
-    let contents = match std::fs::read_to_string(&metadata_path) {
-        Ok(contents) => contents,
-        Err(err) if err.kind() == ErrorKind::NotFound => return Ok(None),
-        Err(err) => {
-            return Err(CalibrationMetadataLoadError::Read {
-                path: metadata_path,
-                detail: err.to_string(),
-            });
-        }
-    };
+    if !metadata_path.exists() {
+        return Ok(None);
+    }
+    load_calibration_metadata_from_path(&metadata_path).map(Some)
+}
 
-    let metadata = parse_calibration_metadata(contents.as_str()).map_err(|detail| {
-        CalibrationMetadataLoadError::Invalid {
-            path: metadata_path,
-            detail,
+pub fn load_calibration_metadata_from_path(
+    metadata_path: &Path,
+) -> Result<CalibrationMetadata, CalibrationMetadataLoadError> {
+    let contents = std::fs::read_to_string(metadata_path).map_err(|err| {
+        CalibrationMetadataLoadError::Read {
+            path: metadata_path.to_path_buf(),
+            detail: err.to_string(),
         }
     })?;
-    Ok(Some(metadata))
+
+    parse_calibration_metadata(contents.as_str()).map_err(|detail| {
+        CalibrationMetadataLoadError::Invalid {
+            path: metadata_path.to_path_buf(),
+            detail,
+        }
+    })
 }
 
 pub fn ensure_calibration_metadata_compatible(

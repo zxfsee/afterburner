@@ -15,6 +15,9 @@ use std::{env, io};
 
 use crate::{
     data::{MnistBatch, test_loader, train_loader},
+    infer::{
+        CALIBRATION_METADATA_FILENAME, CalibrationMetadata, load_calibration_metadata_from_path,
+    },
     manifest::{ArtifactManifest, CURRENT_VERSION_FILENAME, INPUT_DTYPE, compute_sha256_hex},
     model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION, MODEL_KERNEL_SITES, Model, ModelConfig},
     observability::{append_json_line, event_line},
@@ -30,6 +33,12 @@ const KERNEL_ADOPTION_MIN_CONV_SITE_COVERAGE_RATIO: f64 = 0.75;
 const KERNEL_ADOPTION_MIN_PROFILE_BATCH_SIZE: u64 = 128;
 const KERNEL_ADOPTION_REQUIRED_CONSECUTIVE_REGRESSIONS: u64 = 2;
 const KERNEL_ADOPTION_PROFILE_ARTIFACT: &str = "artifacts/eval/backend_performance_profile.json";
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExportedCalibrationSidecar {
+    pub path: PathBuf,
+    pub metadata: CalibrationMetadata,
+}
 
 #[derive(Config, Debug)]
 pub struct TrainingConfig {
@@ -153,6 +162,12 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     let exported =
         export_inference_artifact(&train_model_path, &inference_root, &config.artifact_version)
             .expect("export inference model");
+    let calibration = copy_calibration_metadata_sidecar_if_present(
+        &train_dir,
+        &inference_dir,
+        &config.artifact_version,
+    )
+    .expect("copy calibration sidecar if present");
 
     let manifest_path = inference_dir.join(crate::manifest::MANIFEST_FILENAME);
     let current_path = inference_root.join(CURRENT_VERSION_FILENAME);
@@ -163,6 +178,7 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
         &exported,
         &manifest_path,
         &current_path,
+        calibration.as_ref(),
     )
     .expect("write train export event");
 
@@ -204,6 +220,38 @@ pub fn export_inference_artifact(
     manifest.write_to_dir(&version_dir)?;
     write_current_version(inference_root, artifact_version)?;
     Ok(out)
+}
+
+pub fn copy_calibration_metadata_sidecar_if_present(
+    train_dir: &Path,
+    inference_dir: &Path,
+    artifact_version: &str,
+) -> io::Result<Option<ExportedCalibrationSidecar>> {
+    let source = train_dir.join(CALIBRATION_METADATA_FILENAME);
+    if !source.exists() {
+        return Ok(None);
+    }
+
+    let metadata = load_calibration_metadata_from_path(&source).map_err(|err| {
+        io::Error::other(format!(
+            "invalid calibration metadata sidecar at {}: {}",
+            err.path().display(),
+            err.detail()
+        ))
+    })?;
+    if metadata.artifact_version != artifact_version {
+        return Err(io::Error::other(format!(
+            "calibration metadata artifact_version `{}` does not match export artifact_version `{artifact_version}`",
+            metadata.artifact_version
+        )));
+    }
+
+    let destination = inference_dir.join(CALIBRATION_METADATA_FILENAME);
+    std::fs::copy(&source, &destination)?;
+    Ok(Some(ExportedCalibrationSidecar {
+        path: destination,
+        metadata,
+    }))
 }
 
 pub fn inference_version_dir(inference_root: &Path, artifact_version: &str) -> PathBuf {
@@ -449,6 +497,7 @@ fn write_train_export_event(
     artifact_path: &Path,
     manifest_path: &Path,
     current_path: &Path,
+    calibration: Option<&ExportedCalibrationSidecar>,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
     let line = artifact_exported_event_line(
@@ -457,6 +506,7 @@ fn write_train_export_event(
         artifact_path,
         manifest_path,
         current_path,
+        calibration,
     );
     append_json_line(&path, &line)
 }
@@ -467,19 +517,36 @@ pub fn artifact_exported_event_line(
     artifact_path: &Path,
     manifest_path: &Path,
     current_path: &Path,
+    calibration: Option<&ExportedCalibrationSidecar>,
 ) -> String {
-    event_line(
-        "info",
-        "train",
-        "artifact_exported",
-        serde_json::json!({
-            "backend": backend,
-            "artifact_version": artifact_version,
-            "artifact_path": artifact_path.to_string_lossy().to_string(),
-            "manifest_path": manifest_path.to_string_lossy().to_string(),
-            "current_path": current_path.to_string_lossy().to_string()
-        }),
-    )
+    let mut fields = serde_json::json!({
+        "backend": backend,
+        "artifact_version": artifact_version,
+        "artifact_path": artifact_path.to_string_lossy().to_string(),
+        "manifest_path": manifest_path.to_string_lossy().to_string(),
+        "current_path": current_path.to_string_lossy().to_string()
+    });
+    if let Some(calibration) = calibration {
+        let object = fields
+            .as_object_mut()
+            .expect("artifact_exported fields must be an object");
+        object.insert(
+            "calibration_metadata_path".to_string(),
+            serde_json::json!(calibration.path.to_string_lossy().to_string()),
+        );
+        object.insert(
+            "calibration".to_string(),
+            serde_json::json!({
+                "schema_version": calibration.metadata.schema_version.to_string(),
+                "calibration_artifact": calibration.metadata.calibration_artifact,
+                "artifact_version": calibration.metadata.artifact_version,
+                "method": calibration.metadata.method,
+                "created_at_unix_ms": calibration.metadata.created_at_unix_ms,
+            }),
+        );
+    }
+
+    event_line("info", "train", "artifact_exported", fields)
 }
 
 fn write_train_done_event(train_dir: &Path, contract: &serde_json::Value) -> io::Result<()> {
