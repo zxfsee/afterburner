@@ -1,0 +1,48 @@
+use std::fs;
+use std::path::PathBuf;
+
+fn repo_file(path: &str) -> String {
+    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
+        .unwrap_or_else(|err| panic!("read {path}: {err}"))
+}
+
+#[test]
+fn distributed_checkpoint_index_contract_is_documented() {
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-018"),
+        "architecture decisions index must link ADR-018"
+    );
+    assert!(
+        architecture.contains("checkpoint index"),
+        "architecture must mention the distributed checkpoint index contract"
+    );
+    assert!(
+        architecture.contains("distributed_shard_metadata"),
+        "architecture must anchor the checkpoint index to distributed shard metadata"
+    );
+
+    let adr = repo_file("docs/adr/018-distributed-checkpoint-index.md");
+    assert!(
+        adr.contains("distributed_shard_metadata.schema.json"),
+        "ADR-018 must reference the shard metadata contract"
+    );
+    assert!(
+        adr.contains("artifact_version"),
+        "ADR-018 must mention artifact_version as part of the checkpoint index"
+    );
+    assert!(
+        adr.contains("checkpoint_root"),
+        "ADR-018 must mention checkpoint_root as part of the checkpoint index"
+    );
+    assert!(
+        adr.contains("index-only"),
+        "ADR-018 must make the index-only stance explicit"
+    );
+
+    let readme = repo_file("README.md");
+    assert!(
+        readme.contains("checkpoint index"),
+        "README must mention the distributed checkpoint index contract"
+    );
+}

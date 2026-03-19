@@ -104,6 +104,9 @@ auto-versioning, embedded serving) are intentionally absent.
   grounded in explicit training scalability, distributed_shard_metadata, manifest precision,
   rollout ownership, upload request, and deployment target profile contracts before runtime
   orchestration expands.
+- Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
+  declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
+  of inferring shard membership from directory layout alone.
 
 ### Assumptions
 
@@ -128,3 +131,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-015: Multibillion-Scale Target Envelope](./docs/adr/015-multibillion-target-envelope.md)
 - [ADR-016: OpenTelemetry Profiling Fit](./docs/adr/016-otel-profiling-fit.md)
 - [ADR-017: Promotion And Rollback Orchestration](./docs/adr/017-promotion-orchestration.md)
+- [ADR-018: Distributed Checkpoint Index](./docs/adr/018-distributed-checkpoint-index.md)
