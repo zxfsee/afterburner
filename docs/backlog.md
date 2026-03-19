@@ -16,3 +16,18 @@ Rules:
 - Promotion into active TODO queue must preserve priority order and dependency constraints.
 
 ## Items
+
+- Burn dependency refresh gate [Frameworks, Runtime Infra]
+  - Goal: Keep the pinned Burn stack reasonably current and record any recorder/storage contract drift before it leaks into Afterburner artifact decisions by surprise.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `Cargo.toml`, `Cargo.lock`, `tests/`, `README.md`, `docs/adr/`
+
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Blocked-by: Burn dependency refresh gate.
