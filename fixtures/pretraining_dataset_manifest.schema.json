@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/pretraining-dataset-manifest/v1",
+  "title": "Pretraining Dataset Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "source_revision",
+    "shard_count",
+    "total_samples",
+    "split_sample_counts",
+    "checksum_rollup_sha256",
+    "shards"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "shard_count": { "type": "integer", "minimum": 1 },
+    "total_samples": { "type": "integer", "minimum": 1 },
+    "split_sample_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["train", "validation", "test"],
+      "properties": {
+        "train": { "type": "integer", "minimum": 0 },
+        "validation": { "type": "integer", "minimum": 0 },
+        "test": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "checksum_rollup_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "shards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["shard_id", "split", "sample_count", "checksum_sha256"],
+        "properties": {
+          "shard_id": { "type": "string", "minLength": 1 },
+          "split": {
+            "type": "string",
+            "enum": ["train", "validation", "test"]
+          },
+          "sample_count": { "type": "integer", "minimum": 1 },
+          "checksum_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

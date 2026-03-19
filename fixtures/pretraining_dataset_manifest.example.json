@@ -1,0 +1,33 @@
+{
+  "schema_version": "1",
+  "source": "c4/en",
+  "source_revision": "2026-03-10-snapshot",
+  "shard_count": 3,
+  "total_samples": 1500,
+  "split_sample_counts": {
+    "train": 1200,
+    "validation": 200,
+    "test": 100
+  },
+  "checksum_rollup_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "shards": [
+    {
+      "shard_id": "train-0000",
+      "split": "train",
+      "sample_count": 1200,
+      "checksum_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "shard_id": "validation-0000",
+      "split": "validation",
+      "sample_count": 200,
+      "checksum_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "shard_id": "test-0000",
+      "split": "test",
+      "sample_count": 100,
+      "checksum_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ]
+}

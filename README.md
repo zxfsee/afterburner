@@ -136,6 +136,10 @@ For future data-oriented artifact surfaces, the current fit decision is conserva
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or
 distributed query problem. No Arrow/DataFusion/Ballista dependency is added yet.
+For pretraining data, the repo now distinguishes per-sample metadata from dataset-level manifests:
+`pretraining_sample_metadata.schema.json` stays the sample contract, while
+`pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts,
+and checksum rollups for larger dataset refreshes.
 
 Rollback example:
 ```sh

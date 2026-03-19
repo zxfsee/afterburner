@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining dataset manifest contract [Data Infra, Pre-training]
-  - Goal: Define a dataset-level manifest that pins corpus revision, shard inventory, split counts, and checksum rollups so large-scale pretraining data refreshes stay auditable without inferring from per-sample metadata alone.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
-
 - Promotion/rollback orchestration contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Profiling hotspot taxonomy gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum hotspot taxonomy expected from profiling summaries so performance regressions can be triaged consistently without coupling the repo to one profiler implementation.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining source registry gate [Data Infra, Pre-training]
+  - Goal: Define the minimum source-registry contract for pretraining datasets so manifests can reference approved corpus identities without relying on free-form source naming alone.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
