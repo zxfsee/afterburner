@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling environment snapshot contract [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Materialize one inspectable profiling-environment snapshot artifact so future provenance gates and profiling-side workflows can consume a stable adapter output instead of rediscovering host and profiler facts ad hoc.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - Deployment verification evidence provenance gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum evidence-reference and provenance fields for deployment verification receipts so each verification outcome can point back to the exact rollout checks and artifacts it relied on without embedding raw logs.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Profiling environment snapshot refresh receipt contract [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Materialize a receipt for profiling-environment snapshot refreshes so later profiling provenance updates can be audited separately from the snapshot payload itself.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 ## [Trunk]
 """

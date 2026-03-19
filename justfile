@@ -133,11 +133,15 @@ rollout-rollback:
 # on macOS this requires `xcrun xctrace version` under full Xcode. The repo
 # shell clears Nix Apple SDK overrides and forces `/usr/bin/xctrace` so the
 # system Instruments templates win over the xcbuild wrapper environment.
+profile-environment-snapshot:
+    cargo run --locked --bin afterburner -- profile-environment-snapshot --profile-kind infer --profiler cargo-flamegraph --profiler-path cargo-flamegraph --out artifacts/profiling/profiling_environment_snapshot.json
+
 profile-infer:
     mkdir artifacts/profiling
     rm -rf cargo-flamegraph.trace
     {{profile-infer-command}}
     cargo run --locked --bin afterburner_profile_summary -- --input {{profile-infer-flamegraph}} --output {{profile-infer-summary}} --weights-artifact {{profile-infer-artifact}} --backend {{profile-infer-backend}} --profile-command '{{profile-infer-command}}'
+    just profile-environment-snapshot
 
 # open the terminal dashboard with profiling summary context
 dashboard:

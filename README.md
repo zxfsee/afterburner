@@ -256,6 +256,10 @@ under `artifacts/profiling/` and a parsed hotspot summary at
 selected so `xcrun xctrace version` succeeds. The recipe clears `DEVELOPER_DIR` and
 `SDKROOT` and forces `XCTRACE=/usr/bin/xctrace` so the system Instruments templates
 win over the Nix Apple SDK environment.
+Use `just profile-environment-snapshot` to materialize
+`artifacts/profiling/profiling_environment_snapshot.json`, the stable host and profiler
+provenance artifact for the current profiling toolchain. `just profile-infer` now writes that
+snapshot alongside the hotspot summary.
 The current profiling summary intentionally stops short of OpenTelemetry trace/resource
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
 `profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
