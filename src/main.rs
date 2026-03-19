@@ -1,6 +1,7 @@
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_refresh;
+mod cmd_drift_baseline_supersession;
 mod cmd_drift_receipt;
 mod cmd_eval;
 mod cmd_infer;
@@ -21,6 +22,7 @@ fn main() {
         "drift-baseline" => cmd_drift_baseline::run(args),
         "drift-approve-baseline" => cmd_drift_baseline_approval::run(args),
         "drift-refresh-baseline" => cmd_drift_baseline_refresh::run(args),
+        "drift-supersede-baseline-approval" => cmd_drift_baseline_supersession::run(args),
         "drift-receipt" => cmd_drift_receipt::run(args),
         "upload" => cmd_upload::run(args),
         "--help" | "-h" | "help" => {
@@ -40,5 +42,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|drift-baseline|drift-approve-baseline|drift-refresh-baseline|drift-receipt|upload> [args]"
+    "usage: afterburner <train|infer|eval|drift-baseline|drift-approve-baseline|drift-refresh-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
 }

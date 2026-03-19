@@ -178,6 +178,9 @@ current summary happens to be on disk at rollout time.
 Use `just drift-approve-baseline <baseline> <approved-by> <approval-ticket> <approved-at-unix-ms>`
 to materialize `artifacts/eval/infer_output_drift_baseline_approval.json`, the explicit approval
 record that distinguishes a freshly computed baseline from one approved for rollout decisions.
+Use `just drift-supersede-baseline-approval <previous-approval> <next-approval> <superseded-at-unix-ms>`
+to materialize `artifacts/eval/infer_output_drift_baseline_supersession.json`, the lineage record
+that marks an older baseline approval as superseded by a newer approved baseline.
 Use `just drift-refresh-baseline <summary> <receipt> <current-baseline>` to replace an approved
 baseline while archiving the previous one and writing `artifacts/eval/infer_output_drift_baseline_refresh.json`,
 so summary, receipt, policy, and baseline transitions remain synchronized.

@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift approval supersession contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define how a newer baseline approval supersedes an older one so rollout tooling can follow one explicit approved baseline lineage instead of competing approval records.
+- Inference drift approved baseline pointer contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a single selected approved-baseline pointer so rollout tooling can resolve the current approved baseline directly instead of searching or inferring across multiple approval and supersession artifacts.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

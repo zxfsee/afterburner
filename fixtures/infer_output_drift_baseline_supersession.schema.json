@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-supersession/v1",
+  "title": "Infer Output Drift Baseline Supersession v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "previous_approval_path",
+    "next_approval_path",
+    "superseded_by_approval_ticket",
+    "previous_artifact_version",
+    "next_artifact_version",
+    "policy_profile",
+    "superseded_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "previous_approval_path": { "type": "string", "minLength": 1 },
+    "next_approval_path": { "type": "string", "minLength": 1 },
+    "superseded_by_approval_ticket": { "type": "string", "minLength": 1 },
+    "previous_artifact_version": { "type": "string", "minLength": 1 },
+    "next_artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 },
+    "superseded_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}
