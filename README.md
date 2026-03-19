@@ -292,6 +292,9 @@ readiness.
 For future distributed data recovery, plan for an explicit distributed shard lineage contract over
 `distributed_shard_metadata.schema.json`: shard ownership alone is insufficient, and lineage should
 at least tie each `shard_id` back to `source`, `source_revision`, and `checkpoint_group`.
+Lineage checks there should also converge on one explicit
+`distributed_shard_lineage_receipt.json` artifact carrying at least `shard_id`,
+`source`, `source_revision`, `checkpoint_group`, and `checked_at_unix_ms`.
 If distributed checkpoint recovery is added later, the repo expects a checkpoint index contract
 that declares `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path`
 explicitly instead of reconstructing shard membership from directory layout.
