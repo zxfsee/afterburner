@@ -62,6 +62,10 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
 cleanup-inventory:
     cargo run --locked --bin afterburner -- cleanup-inventory --artifacts-root artifacts --out artifacts/deploy/artifact_cleanup_inventory.json
 
+# write one named cleanup policy profile for later dry-run and execution receipts
+cleanup-policy profile:
+    cargo run --locked --bin afterburner -- cleanup-policy --profile {{profile}} --out artifacts/deploy/artifact_cleanup_policy.json
+
 # compare candidate and current infer drift summaries using a named policy profile
 drift-receipt candidate_summary current_summary policy:
     cargo run --locked --bin afterburner -- drift-receipt --candidate {{candidate_summary}} --current {{current_summary}} --policy {{policy}} --out artifacts/eval/infer_output_drift_receipt.json

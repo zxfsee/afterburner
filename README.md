@@ -136,6 +136,10 @@ Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_i
 the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
 deploy/train/eval state, inactive inference version directories, and profiling artifacts before any
 future cleanup dry-run receipt decides what would actually be removed.
+Use `just cleanup-policy <profile>` to materialize `artifacts/deploy/artifact_cleanup_policy.json`,
+the named cleanup-policy artifact that declares which inventory categories are protected versus
+prune candidates so later dry-run receipts can cite a stable `profile_name` instead of command-line
+heuristics.
 The future review artifact for that next layer should be
 `artifacts/deploy/artifact_cleanup_dry_run_receipt.json`, carrying at least the
 `artifact_cleanup_inventory.json` input path, `planned_removals`, `retained_count`,
