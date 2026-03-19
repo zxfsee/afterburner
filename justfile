@@ -66,6 +66,10 @@ drift-receipt candidate_summary current_summary policy:
 drift-baseline summary receipt:
     cargo run --locked --bin afterburner -- drift-baseline --summary {{summary}} --receipt {{receipt}} --out artifacts/eval/infer_output_drift_baseline.json
 
+# approve a baseline snapshot for rollout decisions
+drift-approve-baseline baseline approved_by approval_ticket approved_at_unix_ms:
+    cargo run --locked --bin afterburner -- drift-approve-baseline --baseline {{baseline}} --approved-by {{approved_by}} --approval-ticket {{approval_ticket}} --approved-at-unix-ms {{approved_at_unix_ms}} --out artifacts/eval/infer_output_drift_baseline_approval.json
+
 # refresh the approved drift baseline, archiving the old one and writing a refresh receipt
 drift-refresh-baseline summary receipt current_baseline:
     cargo run --locked --bin afterburner -- drift-refresh-baseline --summary {{summary}} --receipt {{receipt}} --current-baseline {{current_baseline}} --out artifacts/eval/infer_output_drift_baseline.json --archive artifacts/eval/infer_output_drift_baseline.previous.json --refresh-receipt artifacts/eval/infer_output_drift_baseline_refresh.json

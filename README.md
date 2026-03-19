@@ -175,6 +175,9 @@ drift-policy artifact instead of ad-hoc CLI thresholds at rollout time.
 Use `just drift-baseline <summary> <receipt>` to materialize `artifacts/eval/infer_output_drift_baseline.json`,
 the approved reference snapshot that later drift receipts should compare against instead of whichever
 current summary happens to be on disk at rollout time.
+Use `just drift-approve-baseline <baseline> <approved-by> <approval-ticket> <approved-at-unix-ms>`
+to materialize `artifacts/eval/infer_output_drift_baseline_approval.json`, the explicit approval
+record that distinguishes a freshly computed baseline from one approved for rollout decisions.
 Use `just drift-refresh-baseline <summary> <receipt> <current-baseline>` to replace an approved
 baseline while archiving the previous one and writing `artifacts/eval/infer_output_drift_baseline_refresh.json`,
 so summary, receipt, policy, and baseline transitions remain synchronized.

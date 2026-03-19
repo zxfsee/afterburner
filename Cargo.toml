@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline approval contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define an approval record for promoted infer drift baselines so the repo can distinguish a freshly computed baseline from one that has actually been approved for rollout decisions.
+- Inference drift approval supersession contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define how a newer baseline approval supersedes an older one so rollout tooling can follow one explicit approved baseline lineage instead of competing approval records.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`
