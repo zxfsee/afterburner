@@ -110,6 +110,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
+- Distributed shard metadata also needs an explicit distributed shard lineage layer over time:
+  shard ownership alone is not enough, and future lineage-aware metadata should at least tie each
+  `shard_id` back to `source`, `source_revision`, and `checkpoint_group` instead of host-local
+  naming.
 - Artifact cleanup should preserve a minimum retention envelope: keep
   `artifacts/inference/current`, the referenced `artifacts/inference/<version>/`,
   active rollout evidence under `artifacts/deploy/`, required decision artifacts under
@@ -151,3 +155,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-020: Profiling Hotspot Taxonomy](./docs/adr/020-profiling-hotspot-taxonomy.md)
 - [ADR-021: Pretraining Source Registry](./docs/adr/021-pretraining-source-registry.md)
 - [ADR-022: Deployment Verification Receipt](./docs/adr/022-deployment-verification-receipt.md)
+- [ADR-023: Distributed Shard Lineage](./docs/adr/023-distributed-shard-lineage.md)

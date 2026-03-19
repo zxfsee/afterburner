@@ -267,6 +267,9 @@ manifest `precision`, `artifact_rollout_ownership.schema.json`,
 `artifact_upload_request.schema.json`, and `deployment_target_profile.schema.json` are the
 minimum surfaces that must remain explicit before claiming larger-scale training or deployment
 readiness.
+For future distributed data recovery, plan for an explicit distributed shard lineage contract over
+`distributed_shard_metadata.schema.json`: shard ownership alone is insufficient, and lineage should
+at least tie each `shard_id` back to `source`, `source_revision`, and `checkpoint_group`.
 If distributed checkpoint recovery is added later, the repo expects a checkpoint index contract
 that declares `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path`
 explicitly instead of reconstructing shard membership from directory layout.

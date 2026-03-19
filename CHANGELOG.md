@@ -2,13 +2,6 @@
 
 ## TODO
 
-- Distributed shard lineage gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum lineage fields needed to trace each distributed shard back to its source dataset revision and checkpoint group without relying on host-local naming or directory conventions.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Artifact cleanup dry-run receipt gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum dry-run receipt for planned artifact cleanup so operators can review what would be removed before any future retention automation actually deletes files.
   - Kind: `gate`
@@ -42,6 +35,13 @@
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Distributed shard lineage receipt gate [Distributed Training, Data Infra]
+  - Goal: Define the minimum receipt fields for recording when distributed shard lineage metadata was checked or refreshed so provenance updates remain auditable separately from the shard metadata payload itself.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
@@ -92,26 +92,27 @@
 - Add deploy-rs baseline contract ([d6fb65d])
 - Add deploy-rs baseline contract ([8e6c185])
 - Unify profiling in dashboard ([6c42dc3])
-- Add artifact upload request adapter ([2108680])
-- Export calibration sidecar contract ([2ec2862])
-- Add pretraining dataset manifest contract ([4355b44])
-- Add pretraining dataset manifest contract ([cfe856d])
-- Add promotion rollback orchestration ([1b63066])
-- Add output drift summary contract ([b542910])
-- Add drift comparison receipt ([e7ee7eb])
-- Add drift baseline snapshot ([756e5c9])
-- Add drift policy profile contract ([1c7060d])
-- Add drift baseline refresh contract ([2c1a039])
-- Add drift baseline refresh contract ([d815c9b])
-- Add drift baseline approval contract ([42cc1fd])
-- Add baseline approval supersession ([2d93aa0])
-- Add approved baseline pointer ([1c8e583])
-- Add approved baseline rollback contract ([3595895])
-- Add approved baseline history ([81ef045])
-- Add baseline checkpoint contract ([5faca45])
-- Add baseline export bundle ([462aa11])
-- Add baseline handoff manifest ([4beb1f2])
-- Add drift baseline transport locator ([e81dd57])
+- Add artifact upload request adapter ([a02470d])
+- Export calibration sidecar contract ([66269c9])
+- Add pretraining dataset manifest contract ([3619d37])
+- Add pretraining dataset manifest contract ([6f93b97])
+- Add promotion rollback orchestration ([b30bcb0])
+- Add output drift summary contract ([01d23a9])
+- Add drift comparison receipt ([96e45ae])
+- Add drift baseline snapshot ([71e819e])
+- Add drift policy profile contract ([26f24f0])
+- Add drift baseline refresh contract ([c3b911e])
+- Add drift baseline refresh contract ([d130225])
+- Add drift baseline approval contract ([a828c2f])
+- Add baseline approval supersession ([d37aeed])
+- Add approved baseline pointer ([9baf390])
+- Add approved baseline rollback contract ([91dec15])
+- Add approved baseline history ([6bbeb18])
+- Add baseline checkpoint contract ([4cfb1f9])
+- Add baseline export bundle ([7df36b3])
+- Add baseline handoff manifest ([d11f075])
+- Add drift baseline transport locator ([dbb098f])
+- Add artifact cleanup inventory ([f44b6ce])
 
 ### Changed
 
@@ -195,21 +196,21 @@
 - Align TODO promotion and backlog semantics ([04449f7])
 - Remove ephemeral workspace /tmp path recommendation ([97e7620])
 - Record arrow and parquet fit ([d697bea])
-- Record cubecl kernel fit ([9c406b8])
-- Record rl environment fit ([5469b41])
-- Define multibillion target envelope ([0a3e51e])
-- Record otel profiling fit ([1a1c68d])
-- Add burn format migration follow-up ([bb09c47])
-- Add ron format investigation ([4313d2f])
-- Define distributed checkpoint index ([520fec4])
-- Park burn distributed alignment work ([ec80396])
-- Advance active horizon ([2e6cbd9])
-- Define artifact retention envelope ([7177070])
-- Advance retention completion ([b2e3520])
-- Define profiling hotspot taxonomy ([e17a7e1])
-- Define pretraining source registry ([9c05f6e])
-- Add deferred cli and remote artifact follow-ups ([fc21575])
-- Define deployment verification receipt ([0a13e0d])
+- Record cubecl kernel fit ([d696c68])
+- Record rl environment fit ([dfdb6e2])
+- Define multibillion target envelope ([7996475])
+- Record otel profiling fit ([ddf1ee5])
+- Add burn format migration follow-up ([d0e687f])
+- Add ron format investigation ([921e233])
+- Define distributed checkpoint index ([87adeaf])
+- Park burn distributed alignment work ([3ea5b67])
+- Advance active horizon ([604223b])
+- Define artifact retention envelope ([4be1f7a])
+- Advance retention completion ([b21cbaf])
+- Define profiling hotspot taxonomy ([b0c42a7])
+- Define pretraining source registry ([7889db8])
+- Add deferred cli and remote artifact follow-ups ([86b81ba])
+- Define deployment verification receipt ([9366c4e])
 
 ### Fixed
 
@@ -245,7 +246,7 @@
 - Restore active horizon gate ([b084fab])
 - Add target profile example fixture ([a916ce8])
 - Pin train_start event fixture ([eefaeb3])
-- Pin artifact_exported event fixture ([e587a1d])
+- Pin artifact_exported event fixture ([a354b0b])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -392,41 +393,42 @@
 [eefaeb3]: https://github.com/zxfsee/afterburner/commit/eefaeb3b12e27c289adde0661f366e5eb560d43d
 [d697bea]: https://github.com/zxfsee/afterburner/commit/d697beaa626969b6c4dc6e50fe418477d35fd56a
 [6c42dc3]: https://github.com/zxfsee/afterburner/commit/6c42dc3b9fcc2e88c6f6eb7854fc6fed60214972
-[9c406b8]: https://github.com/zxfsee/afterburner/commit/9c406b86861b6a69bc699fe8dc3a87498847e6e2
-[5469b41]: https://github.com/zxfsee/afterburner/commit/5469b41aa976bf29cd759c80f8c0a03f44ecb256
-[2108680]: https://github.com/zxfsee/afterburner/commit/2108680f269d9c52f2da6e7d6a5c33633ec585aa
-[e587a1d]: https://github.com/zxfsee/afterburner/commit/e587a1db5684709bc2e2ca7cd9ba0fd97133d915
-[0a3e51e]: https://github.com/zxfsee/afterburner/commit/0a3e51e543e93a000cb2c192eaa03e2f04e62a84
-[2ec2862]: https://github.com/zxfsee/afterburner/commit/2ec286284ac7b463661d415c01ae45da2b36f706
-[1a1c68d]: https://github.com/zxfsee/afterburner/commit/1a1c68d2d124e065fab2b662d4dbc0d328bb82d2
-[bb09c47]: https://github.com/zxfsee/afterburner/commit/bb09c47246a43343e0246baac069ccfe1308c4d2
-[4355b44]: https://github.com/zxfsee/afterburner/commit/4355b44766e8e5afd7844227ed6edda9643340fc
-[cfe856d]: https://github.com/zxfsee/afterburner/commit/cfe856dbb236a7c18ef41b8063bf6c8e10394450
-[4313d2f]: https://github.com/zxfsee/afterburner/commit/4313d2fb811b0e8d57023599b91e28fbc9ada7f7
-[1b63066]: https://github.com/zxfsee/afterburner/commit/1b63066d82ee955e98071af2c1e9f0c794d6bc52
-[b542910]: https://github.com/zxfsee/afterburner/commit/b5429101f8a33abbe492dabcf1055ab8651cc5d8
-[520fec4]: https://github.com/zxfsee/afterburner/commit/520fec40f11e29f39978e0ebcb1de756d3235ee0
-[ec80396]: https://github.com/zxfsee/afterburner/commit/ec80396c1a0e84834067f765634c2de7e6794602
-[e7ee7eb]: https://github.com/zxfsee/afterburner/commit/e7ee7eb19a65031fe80b1e139569fce61a0be178
-[756e5c9]: https://github.com/zxfsee/afterburner/commit/756e5c90dedb4748073df3c70d0b42b2e21365da
-[1c7060d]: https://github.com/zxfsee/afterburner/commit/1c7060da63be55191e5ede899176f9f55883c2f3
-[2c1a039]: https://github.com/zxfsee/afterburner/commit/2c1a039844cd6e762932cf4c10cddf5a9b611874
-[d815c9b]: https://github.com/zxfsee/afterburner/commit/d815c9b029d3af2e618d5f54b78b1f4e283ea0a0
-[42cc1fd]: https://github.com/zxfsee/afterburner/commit/42cc1fd387a0316fc8fa361de54759dfc8338f65
-[2d93aa0]: https://github.com/zxfsee/afterburner/commit/2d93aa00001f22df20f9c42d7588a54c8c80f923
-[1c8e583]: https://github.com/zxfsee/afterburner/commit/1c8e583b2c361b934fb81f471d69b36ba3137290
-[3595895]: https://github.com/zxfsee/afterburner/commit/359589572373163154a983f83ab3f13dd3303207
-[81ef045]: https://github.com/zxfsee/afterburner/commit/81ef0457308f103cb77c57feb24bfcadc4122af3
-[5faca45]: https://github.com/zxfsee/afterburner/commit/5faca45039b447451941da9b85debb7cf760a5cb
-[462aa11]: https://github.com/zxfsee/afterburner/commit/462aa11755175c410fd7f9b2d175005c371628c7
-[2e6cbd9]: https://github.com/zxfsee/afterburner/commit/2e6cbd944263e05b7ecac9d90f72034998976f0d
-[7177070]: https://github.com/zxfsee/afterburner/commit/7177070ff86f4cbe3008ba1e5c9c4539e78ee67a
-[b2e3520]: https://github.com/zxfsee/afterburner/commit/b2e352059809670e6b3af2b0c13e0a8809af844c
-[4beb1f2]: https://github.com/zxfsee/afterburner/commit/4beb1f2dae3a471f20f28a1ca45af0701a18cacd
-[e17a7e1]: https://github.com/zxfsee/afterburner/commit/e17a7e1a84ee8a4faf6186f87152fe7ddd63851f
-[e81dd57]: https://github.com/zxfsee/afterburner/commit/e81dd57825e507c677f3f774ee7b2492a246cf93
-[9c05f6e]: https://github.com/zxfsee/afterburner/commit/9c05f6ecdd9e34553ddd87a035ca3621c69184c5
-[fc21575]: https://github.com/zxfsee/afterburner/commit/fc21575042b71eea111595a81c15c29c273dc9c4
-[0a13e0d]: https://github.com/zxfsee/afterburner/commit/0a13e0d4020386fdc7003273985338e0e97b8563
+[d696c68]: https://github.com/zxfsee/afterburner/commit/d696c6839119e503f71b8755f912eea69edc9933
+[dfdb6e2]: https://github.com/zxfsee/afterburner/commit/dfdb6e2a97928c36164d85eeece6b130c9ec9f13
+[a02470d]: https://github.com/zxfsee/afterburner/commit/a02470d81dc443f868f419ba039620f28dec447b
+[a354b0b]: https://github.com/zxfsee/afterburner/commit/a354b0bfcc07f67e27f76c72458eddaa6da23e2a
+[7996475]: https://github.com/zxfsee/afterburner/commit/799647512473b60c68a94eaebd4c7aac648686e9
+[66269c9]: https://github.com/zxfsee/afterburner/commit/66269c9a0e43f22886ce486c8671ee9fe8ac10f9
+[ddf1ee5]: https://github.com/zxfsee/afterburner/commit/ddf1ee5185cfcc6fb4372a35eb985afa48193369
+[d0e687f]: https://github.com/zxfsee/afterburner/commit/d0e687f683e7fe17bf7ac68ccb580ffdacb160f3
+[3619d37]: https://github.com/zxfsee/afterburner/commit/3619d37a6bcb171e2ef36be65d3f9a60b29e2996
+[6f93b97]: https://github.com/zxfsee/afterburner/commit/6f93b97baf09b9f38fc569eab8e0d7394f9d6c66
+[921e233]: https://github.com/zxfsee/afterburner/commit/921e233b480a133854359de172d21237f2767c20
+[b30bcb0]: https://github.com/zxfsee/afterburner/commit/b30bcb09bc51339d9920c58b57efb7c27936c733
+[01d23a9]: https://github.com/zxfsee/afterburner/commit/01d23a9b05040eb5d7893148566a61946826f573
+[87adeaf]: https://github.com/zxfsee/afterburner/commit/87adeaf0c122310130a30c76b630478851e954af
+[3ea5b67]: https://github.com/zxfsee/afterburner/commit/3ea5b67470213f9ede3ffa0139d03792117441b4
+[96e45ae]: https://github.com/zxfsee/afterburner/commit/96e45ae530662556df5ac28e8f0e8ad4d73fb64a
+[71e819e]: https://github.com/zxfsee/afterburner/commit/71e819e5c9aa6740ccddfe3fd554bf2af883db5f
+[26f24f0]: https://github.com/zxfsee/afterburner/commit/26f24f03de59dfa303208bdd5a6e87b480888019
+[c3b911e]: https://github.com/zxfsee/afterburner/commit/c3b911e9ae2938286ef295fec09acb3442856fa5
+[d130225]: https://github.com/zxfsee/afterburner/commit/d130225f9b10e47e43a10668e525672af0ec31b4
+[a828c2f]: https://github.com/zxfsee/afterburner/commit/a828c2fcbec3caeb35df828bfdc5460a372817d3
+[d37aeed]: https://github.com/zxfsee/afterburner/commit/d37aeed8e565dc68e496067cf1db26a7932bc249
+[9baf390]: https://github.com/zxfsee/afterburner/commit/9baf39062da2a5cf79c63024130c185f96f7c4b8
+[91dec15]: https://github.com/zxfsee/afterburner/commit/91dec153e0eda10be71ecfa743e5e1967b2007f5
+[6bbeb18]: https://github.com/zxfsee/afterburner/commit/6bbeb18722c3ca08a46d0b5d40353fa190304086
+[4cfb1f9]: https://github.com/zxfsee/afterburner/commit/4cfb1f9eeca9079087d97cfb316130ce4fe7c60f
+[7df36b3]: https://github.com/zxfsee/afterburner/commit/7df36b3dc7d7807b03a6a822e37f61fe3d721527
+[604223b]: https://github.com/zxfsee/afterburner/commit/604223b51d05b450e3aaa0a660ce998cd50acbb1
+[4be1f7a]: https://github.com/zxfsee/afterburner/commit/4be1f7a35a72efa7347b6ebb38088294644f78f2
+[b21cbaf]: https://github.com/zxfsee/afterburner/commit/b21cbaf273e05d30300a3b85245bd4719aa8acea
+[d11f075]: https://github.com/zxfsee/afterburner/commit/d11f0754301f7da902c04a9fea1e596b65c589bb
+[b0c42a7]: https://github.com/zxfsee/afterburner/commit/b0c42a76bb0d2a015d2cb00ee33c8f0fa7ae8f53
+[dbb098f]: https://github.com/zxfsee/afterburner/commit/dbb098f2c529418d458442a6dec0e52de9a2bc27
+[7889db8]: https://github.com/zxfsee/afterburner/commit/7889db8b26c917ffeeab1616d446f7bf4a48cef3
+[86b81ba]: https://github.com/zxfsee/afterburner/commit/86b81ba114422f0b94db67cdc3d1f4252fc943e3
+[9366c4e]: https://github.com/zxfsee/afterburner/commit/9366c4e9e0200b7a3a4d997a50e141d928aa2640
+[f44b6ce]: https://github.com/zxfsee/afterburner/commit/f44b6ce55eb03df67da1bed3b8d2d6212d51555b
 
 <!-- generated by git-cliff -->

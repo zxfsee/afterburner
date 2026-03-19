@@ -29,3 +29,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Do not add environment-preflight or host-availability gate recipes to `justfile`; keep `just` focused on the composable workflow entrypoints and let prerequisites fail naturally or live in tests/TODOs.
 - Do not split one environment/tooling blocker into multiple active gate TODOs. If the issue is host-specific or transient, keep one contract/workflow gate at most, then record the remaining problem as an inline `Blocked-by:` note on the real TODO.
 - Park profiling/flamegraph work unless a near-term runtime/kernel/quantization decision actually depends on measured hotspot evidence; otherwise it is easy to over-invest in tooling before the next leverage point is ready.
+- When passing commit messages through `shell_command`, avoid unescaped backticks in the shell string; they trigger command substitution and silently corrupt the commit body.

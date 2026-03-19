@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum lineage fields needed to trace each distributed shard back to its source dataset revision and checkpoint group without relying on host-local naming or directory conventions.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Artifact cleanup dry-run receipt gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum dry-run receipt for planned artifact cleanup so operators can review what would be removed before any future retention automation actually deletes files.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Distributed shard lineage receipt gate [Distributed Training, Data Infra]
+  - Goal: Define the minimum receipt fields for recording when distributed shard lineage metadata was checked or refreshed so provenance updates remain auditable separately from the shard metadata payload itself.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
