@@ -115,6 +115,9 @@ auto-versioning, embedded serving) are intentionally absent.
   active rollout evidence under `artifacts/deploy/`, required decision artifacts under
   `artifacts/train/`, and the current approved drift baseline state; `artifacts/profiling/`
   and superseded eval artifacts are prune candidates once nothing active references them.
+- Deployment verification should also converge on one explicit deployment verification receipt
+  per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
+  and matching event instead of raw logs alone.
 - Pretraining dataset manifests should treat `source` as a source registry key
   and `source_revision` as the approved snapshot selector within that source,
   so corpus identity does not degrade into free-form manifest labels as
@@ -147,3 +150,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-019: Artifact Retention Envelope](./docs/adr/019-artifact-retention-envelope.md)
 - [ADR-020: Profiling Hotspot Taxonomy](./docs/adr/020-profiling-hotspot-taxonomy.md)
 - [ADR-021: Pretraining Source Registry](./docs/adr/021-pretraining-source-registry.md)
+- [ADR-022: Deployment Verification Receipt](./docs/adr/022-deployment-verification-receipt.md)
