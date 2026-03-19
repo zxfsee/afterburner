@@ -90,6 +90,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
   (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
   OpenTelemetry trace/resource fields or SDK/runtime dependencies yet.
+- Profiling artifacts also need a small profiling environment provenance layer over time:
+  `profiling_hotspot_summary.schema.json` should eventually be accompanied by at least `host_os`,
+  `host_arch`, `profiler_version`, and `profiler_path` so hotspot comparisons do not depend on
+  unstated host assumptions.
 - Profiling summaries also use a lightweight hotspot taxonomy for interpretation:
   execution (`afterburner::...`), framework (`burn_tensor::...`), compiler/runtime (`cubecl...`),
   and incidental support work. The raw symbol remains the contract; the taxonomy is for triage.
@@ -160,3 +164,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-022: Deployment Verification Receipt](./docs/adr/022-deployment-verification-receipt.md)
 - [ADR-023: Distributed Shard Lineage](./docs/adr/023-distributed-shard-lineage.md)
 - [ADR-024: Artifact Cleanup Dry-Run Receipt](./docs/adr/024-artifact-cleanup-dry-run-receipt.md)
+- [ADR-025: Profiling Environment Provenance](./docs/adr/025-profiling-environment-provenance.md)

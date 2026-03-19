@@ -256,6 +256,9 @@ The current profiling summary intentionally stops short of OpenTelemetry trace/r
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
 `profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
 extension if a concrete workflow needs it.
+The next missing layer there is profiling environment provenance: future profiling-side artifacts
+should at least make `host_os`, `host_arch`, `profiler_version`, and `profiler_path` explicit so
+hotspot comparisons do not rely on unstated local host assumptions.
 For interpretation, use this profiling hotspot taxonomy: execution (`afterburner::...`),
 framework (`burn_tensor::...`), compiler/runtime (`cubecl...`), and incidental support work.
 The raw symbol list stays authoritative; the taxonomy is for triage.

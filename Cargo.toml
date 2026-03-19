@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling environment provenance gate [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum host and profiler provenance fields needed for profiling artifacts so hotspot comparisons do not rely on unstated local environment assumptions.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Pretraining source approval receipt gate [Data Infra, Pre-training]
   - Goal: Define the minimum approval receipt fields for pretraining source-registry entries so corpus approval state can be audited separately from dataset manifests and source inventory definitions.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Profiling provenance receipt gate [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum receipt fields for recording when profiling environment provenance was captured or refreshed so later profiling comparisons can audit provenance generation separately from the profiling summary payload itself.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
