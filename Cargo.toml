@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
-  - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Pretraining dataset manifest contract [Data Infra, Pre-training]
   - Goal: Define a dataset-level manifest that pins corpus revision, shard inventory, split counts, and checksum rollups so large-scale pretraining data refreshes stay auditable without inferring from per-sample metadata alone.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Profiling hotspot taxonomy gate [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum hotspot taxonomy expected from profiling summaries so performance regressions can be triaged consistently without coupling the repo to one profiler implementation.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

@@ -174,6 +174,10 @@ under `artifacts/profiling/` and a parsed hotspot summary at
 selected so `xcrun xctrace version` succeeds. The recipe clears `DEVELOPER_DIR` and
 `SDKROOT` and forces `XCTRACE=/usr/bin/xctrace` so the system Instruments templates
 win over the Nix Apple SDK environment.
+The current profiling summary intentionally stops short of OpenTelemetry trace/resource
+correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
+`profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
+extension if a concrete workflow needs it.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.

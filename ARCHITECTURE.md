@@ -84,6 +84,9 @@ auto-versioning, embedded serving) are intentionally absent.
   (`duration_ms`, `batch_size`, `artifact_version`) so adapter-local logs can be mapped
   deliberately onto OpenTelemetry conventions later without claiming full semconv naming or
   pulling an SDK into core.
+- Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
+  (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
+  OpenTelemetry trace/resource fields or SDK/runtime dependencies yet.
 - Optimization policy changes must be expressed as explicit artifacts or gates before
   introducing new execution paths. Custom kernels are justified only when the checked
   kernel-adoption contract is refreshed with current model coverage and supporting
@@ -120,3 +123,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)
 - [ADR-014: Artifact Upload Adapter Contract](./docs/adr/014-artifact-upload-adapter.md)
 - [ADR-015: Multibillion-Scale Target Envelope](./docs/adr/015-multibillion-target-envelope.md)
+- [ADR-016: OpenTelemetry Profiling Fit](./docs/adr/016-otel-profiling-fit.md)
