@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference approved baseline history contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a compact history artifact for approved baseline pointer changes so rollout tooling can audit baseline selection over time without replaying every approval, supersession, and rollback artifact manually.
+- Inference drift baseline checkpoint contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a compact checkpoint artifact bundling the current approved baseline pointer and recent drift-management records so rollout tooling can capture one inspectable recovery point before changing baseline state.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`
