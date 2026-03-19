@@ -201,6 +201,11 @@ that marks an older baseline approval as superseded by a newer approved baseline
 Use `just drift-refresh-baseline <summary> <receipt> <current-baseline>` to replace an approved
 baseline while archiving the previous one and writing `artifacts/eval/infer_output_drift_baseline_refresh.json`,
 so summary, receipt, policy, and baseline transitions remain synchronized.
+The current artifact retention envelope is: always keep `artifacts/inference/current`, the
+referenced active `artifacts/inference/<version>/` directory, active rollout evidence under
+`artifacts/deploy/`, and the current decision-driving artifacts under `artifacts/train/` and
+`artifacts/eval/`. `artifacts/profiling/` and superseded eval receipts or summaries are prune
+candidates once no active runtime or rollout state references them.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).

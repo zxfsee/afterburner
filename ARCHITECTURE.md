@@ -107,6 +107,11 @@ auto-versioning, embedded serving) are intentionally absent.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
+- Artifact cleanup should preserve a minimum retention envelope: keep
+  `artifacts/inference/current`, the referenced `artifacts/inference/<version>/`,
+  active rollout evidence under `artifacts/deploy/`, required decision artifacts under
+  `artifacts/train/`, and the current approved drift baseline state; `artifacts/profiling/`
+  and superseded eval artifacts are prune candidates once nothing active references them.
 
 ### Assumptions
 
@@ -132,3 +137,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-016: OpenTelemetry Profiling Fit](./docs/adr/016-otel-profiling-fit.md)
 - [ADR-017: Promotion And Rollback Orchestration](./docs/adr/017-promotion-orchestration.md)
 - [ADR-018: Distributed Checkpoint Index](./docs/adr/018-distributed-checkpoint-index.md)
+- [ADR-019: Artifact Retention Envelope](./docs/adr/019-artifact-retention-envelope.md)
