@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift comparison receipt contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a pass/fail receipt for comparing candidate and current infer-output drift summaries so rollout checks can make explicit promotion decisions without parsing raw logits or ad-hoc diffs.
+- Inference drift baseline snapshot contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a checked baseline snapshot artifact for infer-output drift receipts so promotion decisions compare against one approved reference instead of whichever current summary happens to be on disk.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

@@ -58,6 +58,10 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
     cargo run --locked --bin afterburner -- upload --manifest {{candidate_manifest}} --ownership {{ownership}} --provider {{provider}} --destination {{destination}} --out artifacts/deploy/candidate_upload_request.json
     just deploy-check
 
+# compare candidate and current infer drift summaries and write a promotion receipt
+drift-receipt candidate_summary current_summary max_top_probability_delta max_margin_delta:
+    cargo run --locked --bin afterburner -- drift-receipt --candidate {{candidate_summary}} --current {{current_summary}} --max-top-probability-delta {{max_top_probability_delta}} --max-margin-delta {{max_margin_delta}} --out artifacts/eval/infer_output_drift_receipt.json
+
 # promote a vetted artifact version by updating the current pointer and saving the previous one
 rollout-promote artifact_version:
     mkdir artifacts/deploy

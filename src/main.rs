@@ -1,3 +1,4 @@
+mod cmd_drift_receipt;
 mod cmd_eval;
 mod cmd_infer;
 mod cmd_train;
@@ -14,6 +15,7 @@ fn main() {
         "train" => cmd_train::run(args),
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
+        "drift-receipt" => cmd_drift_receipt::run(args),
         "upload" => cmd_upload::run(args),
         "--help" | "-h" | "help" => {
             println!("{}", usage());
@@ -32,5 +34,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|upload> [args]"
+    "usage: afterburner <train|infer|eval|drift-receipt|upload> [args]"
 }

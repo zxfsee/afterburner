@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-receipt/v1",
+  "title": "Infer Output Drift Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "candidate_summary_path",
+    "current_summary_path",
+    "candidate_artifact",
+    "current_artifact",
+    "candidate_artifact_version",
+    "current_artifact_version",
+    "candidate_predicted_class",
+    "current_predicted_class",
+    "top_probability_delta",
+    "margin_to_second_delta",
+    "max_top_probability_delta",
+    "max_margin_to_second_delta",
+    "passed"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "candidate_summary_path": { "type": "string", "minLength": 1 },
+    "current_summary_path": { "type": "string", "minLength": 1 },
+    "candidate_artifact": { "type": "string", "minLength": 1 },
+    "current_artifact": { "type": "string", "minLength": 1 },
+    "candidate_artifact_version": { "type": "string", "minLength": 1 },
+    "current_artifact_version": { "type": "string", "minLength": 1 },
+    "candidate_predicted_class": { "type": "integer", "minimum": 0 },
+    "current_predicted_class": { "type": "integer", "minimum": 0 },
+    "top_probability_delta": { "type": "number", "minimum": 0.0 },
+    "margin_to_second_delta": { "type": "number", "minimum": 0.0 },
+    "max_top_probability_delta": { "type": "number", "minimum": 0.0 },
+    "max_margin_to_second_delta": { "type": "number", "minimum": 0.0 },
+    "passed": { "type": "boolean" }
+  }
+}
