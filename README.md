@@ -132,6 +132,10 @@ without requiring a real deployment target.
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
+Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_inventory.json`,
+the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
+deploy/train/eval state, inactive inference version directories, and profiling artifacts before any
+future cleanup dry-run receipt decides what would actually be removed.
 For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
 and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
 rollback all stay explicit and reversible.

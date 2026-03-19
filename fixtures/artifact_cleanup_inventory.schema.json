@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/artifact-cleanup-inventory/v1",
+  "title": "Artifact Cleanup Inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifacts_root",
+    "active_inference_version",
+    "retained",
+    "prune_candidates"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "artifacts_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "active_inference_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "retained": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/inventoryEntry"
+      }
+    },
+    "prune_candidates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/inventoryEntry"
+      }
+    }
+  },
+  "$defs": {
+    "inventoryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "category",
+        "reason"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

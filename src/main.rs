@@ -1,3 +1,4 @@
+mod cmd_cleanup_inventory;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_bundle;
@@ -26,6 +27,7 @@ fn main() {
         "train" => cmd_train::run(args),
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
+        "cleanup-inventory" => cmd_cleanup_inventory::run(args),
         "drift-baseline" => cmd_drift_baseline::run(args),
         "drift-approve-baseline" => cmd_drift_baseline_approval::run(args),
         "drift-export-baseline-bundle" => cmd_drift_baseline_bundle::run(args),
@@ -56,5 +58,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-export-baseline-bundle|drift-export-baseline-handoff|drift-record-approved-baseline-history|drift-point-baseline-transport-locator|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
+    "usage: afterburner <train|infer|eval|cleanup-inventory|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-export-baseline-bundle|drift-export-baseline-handoff|drift-record-approved-baseline-history|drift-point-baseline-transport-locator|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
 }
