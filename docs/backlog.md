@@ -38,3 +38,35 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
+  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
+
+- Distributed world and rank topology contract [Distributed Training, Runtime Infra]
+  - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
+
+- Collective synchronization boundary gate [Distributed Training, Frameworks]
+  - Goal: Define where gradient synchronization and collective communication live relative to core training logic so future Burn collective adoption does not leak backend/runtime details across core boundaries.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
+
+- Distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
+  - Goal: Define the minimum optimizer-state and checkpoint-group contract needed for distributed recovery so future multi-device training can resume consistently across shards and ranks.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
