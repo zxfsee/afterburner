@@ -71,7 +71,10 @@ where
     let args = parse_args(args)?;
     let summary = load_json_object(args.summary.as_path(), "infer output drift summary")?;
     let receipt = load_json_object(args.receipt.as_path(), "infer output drift receipt")?;
-    let current_baseline = load_json_object(args.current_baseline.as_path(), "infer output drift baseline")?;
+    let current_baseline = load_json_object(
+        args.current_baseline.as_path(),
+        "infer output drift baseline",
+    )?;
 
     let passed = receipt
         .get("passed")
@@ -89,7 +92,8 @@ where
         )));
     }
 
-    let candidate_summary_path = read_string(&receipt, "candidate_summary_path", args.receipt.as_path())?;
+    let candidate_summary_path =
+        read_string(&receipt, "candidate_summary_path", args.receipt.as_path())?;
     if Path::new(candidate_summary_path.as_str()) != args.summary.as_path() {
         return Err(DriftBaselineRefreshError::Parse(format!(
             "receipt candidate_summary_path `{candidate_summary_path}` does not match requested summary `{}`",
@@ -121,8 +125,9 @@ where
     if let Some(parent) = args.out_path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let baseline_text = serde_json::to_string_pretty(&refreshed_baseline)
-        .map_err(|err| DriftBaselineRefreshError::Parse(format!("serialize refreshed baseline json: {err}")))?;
+    let baseline_text = serde_json::to_string_pretty(&refreshed_baseline).map_err(|err| {
+        DriftBaselineRefreshError::Parse(format!("serialize refreshed baseline json: {err}"))
+    })?;
     fs::write(&args.out_path, baseline_text)?;
 
     let refresh_receipt = json!({
@@ -140,8 +145,9 @@ where
     if let Some(parent) = args.refresh_receipt_path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let refresh_text = serde_json::to_string_pretty(&refresh_receipt)
-        .map_err(|err| DriftBaselineRefreshError::Parse(format!("serialize baseline refresh json: {err}")))?;
+    let refresh_text = serde_json::to_string_pretty(&refresh_receipt).map_err(|err| {
+        DriftBaselineRefreshError::Parse(format!("serialize baseline refresh json: {err}"))
+    })?;
     fs::write(&args.refresh_receipt_path, refresh_text)?;
 
     emit_event(
@@ -195,10 +201,14 @@ where
                 refresh_receipt_path = PathBuf::from(value);
             }
             _ if arg.starts_with("--summary=") => {
-                summary = Some(PathBuf::from(arg.trim_start_matches("--summary=").to_string()))
+                summary = Some(PathBuf::from(
+                    arg.trim_start_matches("--summary=").to_string(),
+                ))
             }
             _ if arg.starts_with("--receipt=") => {
-                receipt = Some(PathBuf::from(arg.trim_start_matches("--receipt=").to_string()))
+                receipt = Some(PathBuf::from(
+                    arg.trim_start_matches("--receipt=").to_string(),
+                ))
             }
             _ if arg.starts_with("--current-baseline=") => {
                 current_baseline = Some(PathBuf::from(

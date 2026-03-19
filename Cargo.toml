@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline refresh contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a checked refresh workflow for replacing an approved infer drift baseline so policy, receipt, and baseline updates remain synchronized instead of drifting independently.
+- Inference drift baseline approval contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define an approval record for promoted infer drift baselines so the repo can distinguish a freshly computed baseline from one that has actually been approved for rollout decisions.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

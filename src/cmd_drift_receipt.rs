@@ -184,11 +184,7 @@ fn load_policy(path: &Path) -> Result<DriftPolicy, DriftReceiptError> {
     Ok(DriftPolicy {
         profile_name: read_string_policy(object, "profile_name", path)?,
         max_top_probability_delta: read_f64_policy(object, "max_top_probability_delta", path)?,
-        max_margin_to_second_delta: read_f64_policy(
-            object,
-            "max_margin_to_second_delta",
-            path,
-        )?,
+        max_margin_to_second_delta: read_f64_policy(object, "max_margin_to_second_delta", path)?,
     })
 }
 
@@ -231,7 +227,9 @@ where
                 ))
             }
             _ if arg.starts_with("--policy=") => {
-                policy = Some(PathBuf::from(arg.trim_start_matches("--policy=").to_string()))
+                policy = Some(PathBuf::from(
+                    arg.trim_start_matches("--policy=").to_string(),
+                ))
             }
             _ if arg.starts_with("--out=") => {
                 out_path = PathBuf::from(arg.trim_start_matches("--out=").to_string())

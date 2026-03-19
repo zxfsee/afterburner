@@ -18,9 +18,10 @@ fn repo_file(path: &str) -> String {
 
 #[test]
 fn infer_output_drift_baseline_refresh_schema_and_workflow_are_explicit() {
-    let schema_text =
-        fs::read_to_string(fixture_path("infer_output_drift_baseline_refresh.schema.json"))
-            .expect("read infer drift baseline refresh schema");
+    let schema_text = fs::read_to_string(fixture_path(
+        "infer_output_drift_baseline_refresh.schema.json",
+    ))
+    .expect("read infer drift baseline refresh schema");
     let schema: Value =
         serde_json::from_str(&schema_text).expect("parse infer drift baseline refresh");
 
@@ -118,7 +119,10 @@ fn drift_refresh_baseline_archives_previous_baseline_and_writes_refresh_receipt(
         .arg(&refresh);
     let assert = cmd.assert().success();
 
-    assert!(archive.exists(), "refresh must archive the previous baseline");
+    assert!(
+        archive.exists(),
+        "refresh must archive the previous baseline"
+    );
     assert!(out.exists(), "refresh must write the refreshed baseline");
     assert!(refresh.exists(), "refresh must write the refresh receipt");
 
@@ -199,7 +203,10 @@ fn normalize_refresh_receipt_object(object: &mut serde_json::Map<String, Value>)
         "previous_baseline_path".to_string(),
         Value::from("<current-baseline>"),
     );
-    object.insert("archived_baseline_path".to_string(), Value::from("<archive>"));
+    object.insert(
+        "archived_baseline_path".to_string(),
+        Value::from("<archive>"),
+    );
     object.insert("refreshed_baseline_path".to_string(), Value::from("<out>"));
     object.insert("summary_path".to_string(), Value::from("<summary>"));
     object.insert("receipt_path".to_string(), Value::from("<receipt>"));
