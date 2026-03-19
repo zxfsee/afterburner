@@ -184,6 +184,9 @@ current.
 Use `just drift-record-approved-baseline-history <pointer> <event> <recorded-at-unix-ms>` to append
 to `artifacts/eval/infer_output_drift_baseline_history.json`, the compact audit trail of approved-baseline
 pointer changes over time.
+Use `just drift-checkpoint-baseline <pointer> <history>` to materialize
+`artifacts/eval/infer_output_drift_baseline_checkpoint.json`, a compact recovery bundle over the
+current approved-baseline pointer and recent pointer history before changing baseline state.
 Use `just drift-rollback-approved-baseline <current-pointer> <restored-approval> <rolled-back-at-unix-ms>`
 to restore the approved-baseline pointer to a prior approval and write
 `artifacts/eval/infer_output_drift_baseline_rollback.json`, keeping rollback decisions explicit and

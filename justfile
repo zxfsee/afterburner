@@ -78,6 +78,10 @@ drift-point-approved-baseline approval:
 drift-record-approved-baseline-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-record-approved-baseline-history --pointer {{pointer}} --event {{event}} --recorded-at-unix-ms {{recorded_at_unix_ms}} --out artifacts/eval/infer_output_drift_baseline_history.json
 
+# capture a compact checkpoint of the current approved-baseline pointer plus recent history
+drift-checkpoint-baseline pointer history:
+    cargo run --locked --bin afterburner -- drift-checkpoint-baseline --pointer {{pointer}} --history {{history}} --out artifacts/eval/infer_output_drift_baseline_checkpoint.json
+
 # restore the approved baseline pointer to a previous approval and write a rollback record
 drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-rollback-approved-baseline --current-pointer {{current_pointer}} --restored-approval {{restored_approval}} --rolled-back-at-unix-ms {{rolled_back_at_unix_ms}} --out-pointer artifacts/eval/infer_output_drift_baseline_pointer.json --out-record artifacts/eval/infer_output_drift_baseline_rollback.json

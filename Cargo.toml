@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline checkpoint contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a compact checkpoint artifact bundling the current approved baseline pointer and recent drift-management records so rollout tooling can capture one inspectable recovery point before changing baseline state.
+- Inference drift baseline export bundle contract [Inference, Serving/Deployment Infra]
+  - Goal: Define a compact export bundle artifact for the currently approved drift baseline state so deployment-side workflows can consume one packaged baseline contract instead of pulling individual pointer and history files ad hoc.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

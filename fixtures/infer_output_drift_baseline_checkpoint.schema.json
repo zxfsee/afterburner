@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-checkpoint/v1",
+  "title": "Infer Output Drift Baseline Checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "pointer_path",
+    "history_path",
+    "approval_path",
+    "artifact",
+    "artifact_version",
+    "policy_profile"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "pointer_path": { "type": "string", "minLength": 1 },
+    "history_path": { "type": "string", "minLength": 1 },
+    "approval_path": { "type": "string", "minLength": 1 },
+    "artifact": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 }
+  }
+}

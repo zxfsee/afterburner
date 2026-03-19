@@ -1,5 +1,6 @@
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
+mod cmd_drift_baseline_checkpoint;
 mod cmd_drift_baseline_history;
 mod cmd_drift_baseline_pointer;
 mod cmd_drift_baseline_refresh;
@@ -24,6 +25,7 @@ fn main() {
         "eval" => cmd_eval::run(args),
         "drift-baseline" => cmd_drift_baseline::run(args),
         "drift-approve-baseline" => cmd_drift_baseline_approval::run(args),
+        "drift-checkpoint-baseline" => cmd_drift_baseline_checkpoint::run(args),
         "drift-record-approved-baseline-history" => cmd_drift_baseline_history::run(args),
         "drift-point-approved-baseline" => cmd_drift_baseline_pointer::run(args),
         "drift-rollback-approved-baseline" => cmd_drift_baseline_rollback::run(args),
@@ -48,5 +50,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|drift-baseline|drift-approve-baseline|drift-record-approved-baseline-history|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
+    "usage: afterburner <train|infer|eval|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-record-approved-baseline-history|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
 }
