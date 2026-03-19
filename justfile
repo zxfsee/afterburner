@@ -58,9 +58,9 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
     cargo run --locked --bin afterburner -- upload --manifest {{candidate_manifest}} --ownership {{ownership}} --provider {{provider}} --destination {{destination}} --out artifacts/deploy/candidate_upload_request.json
     just deploy-check
 
-# compare candidate and current infer drift summaries and write a promotion receipt
-drift-receipt candidate_summary current_summary max_top_probability_delta max_margin_delta:
-    cargo run --locked --bin afterburner -- drift-receipt --candidate {{candidate_summary}} --current {{current_summary}} --max-top-probability-delta {{max_top_probability_delta}} --max-margin-delta {{max_margin_delta}} --out artifacts/eval/infer_output_drift_receipt.json
+# compare candidate and current infer drift summaries using a named policy profile
+drift-receipt candidate_summary current_summary policy:
+    cargo run --locked --bin afterburner -- drift-receipt --candidate {{candidate_summary}} --current {{current_summary}} --policy {{policy}} --out artifacts/eval/infer_output_drift_receipt.json
 
 # capture a checked baseline snapshot from an approved infer drift receipt
 drift-baseline summary receipt:

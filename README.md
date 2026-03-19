@@ -169,9 +169,9 @@ CLI infer now also writes `artifacts/eval/infer_output_drift_summary.json` plus 
 `infer_output_drift_summary_written` event, giving promotion and rollback checks a compact
 comparison artifact (`predicted_class`, `top_probability`, `margin_to_second`, and output digests)
 without persisting the full logits from every run.
-Use `just drift-receipt <candidate-summary> <current-summary> <max-top-probability-delta> <max-margin-delta>`
-to materialize `artifacts/eval/infer_output_drift_receipt.json`, a pass/fail receipt for rollout
-decisions based on two infer drift summaries instead of ad-hoc manual comparison.
+Use `just drift-receipt <candidate-summary> <current-summary> <policy>` to materialize
+`artifacts/eval/infer_output_drift_receipt.json`, a pass/fail receipt driven by one named
+drift-policy artifact instead of ad-hoc CLI thresholds at rollout time.
 Use `just drift-baseline <summary> <receipt>` to materialize `artifacts/eval/infer_output_drift_baseline.json`,
 the approved reference snapshot that later drift receipts should compare against instead of whichever
 current summary happens to be on disk at rollout time.

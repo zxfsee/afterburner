@@ -1,0 +1,6 @@
+{
+  "schema_version": "1",
+  "profile_name": "promotion-default",
+  "max_top_probability_delta": 0.05,
+  "max_margin_to_second_delta": 0.05
+}

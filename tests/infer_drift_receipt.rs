@@ -42,6 +42,8 @@ fn infer_output_drift_receipt_schema_and_workflow_are_explicit() {
         "schema_version",
         "candidate_summary_path",
         "current_summary_path",
+        "policy_path",
+        "policy_profile",
         "candidate_artifact",
         "current_artifact",
         "candidate_artifact_version",
@@ -61,7 +63,7 @@ fn infer_output_drift_receipt_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("drift-receipt candidate_summary current_summary max_top_probability_delta max_margin_delta:"),
+        justfile.contains("drift-receipt candidate_summary current_summary policy:"),
         "justfile must expose the drift-receipt workflow"
     );
 
@@ -74,6 +76,13 @@ fn infer_output_drift_receipt_schema_and_workflow_are_explicit() {
         readme.contains("just drift-receipt"),
         "README must mention the drift receipt workflow"
     );
+    let policy_text = fs::read_to_string(fixture_path("infer_output_drift_policy.schema.json"))
+        .expect("read infer drift policy schema");
+    let policy: Value = serde_json::from_str(&policy_text).expect("parse infer drift policy");
+    assert_eq!(
+        policy.get("$id").and_then(Value::as_str),
+        Some("https://afterburner.local/schemas/infer-output-drift-policy/v1")
+    );
 }
 
 #[test]
@@ -81,6 +90,7 @@ fn drift_receipt_writes_receipt_and_event() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let candidate = tmp.path().join("candidate.json");
     let current = tmp.path().join("current.json");
+    let policy = tmp.path().join("policy.json");
     fs::write(
         &candidate,
         r#"{"schema_version":"1","artifact":"artifacts/inference/candidate/model.mpk","artifact_version":"0.2.0","backend":"cpu","predicted_class":3,"top_probability":0.91,"margin_to_second":0.44,"logits_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","probabilities_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}"#,
@@ -91,6 +101,11 @@ fn drift_receipt_writes_receipt_and_event() {
         r#"{"schema_version":"1","artifact":"artifacts/inference/current/model.mpk","artifact_version":"0.1.0","backend":"cpu","predicted_class":3,"top_probability":0.89,"margin_to_second":0.40,"logits_sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","probabilities_sha256":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}"#,
     )
     .expect("write current summary");
+    fs::write(
+        &policy,
+        r#"{"schema_version":"1","profile_name":"promotion-default","max_top_probability_delta":0.05,"max_margin_to_second_delta":0.05}"#,
+    )
+    .expect("write drift policy");
 
     let out = tmp.path().join("receipt.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
@@ -99,10 +114,8 @@ fn drift_receipt_writes_receipt_and_event() {
         .arg(&candidate)
         .arg("--current")
         .arg(&current)
-        .arg("--max-top-probability-delta")
-        .arg("0.05")
-        .arg("--max-margin-delta")
-        .arg("0.05")
+        .arg("--policy")
+        .arg(&policy)
         .arg("--out")
         .arg(&out);
     let assert = cmd.assert().success();
@@ -116,6 +129,8 @@ fn drift_receipt_writes_receipt_and_event() {
             "schema_version": "1",
             "candidate_summary_path": "<candidate>",
             "current_summary_path": "<current>",
+            "policy_path": "<policy>",
+            "policy_profile": "promotion-default",
             "candidate_artifact": "artifacts/inference/candidate/model.mpk",
             "current_artifact": "artifacts/inference/current/model.mpk",
             "candidate_artifact_version": "0.2.0",
@@ -151,6 +166,7 @@ fn drift_receipt_writes_receipt_and_event() {
         Value::from("<candidate>"),
     );
     receipt_obj.insert("current_summary_path".to_string(), Value::from("<current>"));
+    receipt_obj.insert("policy_path".to_string(), Value::from("<policy>"));
     let top_probability_delta = receipt_obj
         .get("top_probability_delta")
         .and_then(Value::as_f64)
@@ -188,6 +204,7 @@ fn drift_receipt_fails_when_thresholds_are_exceeded() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let candidate = tmp.path().join("candidate.json");
     let current = tmp.path().join("current.json");
+    let policy = tmp.path().join("policy.json");
     fs::write(
         &candidate,
         r#"{"schema_version":"1","artifact":"artifacts/inference/candidate/model.mpk","artifact_version":"0.2.0","backend":"cpu","predicted_class":3,"top_probability":0.91,"margin_to_second":0.44,"logits_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","probabilities_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}"#,
@@ -198,6 +215,11 @@ fn drift_receipt_fails_when_thresholds_are_exceeded() {
         r#"{"schema_version":"1","artifact":"artifacts/inference/current/model.mpk","artifact_version":"0.1.0","backend":"cpu","predicted_class":2,"top_probability":0.70,"margin_to_second":0.10,"logits_sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","probabilities_sha256":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}"#,
     )
     .expect("write current summary");
+    fs::write(
+        &policy,
+        r#"{"schema_version":"1","profile_name":"promotion-default","max_top_probability_delta":0.05,"max_margin_to_second_delta":0.05}"#,
+    )
+    .expect("write drift policy");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("drift-receipt")
@@ -205,10 +227,8 @@ fn drift_receipt_fails_when_thresholds_are_exceeded() {
         .arg(&candidate)
         .arg("--current")
         .arg(&current)
-        .arg("--max-top-probability-delta")
-        .arg("0.05")
-        .arg("--max-margin-delta")
-        .arg("0.05");
+        .arg("--policy")
+        .arg(&policy);
     cmd.assert().failure().code(2);
 }
 
@@ -229,6 +249,7 @@ fn normalize_receipt(receipt: &mut Value) {
         Value::from("<candidate>"),
     );
     object.insert("current_summary_path".to_string(), Value::from("<current>"));
+    object.insert("policy_path".to_string(), Value::from("<policy>"));
     let top_probability_delta = object
         .get("top_probability_delta")
         .and_then(Value::as_f64)

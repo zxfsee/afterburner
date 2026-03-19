@@ -42,6 +42,8 @@ fn infer_output_drift_baseline_schema_and_workflow_are_explicit() {
         "schema_version",
         "summary_path",
         "receipt_path",
+        "policy_path",
+        "policy_profile",
         "artifact",
         "artifact_version",
         "backend",
@@ -86,7 +88,7 @@ fn drift_baseline_writes_baseline_and_event() {
     fs::write(
         &receipt,
         format!(
-            "{{\"schema_version\":\"1\",\"candidate_summary_path\":\"{}\",\"current_summary_path\":\"current.json\",\"candidate_artifact\":\"artifacts/inference/candidate/model.mpk\",\"current_artifact\":\"artifacts/inference/current/model.mpk\",\"candidate_artifact_version\":\"0.2.0\",\"current_artifact_version\":\"0.1.0\",\"candidate_predicted_class\":3,\"current_predicted_class\":3,\"top_probability_delta\":0.02,\"margin_to_second_delta\":0.04,\"max_top_probability_delta\":0.05,\"max_margin_to_second_delta\":0.05,\"passed\":true}}",
+            "{{\"schema_version\":\"1\",\"candidate_summary_path\":\"{}\",\"current_summary_path\":\"current.json\",\"policy_path\":\"policy.json\",\"policy_profile\":\"promotion-default\",\"candidate_artifact\":\"artifacts/inference/candidate/model.mpk\",\"current_artifact\":\"artifacts/inference/current/model.mpk\",\"candidate_artifact_version\":\"0.2.0\",\"current_artifact_version\":\"0.1.0\",\"candidate_predicted_class\":3,\"current_predicted_class\":3,\"top_probability_delta\":0.02,\"margin_to_second_delta\":0.04,\"max_top_probability_delta\":0.05,\"max_margin_to_second_delta\":0.05,\"passed\":true}}",
             summary.display()
         ),
     )
@@ -112,6 +114,8 @@ fn drift_baseline_writes_baseline_and_event() {
             "schema_version": "1",
             "summary_path": "<summary>",
             "receipt_path": "<receipt>",
+            "policy_path": "policy.json",
+            "policy_profile": "promotion-default",
             "artifact": "artifacts/inference/candidate/model.mpk",
             "artifact_version": "0.2.0",
             "backend": "cpu",
@@ -169,7 +173,7 @@ fn drift_baseline_rejects_failed_receipt() {
     fs::write(
         &receipt,
         format!(
-            "{{\"schema_version\":\"1\",\"candidate_summary_path\":\"{}\",\"current_summary_path\":\"current.json\",\"candidate_artifact\":\"artifacts/inference/candidate/model.mpk\",\"current_artifact\":\"artifacts/inference/current/model.mpk\",\"candidate_artifact_version\":\"0.2.0\",\"current_artifact_version\":\"0.1.0\",\"candidate_predicted_class\":3,\"current_predicted_class\":4,\"top_probability_delta\":0.2,\"margin_to_second_delta\":0.4,\"max_top_probability_delta\":0.05,\"max_margin_to_second_delta\":0.05,\"passed\":false}}",
+            "{{\"schema_version\":\"1\",\"candidate_summary_path\":\"{}\",\"current_summary_path\":\"current.json\",\"policy_path\":\"policy.json\",\"policy_profile\":\"promotion-default\",\"candidate_artifact\":\"artifacts/inference/candidate/model.mpk\",\"current_artifact\":\"artifacts/inference/current/model.mpk\",\"candidate_artifact_version\":\"0.2.0\",\"current_artifact_version\":\"0.1.0\",\"candidate_predicted_class\":3,\"current_predicted_class\":4,\"top_probability_delta\":0.2,\"margin_to_second_delta\":0.4,\"max_top_probability_delta\":0.05,\"max_margin_to_second_delta\":0.05,\"passed\":false}}",
             summary.display()
         ),
     )

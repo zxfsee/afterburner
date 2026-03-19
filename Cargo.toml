@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift policy profile contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a named drift-policy profile artifact so drift receipts and baseline snapshots use one explicit threshold contract instead of ad-hoc CLI thresholds at rollout time.
+- Inference drift baseline refresh contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a checked refresh workflow for replacing an approved infer drift baseline so policy, receipt, and baseline updates remain synchronized instead of drifting independently.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

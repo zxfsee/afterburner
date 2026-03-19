@@ -101,6 +101,8 @@ where
         "schema_version": "1",
         "summary_path": args.summary.display().to_string(),
         "receipt_path": args.receipt.display().to_string(),
+        "policy_path": read_string(&receipt, "policy_path", args.receipt.as_path())?,
+        "policy_profile": read_string(&receipt, "policy_profile", args.receipt.as_path())?,
         "artifact": read_string(&summary, "artifact", args.summary.as_path())?,
         "artifact_version": read_string(&summary, "artifact_version", args.summary.as_path())?,
         "backend": read_string(&summary, "backend", args.summary.as_path())?,

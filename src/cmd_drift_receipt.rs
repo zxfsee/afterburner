@@ -35,8 +35,7 @@ impl From<std::io::Error> for DriftReceiptError {
 struct Args {
     candidate: PathBuf,
     current: PathBuf,
-    max_top_probability_delta: f64,
-    max_margin_delta: f64,
+    policy: PathBuf,
     out_path: PathBuf,
 }
 
@@ -47,6 +46,13 @@ struct DriftSummary {
     predicted_class: u64,
     top_probability: f64,
     margin_to_second: f64,
+}
+
+#[derive(Debug, Clone)]
+struct DriftPolicy {
+    profile_name: String,
+    max_top_probability_delta: f64,
+    max_margin_to_second_delta: f64,
 }
 
 pub fn run<I>(args: I) -> i32
@@ -81,17 +87,20 @@ where
     let args = parse_args(args)?;
     let candidate = load_summary(args.candidate.as_path())?;
     let current = load_summary(args.current.as_path())?;
+    let policy = load_policy(args.policy.as_path())?;
 
     let top_probability_delta = (candidate.top_probability - current.top_probability).abs();
     let margin_to_second_delta = (candidate.margin_to_second - current.margin_to_second).abs();
     let passed = candidate.predicted_class == current.predicted_class
-        && top_probability_delta <= args.max_top_probability_delta
-        && margin_to_second_delta <= args.max_margin_delta;
+        && top_probability_delta <= policy.max_top_probability_delta
+        && margin_to_second_delta <= policy.max_margin_to_second_delta;
 
     let receipt = json!({
         "schema_version": "1",
         "candidate_summary_path": args.candidate.display().to_string(),
         "current_summary_path": args.current.display().to_string(),
+        "policy_path": args.policy.display().to_string(),
+        "policy_profile": policy.profile_name,
         "candidate_artifact": candidate.artifact,
         "current_artifact": current.artifact,
         "candidate_artifact_version": candidate.artifact_version,
@@ -100,8 +109,8 @@ where
         "current_predicted_class": current.predicted_class,
         "top_probability_delta": top_probability_delta,
         "margin_to_second_delta": margin_to_second_delta,
-        "max_top_probability_delta": args.max_top_probability_delta,
-        "max_margin_to_second_delta": args.max_margin_delta,
+        "max_top_probability_delta": policy.max_top_probability_delta,
+        "max_margin_to_second_delta": policy.max_margin_to_second_delta,
         "passed": passed
     });
 
@@ -149,6 +158,40 @@ fn load_summary(path: &Path) -> Result<DriftSummary, DriftReceiptError> {
     })
 }
 
+fn load_policy(path: &Path) -> Result<DriftPolicy, DriftReceiptError> {
+    let text = fs::read_to_string(path)?;
+    let value: Value = serde_json::from_str(&text).map_err(|err| {
+        DriftReceiptError::Parse(format!(
+            "parse infer output drift policy `{}`: {err}",
+            path.display()
+        ))
+    })?;
+    let object = value.as_object().ok_or_else(|| {
+        DriftReceiptError::Parse(format!(
+            "infer output drift policy `{}` must be an object",
+            path.display()
+        ))
+    })?;
+
+    let schema_version = read_string_policy(object, "schema_version", path)?;
+    if schema_version != "1" {
+        return Err(DriftReceiptError::Parse(format!(
+            "infer output drift policy `{}` must use schema_version `1`",
+            path.display()
+        )));
+    }
+
+    Ok(DriftPolicy {
+        profile_name: read_string_policy(object, "profile_name", path)?,
+        max_top_probability_delta: read_f64_policy(object, "max_top_probability_delta", path)?,
+        max_margin_to_second_delta: read_f64_policy(
+            object,
+            "max_margin_to_second_delta",
+            path,
+        )?,
+    })
+}
+
 fn parse_args<I>(args: I) -> Result<Args, DriftReceiptError>
 where
     I: Iterator<Item = String>,
@@ -156,8 +199,7 @@ where
     let mut args = args.peekable();
     let mut candidate = None::<PathBuf>;
     let mut current = None::<PathBuf>;
-    let mut max_top_probability_delta = None::<f64>;
-    let mut max_margin_delta = None::<f64>;
+    let mut policy = None::<PathBuf>;
     let mut out_path = PathBuf::from(INFER_OUTPUT_DRIFT_RECEIPT_PATH);
 
     while let Some(arg) = args.next() {
@@ -170,12 +212,9 @@ where
                 let value: String = parse_value(&mut args, "--current")?;
                 current = Some(PathBuf::from(value))
             }
-            "--max-top-probability-delta" => {
-                max_top_probability_delta =
-                    Some(parse_value(&mut args, "--max-top-probability-delta")?)
-            }
-            "--max-margin-delta" => {
-                max_margin_delta = Some(parse_value(&mut args, "--max-margin-delta")?)
+            "--policy" => {
+                let value: String = parse_value(&mut args, "--policy")?;
+                policy = Some(PathBuf::from(value))
             }
             "--out" => {
                 let value: String = parse_value(&mut args, "--out")?;
@@ -191,29 +230,8 @@ where
                     arg.trim_start_matches("--current=").to_string(),
                 ))
             }
-            _ if arg.starts_with("--max-top-probability-delta=") => {
-                max_top_probability_delta = Some(
-                    arg.trim_start_matches("--max-top-probability-delta=")
-                        .parse::<f64>()
-                        .map_err(|_| {
-                            DriftReceiptError::InvalidArg(format!(
-                                "invalid value for --max-top-probability-delta\n{}",
-                                usage()
-                            ))
-                        })?,
-                )
-            }
-            _ if arg.starts_with("--max-margin-delta=") => {
-                max_margin_delta = Some(
-                    arg.trim_start_matches("--max-margin-delta=")
-                        .parse::<f64>()
-                        .map_err(|_| {
-                            DriftReceiptError::InvalidArg(format!(
-                                "invalid value for --max-margin-delta\n{}",
-                                usage()
-                            ))
-                        })?,
-                )
+            _ if arg.starts_with("--policy=") => {
+                policy = Some(PathBuf::from(arg.trim_start_matches("--policy=").to_string()))
             }
             _ if arg.starts_with("--out=") => {
                 out_path = PathBuf::from(arg.trim_start_matches("--out=").to_string())
@@ -234,17 +252,8 @@ where
         current: current.ok_or_else(|| {
             DriftReceiptError::InvalidArg(format!("missing value for --current\n{}", usage()))
         })?,
-        max_top_probability_delta: max_top_probability_delta.ok_or_else(|| {
-            DriftReceiptError::InvalidArg(format!(
-                "missing value for --max-top-probability-delta\n{}",
-                usage()
-            ))
-        })?,
-        max_margin_delta: max_margin_delta.ok_or_else(|| {
-            DriftReceiptError::InvalidArg(format!(
-                "missing value for --max-margin-delta\n{}",
-                usage()
-            ))
+        policy: policy.ok_or_else(|| {
+            DriftReceiptError::InvalidArg(format!("missing value for --policy\n{}", usage()))
         })?,
         out_path,
     })
@@ -306,8 +315,38 @@ fn read_f64(
     })
 }
 
+fn read_string_policy(
+    object: &serde_json::Map<String, Value>,
+    key: &'static str,
+    path: &Path,
+) -> Result<String, DriftReceiptError> {
+    object
+        .get(key)
+        .and_then(Value::as_str)
+        .map(str::to_string)
+        .ok_or_else(|| {
+            DriftReceiptError::Parse(format!(
+                "infer output drift policy `{}` missing string field `{key}`",
+                path.display()
+            ))
+        })
+}
+
+fn read_f64_policy(
+    object: &serde_json::Map<String, Value>,
+    key: &'static str,
+    path: &Path,
+) -> Result<f64, DriftReceiptError> {
+    object.get(key).and_then(Value::as_f64).ok_or_else(|| {
+        DriftReceiptError::Parse(format!(
+            "infer output drift policy `{}` missing number field `{key}`",
+            path.display()
+        ))
+    })
+}
+
 fn usage() -> &'static str {
-    "usage: afterburner drift-receipt --candidate PATH --current PATH --max-top-probability-delta F64 --max-margin-delta F64 [--out PATH]"
+    "usage: afterburner drift-receipt --candidate PATH --current PATH --policy PATH [--out PATH]"
 }
 
 #[cfg(test)]
@@ -321,9 +360,8 @@ mod tests {
             "--candidate".to_string(),
             "candidate.json".to_string(),
             "--current=current.json".to_string(),
-            "--max-top-probability-delta".to_string(),
-            "0.05".to_string(),
-            "--max-margin-delta=0.1".to_string(),
+            "--policy".to_string(),
+            "policy.json".to_string(),
             "--out".to_string(),
             "receipt.json".to_string(),
         ];
@@ -334,8 +372,7 @@ mod tests {
             Args {
                 candidate: PathBuf::from("candidate.json"),
                 current: PathBuf::from("current.json"),
-                max_top_probability_delta: 0.05,
-                max_margin_delta: 0.1,
+                policy: PathBuf::from("policy.json"),
                 out_path: PathBuf::from("receipt.json"),
             }
         );

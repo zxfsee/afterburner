@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-policy/v1",
+  "title": "Infer Output Drift Policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_name",
+    "max_top_probability_delta",
+    "max_margin_to_second_delta"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "profile_name": { "type": "string", "minLength": 1 },
+    "max_top_probability_delta": { "type": "number", "minimum": 0.0 },
+    "max_margin_to_second_delta": { "type": "number", "minimum": 0.0 }
+  }
+}
