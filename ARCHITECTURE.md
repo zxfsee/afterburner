@@ -129,6 +129,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Cleanup review should also converge on one explicit cleanup dry-run receipt layered on
   `artifact_cleanup_inventory.json`, so planned removals can be audited without mixing preview
   decisions into the inventory classification artifact itself.
+- Cleanup execution should also converge on one explicit cleanup execution receipt layered on
+  `artifact_cleanup_dry_run_receipt.json`, so future destructive runs can audit actual removals
+  and skips separately from preview planning.
 - Deployment verification should also converge on one explicit deployment verification receipt
   per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
   and matching event instead of raw logs alone.
@@ -178,3 +181,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-026: Pretraining Source Approval Receipt](./docs/adr/026-pretraining-source-approval-receipt.md)
 - [ADR-027: Deployment Verification Evidence Provenance](./docs/adr/027-deployment-verification-evidence-provenance.md)
 - [ADR-028: Distributed Shard Lineage Receipt](./docs/adr/028-distributed-shard-lineage-receipt.md)
+- [ADR-029: Artifact Cleanup Execution Receipt](./docs/adr/029-artifact-cleanup-execution-receipt.md)

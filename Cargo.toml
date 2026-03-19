@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Artifact cleanup execution receipt gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define the minimum post-execution receipt for actual cleanup runs so any future removal step can be audited separately from dry-run planning and inventory classification.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Profiling provenance receipt gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum receipt fields for recording when profiling environment provenance was captured or refreshed so later profiling comparisons can audit provenance generation separately from the profiling summary payload itself.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
