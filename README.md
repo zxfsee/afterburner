@@ -136,6 +136,10 @@ Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_i
 the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
 deploy/train/eval state, inactive inference version directories, and profiling artifacts before any
 future cleanup dry-run receipt decides what would actually be removed.
+The future review artifact for that next layer should be
+`artifacts/deploy/artifact_cleanup_dry_run_receipt.json`, carrying at least the
+`artifact_cleanup_inventory.json` input path, `planned_removals`, `retained_count`,
+`prune_candidate_count`, and `generated_at_unix_ms`.
 For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
 and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
 rollback all stay explicit and reversible.

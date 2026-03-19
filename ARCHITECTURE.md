@@ -119,6 +119,9 @@ auto-versioning, embedded serving) are intentionally absent.
   active rollout evidence under `artifacts/deploy/`, required decision artifacts under
   `artifacts/train/`, and the current approved drift baseline state; `artifacts/profiling/`
   and superseded eval artifacts are prune candidates once nothing active references them.
+- Cleanup review should also converge on one explicit cleanup dry-run receipt layered on
+  `artifact_cleanup_inventory.json`, so planned removals can be audited without mixing preview
+  decisions into the inventory classification artifact itself.
 - Deployment verification should also converge on one explicit deployment verification receipt
   per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
   and matching event instead of raw logs alone.
@@ -156,3 +159,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-021: Pretraining Source Registry](./docs/adr/021-pretraining-source-registry.md)
 - [ADR-022: Deployment Verification Receipt](./docs/adr/022-deployment-verification-receipt.md)
 - [ADR-023: Distributed Shard Lineage](./docs/adr/023-distributed-shard-lineage.md)
+- [ADR-024: Artifact Cleanup Dry-Run Receipt](./docs/adr/024-artifact-cleanup-dry-run-receipt.md)
