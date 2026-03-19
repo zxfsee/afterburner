@@ -165,6 +165,10 @@ Within that dataset manifest, treat `source` as a stable source registry key and
 contract should minimally pin each source's `upstream_locator`, `license`, and
 `approval_status` so corpus identity does not depend on free-form manifest
 labels alone.
+Approval changes there should also converge on one explicit
+`pretraining_source_approval_receipt.json` artifact carrying at least `source`,
+`source_revision`, `approval_status`, `approved_by`, `approval_ticket`, and
+`approved_at_unix_ms`.
 
 Rollback example:
 ```sh

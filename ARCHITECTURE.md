@@ -133,6 +133,9 @@ auto-versioning, embedded serving) are intentionally absent.
   and `source_revision` as the approved snapshot selector within that source,
   so corpus identity does not degrade into free-form manifest labels as
   pretraining data expands.
+- Pretraining source registry state should also have an explicit source approval receipt layer over
+  time, so `approval_status` changes can be audited with `approved_by`, `approval_ticket`, and
+  `approved_at_unix_ms` instead of being inferred from registry edits alone.
 
 ### Assumptions
 
@@ -165,3 +168,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-023: Distributed Shard Lineage](./docs/adr/023-distributed-shard-lineage.md)
 - [ADR-024: Artifact Cleanup Dry-Run Receipt](./docs/adr/024-artifact-cleanup-dry-run-receipt.md)
 - [ADR-025: Profiling Environment Provenance](./docs/adr/025-profiling-environment-provenance.md)
+- [ADR-026: Pretraining Source Approval Receipt](./docs/adr/026-pretraining-source-approval-receipt.md)

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining source approval receipt gate [Data Infra, Pre-training]
-  - Goal: Define the minimum approval receipt fields for pretraining source-registry entries so corpus approval state can be audited separately from dataset manifests and source inventory definitions.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Profiling environment snapshot contract [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Materialize one inspectable profiling-environment snapshot artifact so future provenance gates and profiling-side workflows can consume a stable adapter output instead of rediscovering host and profiler facts ad hoc.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Profiling provenance receipt gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum receipt fields for recording when profiling environment provenance was captured or refreshed so later profiling comparisons can audit provenance generation separately from the profiling summary payload itself.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining source provenance receipt gate [Data Infra, Pre-training]
+  - Goal: Define the minimum provenance-reference fields for pretraining source approval receipts so later dataset and registry workflows can trace each approval back to the reviewed source metadata without reading surrounding process logs.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
