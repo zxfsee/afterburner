@@ -74,6 +74,9 @@ auto-versioning, embedded serving) are intentionally absent.
   upload, promotion, or deployment. Artifact provenance plus `rollout_owner`, `approved_by`,
   `approved_operations`, `approval_ticket`, and `approved_at_unix_ms` are contract data, not
   inferred CI/session state.
+- The first upload adapter remains provider-neutral: it validates the manifest plus rollout
+  ownership contracts and materializes an `artifact_upload_request.json` artifact instead of
+  binding core or adapter code directly to a storage SDK.
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
@@ -111,3 +114,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-011: Arrow/DataFusion/Ballista/Parquet Fit](./docs/adr/011-data-infra-fit.md)
 - [ADR-012: CubeCL/CubeK Fit](./docs/adr/012-cubecl-fit.md)
 - [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)
+- [ADR-014: Artifact Upload Adapter Contract](./docs/adr/014-artifact-upload-adapter.md)

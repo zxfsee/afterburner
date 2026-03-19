@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/artifact-upload-request/v1",
+  "title": "Artifact Upload Request v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "operation",
+    "provider",
+    "destination",
+    "artifact_version",
+    "artifact_manifest",
+    "artifact_file",
+    "artifact_directory",
+    "artifact_sha256",
+    "provenance_source",
+    "rollout_owner",
+    "approved_by",
+    "approval_ticket",
+    "approved_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "operation": {
+      "const": "upload"
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1
+    },
+    "destination": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_manifest": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_directory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "provenance_source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rollout_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_by": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approval_ticket": {
+      "type": "string",
+      "minLength": 1
+    },
+    "approved_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

@@ -128,6 +128,10 @@ Deployment-side work now has a canonical example target profile at
 future deploy-rs wiring can reference one inspectable baseline profile.
 `just deploy-check` validates the baseline deploy-rs wiring from that profile contract
 without requiring a real deployment target.
+`afterburner upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
+validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
+`artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
+to any network service directly.
 For future data-oriented artifact surfaces, the current fit decision is conservative:
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or

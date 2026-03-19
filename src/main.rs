@@ -1,6 +1,7 @@
 mod cmd_eval;
 mod cmd_infer;
 mod cmd_train;
+mod cmd_upload;
 
 fn main() {
     let mut args = std::env::args().skip(1);
@@ -13,6 +14,7 @@ fn main() {
         "train" => cmd_train::run(args),
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
+        "upload" => cmd_upload::run(args),
         "--help" | "-h" | "help" => {
             println!("{}", usage());
             0
@@ -30,5 +32,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval> [args]"
+    "usage: afterburner <train|infer|eval|upload> [args]"
 }

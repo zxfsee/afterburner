@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "operation": "upload",
+  "provider": "generic",
+  "destination": "uploads/afterburner",
+  "artifact_version": "0.1.0",
+  "artifact_manifest": "<artifact>/manifest.toml",
+  "artifact_file": "<artifact>/model.mpk",
+  "artifact_directory": "<artifact>",
+  "artifact_sha256": "<artifact-sha256>",
+  "provenance_source": "artifacts/train/train_done.jsonl",
+  "rollout_owner": "ml-release",
+  "approved_by": "ops-review",
+  "approval_ticket": "CHG-4242",
+  "approved_at_unix_ms": 1735689600000
+}

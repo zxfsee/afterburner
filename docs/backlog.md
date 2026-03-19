@@ -16,11 +16,3 @@ Rules:
 - Promotion into active TODO queue must preserve priority order and dependency constraints.
 
 ## Items
-
-- Promotion/rollback orchestration gate [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define and validate deterministic promotion/rollback orchestration (`train -> eval -> promote -> deploy -> verify -> rollback`) with explicit pass/fail evidence at each step.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`, `event`
-  - Scope: `justfile`, `tests/`, `docs/adr/`, `ARCHITECTURE.md`
-  - Blocked-by: Artifact upload adapter contract.
