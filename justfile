@@ -66,6 +66,10 @@ drift-receipt candidate_summary current_summary policy:
 drift-baseline summary receipt:
     cargo run --locked --bin afterburner -- drift-baseline --summary {{summary}} --receipt {{receipt}} --out artifacts/eval/infer_output_drift_baseline.json
 
+# refresh the approved drift baseline, archiving the old one and writing a refresh receipt
+drift-refresh-baseline summary receipt current_baseline:
+    cargo run --locked --bin afterburner -- drift-refresh-baseline --summary {{summary}} --receipt {{receipt}} --current-baseline {{current_baseline}} --out artifacts/eval/infer_output_drift_baseline.json --archive artifacts/eval/infer_output_drift_baseline.previous.json --refresh-receipt artifacts/eval/infer_output_drift_baseline_refresh.json
+
 # promote a vetted artifact version by updating the current pointer and saving the previous one
 rollout-promote artifact_version:
     mkdir artifacts/deploy

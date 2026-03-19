@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-refresh/v1",
+  "title": "Infer Output Drift Baseline Refresh v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "previous_baseline_path",
+    "archived_baseline_path",
+    "refreshed_baseline_path",
+    "summary_path",
+    "receipt_path",
+    "previous_artifact_version",
+    "next_artifact_version",
+    "policy_profile"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "previous_baseline_path": { "type": "string", "minLength": 1 },
+    "archived_baseline_path": { "type": "string", "minLength": 1 },
+    "refreshed_baseline_path": { "type": "string", "minLength": 1 },
+    "summary_path": { "type": "string", "minLength": 1 },
+    "receipt_path": { "type": "string", "minLength": 1 },
+    "previous_artifact_version": { "type": "string", "minLength": 1 },
+    "next_artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 }
+  }
+}

@@ -175,6 +175,9 @@ drift-policy artifact instead of ad-hoc CLI thresholds at rollout time.
 Use `just drift-baseline <summary> <receipt>` to materialize `artifacts/eval/infer_output_drift_baseline.json`,
 the approved reference snapshot that later drift receipts should compare against instead of whichever
 current summary happens to be on disk at rollout time.
+Use `just drift-refresh-baseline <summary> <receipt> <current-baseline>` to replace an approved
+baseline while archiving the previous one and writing `artifacts/eval/infer_output_drift_baseline_refresh.json`,
+so summary, receipt, policy, and baseline transitions remain synchronized.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).
