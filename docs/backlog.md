@@ -39,6 +39,20 @@ Rules:
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
+- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`
+  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+
+- Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `cli`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
+
 - Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
   - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
   - Kind: `gate`
