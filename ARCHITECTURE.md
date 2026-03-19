@@ -94,6 +94,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - RL work remains artifact-first for now: `rl_rollout_metadata.schema.json` is the current
   contract surface, with a single-environment identity string and no in-repo simulator
   bindings or vectorized environment runtime until measured need justifies them.
+- The multibillion-scale target envelope is also contract-first: larger-scale claims must stay
+  grounded in explicit training scalability, distributed_shard_metadata, manifest precision,
+  rollout ownership, upload request, and deployment target profile contracts before runtime
+  orchestration expands.
 
 ### Assumptions
 
@@ -115,3 +119,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-012: CubeCL/CubeK Fit](./docs/adr/012-cubecl-fit.md)
 - [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)
 - [ADR-014: Artifact Upload Adapter Contract](./docs/adr/014-artifact-upload-adapter.md)
+- [ADR-015: Multibillion-Scale Target Envelope](./docs/adr/015-multibillion-target-envelope.md)

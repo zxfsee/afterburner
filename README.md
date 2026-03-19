@@ -180,6 +180,12 @@ For future RL work, keep the contract surface at `fixtures/rl_rollout_metadata.s
 first: one single-environment metadata artifact with a stable `environment` identity is the
 current fit, while simulator bindings, rollout-step payloads, and vectorized environment
 orchestration stay deferred until a measured need exists.
+For eventual multibillion-scale work, treat the target envelope as contract-first rather than
+runtime-first: `training_scalability_contract.json`, `distributed_shard_metadata.schema.json`,
+manifest `precision`, `artifact_rollout_ownership.schema.json`,
+`artifact_upload_request.schema.json`, and `deployment_target_profile.schema.json` are the
+minimum surfaces that must remain explicit before claiming larger-scale training or deployment
+readiness.
 Baseline refresh flow when intended model changes shift deterministic accuracy:
 1. Run `just eval`.
 2. Review `artifacts/eval/mnist_eval_summary.json` and confirm the change is expected.

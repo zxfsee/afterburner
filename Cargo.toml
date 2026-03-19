@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Multibillion-scale system target envelope gate [Distributed Training, Inference, Serving/Deployment Infra]
-  - Goal: Define the minimum training, inference, and deployment constraints for eventual multibillion-parameter support so sharding, checkpointing, precision, and rollout contracts evolve intentionally instead of piecemeal.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Calibration sidecar export contract [Post-training, Serving/Deployment Infra]
   - Goal: Define how optional calibration metadata attaches to exported inference artifacts and export-time events so later upload/promote/deploy steps consume explicit post-training state instead of inferring local side files.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
+
+- Distributed checkpoint index gate [Distributed Training, Runtime Infra]
+  - Goal: Define the minimum checkpoint index contract for multi-shard training so recovery and promotion flows can reason about shard membership without inferring from directory layout alone.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
 """
