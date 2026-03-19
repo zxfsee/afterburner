@@ -88,6 +88,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
   because the current Burn GPU stack already carries them transitively. They remain out of
   the repo's direct dependencies and public contracts until the checked threshold is crossed.
+- RL work remains artifact-first for now: `rl_rollout_metadata.schema.json` is the current
+  contract surface, with a single-environment identity string and no in-repo simulator
+  bindings or vectorized environment runtime until measured need justifies them.
 
 ### Assumptions
 
@@ -107,3 +110,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-010: Deploy-rs Baseline](./docs/adr/010-deploy-rs-baseline.md)
 - [ADR-011: Arrow/DataFusion/Ballista/Parquet Fit](./docs/adr/011-data-infra-fit.md)
 - [ADR-012: CubeCL/CubeK Fit](./docs/adr/012-cubecl-fit.md)
+- [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)

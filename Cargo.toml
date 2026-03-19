@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- RL environment fit investigation gate [RL Infra, Frameworks]
-  - Goal: Evaluate the smallest viable environment/runtime shape for future RL work before introducing simulator bindings, vectorized env orchestration, or rollout-data contracts.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Artifact upload adapter contract [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define a provider-agnostic artifact upload contract and gate, with optional Hugging Face adapter later, while keeping core runtime/storage-independent.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining dataset manifest contract [Data Infra, Pre-training]
+  - Goal: Define a dataset-level manifest that pins corpus revision, shard inventory, split counts, and checksum rollups so large-scale pretraining data refreshes stay auditable without inferring from per-sample metadata alone.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
 
 ## [Trunk]
 """
