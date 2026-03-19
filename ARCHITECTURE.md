@@ -115,6 +115,10 @@ auto-versioning, embedded serving) are intentionally absent.
   active rollout evidence under `artifacts/deploy/`, required decision artifacts under
   `artifacts/train/`, and the current approved drift baseline state; `artifacts/profiling/`
   and superseded eval artifacts are prune candidates once nothing active references them.
+- Pretraining dataset manifests should treat `source` as a source registry key
+  and `source_revision` as the approved snapshot selector within that source,
+  so corpus identity does not degrade into free-form manifest labels as
+  pretraining data expands.
 
 ### Assumptions
 
@@ -142,3 +146,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-018: Distributed Checkpoint Index](./docs/adr/018-distributed-checkpoint-index.md)
 - [ADR-019: Artifact Retention Envelope](./docs/adr/019-artifact-retention-envelope.md)
 - [ADR-020: Profiling Hotspot Taxonomy](./docs/adr/020-profiling-hotspot-taxonomy.md)
+- [ADR-021: Pretraining Source Registry](./docs/adr/021-pretraining-source-registry.md)

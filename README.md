@@ -143,6 +143,11 @@ For pretraining data, the repo now distinguishes per-sample metadata from datase
 `pretraining_sample_metadata.schema.json` stays the sample contract, while
 `pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts,
 and checksum rollups for larger dataset refreshes.
+Within that dataset manifest, treat `source` as a stable source registry key and
+`source_revision` as the approved snapshot selector. A future source registry
+contract should minimally pin each source's `upstream_locator`, `license`, and
+`approval_status` so corpus identity does not depend on free-form manifest
+labels alone.
 
 Rollback example:
 ```sh

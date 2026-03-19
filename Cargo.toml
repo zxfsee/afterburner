@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining source registry gate [Data Infra, Pre-training]
-  - Goal: Define the minimum source-registry contract for pretraining datasets so manifests can reference approved corpus identities without relying on free-form source naming alone.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Deployment verification receipt gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum verification receipt contract for promoted artifacts so post-deploy checks can be audited without reconstructing the rollout outcome from raw logs alone.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Profiling environment provenance gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum host and profiler provenance fields needed for profiling artifacts so hotspot comparisons do not rely on unstated local environment assumptions.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining source approval receipt gate [Data Infra, Pre-training]
+  - Goal: Define the minimum approval receipt fields for pretraining source-registry entries so corpus approval state can be audited separately from dataset manifests and source inventory definitions.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
