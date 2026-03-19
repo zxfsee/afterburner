@@ -172,6 +172,9 @@ without persisting the full logits from every run.
 Use `just drift-receipt <candidate-summary> <current-summary> <max-top-probability-delta> <max-margin-delta>`
 to materialize `artifacts/eval/infer_output_drift_receipt.json`, a pass/fail receipt for rollout
 decisions based on two infer drift summaries instead of ad-hoc manual comparison.
+Use `just drift-baseline <summary> <receipt>` to materialize `artifacts/eval/infer_output_drift_baseline.json`,
+the approved reference snapshot that later drift receipts should compare against instead of whichever
+current summary happens to be on disk at rollout time.
 The eval guard writes a deterministic summary to `artifacts/eval/mnist_eval_summary.json` and emits
 an `eval_done` event with RED-style monitoring fields (`rate_samples_per_sec`, `error_count`, `duration_ms`)
 plus eval context (`accuracy`, `samples`, `artifact_version`, `batches_evaluated`, `batch_size`, `seed`).

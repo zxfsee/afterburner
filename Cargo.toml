@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline snapshot contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a checked baseline snapshot artifact for infer-output drift receipts so promotion decisions compare against one approved reference instead of whichever current summary happens to be on disk.
+- Inference drift policy profile contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a named drift-policy profile artifact so drift receipts and baseline snapshots use one explicit threshold contract instead of ad-hoc CLI thresholds at rollout time.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

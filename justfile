@@ -62,6 +62,10 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
 drift-receipt candidate_summary current_summary max_top_probability_delta max_margin_delta:
     cargo run --locked --bin afterburner -- drift-receipt --candidate {{candidate_summary}} --current {{current_summary}} --max-top-probability-delta {{max_top_probability_delta}} --max-margin-delta {{max_margin_delta}} --out artifacts/eval/infer_output_drift_receipt.json
 
+# capture a checked baseline snapshot from an approved infer drift receipt
+drift-baseline summary receipt:
+    cargo run --locked --bin afterburner -- drift-baseline --summary {{summary}} --receipt {{receipt}} --out artifacts/eval/infer_output_drift_baseline.json
+
 # promote a vetted artifact version by updating the current pointer and saving the previous one
 rollout-promote artifact_version:
     mkdir artifacts/deploy

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline/v1",
+  "title": "Infer Output Drift Baseline v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "summary_path",
+    "receipt_path",
+    "artifact",
+    "artifact_version",
+    "backend",
+    "predicted_class",
+    "top_probability",
+    "margin_to_second",
+    "logits_sha256",
+    "probabilities_sha256"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "summary_path": { "type": "string", "minLength": 1 },
+    "receipt_path": { "type": "string", "minLength": 1 },
+    "artifact": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "backend": { "type": "string", "minLength": 1 },
+    "predicted_class": { "type": "integer", "minimum": 0 },
+    "top_probability": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+    "margin_to_second": { "type": "number", "minimum": 0.0 },
+    "logits_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "probabilities_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}
