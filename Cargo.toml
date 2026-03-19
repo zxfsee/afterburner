@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference drift baseline export bundle contract [Inference, Serving/Deployment Infra]
-  - Goal: Define a compact export bundle artifact for the currently approved drift baseline state so deployment-side workflows can consume one packaged baseline contract instead of pulling individual pointer and history files ad hoc.
+- Inference drift baseline handoff manifest contract [Inference, Serving/Deployment Infra]
+  - Goal: Define a minimal handoff manifest for exporting the current approved drift baseline state into deployment workflows so transport layers can consume one stable manifest instead of inferring which bundle fields are required.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

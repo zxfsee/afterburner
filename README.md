@@ -187,6 +187,10 @@ pointer changes over time.
 Use `just drift-checkpoint-baseline <pointer> <history>` to materialize
 `artifacts/eval/infer_output_drift_baseline_checkpoint.json`, a compact recovery bundle over the
 current approved-baseline pointer and recent pointer history before changing baseline state.
+Use `just drift-export-baseline-bundle <pointer> <history>` to materialize
+`artifacts/eval/infer_output_drift_baseline_bundle.json`, the packaged baseline contract for
+deployment-side consumers that should not have to resolve pointer, approval, baseline, and history
+files separately.
 Use `just drift-rollback-approved-baseline <current-pointer> <restored-approval> <rolled-back-at-unix-ms>`
 to restore the approved-baseline pointer to a prior approval and write
 `artifacts/eval/infer_output_drift_baseline_rollback.json`, keeping rollback decisions explicit and
