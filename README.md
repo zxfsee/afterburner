@@ -191,6 +191,10 @@ Use `just drift-export-baseline-bundle <pointer> <history>` to materialize
 `artifacts/eval/infer_output_drift_baseline_bundle.json`, the packaged baseline contract for
 deployment-side consumers that should not have to resolve pointer, approval, baseline, and history
 files separately.
+Use `just drift-export-baseline-handoff <bundle>` to materialize
+`artifacts/eval/infer_output_drift_baseline_handoff.json`, the smaller stable manifest for
+transport layers that only need the approved baseline handoff surface and should not depend on the
+full bundle shape.
 Use `just drift-rollback-approved-baseline <current-pointer> <restored-approval> <rolled-back-at-unix-ms>`
 to restore the approved-baseline pointer to a prior approval and write
 `artifacts/eval/infer_output_drift_baseline_rollback.json`, keeping rollback decisions explicit and

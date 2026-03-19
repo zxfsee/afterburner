@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-handoff/v1",
+  "title": "Infer Output Drift Baseline Handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_path",
+    "approval_path",
+    "baseline_path",
+    "artifact",
+    "artifact_version",
+    "policy_profile"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "bundle_path": { "type": "string", "minLength": 1 },
+    "approval_path": { "type": "string", "minLength": 1 },
+    "baseline_path": { "type": "string", "minLength": 1 },
+    "artifact": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 }
+  }
+}
