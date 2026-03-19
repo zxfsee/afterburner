@@ -85,6 +85,9 @@ auto-versioning, embedded serving) are intentionally absent.
   introducing new execution paths. Custom kernels are justified only when the checked
   kernel-adoption contract is refreshed with current model coverage and supporting
   backend profile evidence.
+- CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
+  because the current Burn GPU stack already carries them transitively. They remain out of
+  the repo's direct dependencies and public contracts until the checked threshold is crossed.
 
 ### Assumptions
 
@@ -103,3 +106,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-009: Artifact Rollout Ownership](./docs/adr/009-artifact-rollout-ownership.md)
 - [ADR-010: Deploy-rs Baseline](./docs/adr/010-deploy-rs-baseline.md)
 - [ADR-011: Arrow/DataFusion/Ballista/Parquet Fit](./docs/adr/011-data-infra-fit.md)
+- [ADR-012: CubeCL/CubeK Fit](./docs/adr/012-cubecl-fit.md)

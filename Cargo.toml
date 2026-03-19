@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
-  - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - RL environment fit investigation gate [RL Infra, Frameworks]
   - Goal: Evaluate the smallest viable environment/runtime shape for future RL work before introducing simulator bindings, vectorized env orchestration, or rollout-data contracts.
   - Kind: `gate`
@@ -47,6 +40,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Calibration sidecar export contract [Post-training, Serving/Deployment Infra]
+  - Goal: Define how optional calibration metadata attaches to exported inference artifacts and export-time events so later upload/promote/deploy steps consume explicit post-training state instead of inferring local side files.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
 
 - OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
   - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.

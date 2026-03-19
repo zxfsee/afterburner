@@ -2,13 +2,6 @@
 
 ## TODO
 
-- CubeK/CubeCL kernel fit investigation gate [Kernels, Frameworks, Runtime Infra]
-  - Goal: Evaluate whether CubeK/CubeCL is the right custom-kernel path once profiling evidence and the kernel-adoption contract justify replacing backend-provided kernels.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - RL environment fit investigation gate [RL Infra, Frameworks]
   - Goal: Evaluate the smallest viable environment/runtime shape for future RL work before introducing simulator bindings, vectorized env orchestration, or rollout-data contracts.
   - Kind: `gate`
@@ -36,6 +29,13 @@
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Calibration sidecar export contract [Post-training, Serving/Deployment Infra]
+  - Goal: Define how optional calibration metadata attaches to exported inference artifacts and export-time events so later upload/promote/deploy steps consume explicit post-training state instead of inferring local side files.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`
 
 - OpenTelemetry profiling correlation investigation gate [Runtime Infra, Frameworks]
   - Goal: Evaluate whether profiling artifacts should correlate with OpenTelemetry-style trace/resource metadata without introducing a heavy telemetry SDK or runtime prematurely.
@@ -85,12 +85,13 @@
 - Split workspace and add dependency gate ([277391f])
 - Split workspace and add dependency gate ([5f70ebf])
 - Define custom kernel adoption contract\n\nWrite a training-side kernel threshold artifact, gate it against the current model footprint, and document the decision in ADR-005. ([df702e0])
-- Advance contract gates and profiling tooling ([da34943])
-- Validate calibration sidecar compatibility ([4e597c6])
-- Add infer hotspot summary artifact ([85eded1])
-- Surface precision metadata in events ([95618ef])
-- Add deploy-rs baseline contract ([755506f])
-- Add deploy-rs baseline contract ([b87c514])
+- Advance contract gates and profiling tooling ([53fa3ab])
+- Validate calibration sidecar compatibility ([18bc718])
+- Add infer hotspot summary artifact ([e3b73e1])
+- Surface precision metadata in events ([2f55936])
+- Add deploy-rs baseline contract ([d6fb65d])
+- Add deploy-rs baseline contract ([8e6c185])
+- Unify profiling in dashboard ([6c42dc3])
 
 ### Changed
 
@@ -121,8 +122,8 @@
 - Normalize CHANGELOG list formatting, add TODO entry, and update git-cliff config/invocation ([6e763c9])
 - Use git-cliff --offline when regenerating CHANGELOG ([d087302])
 - Move offline setting to Cargo.toml and remove --offline from justfile ([e3cf388])
-- Codify durable tooling guards ([9ba8033])
-- Clarify profiling blocker ([7085724])
+- Codify durable tooling guards ([03f664a])
+- Clarify profiling blocker ([046aab1])
 
 ### Documentation
 
@@ -173,7 +174,7 @@
 - Add promotion rollback orchestration gate ([c2d8837])
 - Align TODO promotion and backlog semantics ([04449f7])
 - Remove ephemeral workspace /tmp path recommendation ([97e7620])
-- Record arrow and parquet fit ([bafc9c5])
+- Record arrow and parquet fit ([d697bea])
 
 ### Fixed
 
@@ -207,8 +208,8 @@
 - Add summary success fixture gate ([b0b12a5])
 - Add backend profile gate ([6f7b290])
 - Restore active horizon gate ([b084fab])
-- Add target profile example fixture ([c6a24f2])
-- Pin train_start event fixture ([6b82316])
+- Add target profile example fixture ([a916ce8])
+- Pin train_start event fixture ([eefaeb3])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -343,16 +344,17 @@
 [5f70ebf]: https://github.com/zxfsee/afterburner/commit/5f70ebf6fd0db4795677699d0b5a1664b008eda8
 [b084fab]: https://github.com/zxfsee/afterburner/commit/b084fab8279a58ed4cdaa08380f1bccc23447b4f
 [df702e0]: https://github.com/zxfsee/afterburner/commit/df702e0b7ad7a32e56eaae2e81bab36d8700a1d3
-[da34943]: https://github.com/zxfsee/afterburner/commit/da349435ad8a5db8f44560df29c9b64dc177b7cd
-[9ba8033]: https://github.com/zxfsee/afterburner/commit/9ba803382c313721f0d12094e7561dbc175c19a1
-[4e597c6]: https://github.com/zxfsee/afterburner/commit/4e597c6947feca57008ce051c6a0606d40389822
-[7085724]: https://github.com/zxfsee/afterburner/commit/7085724f31c47a6848ecccb878fb8f6cb5bdd3b9
-[85eded1]: https://github.com/zxfsee/afterburner/commit/85eded1d12f14adf94c980dfea9062dda681b1c9
-[95618ef]: https://github.com/zxfsee/afterburner/commit/95618ef68166d68889ee201dd6bd6dc69ed3f5ef
-[c6a24f2]: https://github.com/zxfsee/afterburner/commit/c6a24f2e90f7dbf37b5bb5af67b7b1f48541436c
-[755506f]: https://github.com/zxfsee/afterburner/commit/755506f42a939a7ac4613b55c6640448b71c3795
-[b87c514]: https://github.com/zxfsee/afterburner/commit/b87c514b196f979ac7519ca2f9edea78d3930617
-[6b82316]: https://github.com/zxfsee/afterburner/commit/6b82316274bb76eb757f1180db8789efa558586c
-[bafc9c5]: https://github.com/zxfsee/afterburner/commit/bafc9c57aa64e7635bbd5267e75e8032a2f2200d
+[53fa3ab]: https://github.com/zxfsee/afterburner/commit/53fa3abba1e6e1c554acb50a2fb646add852b807
+[03f664a]: https://github.com/zxfsee/afterburner/commit/03f664a4e9d7e604510bf03cf52c9843549f0e43
+[18bc718]: https://github.com/zxfsee/afterburner/commit/18bc7182b95fc59d382a2cad787fda9dacd8adb8
+[046aab1]: https://github.com/zxfsee/afterburner/commit/046aab17075bc8daad9739ed451f9e55109c641c
+[e3b73e1]: https://github.com/zxfsee/afterburner/commit/e3b73e179f60890c7f6fe55e2e8f384194ecf080
+[2f55936]: https://github.com/zxfsee/afterburner/commit/2f55936f6c47286b1beed742e616f8983383d738
+[a916ce8]: https://github.com/zxfsee/afterburner/commit/a916ce8c902a1e3435cb4fb98357e1cad8f01762
+[d6fb65d]: https://github.com/zxfsee/afterburner/commit/d6fb65d4f8b525b9104e628d3fd1868012b649d6
+[8e6c185]: https://github.com/zxfsee/afterburner/commit/8e6c18514e801d1f91b47591bc998267e164f356
+[eefaeb3]: https://github.com/zxfsee/afterburner/commit/eefaeb3b12e27c289adde0661f366e5eb560d43d
+[d697bea]: https://github.com/zxfsee/afterburner/commit/d697beaa626969b6c4dc6e50fe418477d35fd56a
+[6c42dc3]: https://github.com/zxfsee/afterburner/commit/6c42dc3b9fcc2e88c6f6eb7854fc6fed60214972
 
 <!-- generated by git-cliff -->

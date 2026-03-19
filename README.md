@@ -169,6 +169,9 @@ win over the Nix Apple SDK environment.
 `artifacts/train/kernel_adoption_thresholds.json` pins the current custom-kernel decision rule:
 the present model requires coverage of the checked `1x1`, `3x3`, and `5x5` convolution footprint,
 and backend profile regressions must remain sustained before replacing backend-provided kernels.
+If that threshold is ever crossed, `CubeCL`/`CubeK` are the first implementation path to
+evaluate because the current Burn GPU stack already carries them transitively; no direct
+`cubecl` or `cubek` dependency is added until that measured need exists.
 Baseline refresh flow when intended model changes shift deterministic accuracy:
 1. Run `just eval`.
 2. Review `artifacts/eval/mnist_eval_summary.json` and confirm the change is expected.
