@@ -181,6 +181,10 @@ record that distinguishes a freshly computed baseline from one approved for roll
 Use `just drift-point-approved-baseline <approval>` to materialize `artifacts/eval/infer_output_drift_baseline_pointer.json`,
 the single pointer artifact that identifies which approved baseline rollout tooling should treat as
 current.
+Use `just drift-rollback-approved-baseline <current-pointer> <restored-approval> <rolled-back-at-unix-ms>`
+to restore the approved-baseline pointer to a prior approval and write
+`artifacts/eval/infer_output_drift_baseline_rollback.json`, keeping rollback decisions explicit and
+auditable.
 Use `just drift-supersede-baseline-approval <previous-approval> <next-approval> <superseded-at-unix-ms>`
 to materialize `artifacts/eval/infer_output_drift_baseline_supersession.json`, the lineage record
 that marks an older baseline approval as superseded by a newer approved baseline.

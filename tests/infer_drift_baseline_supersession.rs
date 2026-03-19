@@ -107,7 +107,10 @@ fn drift_supersede_baseline_approval_writes_supersession_and_event() {
     let object = supersession
         .as_object_mut()
         .expect("supersession must be a top-level object");
-    object.insert("previous_approval_path".to_string(), Value::from("<previous>"));
+    object.insert(
+        "previous_approval_path".to_string(),
+        Value::from("<previous>"),
+    );
     object.insert("next_approval_path".to_string(), Value::from("<next>"));
     assert_eq!(
         supersession,
@@ -139,7 +142,10 @@ fn drift_supersede_baseline_approval_writes_supersession_and_event() {
         .get_mut("supersession")
         .and_then(Value::as_object_mut)
         .expect("event supersession must be an object");
-    supersession_obj.insert("previous_approval_path".to_string(), Value::from("<previous>"));
+    supersession_obj.insert(
+        "previous_approval_path".to_string(),
+        Value::from("<previous>"),
+    );
     supersession_obj.insert("next_approval_path".to_string(), Value::from("<next>"));
     assert_eq!(
         normalized_event,

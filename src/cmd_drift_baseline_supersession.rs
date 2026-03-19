@@ -68,11 +68,18 @@ where
         args.previous_approval.as_path(),
         "infer output drift baseline approval",
     )?;
-    let next = load_json_object(args.next_approval.as_path(), "infer output drift baseline approval")?;
+    let next = load_json_object(
+        args.next_approval.as_path(),
+        "infer output drift baseline approval",
+    )?;
 
-    let previous_artifact_version =
-        read_string(&previous, "artifact_version", args.previous_approval.as_path())?;
-    let next_artifact_version = read_string(&next, "artifact_version", args.next_approval.as_path())?;
+    let previous_artifact_version = read_string(
+        &previous,
+        "artifact_version",
+        args.previous_approval.as_path(),
+    )?;
+    let next_artifact_version =
+        read_string(&next, "artifact_version", args.next_approval.as_path())?;
     if previous_artifact_version == next_artifact_version {
         return Err(DriftBaselineSupersessionError::Parse(format!(
             "next approval `{}` must target a different artifact_version than previous approval `{}`",
@@ -81,7 +88,11 @@ where
         )));
     }
 
-    let previous_policy = read_string(&previous, "policy_profile", args.previous_approval.as_path())?;
+    let previous_policy = read_string(
+        &previous,
+        "policy_profile",
+        args.previous_approval.as_path(),
+    )?;
     let next_policy = read_string(&next, "policy_profile", args.next_approval.as_path())?;
     if previous_policy != next_policy {
         return Err(DriftBaselineSupersessionError::Parse(format!(
@@ -103,8 +114,11 @@ where
     if let Some(parent) = args.out_path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let text = serde_json::to_string_pretty(&supersession)
-        .map_err(|err| DriftBaselineSupersessionError::Parse(format!("serialize baseline supersession json: {err}")))?;
+    let text = serde_json::to_string_pretty(&supersession).map_err(|err| {
+        DriftBaselineSupersessionError::Parse(format!(
+            "serialize baseline supersession json: {err}"
+        ))
+    })?;
     fs::write(&args.out_path, text)?;
 
     emit_event(
@@ -209,10 +223,7 @@ where
     I: Iterator<Item = String>,
 {
     let value = args.next().ok_or_else(|| {
-        DriftBaselineSupersessionError::InvalidArg(format!(
-            "missing value for {flag}\n{}",
-            usage()
-        ))
+        DriftBaselineSupersessionError::InvalidArg(format!("missing value for {flag}\n{}", usage()))
     })?;
     value.parse::<T>().map_err(|_| {
         DriftBaselineSupersessionError::InvalidArg(format!("invalid value for {flag}\n{}", usage()))
@@ -228,7 +239,10 @@ fn load_json_object(
         DriftBaselineSupersessionError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
     })?;
     value.as_object().cloned().ok_or_else(|| {
-        DriftBaselineSupersessionError::Parse(format!("{kind} `{}` must be an object", path.display()))
+        DriftBaselineSupersessionError::Parse(format!(
+            "{kind} `{}` must be an object",
+            path.display()
+        ))
     })
 }
 

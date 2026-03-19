@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Inference approved baseline rollback contract [Inference, Experimentation/Eval Infra]
-  - Goal: Define a rollback record for switching the selected approved baseline back to the previous one so drift-management state changes remain reversible and explicit.
+- Inference approved baseline history contract [Inference, Experimentation/Eval Infra]
+  - Goal: Define a compact history artifact for approved baseline pointer changes so rollout tooling can audit baseline selection over time without replaying every approval, supersession, and rollback artifact manually.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`

@@ -74,6 +74,10 @@ drift-approve-baseline baseline approved_by approval_ticket approved_at_unix_ms:
 drift-point-approved-baseline approval:
     cargo run --locked --bin afterburner -- drift-point-approved-baseline --approval {{approval}} --out artifacts/eval/infer_output_drift_baseline_pointer.json
 
+# restore the approved baseline pointer to a previous approval and write a rollback record
+drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms:
+    cargo run --locked --bin afterburner -- drift-rollback-approved-baseline --current-pointer {{current_pointer}} --restored-approval {{restored_approval}} --rolled-back-at-unix-ms {{rolled_back_at_unix_ms}} --out-pointer artifacts/eval/infer_output_drift_baseline_pointer.json --out-record artifacts/eval/infer_output_drift_baseline_rollback.json
+
 # supersede an older baseline approval with a newer approved baseline
 drift-supersede-baseline-approval previous_approval next_approval superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- drift-supersede-baseline-approval --previous-approval {{previous_approval}} --next-approval {{next_approval}} --superseded-at-unix-ms {{superseded_at_unix_ms}} --out artifacts/eval/infer_output_drift_baseline_supersession.json

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/infer-output-drift-baseline-rollback/v1",
+  "title": "Infer Output Drift Baseline Rollback v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "current_pointer_path",
+    "restored_approval_path",
+    "previous_artifact_version",
+    "restored_artifact_version",
+    "policy_profile",
+    "rolled_back_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "current_pointer_path": { "type": "string", "minLength": 1 },
+    "restored_approval_path": { "type": "string", "minLength": 1 },
+    "previous_artifact_version": { "type": "string", "minLength": 1 },
+    "restored_artifact_version": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 },
+    "rolled_back_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}

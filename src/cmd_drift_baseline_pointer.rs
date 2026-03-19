@@ -62,7 +62,10 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
-    let approval = load_json_object(args.approval.as_path(), "infer output drift baseline approval")?;
+    let approval = load_json_object(
+        args.approval.as_path(),
+        "infer output drift baseline approval",
+    )?;
 
     let pointer = json!({
         "schema_version": "1",
@@ -111,7 +114,9 @@ where
                 out_path = PathBuf::from(value);
             }
             _ if arg.starts_with("--approval=") => {
-                approval = Some(PathBuf::from(arg.trim_start_matches("--approval=").to_string()))
+                approval = Some(PathBuf::from(
+                    arg.trim_start_matches("--approval=").to_string(),
+                ))
             }
             _ if arg.starts_with("--out=") => {
                 out_path = PathBuf::from(arg.trim_start_matches("--out=").to_string())
