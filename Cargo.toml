@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage evidence provenance gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum evidence-reference fields for distributed shard lineage receipts so later provenance reviews can trace each receipt back to the exact lineage payloads or checkpoint evidence it summarized without raw logs.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
   - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
+  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`

@@ -313,6 +313,9 @@ at least tie each `shard_id` back to `source`, `source_revision`, and `checkpoin
 Lineage checks there should also converge on one explicit
 `distributed_shard_lineage_receipt.json` artifact carrying at least `shard_id`,
 `source`, `source_revision`, `checkpoint_group`, and `checked_at_unix_ms`.
+That receipt should also converge on lineage evidence provenance, with
+`evidence_sources` entries that can at least identify `metadata_path`,
+`checkpoint_root`, and `observed_at_unix_ms`.
 If distributed checkpoint recovery is added later, the repo expects a checkpoint index contract
 that declares `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path`
 explicitly instead of reconstructing shard membership from directory layout.

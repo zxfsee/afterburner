@@ -1,0 +1,44 @@
+use std::fs;
+use std::path::PathBuf;
+
+fn repo_file(path: &str) -> String {
+    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
+        .unwrap_or_else(|err| panic!("read {path}: {err}"))
+}
+
+#[test]
+fn distributed_shard_lineage_evidence_provenance_is_documented() {
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-032"),
+        "architecture decisions index must link ADR-032"
+    );
+    assert!(
+        architecture.contains("distributed shard lineage evidence provenance"),
+        "architecture must mention the distributed shard lineage evidence provenance contract"
+    );
+    assert!(
+        architecture.contains("distributed shard lineage receipt"),
+        "architecture must anchor evidence provenance to the distributed shard lineage receipt"
+    );
+
+    let adr = repo_file("docs/adr/032-distributed-shard-lineage-evidence-provenance.md");
+    for needle in [
+        "distributed_shard_lineage_receipt.json",
+        "evidence_sources",
+        "metadata_path",
+        "checkpoint_root",
+        "observed_at_unix_ms",
+    ] {
+        assert!(
+            adr.contains(needle),
+            "ADR-032 must mention `{needle}` as part of lineage evidence provenance"
+        );
+    }
+
+    let readme = repo_file("README.md");
+    assert!(
+        readme.contains("lineage evidence provenance"),
+        "README must mention the distributed shard lineage evidence provenance contract"
+    );
+}

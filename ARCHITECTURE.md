@@ -124,6 +124,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - Distributed shard lineage should also gain an explicit distributed shard lineage receipt layer so
   later provenance checks can record when `shard_id`, `source`, `source_revision`, and
   `checkpoint_group` were reviewed without mutating the lineage payload itself.
+- Distributed shard lineage evidence provenance should also be explicit: future distributed shard
+  lineage receipts should carry distributed shard lineage evidence provenance through structured
+  `evidence_sources` references instead of treating reviewed shard metadata and checkpoint roots as
+  unstated context.
 - Artifact cleanup should preserve a minimum retention envelope: keep
   `artifacts/inference/current`, the referenced `artifacts/inference/<version>/`,
   active rollout evidence under `artifacts/deploy/`, required decision artifacts under
@@ -190,3 +194,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-029: Artifact Cleanup Execution Receipt](./docs/adr/029-artifact-cleanup-execution-receipt.md)
 - [ADR-030: Profiling Provenance Receipt](./docs/adr/030-profiling-provenance-receipt.md)
 - [ADR-031: Pretraining Source Provenance Receipt](./docs/adr/031-pretraining-source-provenance-receipt.md)
+- [ADR-032: Distributed Shard Lineage Evidence Provenance](./docs/adr/032-distributed-shard-lineage-evidence-provenance.md)
