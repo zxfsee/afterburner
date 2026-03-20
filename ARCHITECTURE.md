@@ -107,6 +107,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
   because the current Burn GPU stack already carries them transitively. They remain out of
   the repo's direct dependencies and public contracts until the checked threshold is crossed.
+- Burn dependency refreshes should stay on the latest stable line, not pre-release churn. The
+  current explicit stance is Burn `0.20.1`; a later refresh should wait for a newer stable release
+  and keep `.mpk` to `.bpk` migration as a separate contract decision.
 - RL work remains artifact-first for now: `rl_rollout_metadata.schema.json` is the current
   contract surface, with a single-environment identity string and no in-repo simulator
   bindings or vectorized environment runtime until measured need justifies them.
@@ -195,3 +198,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-030: Profiling Provenance Receipt](./docs/adr/030-profiling-provenance-receipt.md)
 - [ADR-031: Pretraining Source Provenance Receipt](./docs/adr/031-pretraining-source-provenance-receipt.md)
 - [ADR-032: Distributed Shard Lineage Evidence Provenance](./docs/adr/032-distributed-shard-lineage-evidence-provenance.md)
+- [ADR-033: Burn Dependency Refresh](./docs/adr/033-burn-dependency-refresh.md)

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn dependency refresh gate [Frameworks, Runtime Infra]
-  - Goal: Keep the pinned Burn stack reasonably current and record any recorder/storage contract drift before it leaks into Afterburner artifact decisions by surprise.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `Cargo.toml`, `Cargo.lock`, `tests/`, `README.md`, `docs/adr/`
-
 - Distributed load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible distributed load profile and results artifact so deployment decisions can be checked against concurrency, latency, error budgets, and multi-worker traffic distribution under sustained load instead of only single-request fixtures.
   - Kind: `mixed`
@@ -47,7 +40,6 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
 
 - Distributed world and rank topology gate [Distributed Training, Runtime Infra]
   - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
@@ -55,7 +47,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
+
+- Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `cli`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
 
 ## [Trunk]
 """

@@ -297,6 +297,9 @@ and backend profile regressions must remain sustained before replacing backend-p
 If that threshold is ever crossed, `CubeCL`/`CubeK` are the first implementation path to
 evaluate because the current Burn GPU stack already carries them transitively; no direct
 `cubecl` or `cubek` dependency is added until that measured need exists.
+The current Burn refresh stance is also explicit: stay on Burn 0.20.1 while it remains the latest
+stable line, and treat the repo's `.mpk` to `.bpk` artifact-format cutover as a separate migration
+decision instead of bundling it into a pre-release dependency bump.
 For future RL work, keep the contract surface at `fixtures/rl_rollout_metadata.schema.json`
 first: one single-environment metadata artifact with a stable `environment` identity is the
 current fit, while simulator bindings, rollout-step payloads, and vectorized environment

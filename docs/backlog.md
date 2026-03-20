@@ -65,7 +65,6 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-  - Blocked-by: Burn dependency refresh gate.
 
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
@@ -74,20 +73,12 @@ Rules:
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `cli`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
-
 - Collective synchronization boundary gate [Distributed Training, Frameworks]
   - Goal: Define where gradient synchronization and collective communication live relative to core training logic so future Burn collective adoption does not leak backend/runtime details across core boundaries.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
 
 - Distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
   - Goal: Define the minimum optimizer-state and checkpoint-group contract needed for distributed recovery so future multi-device training can resume consistently across shards and ranks.
@@ -95,4 +86,3 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
