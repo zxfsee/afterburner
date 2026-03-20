@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling environment snapshot refresh receipt contract [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Materialize a receipt for profiling-environment snapshot refreshes so later profiling provenance updates can be audited separately from the snapshot payload itself.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - Distributed shard lineage evidence provenance gate [Distributed Training, Data Infra]
   - Goal: Define the minimum evidence-reference fields for distributed shard lineage receipts so later provenance reviews can trace each receipt back to the exact lineage payloads or checkpoint evidence it summarized without raw logs.
   - Kind: `gate`
@@ -33,6 +26,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Distributed shard lineage evidence bundle contract [Distributed Training, Data Infra]
+  - Goal: Materialize a compact evidence bundle artifact for distributed shard lineage so later provenance tooling can package receipt-referenced lineage sources without rewalking raw shard metadata and checkpoint trees ad hoc.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Profiling provenance evidence bundle gate [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum evidence-bundle fields that profiling provenance receipts should eventually package so later profiling-side tooling can move provenance evidence without rewalking raw environment outputs and workflow logs ad hoc.

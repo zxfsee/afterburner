@@ -16,6 +16,7 @@ mod cmd_drift_receipt;
 mod cmd_eval;
 mod cmd_infer;
 mod cmd_profiling_environment_snapshot;
+mod cmd_profiling_environment_snapshot_refresh;
 mod cmd_train;
 mod cmd_upload;
 
@@ -34,6 +35,9 @@ fn main() {
         "cleanup-policy" => cmd_cleanup_policy::run(args),
         "deployment-verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "profile-environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
+        "profile-refresh-environment-snapshot" => {
+            cmd_profiling_environment_snapshot_refresh::run(args)
+        }
         "drift-baseline" => cmd_drift_baseline::run(args),
         "drift-approve-baseline" => cmd_drift_baseline_approval::run(args),
         "drift-export-baseline-bundle" => cmd_drift_baseline_bundle::run(args),
@@ -64,5 +68,5 @@ fn main() {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|cleanup-inventory|cleanup-policy|deployment-verification-bundle|profile-environment-snapshot|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-export-baseline-bundle|drift-export-baseline-handoff|drift-record-approved-baseline-history|drift-point-baseline-transport-locator|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
+    "usage: afterburner <train|infer|eval|cleanup-inventory|cleanup-policy|deployment-verification-bundle|profile-environment-snapshot|profile-refresh-environment-snapshot|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-export-baseline-bundle|drift-export-baseline-handoff|drift-record-approved-baseline-history|drift-point-baseline-transport-locator|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
 }

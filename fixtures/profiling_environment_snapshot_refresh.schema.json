@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/profiling-environment-snapshot-refresh/v1",
+  "title": "Profiling Environment Snapshot Refresh",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "previous_snapshot_path",
+    "refreshed_snapshot_path",
+    "profile_kind",
+    "profiler",
+    "previous_profiler_path",
+    "refreshed_profiler_path",
+    "previous_profiler_version",
+    "refreshed_profiler_version",
+    "captured_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "previous_snapshot_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "refreshed_snapshot_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_kind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profiler": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_profiler_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "refreshed_profiler_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "previous_profiler_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "refreshed_profiler_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "captured_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    }
+  }
+}

@@ -65,7 +65,8 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
-    let profiler_version = detect_profiler_version(args.profiler_path.as_str())?;
+    let profiler_version = detect_profiler_version(args.profiler_path.as_str())
+        .map_err(ProfilingEnvironmentSnapshotError::Parse)?;
     let snapshot = json!({
         "schema_version": "1",
         "profile_kind": args.profile_kind,
@@ -98,16 +99,17 @@ where
     Ok(())
 }
 
-fn detect_profiler_version(
-    profiler_path: &str,
-) -> Result<String, ProfilingEnvironmentSnapshotError> {
-    let output = Command::new(profiler_path).arg("--version").output()?;
+pub(crate) fn detect_profiler_version(profiler_path: &str) -> Result<String, String> {
+    let output = Command::new(profiler_path)
+        .arg("--version")
+        .output()
+        .map_err(|err| format!("run profiler `{profiler_path}` --version: {err}"))?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        return Err(ProfilingEnvironmentSnapshotError::Parse(format!(
+        return Err(format!(
             "profiler `{profiler_path}` --version failed: {}",
             stderr.trim()
-        )));
+        ));
     }
     let stdout = String::from_utf8_lossy(&output.stdout);
     let version = stdout
@@ -116,9 +118,9 @@ fn detect_profiler_version(
         .unwrap_or("");
     let version = version.trim();
     if version.is_empty() {
-        return Err(ProfilingEnvironmentSnapshotError::Parse(format!(
+        return Err(format!(
             "profiler `{profiler_path}` --version produced empty output"
-        )));
+        ));
     }
     Ok(version.to_string())
 }

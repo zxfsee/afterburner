@@ -140,6 +140,9 @@ rollout-rollback:
 profile-environment-snapshot:
     cargo run --locked --bin afterburner -- profile-environment-snapshot --profile-kind infer --profiler cargo-flamegraph --profiler-path cargo-flamegraph --out artifacts/profiling/profiling_environment_snapshot.json
 
+profile-refresh-environment-snapshot current_snapshot profiler_path captured_at_unix_ms:
+    cargo run --locked --bin afterburner -- profile-refresh-environment-snapshot --current-snapshot {{current_snapshot}} --profiler-path {{profiler_path}} --captured-at-unix-ms {{captured_at_unix_ms}} --out artifacts/profiling/profiling_environment_snapshot.json --refresh-receipt artifacts/profiling/profiling_environment_snapshot_refresh.json
+
 profile-infer:
     mkdir artifacts/profiling
     rm -rf cargo-flamegraph.trace
