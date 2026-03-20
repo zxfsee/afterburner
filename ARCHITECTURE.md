@@ -94,6 +94,9 @@ auto-versioning, embedded serving) are intentionally absent.
   `profiling_hotspot_summary.schema.json` should eventually be accompanied by at least `host_os`,
   `host_arch`, `profiler_version`, and `profiler_path` so hotspot comparisons do not depend on
   unstated host assumptions.
+- Profiling provenance should also gain an explicit profiling provenance receipt layer over time,
+  so later profiling reviews can audit when `profiling_environment_snapshot.json` was captured or
+  refreshed instead of inferring timing from surrounding workflow logs.
 - Profiling summaries also use a lightweight hotspot taxonomy for interpretation:
   execution (`afterburner::...`), framework (`burn_tensor::...`), compiler/runtime (`cubecl...`),
   and incidental support work. The raw symbol remains the contract; the taxonomy is for triage.
@@ -182,3 +185,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-027: Deployment Verification Evidence Provenance](./docs/adr/027-deployment-verification-evidence-provenance.md)
 - [ADR-028: Distributed Shard Lineage Receipt](./docs/adr/028-distributed-shard-lineage-receipt.md)
 - [ADR-029: Artifact Cleanup Execution Receipt](./docs/adr/029-artifact-cleanup-execution-receipt.md)
+- [ADR-030: Profiling Provenance Receipt](./docs/adr/030-profiling-provenance-receipt.md)

@@ -267,6 +267,9 @@ Use `just profile-environment-snapshot` to materialize
 `artifacts/profiling/profiling_environment_snapshot.json`, the stable host and profiler
 provenance artifact for the current profiling toolchain. `just profile-infer` now writes that
 snapshot alongside the hotspot summary.
+The next audit layer there should be `profiling_provenance_receipt.json`, carrying at least the
+referenced `profiling_environment_snapshot.json`, `profile_kind`, `profiler_version`, and
+`captured_at_unix_ms`.
 The current profiling summary intentionally stops short of OpenTelemetry trace/resource
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
 `profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
