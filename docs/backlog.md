@@ -17,6 +17,13 @@ Rules:
 
 ## Items
 
+- HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
+  - Kind: `mixed`
+  - Boundary: `adapter-http`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/bin/afterburner_http.rs`, `tests/`, `fixtures/`, `README.md`, `justfile`
+
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
   - Kind: `gate`

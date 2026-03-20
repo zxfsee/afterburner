@@ -281,10 +281,10 @@ changed between the previous and refreshed profiling environment snapshot.
 The next audit layer there should be `profiling_provenance_receipt.json`, carrying at least the
 referenced `profiling_environment_snapshot.json`, `profile_kind`, `profiler_version`, and
 `captured_at_unix_ms`.
-The current profiling summary intentionally stops short of OpenTelemetry trace/resource
+The current profiling summary intentionally stops short of OpenTelemetry distributed tracing/resource
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
-`profile_command`) for now, and treat explicit OpenTelemetry linkage as a later adapter-only
-extension if a concrete workflow needs it.
+`profile_command`) for now, and treat explicit OpenTelemetry distributed tracing linkage as a later
+adapter-only extension if a concrete workflow needs it.
 The next missing layer there is profiling environment provenance: future profiling-side artifacts
 should at least make `host_os`, `host_arch`, `profiler_version`, and `profiler_path` explicit so
 hotspot comparisons do not rely on unstated local host assumptions.

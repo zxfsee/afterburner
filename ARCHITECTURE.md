@@ -89,7 +89,7 @@ auto-versioning, embedded serving) are intentionally absent.
   pulling an SDK into core.
 - Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
   (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
-  OpenTelemetry trace/resource fields or SDK/runtime dependencies yet.
+  OpenTelemetry distributed tracing/resource fields or SDK/runtime dependencies yet.
 - Profiling artifacts also need a small profiling environment provenance layer over time:
   `profiling_hotspot_summary.schema.json` should eventually be accompanied by at least `host_os`,
   `host_arch`, `profiler_version`, and `profiler_path` so hotspot comparisons do not depend on
