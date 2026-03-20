@@ -2,47 +2,49 @@
 
 ## TODO
 
-- Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
+- Burn dependency refresh gate [Frameworks, Runtime Infra]
+  - Goal: Keep the pinned Burn stack reasonably current and record any recorder/storage contract drift before it leaks into Afterburner artifact decisions by surprise.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `Cargo.toml`, `Cargo.lock`, `tests/`, `README.md`, `docs/adr/`
+
+- HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
+  - Kind: `mixed`
+  - Boundary: `adapter-http`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/bin/afterburner_http.rs`, `tests/`, `fixtures/`, `README.md`, `justfile`
+
+- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`
+  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+
+- Afterburner stack deployment contract [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define the deployable unit and activation contract for the full Afterburner runtime stack so deployment covers the service surface, artifact roots, rollout entrypoints, and observability hooks instead of treating the model file as the whole deployable system.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`, `justfile`
+
+- Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
+  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
+
+- Distributed world and rank topology gate [Distributed Training, Runtime Infra]
+  - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- Distributed shard lineage evidence bundle contract [Distributed Training, Data Infra]
-  - Goal: Materialize a compact evidence bundle artifact for distributed shard lineage so later provenance tooling can package receipt-referenced lineage sources without rewalking raw shard metadata and checkpoint trees ad hoc.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
-- Profiling provenance evidence bundle gate [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum evidence-bundle fields that profiling provenance receipts should eventually package so later profiling-side tooling can move provenance evidence without rewalking raw environment outputs and workflow logs ad hoc.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- Deployment verification evidence bundle handoff gate [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum handoff contract for deployment verification evidence bundles so downstream deployment-side consumers can resolve one stable bundle entrypoint without depending on surrounding rollout workspace layout.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
-  - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Burn dependency refresh gate.
 
 ## [Trunk]
 
@@ -224,6 +226,8 @@
 - Define artifact cleanup execution receipt ([509af6c])
 - Define profiling provenance receipt ([1b45eb3])
 - Define pretraining source provenance receipt ([a2d967e])
+- Define distributed shard lineage evidence provenance ([7606f9f])
+- Record low-leverage queue heuristic ([92421fb])
 
 ### Fixed
 
@@ -456,5 +460,7 @@
 [5431d8b]: https://github.com/zxfsee/afterburner/commit/5431d8b979e594827b21d445599e79b69db9ad3e
 [a2d967e]: https://github.com/zxfsee/afterburner/commit/a2d967ea23978b645209dd8b430327dbcb55f53c
 [8ff7771]: https://github.com/zxfsee/afterburner/commit/8ff7771e03f15dd782b5a0d9b8f7979cd7135362
+[7606f9f]: https://github.com/zxfsee/afterburner/commit/7606f9f8caa9d97e48c1e7956f01f85b598f8499
+[92421fb]: https://github.com/zxfsee/afterburner/commit/92421fb33e7c8cbbd58c205cb9021e6191c50cf5
 
 <!-- generated by git-cliff -->

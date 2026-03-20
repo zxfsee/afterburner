@@ -17,12 +17,40 @@ Rules:
 
 ## Items
 
-- Burn dependency refresh gate [Frameworks, Runtime Infra]
-  - Goal: Keep the pinned Burn stack reasonably current and record any recorder/storage contract drift before it leaks into Afterburner artifact decisions by surprise.
+- Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
   - Kind: `gate`
   - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `Cargo.toml`, `Cargo.lock`, `tests/`, `README.md`, `docs/adr/`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Profiling provenance evidence bundle gate [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum evidence-bundle fields that profiling provenance receipts should eventually package so later profiling-side tooling can move provenance evidence without rewalking raw environment outputs and workflow logs ad hoc.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Deployment verification evidence bundle handoff gate [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Define the minimum handoff contract for deployment verification evidence bundles so downstream deployment-side consumers can resolve one stable bundle entrypoint without depending on surrounding rollout workspace layout.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
+  - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
+  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
@@ -39,35 +67,12 @@ Rules:
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `cli`
-  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-
 - Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `cli`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
-
-- Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
-  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
-
-- Distributed world and rank topology contract [Distributed Training, Runtime Infra]
-  - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn dependency refresh gate.
 
 - Collective synchronization boundary gate [Distributed Training, Frameworks]
   - Goal: Define where gradient synchronization and collective communication live relative to core training logic so future Burn collective adoption does not leak backend/runtime details across core boundaries.
