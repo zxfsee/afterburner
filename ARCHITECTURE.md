@@ -149,6 +149,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Pretraining source registry state should also have an explicit source approval receipt layer over
   time, so `approval_status` changes can be audited with `approved_by`, `approval_ticket`, and
   `approved_at_unix_ms` instead of being inferred from registry edits alone.
+- Pretraining source approvals should also carry a source provenance receipt layer over time, so
+  approval receipts can point back to `upstream_locator` and the reviewed registry entry instead of
+  relying on surrounding process logs for review context.
 
 ### Assumptions
 
@@ -186,3 +189,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-028: Distributed Shard Lineage Receipt](./docs/adr/028-distributed-shard-lineage-receipt.md)
 - [ADR-029: Artifact Cleanup Execution Receipt](./docs/adr/029-artifact-cleanup-execution-receipt.md)
 - [ADR-030: Profiling Provenance Receipt](./docs/adr/030-profiling-provenance-receipt.md)
+- [ADR-031: Pretraining Source Provenance Receipt](./docs/adr/031-pretraining-source-provenance-receipt.md)

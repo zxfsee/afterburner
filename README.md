@@ -179,6 +179,10 @@ Approval changes there should also converge on one explicit
 `pretraining_source_approval_receipt.json` artifact carrying at least `source`,
 `source_revision`, `approval_status`, `approved_by`, `approval_ticket`, and
 `approved_at_unix_ms`.
+That approval receipt should also grow a source provenance receipt layer with at
+least `registry_entry_path`, `upstream_locator`, and `reviewed_metadata_sha256`
+so later dataset and registry workflows can trace what metadata was actually
+reviewed.
 
 Rollback example:
 ```sh
