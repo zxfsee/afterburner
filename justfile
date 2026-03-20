@@ -58,6 +58,10 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
     cargo run --locked --bin afterburner -- upload --manifest {{candidate_manifest}} --ownership {{ownership}} --provider {{provider}} --destination {{destination}} --out artifacts/deploy/candidate_upload_request.json
     just deploy-check
 
+# package receipt-referenced deployment verification evidence into one bundle artifact
+deployment-verification-bundle receipt:
+    cargo run --locked --bin afterburner -- deployment-verification-bundle --receipt {{receipt}} --out artifacts/deploy/deployment_verification_evidence_bundle.json
+
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:
     cargo run --locked --bin afterburner -- cleanup-inventory --artifacts-root artifacts --out artifacts/deploy/artifact_cleanup_inventory.json

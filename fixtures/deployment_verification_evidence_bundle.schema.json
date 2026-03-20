@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-bundle/v1",
+  "title": "Deployment Verification Evidence Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_path",
+    "artifact_version",
+    "profile_name",
+    "verification_status",
+    "evidence_count",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "receipt_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verification_status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_path",
+          "event_name",
+          "observed_at_unix_ms"
+        ],
+        "properties": {
+          "artifact_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_at_unix_ms": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -159,6 +159,9 @@ least `artifact_version`, `profile_name`, `verification_status`,
 That receipt should also converge on explicit evidence provenance, with
 `evidence_sources` entries that can at least identify `artifact_path`,
 `event_name`, and `observed_at_unix_ms` for each verification input.
+Use `just deployment-verification-bundle <receipt>` to materialize
+`artifacts/deploy/deployment_verification_evidence_bundle.json`, the compact deployment-side
+bundle over the receipt's declared evidence sources.
 For future data-oriented artifact surfaces, the current fit decision is conservative:
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or
