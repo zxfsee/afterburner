@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible distributed load profile and results artifact so deployment decisions can be checked against concurrency, latency, error budgets, and multi-worker traffic distribution under sustained load instead of only single-request fixtures.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/bin/afterburner_http.rs`, `tests/`, `fixtures/`, `README.md`, `justfile`
-
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `cli`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
+
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
 
 ## [Trunk]
 """

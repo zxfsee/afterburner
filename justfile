@@ -58,6 +58,9 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
     cargo run --locked --bin afterburner -- upload --manifest {{candidate_manifest}} --ownership {{ownership}} --provider {{provider}} --destination {{destination}} --out artifacts/deploy/candidate_upload_request.json
     just deploy-check
 
+distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
+    cargo run --locked --bin afterburner -- distributed-load-profile --addr {{addr}} --requests {{requests}} --concurrency {{concurrency}} --latency-budget-ms-p99 {{latency_budget_ms_p99}} --error-budget-ratio {{error_budget_ratio}} --out artifacts/deploy/distributed_load_profile.json
+
 # package receipt-referenced deployment verification evidence into one bundle artifact
 deployment-verification-bundle receipt:
     cargo run --locked --bin afterburner -- deployment-verification-bundle --receipt {{receipt}} --out artifacts/deploy/deployment_verification_evidence_bundle.json

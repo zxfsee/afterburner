@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-load-profile/v1",
+  "title": "Distributed Load Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "target_addr",
+    "request_count",
+    "concurrency",
+    "success_count",
+    "error_count",
+    "error_ratio",
+    "latency_ms_p50",
+    "latency_ms_p95",
+    "latency_ms_p99",
+    "throughput_requests_per_sec",
+    "latency_budget_ms_p99",
+    "error_budget_ratio",
+    "passed",
+    "worker_distribution"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "target_addr": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "concurrency": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "success_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "error_ratio": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "latency_ms_p50": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "latency_ms_p95": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "latency_ms_p99": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "throughput_requests_per_sec": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "latency_budget_ms_p99": {
+      "type": "number",
+      "minimum": 0.0
+    },
+    "error_budget_ratio": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "worker_distribution": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "worker_index",
+          "request_count",
+          "success_count",
+          "error_count"
+        ],
+        "properties": {
+          "worker_index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "request_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "success_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

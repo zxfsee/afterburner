@@ -59,12 +59,6 @@ Rules:
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
-- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
-  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
 
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.

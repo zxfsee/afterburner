@@ -132,6 +132,10 @@ without requiring a real deployment target.
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
+Use `just distributed-load-profile <addr> <requests> <concurrency> <latency-budget-ms-p99> <error-budget-ratio>`
+to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-side load artifact
+that summarizes sustained multi-worker request distribution, success/error counts, latency
+percentiles, throughput, and pass/fail against the supplied latency and error budgets.
 Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_inventory.json`,
 the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
 deploy/train/eval state, inactive inference version directories, and profiling artifacts before any
