@@ -17,12 +17,26 @@ Rules:
 
 ## Items
 
+- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`
+  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+
 - Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `cli`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
+
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
 
 - HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
