@@ -17,6 +17,14 @@ Rules:
 
 ## Items
 
+- Distributed parallelism profile contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed distributed profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Blocked-by: Distributed profiling benchmark harness contract.
+
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
   - Kind: `mixed`
@@ -93,4 +101,18 @@ Rules:
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
+  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Distributed world and rank topology gate [Distributed Training, Runtime Infra]
+  - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
