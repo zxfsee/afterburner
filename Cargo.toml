@@ -47,7 +47,8 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Distributed runtime capability surface gate.
+  - Blocked-by:
+    - Distributed runtime capability surface gate.
 
 - Distributed profiling benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible benchmark runner for distributed profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
@@ -55,7 +56,10 @@ header = """# Changelog
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: Distributed runtime capability surface gate.; Distributed parallelism profile schema gate.; Distributed parallelism layout feasibility gate.
+  - Blocked-by:
+    - Distributed runtime capability surface gate.
+    - Distributed parallelism profile schema gate.
+    - Distributed parallelism layout feasibility gate.
 
 ## [Trunk]
 """
