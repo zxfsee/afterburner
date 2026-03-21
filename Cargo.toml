@@ -34,12 +34,12 @@ header = """# Changelog
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `cli`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
+- Distributed parallelism profile contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count that records DP, TP, PP, GAS, MBS, ZeRO stage, MFU, and memory usage for 8-GPU nodes so parallelization choices come from measured profiles instead of ad hoc tuning.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
