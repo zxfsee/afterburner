@@ -17,14 +17,32 @@ Rules:
 
 ## Items
 
+- Distributed parallelism layout feasibility gate [Distributed Training, Runtime Infra]
+  - Goal: Define feasibility validation for candidate DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by: Distributed runtime capability surface gate.
+
+- Distributed profiling benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible benchmark runner for distributed profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Blocked-by:
+    - Distributed runtime capability surface gate.
+    - Distributed parallelism profile schema gate.
+    - Distributed parallelism layout feasibility gate.
+
 - Distributed parallelism profile contract [Distributed Training, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed distributed profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by:
-    - Distributed profiling benchmark harness contract.
+  - Blocked-by: Distributed profiling benchmark harness contract.
 
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
