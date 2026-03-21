@@ -239,7 +239,7 @@ where
             }
             _ => {
                 return Err(CleanupInventoryError::InvalidArg(format!(
-                    "unknown argument for cleanup-inventory: {arg}\n{}",
+                    "unknown argument for cleanup inventory: {arg}\n{}",
                     usage()
                 )));
             }
@@ -266,5 +266,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner cleanup-inventory [--artifacts-root PATH] [--out PATH]"
+    "usage: afterburner cleanup inventory [--artifacts-root PATH] [--out PATH]"
 }

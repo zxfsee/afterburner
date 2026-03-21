@@ -123,7 +123,7 @@ where
             }
             _ => {
                 return Err(DriftBaselinePointerError::InvalidArg(format!(
-                    "unknown argument for drift-point-approved-baseline: {arg}\n{}",
+                    "unknown argument for drift point-approved-baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -185,5 +185,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-point-approved-baseline --approval PATH [--out PATH]"
+    "usage: afterburner drift point-approved-baseline --approval PATH [--out PATH]"
 }

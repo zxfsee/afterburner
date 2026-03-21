@@ -87,7 +87,8 @@ fn drift_approve_baseline_writes_approval_and_event() {
 
     let out = tmp.path().join("approval.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-approve-baseline")
+    cmd.arg("drift")
+        .arg("approve-baseline")
         .arg("--baseline")
         .arg(&baseline)
         .arg("--approved-by")

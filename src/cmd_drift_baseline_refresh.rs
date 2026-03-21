@@ -227,7 +227,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineRefreshError::InvalidArg(format!(
-                    "unknown argument for drift-refresh-baseline: {arg}\n{}",
+                    "unknown argument for drift refresh-baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -329,5 +329,5 @@ fn read_f64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-refresh-baseline --summary PATH --receipt PATH --current-baseline PATH [--out PATH] [--archive PATH] [--refresh-receipt PATH]"
+    "usage: afterburner drift refresh-baseline --summary PATH --receipt PATH --current-baseline PATH [--out PATH] [--archive PATH] [--refresh-receipt PATH]"
 }

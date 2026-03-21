@@ -154,7 +154,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineApprovalError::InvalidArg(format!(
-                    "unknown argument for drift-approve-baseline: {arg}\n{}",
+                    "unknown argument for drift approve-baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -234,5 +234,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-approve-baseline --baseline PATH --approved-by NAME --approval-ticket TICKET --approved-at-unix-ms N [--out PATH]"
+    "usage: afterburner drift approve-baseline --baseline PATH --approved-by NAME --approval-ticket TICKET --approved-at-unix-ms N [--out PATH]"
 }

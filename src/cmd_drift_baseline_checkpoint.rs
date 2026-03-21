@@ -146,7 +146,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineCheckpointError::InvalidArg(format!(
-                    "unknown argument for drift-checkpoint-baseline: {arg}\n{}",
+                    "unknown argument for drift checkpoint-baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -217,5 +217,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-checkpoint-baseline --pointer PATH --history PATH [--out PATH]"
+    "usage: afterburner drift checkpoint-baseline --pointer PATH --history PATH [--out PATH]"
 }

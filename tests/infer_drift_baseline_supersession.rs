@@ -91,7 +91,8 @@ fn drift_supersede_baseline_approval_writes_supersession_and_event() {
 
     let out = tmp.path().join("supersession.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-supersede-baseline-approval")
+    cmd.arg("drift")
+        .arg("supersede-baseline-approval")
         .arg("--previous-approval")
         .arg(&previous)
         .arg("--next-approval")

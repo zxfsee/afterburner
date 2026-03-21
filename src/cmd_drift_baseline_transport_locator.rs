@@ -125,7 +125,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineTransportLocatorError::InvalidArg(format!(
-                    "unknown argument for drift-point-baseline-transport-locator: {arg}\n{}",
+                    "unknown argument for drift point-baseline-transport-locator: {arg}\n{}",
                     usage()
                 )));
             }
@@ -199,5 +199,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-point-baseline-transport-locator --handoff PATH [--out PATH]"
+    "usage: afterburner drift point-baseline-transport-locator --handoff PATH [--out PATH]"
 }

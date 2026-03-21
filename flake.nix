@@ -39,7 +39,9 @@
       ...
     }:
     let
-      deploymentProfile = builtins.fromJSON (builtins.readFile ./fixtures/deployment_target_profile.example.json);
+      deploymentProfile = builtins.fromJSON (
+        builtins.readFile ./fixtures/deployment_target_profile.example.json
+      );
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
@@ -54,9 +56,10 @@
           profiles.afterburner = {
             user = deploymentProfile.ssh_user;
             profilePath = "${deploymentProfile.artifact_root}/profiles/afterburner";
-            path = deploy-rs.lib.${deploymentProfile.system}.activate.custom
-              self.packages.${deploymentProfile.system}.default
-              "./bin/afterburner";
+            path =
+              deploy-rs.lib.${deploymentProfile.system}.activate.custom
+                self.packages.${deploymentProfile.system}.default
+                "./bin/afterburner";
           };
         };
       };

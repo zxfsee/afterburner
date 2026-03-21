@@ -172,7 +172,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineBundleError::InvalidArg(format!(
-                    "unknown argument for drift-export-baseline-bundle: {arg}\n{}",
+                    "unknown argument for drift export-baseline-bundle: {arg}\n{}",
                     usage()
                 )));
             }
@@ -240,5 +240,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-export-baseline-bundle --pointer PATH --history PATH [--out PATH]"
+    "usage: afterburner drift export-baseline-bundle --pointer PATH --history PATH [--out PATH]"
 }

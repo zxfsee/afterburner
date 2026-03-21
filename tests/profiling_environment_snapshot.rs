@@ -90,7 +90,8 @@ fn profile_environment_snapshot_writes_snapshot_and_event() {
 
     let out = tmp.path().join("profiling_environment_snapshot.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("profile-environment-snapshot")
+    cmd.arg("profile")
+        .arg("environment-snapshot")
         .arg("--profile-kind")
         .arg("infer")
         .arg("--profiler")

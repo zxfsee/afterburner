@@ -96,7 +96,8 @@ fn drift_baseline_writes_baseline_and_event() {
 
     let out = tmp.path().join("baseline.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-baseline")
+    cmd.arg("drift")
+        .arg("baseline")
         .arg("--summary")
         .arg(&summary)
         .arg("--receipt")
@@ -180,7 +181,8 @@ fn drift_baseline_rejects_failed_receipt() {
     .expect("write failed receipt");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-baseline")
+    cmd.arg("drift")
+        .arg("baseline")
         .arg("--summary")
         .arg(&summary)
         .arg("--receipt")

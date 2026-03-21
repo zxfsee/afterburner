@@ -109,7 +109,8 @@ fn drift_receipt_writes_receipt_and_event() {
 
     let out = tmp.path().join("receipt.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-receipt")
+    cmd.arg("drift")
+        .arg("receipt")
         .arg("--candidate")
         .arg(&candidate)
         .arg("--current")
@@ -222,7 +223,8 @@ fn drift_receipt_fails_when_thresholds_are_exceeded() {
     .expect("write drift policy");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-receipt")
+    cmd.arg("drift")
+        .arg("receipt")
         .arg("--candidate")
         .arg(&candidate)
         .arg("--current")

@@ -72,7 +72,8 @@ fn cleanup_policy_writes_named_policy_and_event() {
     let out = tmp.path().join("artifact_cleanup_policy.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("cleanup-policy")
+    cmd.arg("cleanup")
+        .arg("policy")
         .arg("--profile")
         .arg("retention-default")
         .arg("--out")

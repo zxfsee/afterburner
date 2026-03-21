@@ -104,7 +104,8 @@ fn drift_refresh_baseline_archives_previous_baseline_and_writes_refresh_receipt(
     .expect("write current baseline");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-refresh-baseline")
+    cmd.arg("drift")
+        .arg("refresh-baseline")
         .arg("--summary")
         .arg(&summary)
         .arg("--receipt")

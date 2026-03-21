@@ -23,42 +23,27 @@ mod cmd_upload;
 
 fn main() {
     let mut args = std::env::args().skip(1);
-    let Some(subcommand) = args.next() else {
+    let Some(command) = args.next() else {
         eprintln!("{}", usage());
         std::process::exit(2);
     };
 
-    let code = match subcommand.as_str() {
+    let code = match command.as_str() {
         "train" => cmd_train::run(args),
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
-        "cleanup-inventory" => cmd_cleanup_inventory::run(args),
-        "cleanup-policy" => cmd_cleanup_policy::run(args),
+        "cleanup" => run_cleanup(args),
         "deployment-verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "distributed-load-profile" => cmd_distributed_load_profile::run(args),
-        "profile-environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
-        "profile-refresh-environment-snapshot" => {
-            cmd_profiling_environment_snapshot_refresh::run(args)
-        }
-        "drift-baseline" => cmd_drift_baseline::run(args),
-        "drift-approve-baseline" => cmd_drift_baseline_approval::run(args),
-        "drift-export-baseline-bundle" => cmd_drift_baseline_bundle::run(args),
-        "drift-export-baseline-handoff" => cmd_drift_baseline_handoff::run(args),
-        "drift-checkpoint-baseline" => cmd_drift_baseline_checkpoint::run(args),
-        "drift-record-approved-baseline-history" => cmd_drift_baseline_history::run(args),
-        "drift-point-baseline-transport-locator" => cmd_drift_baseline_transport_locator::run(args),
-        "drift-point-approved-baseline" => cmd_drift_baseline_pointer::run(args),
-        "drift-rollback-approved-baseline" => cmd_drift_baseline_rollback::run(args),
-        "drift-refresh-baseline" => cmd_drift_baseline_refresh::run(args),
-        "drift-supersede-baseline-approval" => cmd_drift_baseline_supersession::run(args),
-        "drift-receipt" => cmd_drift_receipt::run(args),
+        "profile" => run_profile(args),
+        "drift" => run_drift(args),
         "upload" => cmd_upload::run(args),
         "--help" | "-h" | "help" => {
             println!("{}", usage());
             0
         }
         _ => {
-            eprintln!("unknown subcommand: {subcommand}");
+            eprintln!("unknown subcommand: {command}");
             eprintln!("{}", usage());
             2
         }
@@ -69,6 +54,76 @@ fn main() {
     }
 }
 
+fn run_cleanup<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing cleanup subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "inventory" => cmd_cleanup_inventory::run(args),
+        "policy" => cmd_cleanup_policy::run(args),
+        _ => {
+            eprintln!("unknown cleanup subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_profile<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing profile subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
+        "refresh-environment-snapshot" => cmd_profiling_environment_snapshot_refresh::run(args),
+        _ => {
+            eprintln!("unknown profile subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_drift<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing drift subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "baseline" => cmd_drift_baseline::run(args),
+        "approve-baseline" => cmd_drift_baseline_approval::run(args),
+        "export-baseline-bundle" => cmd_drift_baseline_bundle::run(args),
+        "export-baseline-handoff" => cmd_drift_baseline_handoff::run(args),
+        "checkpoint-baseline" => cmd_drift_baseline_checkpoint::run(args),
+        "record-approved-baseline-history" => cmd_drift_baseline_history::run(args),
+        "point-baseline-transport-locator" => cmd_drift_baseline_transport_locator::run(args),
+        "point-approved-baseline" => cmd_drift_baseline_pointer::run(args),
+        "rollback-approved-baseline" => cmd_drift_baseline_rollback::run(args),
+        "refresh-baseline" => cmd_drift_baseline_refresh::run(args),
+        "supersede-baseline-approval" => cmd_drift_baseline_supersession::run(args),
+        "receipt" => cmd_drift_receipt::run(args),
+        _ => {
+            eprintln!("unknown drift subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|cleanup-inventory|cleanup-policy|deployment-verification-bundle|distributed-load-profile|profile-environment-snapshot|profile-refresh-environment-snapshot|drift-baseline|drift-approve-baseline|drift-checkpoint-baseline|drift-export-baseline-bundle|drift-export-baseline-handoff|drift-record-approved-baseline-history|drift-point-baseline-transport-locator|drift-point-approved-baseline|drift-refresh-baseline|drift-rollback-approved-baseline|drift-supersede-baseline-approval|drift-receipt|upload> [args]"
+    "usage: afterburner <train|infer|eval|drift <...>|cleanup <...>|profile <...>|upload|deployment-verification-bundle|distributed-load-profile> [args]"
 }

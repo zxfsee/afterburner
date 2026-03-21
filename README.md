@@ -136,6 +136,10 @@ Use `just distributed-load-profile <addr> <requests> <concurrency> <latency-budg
 to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-side load artifact
 that summarizes sustained multi-worker request distribution, success/error counts, latency
 percentiles, throughput, and pass/fail against the supplied latency and error budgets.
+The operator-heavy CLI now groups related workflows under shared namespaces:
+`afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and
+`afterburner profile <subcommand>`, while `train`, `infer`, `eval`, `upload`,
+`distributed-load-profile`, and `deployment-verification-bundle` stay top-level.
 Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_inventory.json`,
 the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
 deploy/train/eval state, inactive inference version directories, and profiling artifacts before any

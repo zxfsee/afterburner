@@ -162,7 +162,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineHistoryError::InvalidArg(format!(
-                    "unknown argument for drift-record-approved-baseline-history: {arg}\n{}",
+                    "unknown argument for drift record-approved-baseline-history: {arg}\n{}",
                     usage()
                 )));
             }
@@ -256,5 +256,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-record-approved-baseline-history --pointer PATH --event NAME --recorded-at-unix-ms N [--out PATH]"
+    "usage: afterburner drift record-approved-baseline-history --pointer PATH --event NAME --recorded-at-unix-ms N [--out PATH]"
 }

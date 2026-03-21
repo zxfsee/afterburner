@@ -82,7 +82,8 @@ fn drift_point_baseline_transport_locator_writes_locator_and_event() {
 
     let out = tmp.path().join("transport_locator.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-point-baseline-transport-locator")
+    cmd.arg("drift")
+        .arg("point-baseline-transport-locator")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--out")

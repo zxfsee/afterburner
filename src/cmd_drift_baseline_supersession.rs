@@ -187,7 +187,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineSupersessionError::InvalidArg(format!(
-                    "unknown argument for drift-supersede-baseline-approval: {arg}\n{}",
+                    "unknown argument for drift supersede-baseline-approval: {arg}\n{}",
                     usage()
                 )));
             }
@@ -264,5 +264,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-supersede-baseline-approval --previous-approval PATH --next-approval PATH --superseded-at-unix-ms N [--out PATH]"
+    "usage: afterburner drift supersede-baseline-approval --previous-approval PATH --next-approval PATH --superseded-at-unix-ms N [--out PATH]"
 }

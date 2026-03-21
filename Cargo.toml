@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `cli`
-  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-
 - Afterburner stack deployment contract [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the deployable unit and activation contract for the full Afterburner runtime stack so deployment covers the service surface, artifact roots, rollout entrypoints, and observability hooks instead of treating the model file as the whole deployable system.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+
+- Collective synchronization boundary gate [Distributed Training, Frameworks]
+  - Goal: Define where gradient synchronization and collective communication live relative to core training logic so future Burn collective adoption does not leak backend/runtime details across core boundaries.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `tests/`
 
 ## [Trunk]
 """

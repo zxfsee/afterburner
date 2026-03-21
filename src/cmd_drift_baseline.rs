@@ -171,7 +171,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineError::InvalidArg(format!(
-                    "unknown argument for drift-baseline: {arg}\n{}",
+                    "unknown argument for drift baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -259,5 +259,5 @@ fn read_f64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-baseline --summary PATH --receipt PATH [--out PATH]"
+    "usage: afterburner drift baseline --summary PATH --receipt PATH [--out PATH]"
 }

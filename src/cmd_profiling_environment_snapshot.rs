@@ -158,7 +158,7 @@ where
             }
             _ => {
                 return Err(ProfilingEnvironmentSnapshotError::InvalidArg(format!(
-                    "unknown argument for profile-environment-snapshot: {arg}\n{}",
+                    "unknown argument for profile environment-snapshot: {arg}\n{}",
                     usage()
                 )));
             }
@@ -216,5 +216,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner profile-environment-snapshot --profile-kind KIND --profiler NAME --profiler-path PATH [--out PATH]"
+    "usage: afterburner profile environment-snapshot --profile-kind KIND --profiler NAME --profiler-path PATH [--out PATH]"
 }

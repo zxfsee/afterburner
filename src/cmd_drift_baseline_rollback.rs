@@ -202,7 +202,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineRollbackError::InvalidArg(format!(
-                    "unknown argument for drift-rollback-approved-baseline: {arg}\n{}",
+                    "unknown argument for drift rollback-approved-baseline: {arg}\n{}",
                     usage()
                 )));
             }
@@ -277,5 +277,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-rollback-approved-baseline --current-pointer PATH --restored-approval PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
+    "usage: afterburner drift rollback-approved-baseline --current-pointer PATH --restored-approval PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
 }

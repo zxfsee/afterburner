@@ -236,7 +236,7 @@ where
             }
             _ => {
                 return Err(DriftReceiptError::InvalidArg(format!(
-                    "unknown argument for drift-receipt: {arg}\n{}",
+                    "unknown argument for drift receipt: {arg}\n{}",
                     usage()
                 )));
             }
@@ -344,7 +344,7 @@ fn read_f64_policy(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-receipt --candidate PATH --current PATH --policy PATH [--out PATH]"
+    "usage: afterburner drift receipt --candidate PATH --current PATH --policy PATH [--out PATH]"
 }
 
 #[cfg(test)]

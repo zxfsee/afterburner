@@ -92,7 +92,8 @@ fn cleanup_inventory_writes_inventory_and_event() {
 
     let out = tmp.path().join("artifact_cleanup_inventory.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("cleanup-inventory")
+    cmd.arg("cleanup")
+        .arg("inventory")
         .arg("--artifacts-root")
         .arg(&artifacts_root)
         .arg("--out")

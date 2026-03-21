@@ -103,7 +103,8 @@ fn profile_refresh_environment_snapshot_writes_snapshot_and_receipt() {
         .join("profiling_environment_snapshot_refresh.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("profile-refresh-environment-snapshot")
+    cmd.arg("profile")
+        .arg("refresh-environment-snapshot")
         .arg("--current-snapshot")
         .arg(&previous_snapshot)
         .arg("--profiler-path")

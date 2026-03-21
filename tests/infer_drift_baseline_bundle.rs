@@ -114,7 +114,8 @@ fn drift_export_baseline_bundle_writes_bundle_and_event() {
 
     let out = tmp.path().join("bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-export-baseline-bundle")
+    cmd.arg("drift")
+        .arg("export-baseline-bundle")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--history")

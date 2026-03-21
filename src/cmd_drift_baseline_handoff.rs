@@ -122,7 +122,7 @@ where
             }
             _ => {
                 return Err(DriftBaselineHandoffError::InvalidArg(format!(
-                    "unknown argument for drift-export-baseline-handoff: {arg}\n{}",
+                    "unknown argument for drift export-baseline-handoff: {arg}\n{}",
                     usage()
                 )));
             }
@@ -184,5 +184,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner drift-export-baseline-handoff --bundle PATH [--out PATH]"
+    "usage: afterburner drift export-baseline-handoff --bundle PATH [--out PATH]"
 }

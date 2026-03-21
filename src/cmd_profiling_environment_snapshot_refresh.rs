@@ -239,7 +239,7 @@ where
             _ => {
                 return Err(ProfilingEnvironmentSnapshotRefreshError::InvalidArg(
                     format!(
-                        "unknown argument for profile-refresh-environment-snapshot: {arg}\n{}",
+                        "unknown argument for profile refresh-environment-snapshot: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -307,5 +307,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner profile-refresh-environment-snapshot --current-snapshot PATH --profiler-path PATH --captured-at-unix-ms N [--out PATH] [--refresh-receipt PATH]"
+    "usage: afterburner profile refresh-environment-snapshot --current-snapshot PATH --profiler-path PATH --captured-at-unix-ms N [--out PATH] [--refresh-receipt PATH]"
 }

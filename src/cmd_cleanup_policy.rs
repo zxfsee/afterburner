@@ -120,7 +120,7 @@ where
             }
             _ => {
                 return Err(CleanupPolicyError::InvalidArg(format!(
-                    "unknown argument for cleanup-policy: {arg}\n{}",
+                    "unknown argument for cleanup policy: {arg}\n{}",
                     usage()
                 )));
             }
@@ -157,5 +157,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner cleanup-policy --profile NAME [--out PATH]"
+    "usage: afterburner cleanup policy --profile NAME [--out PATH]"
 }

@@ -82,7 +82,8 @@ fn drift_point_approved_baseline_writes_pointer_and_event() {
 
     let out = tmp.path().join("pointer.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift-point-approved-baseline")
+    cmd.arg("drift")
+        .arg("point-approved-baseline")
         .arg("--approval")
         .arg(&approval)
         .arg("--out")
