@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn world and rank topology gate [Distributed Training, Runtime Infra]
-  - Goal: Define explicit world-size, rank, and device-group metadata for future Burn-side distributed training so in-job execution topology is not inferred from local worker IDs or shard filenames alone.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
   - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
   - Kind: `mixed`
@@ -57,6 +50,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- `process-compose-flake` local substrate fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Evaluate whether `process-compose-flake` should be the MacBook-local process substrate for running the Afterburner runtime stack and scheduler prototype so local multi-process orchestration stays reproducible without conflating local orchestration with `systemd`, Kubernetes, or scheduler policy.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `flake.nix`
 
 ## [Trunk]
 """

@@ -235,6 +235,11 @@ auto-versioning, embedded serving) are intentionally absent.
   - `worker_parallelism` is a local throughput knob for the current trainer only.
   - Future Burn-side distributed execution should align with Burn's strategy-oriented training
     model, with explicit topology/device-group contracts instead of overloading `worker_parallelism`.
+- Future distributed execution topology must also be explicit.
+  - `training_scalability_contract.json` is not the topology source of truth.
+  - `distributed_shard_metadata.schema.json` is not the topology source of truth.
+  - world-size, rank, and device-group semantics should come from a dedicated topology contract
+    instead of being inferred from local worker ids or shard layout.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
@@ -322,3 +327,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-036: Deployment Stack Contract](./docs/adr/036-deployment-stack-contract.md)
 - [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)
 - [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)
+- [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)

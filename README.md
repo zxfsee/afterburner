@@ -83,6 +83,10 @@ local throughput knob in the current trainer. Future Burn-side distributed execu
 with Burn's strategy-oriented training model rather than stretching `worker_parallelism` into a
 distributed topology surrogate. See
 [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md).
+That also means topology stays explicit: future distributed execution should
+declare `world_size`, ranks, and `device_group` metadata directly instead of
+inferring them from shard ownership or local worker ids. See
+[ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md).
 
 ## Inference
 
