@@ -54,6 +54,12 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 - Minimal but intentional infrastructure
 - The system must remain incrementally expandable across all defined research infrastructure domains without requiring architectural rewrites, favoring evolution behind stable contract boundaries.
 
+As the repo grows toward distributed training, it keeps three layers separate:
+the distributed training runtime decides how one job uses GPUs, the scheduler
+decides who gets GPUs and when, and the platform layer provides the execution
+substrate on MacBook, NixOS, or Kubernetes. See
+[ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md).
+
 ## Training
 
 Training is executed via the `afterburner train` subcommand.

@@ -36,6 +36,35 @@ separately from runtime contracts. For example, custom kernel adoption is gated
 by a checked contract that records the current convolution footprint plus the
 objective evidence required before replacing backend-provided kernels.
 
+## Distributed Training Layers
+
+The distributed training stack is split into three layers with explicit
+responsibility boundaries:
+
+1. Distributed training runtime
+   - Burn-side execution semantics inside one job.
+   - Owns data/model parallel execution, collectives, rank/world topology,
+     checkpoint and optimizer state, and future DP/TP/PP/ZeRO-style expansion.
+2. GPU scheduler / allocator
+   - Control-plane policy across jobs.
+   - Owns queueing, admission, topology-aware GPU placement, node inventory,
+     lease ownership, and job lifecycle.
+3. Platform / infrastructure substrate
+   - Execution substrate for the scheduler and runtime.
+   - Owns reproducible environments, drivers/runtime libraries, node
+     provisioning, and the concrete launch surfaces such as systemd, NixOS, and
+     Kubernetes.
+
+The runtime and scheduler meet only at an explicit lifecycle boundary:
+
+- Scheduler to runtime: `START`, `STOP`, `KILL`
+- Runtime to scheduler: `READY`, `CHECKPOINTED`, `FAILED`, `HEARTBEAT`
+
+The scheduler may assign resources, nodes, GPU ids, and rank assignments, but
+it must not own model-state semantics or internal parallelism choices. The
+runtime may choose internal composition such as DP, TP, PP, SP/CP, EP, or ZeRO
+variants, but it must not absorb cluster-level scheduling policy.
+
 ### Trade-offs
 
 This design prioritizes explicit boundaries and reproducibility over rapid iteration.
@@ -80,6 +109,12 @@ auto-versioning, embedded serving) are intentionally absent.
 - Promotion and rollback orchestration are currently local justfile contracts over the explicit
   eval, upload, deploy-check, and current-pointer surfaces; they are not a separate long-running
   deployment subsystem.
+- Distributed runtime, scheduler, and platform concerns remain distinct layers.
+  - The runtime owns in-job execution semantics and checkpoint/state handling.
+  - The scheduler owns queueing, placement, leases, and lifecycle policy.
+  - The platform layer owns launch substrate and host/cluster provisioning only.
+  - The only required scheduler/runtime coupling is the explicit lifecycle boundary
+    (`START`/`STOP`/`KILL`, `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`).
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
@@ -199,3 +234,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-031: Pretraining Source Provenance Receipt](./docs/adr/031-pretraining-source-provenance-receipt.md)
 - [ADR-032: Distributed Shard Lineage Evidence Provenance](./docs/adr/032-distributed-shard-lineage-evidence-provenance.md)
 - [ADR-033: Burn Dependency Refresh](./docs/adr/033-burn-dependency-refresh.md)
+- [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md)
