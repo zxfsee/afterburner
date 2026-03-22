@@ -39,14 +39,6 @@ Rules:
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: Burn distributed runtime benchmark harness contract.
 
-- Single-node GPU lease and systemd scheduler adapter [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize a systemd-first single-node scheduler path that tracks GPU inventory, queue admission, lease ownership, and graceful job stop/resume against the scheduler lifecycle contract before any cluster controller exists.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: GPU scheduler boundary and lifecycle gate.
-
 - Cooperative checkpoint preemption fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define the scheduler-side contract for cooperative checkpoint/resume preemption so urgent jobs can interrupt lower-priority work only at safe runtime checkpoint boundaries instead of assuming transparent GPU task suspension.
   - Kind: `gate`
@@ -121,13 +113,6 @@ Rules:
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: MacBook text pretraining adapter.
-
-- Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 - Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
   - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.

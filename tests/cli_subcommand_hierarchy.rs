@@ -32,6 +32,10 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         "usage must advertise the grouped profile subcommand"
     );
     assert!(
+        usage.contains("deploy <"),
+        "usage must advertise the grouped deploy subcommand"
+    );
+    assert!(
         !usage.contains("drift-receipt"),
         "usage must not advertise the old flat drift subcommand names"
     );
@@ -41,11 +45,22 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         readme.contains("afterburner drift <subcommand>"),
         "README must mention the grouped drift command family"
     );
+    assert!(
+        readme.contains("afterburner deploy <subcommand>"),
+        "README must mention the grouped deploy command family"
+    );
+
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-044"),
+        "architecture decisions index must link ADR-044"
+    );
 }
 
 #[test]
 fn grouped_subcommands_dispatch_to_existing_tools() {
     let help_cases = [
+        ("deploy", "upload"),
         ("drift", "receipt"),
         ("cleanup", "inventory"),
         ("profile", "environment-snapshot"),

@@ -10,7 +10,7 @@ is validated.
 
 ## Decision
 
-Add an `afterburner upload` CLI adapter that:
+Add an `afterburner deploy upload` CLI adapter that:
 
 - reads an explicit artifact manifest path,
 - validates that the referenced artifact file matches the checked manifest,

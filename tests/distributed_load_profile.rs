@@ -127,7 +127,8 @@ fn distributed_load_profile_writes_profile_and_event() {
     let out = out_dir.path().join("distributed_load_profile.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("distributed-load-profile")
+    cmd.arg("deploy")
+        .arg("load-profile")
         .arg("--addr")
         .arg(format!("127.0.0.1:{port}"))
         .arg("--requests")

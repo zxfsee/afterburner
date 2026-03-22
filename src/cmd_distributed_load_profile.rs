@@ -394,5 +394,5 @@ fn invalid_arg(flag: &str) -> DistributedLoadProfileError {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner distributed-load-profile --addr HOST:PORT --requests N --concurrency N --latency-budget-ms-p99 F64 --error-budget-ratio F64 [--out PATH]"
+    "usage: afterburner deploy load-profile --addr HOST:PORT --requests N --concurrency N --latency-budget-ms-p99 F64 --error-budget-ratio F64 [--out PATH]"
 }

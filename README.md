@@ -174,7 +174,7 @@ events. HTTP requests may supply `traceparent`, and CLI/deployment workflows can
 propagate one through `AFTERBURNER_TRACEPARENT` to correlate `just rollout-check`
 and `just distributed-load-profile` activity without introducing a Tokio runtime
 or heavy OpenTelemetry SDK.
-`afterburner upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
+`afterburner deploy upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
@@ -183,9 +183,9 @@ to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-
 that summarizes sustained multi-worker request distribution, success/error counts, latency
 percentiles, throughput, and pass/fail against the supplied latency and error budgets.
 The operator-heavy CLI now groups related workflows under shared namespaces:
-`afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and
-`afterburner profile <subcommand>`, while `train`, `infer`, `eval`, `upload`,
-`distributed-load-profile`, and `deployment-verification-bundle` stay top-level.
+`afterburner deploy <subcommand>`, `afterburner drift <subcommand>`,
+`afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>`,
+while `train`, `infer`, and `eval` stay top-level.
 Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_inventory.json`,
 the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
 deploy/train/eval state, inactive inference version directories, and profiling artifacts before any

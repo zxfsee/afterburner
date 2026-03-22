@@ -49,22 +49,22 @@ backend-profile-gate:
 
 # validate deploy-rs baseline deployment definitions
 deploy-check:
-    cargo run --locked --bin afterburner -- deployment-stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --out artifacts/deploy/deployment_stack_check.json
+    cargo run --locked --bin afterburner -- deploy stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --out artifacts/deploy/deployment_stack_check.json
     nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:
     cargo run --locked --bin afterburner -- eval --artifact {{ candidate_artifact }} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
-    cargo run --locked --bin afterburner -- upload --manifest {{ candidate_manifest }} --ownership {{ ownership }} --provider {{ provider }} --destination {{ destination }} --out artifacts/deploy/candidate_upload_request.json
+    cargo run --locked --bin afterburner -- deploy upload --manifest {{ candidate_manifest }} --ownership {{ ownership }} --provider {{ provider }} --destination {{ destination }} --out artifacts/deploy/candidate_upload_request.json
     just deploy-check
 
 distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
-    cargo run --locked --bin afterburner -- distributed-load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
+    cargo run --locked --bin afterburner -- deploy load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
 
 # package receipt-referenced deployment verification evidence into one bundle artifact
 deployment-verification-bundle receipt:
-    cargo run --locked --bin afterburner -- deployment-verification-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
+    cargo run --locked --bin afterburner -- deploy verification-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
 
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:

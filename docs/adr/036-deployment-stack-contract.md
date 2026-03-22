@@ -25,7 +25,7 @@ Add an explicit deployment stack contract.
   - `artifact_roots`
   - `rollout_entrypoint`
   - `observability`
-- `afterburner deployment-stack-check` validates the deployment target profile
+- `afterburner deploy stack-check` validates the deployment target profile
   plus the deployment stack profile and writes a checked
   `deployment_stack_check.json` artifact.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack

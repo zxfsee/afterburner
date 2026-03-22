@@ -103,7 +103,7 @@ fn artifact_upload_request_schema_and_docs_are_explicit() {
 
     let adr = repo_file("docs/adr/014-artifact-upload-adapter.md");
     assert!(
-        adr.contains("afterburner upload"),
+        adr.contains("afterburner deploy upload"),
         "ADR-014 must describe the upload CLI adapter"
     );
     assert!(
@@ -134,7 +134,8 @@ fn upload_writes_provider_neutral_request_artifact() {
 
     let out_path = tmp.path().join("artifact_upload_request.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("upload")
+    cmd.arg("deploy")
+        .arg("upload")
         .arg("--manifest")
         .arg(&manifest_path)
         .arg("--ownership")
@@ -178,7 +179,8 @@ fn upload_requires_upload_approval_scope() {
     .expect("write ownership file without upload approval");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("upload")
+    cmd.arg("deploy")
+        .arg("upload")
         .arg("--manifest")
         .arg(&manifest_path)
         .arg("--ownership")

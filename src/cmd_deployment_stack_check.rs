@@ -399,7 +399,7 @@ fn validate_service_path(field: &str, value: &str) -> Result<(), DeploymentStack
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deployment-stack-check --target-profile PATH --stack-profile PATH [--out PATH]"
+    "usage: afterburner deploy stack-check --target-profile PATH --stack-profile PATH [--out PATH]"
 }
 
 #[cfg(test)]

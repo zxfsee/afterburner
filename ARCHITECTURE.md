@@ -178,6 +178,8 @@ auto-versioning, embedded serving) are intentionally absent.
 - Promotion and rollback orchestration are currently local justfile contracts over the explicit
   eval, upload, deploy-check, and current-pointer surfaces; they are not a separate long-running
   deployment subsystem.
+- Deployment-oriented CLI entrypoints are grouped under one `deploy` command family so stack checks,
+  upload planning, verification bundles, and load profiles share one operator-facing namespace.
 - Distributed runtime, scheduler, and platform concerns remain distinct layers.
   - The runtime owns in-job execution semantics and checkpoint/state handling.
   - The scheduler owns queueing, placement, leases, and lifecycle policy.
@@ -349,3 +351,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
 - [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md)
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
+- [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

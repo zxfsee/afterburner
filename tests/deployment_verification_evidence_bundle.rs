@@ -86,7 +86,8 @@ fn deployment_verification_bundle_writes_bundle_and_event() {
         .path()
         .join("deployment_verification_evidence_bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deployment-verification-bundle")
+    cmd.arg("deploy")
+        .arg("verification-bundle")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--out")

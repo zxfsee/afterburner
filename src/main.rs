@@ -34,12 +34,9 @@ fn main() {
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
         "cleanup" => run_cleanup(args),
-        "deployment-stack-check" => cmd_deployment_stack_check::run(args),
-        "deployment-verification-bundle" => cmd_deployment_verification_bundle::run(args),
-        "distributed-load-profile" => cmd_distributed_load_profile::run(args),
+        "deploy" => run_deploy(args),
         "profile" => run_profile(args),
         "drift" => run_drift(args),
-        "upload" => cmd_upload::run(args),
         "--help" | "-h" | "help" => {
             println!("{}", usage());
             0
@@ -96,6 +93,28 @@ where
     }
 }
 
+fn run_deploy<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing deploy subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "upload" => cmd_upload::run(args),
+        "stack-check" => cmd_deployment_stack_check::run(args),
+        "verification-bundle" => cmd_deployment_verification_bundle::run(args),
+        "load-profile" => cmd_distributed_load_profile::run(args),
+        _ => {
+            eprintln!("unknown deploy subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
 fn run_drift<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
@@ -127,5 +146,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|drift <...>|cleanup <...>|profile <...>|upload|deployment-stack-check|deployment-verification-bundle|distributed-load-profile> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>> [args]"
 }

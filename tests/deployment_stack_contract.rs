@@ -67,7 +67,7 @@ fn deployment_stack_contract_is_explicit() {
         "artifact_roots",
         "rollout_entrypoint",
         "observability",
-        "deployment-stack-check",
+        "deploy stack-check",
     ] {
         assert!(
             adr.contains(needle),
@@ -92,7 +92,8 @@ fn deployment_stack_check_writes_expected_artifact() {
     let out_path = tmp.path().join("deployment_stack_check.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deployment-stack-check")
+    cmd.arg("deploy")
+        .arg("stack-check")
         .arg("--target-profile")
         .arg(fixture_path("deployment_target_profile.example.json"))
         .arg("--stack-profile")
@@ -119,7 +120,7 @@ fn deployment_stack_check_writes_expected_artifact() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deployment-stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json"),
+        justfile.contains("deploy stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json"),
         "deploy-check must validate the deployment stack contract"
     );
 }

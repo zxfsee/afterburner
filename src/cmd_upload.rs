@@ -315,7 +315,7 @@ fn read_u64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner upload --manifest PATH --ownership PATH --provider NAME --destination REF [--out PATH]"
+    "usage: afterburner deploy upload --manifest PATH --ownership PATH --provider NAME --destination REF [--out PATH]"
 }
 
 #[cfg(test)]
