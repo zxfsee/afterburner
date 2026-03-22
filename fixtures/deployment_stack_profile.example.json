@@ -1,0 +1,21 @@
+{
+  "schema_version": "1",
+  "deployable_unit": "afterburner-runtime-stack",
+  "service_entrypoint": "./bin/afterburner-http",
+  "service_surface": {
+    "healthcheck_path": "/healthz",
+    "infer_path": "/infer",
+    "port_env": "PORT"
+  },
+  "artifact_roots": {
+    "inference": "inference",
+    "deploy": "deploy",
+    "train": "train",
+    "eval": "eval"
+  },
+  "rollout_entrypoint": "inference/current",
+  "observability": {
+    "events_env": "AFTERBURNER_OBS_JSONL_PATH",
+    "default_events_path": "train/observability.jsonl"
+  }
+}

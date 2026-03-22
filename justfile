@@ -49,6 +49,7 @@ backend-profile-gate:
 
 # validate deploy-rs baseline deployment definitions
 deploy-check:
+    cargo run --locked --bin afterburner -- deployment-stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --out artifacts/deploy/deployment_stack_check.json
     nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 

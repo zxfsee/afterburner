@@ -1,0 +1,116 @@
+{
+  "$id": "https://afterburner.local/schemas/deployment-stack-check/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_name",
+    "deploy_hostname",
+    "deployable_unit",
+    "activation_strategy",
+    "service_entrypoint",
+    "artifact_root",
+    "artifact_roots",
+    "rollout_entrypoint",
+    "service_surface",
+    "observability"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deploy_hostname": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployable_unit": {
+      "const": "afterburner-runtime-stack"
+    },
+    "activation_strategy": {
+      "const": "current-pointer"
+    },
+    "service_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_root": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inference",
+        "deploy",
+        "train",
+        "eval"
+      ],
+      "properties": {
+        "inference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deploy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "train": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eval": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "rollout_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "healthcheck_path",
+        "infer_path",
+        "port_env"
+      ],
+      "properties": {
+        "healthcheck_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "infer_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port_env": {
+          "const": "PORT"
+        }
+      }
+    },
+    "observability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "events_env",
+        "default_events_path"
+      ],
+      "properties": {
+        "events_env": {
+          "const": "AFTERBURNER_OBS_JSONL_PATH"
+        },
+        "default_events_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -157,6 +157,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - Deployment adapters must resolve through an explicit deployment target profile contract before
   introducing deploy tooling. Target host, user, system, artifact root, and activation strategy
   are contract data, not ad-hoc shell configuration.
+- Deployment adapters must also resolve through an explicit deployment stack contract.
+  - The deployable unit is the Afterburner runtime stack, not just the model file.
+  - Service entrypoint, service surface, artifact roots, rollout entrypoint, and observability
+    hooks are contract data, not implied by recipes or host-local layout.
 - The baseline deploy-rs adapter consumes the deployment target profile contract directly from the
   checked fixture/example and uses `activate.custom` against the packaged `afterburner` binary
   rather than inventing a NixOS system deployment surface.
@@ -306,3 +310,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-033: Burn Dependency Refresh](./docs/adr/033-burn-dependency-refresh.md)
 - [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md)
 - [ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md)
+- [ADR-036: Deployment Stack Contract](./docs/adr/036-deployment-stack-contract.md)

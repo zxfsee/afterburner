@@ -1,0 +1,25 @@
+{
+  "schema_version": "1",
+  "profile_name": "staging-a",
+  "deploy_hostname": "staging.example.net",
+  "deployable_unit": "afterburner-runtime-stack",
+  "activation_strategy": "current-pointer",
+  "service_entrypoint": "./bin/afterburner-http",
+  "artifact_root": "/srv/afterburner/artifacts",
+  "artifact_roots": {
+    "inference": "/srv/afterburner/artifacts/inference",
+    "deploy": "/srv/afterburner/artifacts/deploy",
+    "train": "/srv/afterburner/artifacts/train",
+    "eval": "/srv/afterburner/artifacts/eval"
+  },
+  "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current",
+  "service_surface": {
+    "healthcheck_path": "/healthz",
+    "infer_path": "/infer",
+    "port_env": "PORT"
+  },
+  "observability": {
+    "events_env": "AFTERBURNER_OBS_JSONL_PATH",
+    "default_events_path": "/srv/afterburner/artifacts/train/observability.jsonl"
+  }
+}

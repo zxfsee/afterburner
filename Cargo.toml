@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Afterburner stack deployment contract [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define the deployable unit and activation contract for the full Afterburner runtime stack so deployment covers the service surface, artifact roots, rollout entrypoints, and observability hooks instead of treating the model file as the whole deployable system.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`, `justfile`
-
 - Distributed tracing correlation contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define distributed tracing propagation and correlation across the deployable Afterburner stack so load tests, rollout checks, and service traffic can be traced coherently across components and nodes.
   - Kind: `mixed`
@@ -57,6 +50,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+
+- GPU scheduler boundary and lifecycle gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define the scheduler/allocator boundary for queueing, admission, lease ownership, topology-aware GPU placement, and job lifecycle control so cluster scheduling stays separate from Burn runtime state and touches training only through explicit `START`/`STOP`/`KILL` and `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT` boundaries.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 ## [Trunk]
 """

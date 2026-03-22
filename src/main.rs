@@ -1,5 +1,6 @@
 mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
+mod cmd_deployment_stack_check;
 mod cmd_deployment_verification_bundle;
 mod cmd_distributed_load_profile;
 mod cmd_drift_baseline;
@@ -33,6 +34,7 @@ fn main() {
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
         "cleanup" => run_cleanup(args),
+        "deployment-stack-check" => cmd_deployment_stack_check::run(args),
         "deployment-verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "distributed-load-profile" => cmd_distributed_load_profile::run(args),
         "profile" => run_profile(args),
@@ -125,5 +127,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|drift <...>|cleanup <...>|profile <...>|upload|deployment-verification-bundle|distributed-load-profile> [args]"
+    "usage: afterburner <train|infer|eval|drift <...>|cleanup <...>|profile <...>|upload|deployment-stack-check|deployment-verification-bundle|distributed-load-profile> [args]"
 }

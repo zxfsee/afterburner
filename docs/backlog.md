@@ -47,13 +47,6 @@ Rules:
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: Burn distributed runtime benchmark harness contract.
 
-- GPU scheduler boundary and lifecycle gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define the scheduler/allocator boundary for queueing, admission, lease ownership, topology-aware GPU placement, and job lifecycle control so cluster scheduling stays separate from Burn runtime state and touches training only through explicit `START`/`STOP`/`KILL` and `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT` boundaries.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Single-node GPU lease and systemd scheduler adapter [Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize a systemd-first single-node scheduler path that tracks GPU inventory, queue admission, lease ownership, and graceful job stop/resume against the scheduler lifecycle contract before any cluster controller exists.
   - Kind: `mixed`

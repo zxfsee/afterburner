@@ -138,6 +138,12 @@ Deployment-side work now has a canonical example target profile at
 future deploy-rs wiring can reference one inspectable baseline profile.
 `just deploy-check` validates the baseline deploy-rs wiring from that profile contract
 without requiring a real deployment target.
+Deployment now also treats the full Afterburner runtime stack as the deployable
+unit through `fixtures/deployment_stack_profile.example.json`, which pins the
+service entrypoint, service surface, artifact roots, rollout entrypoint, and
+observability hook. `just deploy-check` materializes
+`artifacts/deploy/deployment_stack_check.json` from that stack contract before
+running the deploy-rs checks.
 `afterburner upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking

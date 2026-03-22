@@ -1,0 +1,97 @@
+{
+  "$id": "https://afterburner.local/schemas/deployment-stack-profile/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "deployable_unit",
+    "service_entrypoint",
+    "service_surface",
+    "artifact_roots",
+    "rollout_entrypoint",
+    "observability"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "deployable_unit": {
+      "const": "afterburner-runtime-stack"
+    },
+    "service_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "healthcheck_path",
+        "infer_path",
+        "port_env"
+      ],
+      "properties": {
+        "healthcheck_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "infer_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port_env": {
+          "const": "PORT"
+        }
+      }
+    },
+    "artifact_roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inference",
+        "deploy",
+        "train",
+        "eval"
+      ],
+      "properties": {
+        "inference": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deploy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "train": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eval": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "rollout_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "events_env",
+        "default_events_path"
+      ],
+      "properties": {
+        "events_env": {
+          "const": "AFTERBURNER_OBS_JSONL_PATH"
+        },
+        "default_events_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
