@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-runtime-profile/v1",
+  "title": "Distributed Runtime Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_version",
+    "model_size",
+    "node_count",
+    "gpus_per_node",
+    "world_size",
+    "parallelism",
+    "metrics",
+    "runtime_settings",
+    "environment_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "model_size": {
+      "type": "string",
+      "minLength": 1
+    },
+    "node_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "gpus_per_node": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "world_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "parallelism": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dp",
+        "tp",
+        "pp",
+        "sp_cp",
+        "ep",
+        "gas",
+        "microbatch_size",
+        "zero_stage"
+      ],
+      "properties": {
+        "dp": { "type": "integer", "minimum": 1 },
+        "tp": { "type": "integer", "minimum": 1 },
+        "pp": { "type": "integer", "minimum": 1 },
+        "sp_cp": { "type": "integer", "minimum": 1 },
+        "ep": { "type": "integer", "minimum": 1 },
+        "gas": { "type": "integer", "minimum": 1 },
+        "microbatch_size": { "type": "integer", "minimum": 1 },
+        "zero_stage": {
+          "type": "integer",
+          "enum": [0, 1, 2, 3]
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mfu",
+        "step_time_ms",
+        "tokens_per_sec",
+        "max_memory_bytes"
+      ],
+      "properties": {
+        "mfu": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "step_time_ms": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "tokens_per_sec": {
+          "type": "number",
+          "minimum": 0.0
+        },
+        "max_memory_bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "runtime_settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "backend",
+        "weights_dtype",
+        "activation_dtype",
+        "quantization"
+      ],
+      "properties": {
+        "backend": {
+          "type": "string",
+          "minLength": 1
+        },
+        "weights_dtype": {
+          "type": "string",
+          "minLength": 1
+        },
+        "activation_dtype": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantization": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "environment_fingerprint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "gpu_model",
+        "burn_version"
+      ],
+      "properties": {
+        "system": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gpu_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "burn_version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

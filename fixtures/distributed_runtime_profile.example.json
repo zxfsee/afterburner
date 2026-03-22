@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "artifact_version": "0.1.0",
+  "model_size": "8b",
+  "node_count": 1,
+  "gpus_per_node": 8,
+  "world_size": 8,
+  "parallelism": {
+    "dp": 8,
+    "tp": 1,
+    "pp": 1,
+    "sp_cp": 1,
+    "ep": 1,
+    "gas": 4,
+    "microbatch_size": 8,
+    "zero_stage": 0
+  },
+  "metrics": {
+    "mfu": 0.42,
+    "step_time_ms": 187.5,
+    "tokens_per_sec": 20480.0,
+    "max_memory_bytes": 21474836480
+  },
+  "runtime_settings": {
+    "backend": "wgpu",
+    "weights_dtype": "f32",
+    "activation_dtype": "f32",
+    "quantization": "none"
+  },
+  "environment_fingerprint": {
+    "system": "aarch64-darwin",
+    "gpu_model": "apple-m4-max",
+    "burn_version": "0.20.1"
+  }
+}

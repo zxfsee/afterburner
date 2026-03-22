@@ -252,6 +252,11 @@ auto-versioning, embedded serving) are intentionally absent.
   - Supported now: single-device execution only.
   - First candidate expansion: DP after explicit topology, collectives, and checkpoint contracts.
   - Unsupported now: ZeRO-1/2/3, TP, PP, SP/CP, EP, and generic multi-axis combinations.
+- Future distributed runtime profile trials should also use one explicit artifact contract.
+  - Keep that profile artifact separate from `training_scalability_contract.json`.
+  - Keep that profile artifact separate from `distributed_load_profile.json`.
+  - Record model-size/node-count identity, runtime parallelism choices, performance/memory
+    metrics, runtime settings, and environment fingerprint explicitly.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
@@ -342,4 +347,5 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
 - [ADR-040: Native Metal Backend Fit](./docs/adr/040-native-metal-backend-fit.md)
 - [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
+- [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md)
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)

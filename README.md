@@ -96,6 +96,12 @@ longer-term strategy vocabulary: Afterburner supports single-device execution
 today, treats DP as the first candidate expansion, and does not claim ZeRO,
 TP, PP, SP/CP, or EP support yet. See
 [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md).
+When the repo starts recording executed distributed runtime trials, use one
+explicit profile artifact for model-size and node-count cells rather than
+stretching either `training_scalability_contract.json` or
+`distributed_load_profile.json`. That profile should record parallelism choices,
+MFU/memory metrics, runtime settings, and environment fingerprint explicitly.
+See [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md).
 
 ## Inference
 
