@@ -91,6 +91,14 @@ Rules:
   - Contracts: `artifact`, `cli`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
 
+- Hugging Face model publish adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize a Hugging Face publishing adapter that consumes the existing provider-neutral `artifact_upload_request.json` contract and pushes approved model artifacts plus required metadata to Hugging Face without collapsing upload approval, artifact identity, or rollout vocabulary into vendor-specific CLI semantics.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `cli`, `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+  - Blocked-by: Remote model save/load fit gate.
+
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
