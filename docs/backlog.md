@@ -49,14 +49,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Burn distributed optimizer and checkpoint state contract.
 
-- GPU colocation fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define whether selected low-saturation jobs may share one GPU under explicit compatibility and interference limits so utilization improvements stay separate from the scheduler's preemption model.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: GPU scheduler boundary and lifecycle gate.
-
 - kube-rs GPU scheduler placement fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define a kube-rs-compatible control-plane contract for node inventory, topology-aware GPU placement, queue admission, and job lifecycle reconciliation so the later cluster path can reuse the same lease and state-boundary model as the single-node scheduler.
   - Kind: `gate`

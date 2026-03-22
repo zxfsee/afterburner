@@ -125,6 +125,14 @@ it must not own model-state semantics or internal parallelism choices. The
 runtime may choose internal composition such as DP, TP, PP, SP/CP, EP, or ZeRO
 variants, but it must not absorb cluster-level scheduling policy.
 
+The scheduler/runtime lifecycle message contract should also stay explicit:
+
+- `direction`
+- `kind`
+- `job_id`
+- `lease_id`
+- `resources` for `START`, including `node_ids`, `gpu_ids`, and `rank_assignments`
+
 Distributed-training scope is workload-driven. The repo is not targeting
 framework parity with DeepSpeed-class systems; it is implementing the minimum
 capability subset required by real workloads, with explicit contracts,
@@ -351,4 +359,5 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
 - [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md)
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
+- [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

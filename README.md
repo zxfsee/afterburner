@@ -63,6 +63,11 @@ For modest clusters, scheduler policy is intentionally conservative: queueing
 and priority come first, supported preemption is cooperative checkpoint/resume
 only, and GPU colocation is treated as a separate resource-management mode
 rather than transparent pause/resume.
+The runtime/scheduler lifecycle boundary is explicit as well: scheduler-side
+messages carry `START`/`STOP`/`KILL`, runtime-side messages carry
+`READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`, and `START` includes explicit
+lease-owned resources and rank assignments. See
+[ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md).
 Distributed-training work is also intentionally workload-driven: the goal is the
 minimum useful capability subset for repo workloads, not parity with a general
 DeepSpeed-class framework. See

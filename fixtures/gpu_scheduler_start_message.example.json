@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "direction": "scheduler_to_runtime",
+  "kind": "START",
+  "job_id": "job-0001",
+  "lease_id": "lease-0001",
+  "resources": {
+    "node_ids": ["node-a"],
+    "gpu_ids": ["0"],
+    "rank_assignments": [
+      {
+        "global_rank": 0,
+        "local_rank": 0,
+        "node_id": "node-a",
+        "gpu_id": "0"
+      }
+    ]
+  }
+}

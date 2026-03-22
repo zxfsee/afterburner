@@ -13,20 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- GPU scheduler boundary and lifecycle gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define the scheduler/allocator boundary for queueing, admission, lease ownership, topology-aware GPU placement, and job lifecycle control so cluster scheduling stays separate from Burn runtime state and touches training only through explicit `START`/`STOP`/`KILL` and `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT` boundaries.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Single-node GPU lease and systemd scheduler adapter [Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize a systemd-first single-node scheduler path that tracks GPU inventory, queue admission, lease ownership, and graceful job stop/resume against the scheduler lifecycle contract before any cluster controller exists.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `ops`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: GPU scheduler boundary and lifecycle gate.
 
 - MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
   - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
@@ -53,6 +45,13 @@ header = """# Changelog
   - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
   - Kind: `gate`
   - Boundary: `core-contract`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- GPU colocation fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define whether selected low-saturation jobs may share one GPU under explicit compatibility and interference limits so utilization improvements stay separate from the scheduler's preemption model.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 

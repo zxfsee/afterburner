@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-lifecycle-message/v1",
+  "title": "GPU Scheduler Lifecycle Message v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "direction",
+    "kind",
+    "job_id",
+    "lease_id"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "direction": {
+      "type": "string",
+      "enum": [
+        "scheduler_to_runtime",
+        "runtime_to_scheduler"
+      ]
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "START",
+        "STOP",
+        "KILL",
+        "READY",
+        "CHECKPOINTED",
+        "FAILED",
+        "HEARTBEAT"
+      ]
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lease_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node_ids",
+        "gpu_ids",
+        "rank_assignments"
+      ],
+      "properties": {
+        "node_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "gpu_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rank_assignments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "global_rank",
+              "local_rank",
+              "node_id",
+              "gpu_id"
+            ],
+            "properties": {
+              "global_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "local_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "node_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "gpu_id": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "status_detail": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "direction": { "const": "scheduler_to_runtime" },
+          "kind": { "const": "START" }
+        },
+        "required": ["direction", "kind"]
+      },
+      "then": {
+        "required": ["resources"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "direction": { "const": "runtime_to_scheduler" },
+          "kind": { "const": "FAILED" }
+        },
+        "required": ["direction", "kind"]
+      },
+      "then": {
+        "required": ["status_detail"]
+      }
+    }
+  ]
+}

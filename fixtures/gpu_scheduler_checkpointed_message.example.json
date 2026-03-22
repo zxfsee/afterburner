@@ -1,0 +1,7 @@
+{
+  "schema_version": "1",
+  "direction": "runtime_to_scheduler",
+  "kind": "CHECKPOINTED",
+  "job_id": "job-0001",
+  "lease_id": "lease-0001"
+}
