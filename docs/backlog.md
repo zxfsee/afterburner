@@ -70,6 +70,13 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
+- Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
+  - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`, `ops`
+  - Scope: `Cargo.toml`, `src/`, `tests/`, `fixtures/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`, `artifacts/`
+
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
   - Kind: `mixed`
