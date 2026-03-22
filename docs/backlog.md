@@ -55,6 +55,13 @@ Rules:
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: GPU scheduler boundary and lifecycle gate.
 
+- `process-compose-flake` local substrate fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Evaluate whether `process-compose-flake` should be the MacBook-local process substrate for running the Afterburner runtime stack and scheduler prototype so local multi-process orchestration stays reproducible without conflating local orchestration with `systemd`, Kubernetes, or scheduler policy.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `flake.nix`
+
 - kube-rs GPU scheduler placement fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define a kube-rs-compatible control-plane contract for node inventory, topology-aware GPU placement, queue admission, and job lifecycle reconciliation so the later cluster path can reuse the same lease and state-boundary model as the single-node scheduler.
   - Kind: `gate`
