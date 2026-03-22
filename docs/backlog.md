@@ -9,6 +9,7 @@ Parked items live here until promoted into the active TODO queue.
 - Promotion rule (default): promote the highest-priority runnable backlog item into the active TODO horizon.
 - Burn-side distributed runtime work covers in-job execution semantics, topology, checkpoint/resume, and training state; scheduler/allocator work covers cross-job GPU placement, queueing, leases, and lifecycle, and the two tracks meet only at explicit lifecycle boundaries.
 - Distributed-training runtime backlog items should follow workload-driven capability growth, not framework-parity work; use DeepSpeed-class systems as pattern references, not as parity targets.
+- Model optimization and packaging are a separate leverage axis from distributed scale; treat quantization/compression/export/package work as post-training artifact work, not as distributed-runtime or scheduler work.
 
 Rules:
 - Keep this list priority-ranked within backlog.
@@ -131,6 +132,51 @@ Rules:
   - Boundary: `core-contract`
   - Contracts: `artifact`, `cli`, `event`, `ops`
   - Scope: `Cargo.toml`, `src/`, `tests/`, `fixtures/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`, `artifacts/`
+
+- Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
+  - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+  - Blocked-by: Model optimization and packaging fit gate.
+
+- Optimized model packaging and export contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define the artifact shape, metadata, export format, and packaging inputs for quantized or compressed models so optimized releases can be reproduced, audited, and handed off without overloading the base training checkpoint contract.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+  - Blocked-by:
+    - Model optimization and packaging fit gate.
+    - Quantized and compressed model capability surface gate.
+
+- Optimized model eval and local-profile contract [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Materialize the quality, latency, memory, and size acceptance surface for optimized models on constrained hardware so quantization or compression choices are driven by measured tradeoffs instead of release pressure alone.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Blocked-by:
+    - Quantized and compressed model capability surface gate.
+    - Optimized model packaging and export contract.
+
+- Optimized model publish adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Extend publishing workflows so approved optimized model artifacts and their packaging metadata can be released to downstream destinations such as Hugging Face without inventing a second artifact identity or approval path.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `cli`, `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+  - Blocked-by:
+    - Optimized model packaging and export contract.
+    - Hugging Face model publish adapter.
 
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
