@@ -184,6 +184,10 @@ auto-versioning, embedded serving) are intentionally absent.
   - The platform layer owns launch substrate and host/cluster provisioning only.
   - The only required scheduler/runtime coupling is the explicit lifecycle boundary
     (`START`/`STOP`/`KILL`, `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`).
+  - Scheduler preemption is cooperative checkpoint/resume only; transparent GPU
+    task suspension is not a supported assumption.
+  - GPU colocation/sharing is a separate scheduling mode, not a synonym for
+    preemption.
 - Distributed-training runtime work is capability-subset work, not framework-parity work.
   - Prioritize the smallest workload-driven subset in dependency order.
   - Treat DeepSpeed-class systems as sources of patterns, not parity targets.
@@ -338,3 +342,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
 - [ADR-040: Native Metal Backend Fit](./docs/adr/040-native-metal-backend-fit.md)
 - [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
+- [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
