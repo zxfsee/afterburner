@@ -17,31 +17,31 @@
   - Scope: `src/`, `tests/`, `fixtures/`, `README.md`, `justfile`, `docs/adr/`
 
 - Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
-  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model instead of continuing to treat `worker_parallelism` as only a local throughput knob.
+  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model for in-job distributed execution instead of continuing to treat `worker_parallelism` as only a local throughput knob.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- Distributed world and rank topology gate [Distributed Training, Runtime Infra]
-  - Goal: Define explicit world-size, rank, and device-group metadata for future distributed training so execution topology is not inferred from local worker IDs or shard filenames alone.
+- Burn world and rank topology gate [Distributed Training, Runtime Infra]
+  - Goal: Define explicit world-size, rank, and device-group metadata for future Burn-side distributed training so in-job execution topology is not inferred from local worker IDs or shard filenames alone.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- Distributed runtime capability surface gate [Distributed Training, Frameworks]
-  - Goal: Define the supported versus unsupported distributed runtime surface for DP, ZeRO-1/2/3, TP, PP, SP/CP, and EP so profiling work does not claim configurations the current Burn/runtime stack cannot execute.
+- Burn distributed runtime capability surface gate [Distributed Training, Frameworks]
+  - Goal: Define the supported versus unsupported Burn distributed runtime surface for DP, ZeRO-1/2/3, TP, PP, SP/CP, and EP so profiling work does not claim configurations the current Burn/runtime stack cannot execute.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
   - Blocked-by:
     - Burn distributed learning-strategy fit gate.
-    - Distributed world and rank topology gate.
+    - Burn world and rank topology gate.
 
-- Distributed parallelism profile schema gate [Distributed Training, Experimentation/Eval Infra]
-  - Goal: Define the versioned scaling-profile artifact schema for 8-GPU nodes so each model-size and node-count cell records DP, TP, PP, GAS, MBS, ZeRO stage, MFU, memory usage, runtime settings, and environment fingerprint explicitly.
+- Burn distributed runtime profile schema gate [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Define the versioned scaling-profile artifact schema for 8-GPU nodes so each model-size and node-count cell records Burn runtime choices such as DP, TP, PP, GAS, MBS, ZeRO stage, MFU, memory usage, runtime settings, and environment fingerprint explicitly.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
@@ -120,8 +120,8 @@
 - Add profiling environment snapshot ([ac3cbc5])
 - Add deployment verification evidence bundle ([984238a])
 - Add profiling environment snapshot refresh receipt ([011b945])
-- Add distributed load profile ([8260d62])
-- Group operator subcommands ([3b00c56])
+- Add distributed load profile ([d96a0a7])
+- Group operator subcommands ([7bf677b])
 
 ### Changed
 
@@ -235,11 +235,12 @@
 - Prioritize production-oriented load and deploy work ([a91fc03])
 - Sync regrouped active queue ([81d63a7])
 - Record Burn refresh stance ([b625ad2])
-- Prioritize distributed parallelism profile ([2dfd55f])
-- Prioritize distributed tracing and parallelism profile ([dd8fbdc])
-- Split distributed parallelism epic into causal chain ([46c47b4])
-- Add blocked-by chain for distributed training profile work ([5b6379a])
-- Use blocked-by lists for distributed training chain ([81e4436])
+- Prioritize distributed parallelism profile ([c4f1441])
+- Prioritize distributed tracing and parallelism profile ([fb040e9])
+- Split distributed parallelism epic into causal chain ([e0652fe])
+- Add blocked-by chain for distributed training profile work ([372f9db])
+- Use blocked-by lists for distributed training chain ([76abac1])
+- Restore distributed training prerequisite chain ([f000bc8])
 
 ### Fixed
 
@@ -478,12 +479,13 @@
 [a91fc03]: https://github.com/zxfsee/afterburner/commit/a91fc03ddd89a880864d3e99178acab5492939f9
 [81d63a7]: https://github.com/zxfsee/afterburner/commit/81d63a7012b70ccd2834491f569380e83af070f8
 [b625ad2]: https://github.com/zxfsee/afterburner/commit/b625ad2a8e059b1e7ffa3a2ca19425e316bc0224
-[8260d62]: https://github.com/zxfsee/afterburner/commit/8260d62e23371345f8f28730b4c513ff0f6a96a4
-[3b00c56]: https://github.com/zxfsee/afterburner/commit/3b00c5645d71db55c63ebd969f4744d803b040c0
-[2dfd55f]: https://github.com/zxfsee/afterburner/commit/2dfd55fc25fa88901910e3cb43dd0399154ed24a
-[dd8fbdc]: https://github.com/zxfsee/afterburner/commit/dd8fbdcf372783c523ae086841d9a26f8a4ae1e2
-[46c47b4]: https://github.com/zxfsee/afterburner/commit/46c47b41147541ed87b97adae5494fb8fae3ab1c
-[5b6379a]: https://github.com/zxfsee/afterburner/commit/5b6379ae2fb54e6a20032921d5a7e3fd99d7a623
-[81e4436]: https://github.com/zxfsee/afterburner/commit/81e443646e01dd011ed22c2e49d7e62d3e2ba702
+[d96a0a7]: https://github.com/zxfsee/afterburner/commit/d96a0a74af12266e9a3d2f961c2d9b0a1410ee75
+[7bf677b]: https://github.com/zxfsee/afterburner/commit/7bf677b6944699981490fc65608e1fc59d7ddbe7
+[c4f1441]: https://github.com/zxfsee/afterburner/commit/c4f14417b908c652939478a478d79b8a57688bb8
+[fb040e9]: https://github.com/zxfsee/afterburner/commit/fb040e9758745311f537482fc522381ba8a30b11
+[e0652fe]: https://github.com/zxfsee/afterburner/commit/e0652fe4f847556adcc4859b54acbf4ff05c4b93
+[372f9db]: https://github.com/zxfsee/afterburner/commit/372f9dbda6dc4250cb636f6e9e2c46336ce784d2
+[76abac1]: https://github.com/zxfsee/afterburner/commit/76abac1903d4255ad83bc3e9f0cb7957f94b7f2f
+[f000bc8]: https://github.com/zxfsee/afterburner/commit/f000bc85d5f625368120599dee418923906abbd2
 
 <!-- generated by git-cliff -->

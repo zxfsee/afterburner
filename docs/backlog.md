@@ -7,6 +7,7 @@ Parked items live here until promoted into the active TODO queue.
 - Target system shape is a contract-first end-to-end MLOps pipeline: `data -> train -> eval -> promote -> deploy -> observe -> rollback`.
 - This is a narrative model, not a priority rule. Active work is still driven by the runnable TODO queue and dependency unlocks.
 - Promotion rule (default): promote the highest-priority runnable backlog item into the active TODO horizon.
+- Burn-side distributed runtime work covers in-job execution semantics, topology, checkpoint/resume, and training state; scheduler/allocator work covers cross-job GPU placement, queueing, leases, and lifecycle, and the two tracks meet only at explicit lifecycle boundaries.
 
 Rules:
 - Keep this list priority-ranked within backlog.
@@ -17,32 +18,57 @@ Rules:
 
 ## Items
 
-- Distributed parallelism layout feasibility gate [Distributed Training, Runtime Infra]
-  - Goal: Define feasibility validation for candidate DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
+- Burn distributed runtime layout feasibility gate [Distributed Training, Runtime Infra]
+  - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Distributed runtime capability surface gate.
+  - Blocked-by: Burn distributed runtime capability surface gate.
 
-- Distributed profiling benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible benchmark runner for distributed profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
+- Burn distributed runtime benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible benchmark runner for Burn distributed runtime profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by:
-    - Distributed runtime capability surface gate.
-    - Distributed parallelism profile schema gate.
-    - Distributed parallelism layout feasibility gate.
+    - Burn distributed runtime capability surface gate.
+    - Burn distributed runtime profile schema gate.
+    - Burn distributed runtime layout feasibility gate.
 
-- Distributed parallelism profile contract [Distributed Training, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed distributed profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
+- Burn distributed runtime profile contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed Burn distributed runtime profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: Distributed profiling benchmark harness contract.
+  - Blocked-by: Burn distributed runtime benchmark harness contract.
+
+- GPU scheduler boundary and lifecycle gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define the scheduler/allocator boundary for queueing, admission, lease ownership, topology-aware GPU placement, and job lifecycle control so cluster scheduling stays separate from Burn runtime state and touches training only through explicit `START`/`STOP`/`KILL` and `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT` boundaries.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Single-node GPU lease and systemd scheduler adapter [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize a systemd-first single-node scheduler path that tracks GPU inventory, queue admission, lease ownership, and graceful job stop/resume against the scheduler lifecycle contract before any cluster controller exists.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Blocked-by: GPU scheduler boundary and lifecycle gate.
+
+- kube-rs GPU scheduler placement fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define a kube-rs-compatible control-plane contract for node inventory, topology-aware GPU placement, queue admission, and job lifecycle reconciliation so the later cluster path can reuse the same lease and state-boundary model as the single-node scheduler.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by:
+    - GPU scheduler boundary and lifecycle gate.
+    - Single-node GPU lease and systemd scheduler adapter.
 
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
@@ -115,8 +141,8 @@ Rules:
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- Distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
-  - Goal: Define the minimum optimizer-state and checkpoint-group contract needed for distributed recovery so future multi-device training can resume consistently across shards and ranks.
+- Burn distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
+  - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
