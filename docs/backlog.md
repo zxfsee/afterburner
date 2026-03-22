@@ -70,6 +70,60 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
+- MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
+  - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- FineWeb-Edu slice source adoption gate [Pre-training, Data Infra]
+  - Goal: Define the approved FineWeb-Edu slice source key, `source_revision`, license/usage envelope, shard/checksum expectations, and local size budget so MacBook-scale text corpus selection is explicit and reproducible instead of a one-off download choice.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+  - Blocked-by: MacBook text pretraining fit gate.
+
+- Text tokenizer and sequence-packing contract [Pre-training, Data Infra, Runtime Infra]
+  - Goal: Define tokenizer identity, vocabulary/versioning, special tokens, sequence length, truncation/packing policy, and text-sample manifest fields so MacBook-scale text batches do not depend on ad hoc preprocessing scripts or unstated tokenizer drift.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+  - Blocked-by:
+    - MacBook text pretraining fit gate.
+    - FineWeb-Edu slice source adoption gate.
+
+- Text model artifact and inference contract gate [Pre-training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define how a text-trained artifact is versioned, loaded, and sampled so decoder-only language-model outputs do not get forced through the current MNIST-oriented infer/eval surface when the repo starts training on text.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+  - Blocked-by:
+    - MacBook text pretraining fit gate.
+    - Text tokenizer and sequence-packing contract.
+
+- MacBook text pretraining adapter [Pre-training, Frameworks, Runtime Infra]
+  - Goal: Materialize a small decoder-only language-model training path over the approved FineWeb-Edu slice with deterministic local caching, checkpoint/resume, and a bounded training recipe that fits a single MacBook while MNIST remains available as a separate smoke workflow.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `cli`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+  - Blocked-by:
+    - FineWeb-Edu slice source adoption gate.
+    - Text tokenizer and sequence-packing contract.
+    - Text model artifact and inference contract gate.
+
+- Text pretraining eval and smoke gate [Pre-training, Experimentation/Eval Infra]
+  - Goal: Add a deterministic text-side acceptance surface over loss/perplexity or a tiny overfit fixture so the new language-model path has a real regression gate while MNIST remains the cheapest end-to-end runtime sanity check.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Blocked-by: MacBook text pretraining adapter.
+
 - Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
   - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
   - Kind: `mixed`
