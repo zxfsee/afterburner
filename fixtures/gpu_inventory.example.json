@@ -1,0 +1,8 @@
+{
+  "schema_version": "1",
+  "node_id": "node-a",
+  "gpus": [
+    { "gpu_id": "0", "state": "free" },
+    { "gpu_id": "1", "state": "allocated" }
+  ]
+}

@@ -68,6 +68,10 @@ messages carry `START`/`STOP`/`KILL`, runtime-side messages carry
 `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`, and `START` includes explicit
 lease-owned resources and rank assignments. See
 [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md).
+The current single-node scheduler path is intentionally bounded: `afterburner deploy single-node-scheduler`
+admits one-GPU jobs onto the first free local GPU, writes a lease artifact plus
+a systemd service unit, and uses `SIGTERM` for graceful stop. It is a
+single-node adapter, not a queue daemon or cluster scheduler.
 Distributed-training work is also intentionally workload-driven: the goal is the
 minimum useful capability subset for repo workloads, not parity with a general
 DeepSpeed-class framework. See

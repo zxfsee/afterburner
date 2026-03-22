@@ -1,0 +1,16 @@
+[Unit]
+Description=Afterburner job job-0001
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/afterburner
+Environment=AFTERBURNER_JOB_ID=job-0001
+Environment=AFTERBURNER_LEASE_ID=lease-job-0001
+Environment=AFTERBURNER_GPU_IDS=0
+ExecStart=./bin/afterburner train --num-epochs 1
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

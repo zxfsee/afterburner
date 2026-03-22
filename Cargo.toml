@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Single-node GPU lease and systemd scheduler adapter [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize a systemd-first single-node scheduler path that tracks GPU inventory, queue admission, lease ownership, and graceful job stop/resume against the scheduler lifecycle contract before any cluster controller exists.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
   - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
   - Kind: `gate`
@@ -33,6 +26,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `flake.nix`
+
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
 
 - Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.

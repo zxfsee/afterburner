@@ -19,6 +19,7 @@ mod cmd_eval;
 mod cmd_infer;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
+mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
 
@@ -107,6 +108,7 @@ where
         "stack-check" => cmd_deployment_stack_check::run(args),
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "load-profile" => cmd_distributed_load_profile::run(args),
+        "single-node-scheduler" => cmd_single_node_scheduler::run(args),
         _ => {
             eprintln!("unknown deploy subcommand: {subcommand}");
             eprintln!("{}", usage());

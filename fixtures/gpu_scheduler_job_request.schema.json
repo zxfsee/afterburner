@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-job-request/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "job_id",
+    "priority",
+    "gpu_count",
+    "checkpoint_mode",
+    "working_directory",
+    "exec_start"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "job_id": { "type": "string", "minLength": 1 },
+    "priority": { "type": "integer", "minimum": 0 },
+    "gpu_count": { "type": "integer", "minimum": 1 },
+    "checkpoint_mode": {
+      "type": "string",
+      "enum": ["cooperative", "none"]
+    },
+    "working_directory": { "type": "string", "minLength": 1 },
+    "exec_start": { "type": "string", "minLength": 1 }
+  }
+}
