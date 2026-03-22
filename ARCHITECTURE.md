@@ -41,6 +41,66 @@ objective evidence required before replacing backend-provided kernels.
 The distributed training stack is split into three layers with explicit
 responsibility boundaries:
 
+```text
+┌──────────────────────────────────────────────────────────────┐
+│                   1) Distributed Training Runtime            │
+│                        (Burn-side layer)                     │
+│                                                              │
+│  Responsibilities:                                           │
+│  - DP (today)                                                │
+│  - Future: ZeRO / TP / PP / SP/CP / EP                       │
+│  - Rank/world topology                                       │
+│  - Process groups / collectives                              │
+│  - Gradient sync / communication                             │
+│  - Checkpoint / optimizer state                              │
+│  - Microbatch / pipeline execution                           │
+│                                                              │
+│  Does NOT do:                                                │
+│  - cluster scheduling                                        │
+│  - GPU placement across jobs                                 │
+└──────────────────────────────────────────────────────────────┘
+                           ▲
+                           │ lifecycle boundary (explicit)
+                           │
+                           │ START / STOP / KILL
+                           │ READY / CHECKPOINTED / FAILED / HEARTBEAT
+                           │
+┌──────────────────────────────────────────────────────────────┐
+│              2) GPU Scheduler / Allocator (Control Plane)    │
+│                                                              │
+│  Responsibilities:                                           │
+│  - Queueing / admission                                      │
+│  - GPU placement (topology-aware)                            │
+│  - Node inventory                                            │
+│  - Lease ownership                                           │
+│  - Job lifecycle                                             │
+│  - Preemption policy                                         │
+│                                                              │
+│  Does NOT do:                                                │
+│  - DP / TP / PP / ZeRO                                       │
+│  - model execution                                           │
+│  - gradient synchronization                                  │
+└──────────────────────────────────────────────────────────────┘
+                           ▲
+                           │ deployment / execution substrate
+                           │
+┌──────────────────────────────────────────────────────────────┐
+│                 3) Platform / Infra Layer                    │
+│                      (NixOS + K8s/systemd)                   │
+│                                                              │
+│  Responsibilities:                                           │
+│  - Reproducible environments                                 │
+│  - CUDA / drivers / NCCL                                     │
+│  - Node provisioning                                         │
+│  - systemd (single-node)                                     │
+│  - kube-rs / K8s (cluster path)                              │
+│                                                              │
+│  Does NOT do:                                                │
+│  - scheduling policy logic                                   │
+│  - training semantics                                        │
+└──────────────────────────────────────────────────────────────┘
+```
+
 1. Distributed training runtime
    - Burn-side execution semantics inside one job.
    - Owns data/model parallel execution, collectives, rank/world topology,
