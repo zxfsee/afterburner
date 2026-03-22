@@ -13,16 +13,21 @@ use afterburner::manifest::{ArtifactManifest, ManifestPrecision};
 use afterburner::observability::emit_event;
 use burn::prelude::*;
 use burn::tensor::activation::softmax;
-use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
+use burn::{
+    backend::ndarray::NdArray,
+    backend::wgpu::{Metal, Wgpu},
+};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
 type GpuBackend = Wgpu<f32, i32>;
+type MetalBackend = Metal<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
 const BACKEND_CPU: &str = "cpu";
+const BACKEND_METAL: &str = "metal";
 const BACKEND_WGPU: &str = "wgpu";
-const RUNTIME_SUPPORTED_BACKENDS: [&str; 2] = [BACKEND_CPU, BACKEND_WGPU];
+const RUNTIME_SUPPORTED_BACKENDS: [&str; 3] = [BACKEND_CPU, BACKEND_WGPU, BACKEND_METAL];
 const INFER_OUTPUT_DRIFT_SUMMARY_PATH: &str = "artifacts/eval/infer_output_drift_summary.json";
 
 const ADAPTER_REGISTRY_SCHEMA_FIXTURE: &str =
@@ -136,6 +141,17 @@ where
         }
         BACKEND_WGPU => {
             run_infer::<GpuBackend>(
+                &weights_path,
+                backend.as_str(),
+                artifact.as_str(),
+                artifact_version.as_str(),
+                &precision,
+                calibration.as_ref(),
+            )
+            .map_err(CmdInferError::Infer)?;
+        }
+        BACKEND_METAL => {
+            run_infer::<MetalBackend>(
                 &weights_path,
                 backend.as_str(),
                 artifact.as_str(),

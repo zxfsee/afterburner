@@ -4,13 +4,18 @@ use afterburner::model::ModelConfig;
 use afterburner::observability::emit_event;
 use afterburner::train;
 use burn::prelude::*;
-use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
+use burn::{
+    backend::ndarray::NdArray,
+    backend::wgpu::{Metal, Wgpu},
+};
 use burn_autodiff::Autodiff;
 use serde_json::json;
 
 type GpuBackend = Wgpu<f32, i32>;
+type MetalBackend = Metal<f32, i32>;
 type CpuBackend = NdArray<f32>;
 type GpuAutodiff = Autodiff<GpuBackend>;
+type MetalAutodiff = Autodiff<MetalBackend>;
 type CpuAutodiff = Autodiff<CpuBackend>;
 
 pub fn run<I>(args: I) -> i32
@@ -43,18 +48,25 @@ where
         return 0;
     }
 
-    let gpu_result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        let device = <GpuBackend as Backend>::Device::default();
-        train::train::<GpuAutodiff>(config, device);
-    }));
+    let gpu_result =
+        std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| match backend.as_str() {
+            "metal" => {
+                let device = <MetalBackend as Backend>::Device::default();
+                train::train::<MetalAutodiff>(config, device);
+            }
+            _ => {
+                let device = <GpuBackend as Backend>::Device::default();
+                train::train::<GpuAutodiff>(config, device);
+            }
+        }));
 
     if let Err(payload) = gpu_result {
-        if is_missing_wgpu_adapter_panic(payload.as_ref()) {
+        if is_missing_gpu_adapter_panic(payload.as_ref()) {
             emit_event(
                 "warn",
                 "train_cli",
                 "backend_fallback",
-                json!({"from":"wgpu","to":"cpu","reason":"no_adapter"}),
+                json!({"from":backend,"to":"cpu","reason":"no_adapter"}),
             );
             let cpu_config = training_config_from_env(&parsed);
             let device = <CpuBackend as Backend>::Device::default();
@@ -175,7 +187,7 @@ where
         .map_err(|_| format!("invalid value for {flag}: {value}\n{}", usage()))
 }
 
-fn is_missing_wgpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
+fn is_missing_gpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
     if let Some(message) = payload.downcast_ref::<&'static str>() {
         return message.contains("No possible adapter available for backend");
     }

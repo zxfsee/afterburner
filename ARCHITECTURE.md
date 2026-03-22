@@ -221,6 +221,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
   because the current Burn GPU stack already carries them transitively. They remain out of
   the repo's direct dependencies and public contracts until the checked threshold is crossed.
+- On Apple hardware, Burn's Metal path is also treated as an extension of the existing GPU stack,
+  not as a separate repo-local backend family.
+  - `BACKEND=metal` is a Burn-aligned runtime choice under the existing GPU adapter surface.
+  - `wgpu` remains the default until backend-profile evidence justifies preferring Metal more broadly.
 - Burn dependency refreshes should stay on the latest stable line, not pre-release churn. The
   current explicit stance is Burn `0.20.1`; a later refresh should wait for a newer stable release
   and keep `.mpk` to `.bpk` migration as a separate contract decision.
@@ -328,3 +332,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)
 - [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
+- [ADR-040: Native Metal Backend Fit](./docs/adr/040-native-metal-backend-fit.md)

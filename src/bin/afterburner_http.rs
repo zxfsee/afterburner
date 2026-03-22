@@ -21,9 +21,13 @@ use burn::prelude::*;
 use serde_json::{Value, json};
 use tiny_http::{Header, Method, Response, Server, StatusCode};
 
-use burn::{backend::ndarray::NdArray, backend::wgpu::Wgpu};
+use burn::{
+    backend::ndarray::NdArray,
+    backend::wgpu::{Metal, Wgpu},
+};
 
 type GpuBackend = Wgpu<f32, i32>;
+type MetalBackend = Metal<f32, i32>;
 type CpuBackend = NdArray<f32>;
 
 const MNIST_IMAGE_BYTES: usize = 28 * 28;
@@ -44,14 +48,14 @@ fn main() {
     let weights_path = parse_weights_path_from_args(std::env::args());
     let addr = http_addr();
 
-    let use_cpu = std::env::var("BACKEND")
-        .map(|v| v.eq_ignore_ascii_case("cpu"))
-        .unwrap_or(false);
+    let backend = std::env::var("BACKEND")
+        .map(|v| v.to_ascii_lowercase())
+        .unwrap_or_else(|_| "wgpu".to_string());
 
-    if use_cpu {
-        run_server::<CpuBackend>(weights_path, addr, "cpu");
-    } else {
-        run_server::<GpuBackend>(weights_path, addr, "wgpu");
+    match backend.as_str() {
+        "cpu" => run_server::<CpuBackend>(weights_path, addr, "cpu"),
+        "metal" => run_server::<MetalBackend>(weights_path, addr, "metal"),
+        _ => run_server::<GpuBackend>(weights_path, addr, "wgpu"),
     }
 }
 

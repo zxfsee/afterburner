@@ -8,6 +8,10 @@
       "version": "0.1.0"
     },
     {
+      "adapter": "metal",
+      "version": "0.1.0"
+    },
+    {
       "adapter": "cpu",
       "version": "0.1.0"
     }

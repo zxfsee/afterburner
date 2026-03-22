@@ -13,22 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
-  - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`, `ops`
-  - Scope: `Cargo.toml`, `src/`, `tests/`, `fixtures/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`, `artifacts/`
-
 - Burn distributed runtime capability surface gate [Distributed Training, Frameworks]
   - Goal: Define the supported versus unsupported Burn distributed runtime surface for DP, ZeRO-1/2/3, TP, PP, SP/CP, and EP so profiling work does not claim configurations the current Burn/runtime stack cannot execute.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by:
-    - Burn distributed learning-strategy fit gate.
-    - Burn world and rank topology gate.
 
 - Burn distributed runtime profile schema gate [Distributed Training, Experimentation/Eval Infra]
   - Goal: Define the versioned scaling-profile artifact schema for 8-GPU nodes so each model-size and node-count cell records Burn runtime choices such as DP, TP, PP, GAS, MBS, ZeRO stage, MFU, memory usage, runtime settings, and environment fingerprint explicitly.
@@ -36,6 +26,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+
+- CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`
+  - Scope: `src/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
 
 - GPU scheduler boundary and lifecycle gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define the scheduler/allocator boundary for queueing, admission, lease ownership, topology-aware GPU placement, and job lifecycle control so cluster scheduling stays separate from Burn runtime state and touches training only through explicit `START`/`STOP`/`KILL` and `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT` boundaries.
@@ -122,6 +119,10 @@ enabled_features = ["ndarray"]
 backend = "wgpu"
 enabled_features = ["wgpu"]
 
+[[package.metadata.afterburner.compiler_feature_matrix.backend_feature_matrix]]
+backend = "metal"
+enabled_features = ["wgpu", "metal"]
+
 [[bin]]
 name = "afterburner-http"
 path = "src/bin/afterburner_http.rs"
@@ -135,6 +136,7 @@ afterburner-core = { path = "crates/afterburner-core" }
 base64 = "0.22"
 burn = { version = "0.20.1", features = [
   "fusion",
+  "metal",
   "std",
   "train",
   "tui",

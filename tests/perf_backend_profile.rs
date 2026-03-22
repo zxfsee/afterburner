@@ -27,6 +27,12 @@ fn backend_performance_profile_has_objective_native_backend_criteria() {
         Some("wgpu")
     );
     assert_eq!(
+        profile
+            .get("native_backend_candidate")
+            .and_then(Value::as_str),
+        Some("metal")
+    );
+    assert_eq!(
         profile.get("comparison_command").and_then(Value::as_str),
         Some("afterburner eval --seed 42 --batch-size 128 --max-batches 8")
     );
@@ -130,6 +136,14 @@ fn backend_performance_profile_has_objective_native_backend_criteria() {
                 .is_some_and(|text| text.contains("comparison_command"))
         }),
         "refresh_when must mention comparison_command drift"
+    );
+    assert!(
+        refresh_when.iter().any(|value| {
+            value
+                .as_str()
+                .is_some_and(|text| text.contains("native_backend_candidate"))
+        }),
+        "refresh_when must mention native_backend_candidate drift"
     );
     assert!(
         refresh_when.iter().any(|value| {

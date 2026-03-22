@@ -402,7 +402,8 @@ The same model artifact can run on CPU or GPU without retraining:
 - GPU is intended for training and throughput-oriented inference
 - CPU is supported for development, debugging, and environments without accelerators
 
-Backend selection is explicit (`BACKEND=cpu`), reflecting production systems where execution targets vary by cost, latency, and scale.
+Backend selection is explicit (`BACKEND=cpu|wgpu|metal`), reflecting production systems where execution targets vary by cost, latency, and scale.
+On Apple hardware, `BACKEND=metal` uses Burn's Metal-backed GPU path under the existing Burn GPU stack.
 If `BACKEND` is unset, training attempts `wgpu` first and falls back to `cpu` automatically when no compatible GPU adapter is available.
 
 ## Infrastructure choices
