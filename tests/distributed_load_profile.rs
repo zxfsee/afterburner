@@ -79,6 +79,8 @@ fn distributed_load_profile_schema_and_workflow_are_explicit() {
     let expected = [
         "schema_version",
         "target_addr",
+        "traceparent",
+        "trace_id",
         "request_count",
         "concurrency",
         "success_count",
@@ -153,6 +155,21 @@ fn distributed_load_profile_writes_profile_and_event() {
         object.get("target_addr").and_then(Value::as_str),
         Some(format!("127.0.0.1:{port}").as_str())
     );
+    let traceparent = object
+        .get("traceparent")
+        .and_then(Value::as_str)
+        .expect("traceparent must be present");
+    assert!(
+        traceparent.starts_with("00-"),
+        "traceparent must use w3c shape"
+    );
+    assert!(
+        object
+            .get("trace_id")
+            .and_then(Value::as_str)
+            .is_some_and(|value| value.len() == 32),
+        "trace_id must be present"
+    );
     assert_eq!(object.get("request_count").and_then(Value::as_i64), Some(6));
     assert_eq!(object.get("concurrency").and_then(Value::as_i64), Some(2));
     assert_eq!(object.get("success_count").and_then(Value::as_i64), Some(6));
@@ -216,6 +233,14 @@ fn distributed_load_profile_writes_profile_and_event() {
             .and_then(|profile| profile.get("request_count"))
             .and_then(Value::as_i64),
         Some(6)
+    );
+    assert_eq!(
+        fields.get("traceparent").and_then(Value::as_str),
+        Some(traceparent)
+    );
+    assert_eq!(
+        fields.get("trace_id").and_then(Value::as_str),
+        object.get("trace_id").and_then(Value::as_str)
     );
 }
 

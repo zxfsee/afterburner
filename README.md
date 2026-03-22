@@ -144,6 +144,12 @@ service entrypoint, service surface, artifact roots, rollout entrypoint, and
 observability hook. `just deploy-check` materializes
 `artifacts/deploy/deployment_stack_check.json` from that stack contract before
 running the deploy-rs checks.
+For lightweight distributed tracing correlation, adapters use W3C `traceparent`
+plus a derived `trace_id` in deployment/load-test artifacts and request-scoped
+events. HTTP requests may supply `traceparent`, and CLI/deployment workflows can
+propagate one through `AFTERBURNER_TRACEPARENT` to correlate `just rollout-check`
+and `just distributed-load-profile` activity without introducing a Tokio runtime
+or heavy OpenTelemetry SDK.
 `afterburner upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking

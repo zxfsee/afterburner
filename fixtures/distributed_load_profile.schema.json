@@ -7,6 +7,8 @@
   "required": [
     "schema_version",
     "target_addr",
+    "traceparent",
+    "trace_id",
     "request_count",
     "concurrency",
     "success_count",
@@ -27,6 +29,14 @@
       "const": "1"
     },
     "target_addr": {
+      "type": "string",
+      "minLength": 1
+    },
+    "traceparent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
       "type": "string",
       "minLength": 1
     },

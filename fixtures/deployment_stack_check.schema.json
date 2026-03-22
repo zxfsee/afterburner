@@ -7,6 +7,8 @@
     "profile_name",
     "deploy_hostname",
     "deployable_unit",
+    "traceparent",
+    "trace_id",
     "activation_strategy",
     "service_entrypoint",
     "artifact_root",
@@ -29,6 +31,14 @@
     },
     "deployable_unit": {
       "const": "afterburner-runtime-stack"
+    },
+    "traceparent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
+      "type": "string",
+      "minLength": 1
     },
     "activation_strategy": {
       "const": "current-pointer"

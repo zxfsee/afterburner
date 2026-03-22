@@ -3,6 +3,8 @@
   "profile_name": "staging-a",
   "deploy_hostname": "staging.example.net",
   "deployable_unit": "afterburner-runtime-stack",
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
   "activation_strategy": "current-pointer",
   "service_entrypoint": "./bin/afterburner-http",
   "artifact_root": "/srv/afterburner/artifacts",

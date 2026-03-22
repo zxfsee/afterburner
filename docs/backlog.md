@@ -119,13 +119,6 @@ Rules:
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: MacBook text pretraining adapter.
 
-- Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
-  - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`, `ops`
-  - Scope: `Cargo.toml`, `src/`, `tests/`, `fixtures/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`, `artifacts/`
-
 - Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.
   - Kind: `gate`
@@ -170,6 +163,16 @@ Rules:
   - Blocked-by:
     - Optimized model packaging and export contract.
     - Hugging Face model publish adapter.
+
+- Tokio adapter runtime fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Evaluate whether adapter-side concurrency, tracing, and deployment pressure justify adopting a Tokio-based runtime in adapters so the repo can grow into heavier async workflows without changing core/runtime boundaries prematurely.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+  - Blocked-by:
+    - Distributed tracing correlation contract.
+    - HTTP infer load profile contract.
 
 - CLI subcommand hierarchy migration contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the flat `afterburner` command namespace into grouped subcommands where it improves typical operator use, and cut over docs, tests, and workflow recipes in one explicit CLI contract change instead of accreting more top-level verbs.

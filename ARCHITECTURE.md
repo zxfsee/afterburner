@@ -191,6 +191,11 @@ auto-versioning, embedded serving) are intentionally absent.
     unless a concrete workload and contract require it.
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
+- Distributed tracing correlation also stays adapter-local and lightweight.
+  - Use explicit `traceparent` propagation plus derived `trace_id` fields in adapter events
+    and deployment/load-test artifacts when cross-command or cross-node correlation is needed.
+  - `AFTERBURNER_TRACEPARENT` is the adapter-side rollout/load-test propagation hook.
+  - Do not introduce a Tokio runtime or heavy OpenTelemetry SDK solely to add correlation fields.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
   infer/eval monitoring fields should align on explicit units and stable identity keys
   (`duration_ms`, `batch_size`, `artifact_version`) so adapter-local logs can be mapped
@@ -311,3 +316,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md)
 - [ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md)
 - [ADR-036: Deployment Stack Contract](./docs/adr/036-deployment-stack-contract.md)
+- [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)

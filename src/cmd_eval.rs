@@ -7,10 +7,10 @@ use afterburner::infer::{
     InferError, default_weights_path, load_model, manifest_path_for_weights, validate_artifacts,
 };
 use afterburner::manifest::ArtifactManifest;
-use afterburner::observability::emit_event;
+use afterburner::observability::{attach_trace_fields, current_trace_context, emit_event};
 use burn::backend::ndarray::NdArray;
 use burn::prelude::*;
-use serde_json::json;
+use serde_json::{Value, json};
 
 type CpuBackend = NdArray<f32>;
 
@@ -110,6 +110,7 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
+    let trace = current_trace_context("eval_cli");
     let artifact_version = load_artifact_version(args.artifact.as_path())?;
     let device = <CpuBackend as Backend>::Device::default();
     <CpuBackend as Backend>::seed(&device, args.seed);
@@ -152,7 +153,7 @@ where
     let accuracy = correct as f64 / total as f64;
     let duration_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX);
     let rate_samples_per_sec = (total as f64 * 1000.0) / duration_ms.max(1) as f64;
-    let summary = json!({
+    let mut summary = json!({
         "event": "mnist_eval_summary",
         "artifact": args.artifact.display().to_string(),
         "artifact_version": artifact_version,
@@ -167,6 +168,12 @@ where
         "duration_ms": duration_ms,
         "rate_samples_per_sec": rate_samples_per_sec
     });
+    attach_trace_fields(
+        summary
+            .as_object_mut()
+            .expect("eval summary must be an object"),
+        &trace,
+    );
 
     if let Some(parent) = args.out_path.parent() {
         fs::create_dir_all(parent)?;
@@ -176,23 +183,29 @@ where
     })?;
     fs::write(&args.out_path, summary)?;
 
-    emit_event(
-        "info",
-        "eval_cli",
-        "eval_done",
-        json!({
-            "artifact": args.artifact.display().to_string(),
-            "artifact_version": artifact_version,
-            "accuracy": accuracy,
-            "samples": total,
-            "batches_evaluated": seen_batches,
-            "batch_size": args.batch_size,
-            "seed": args.seed,
-            "error_count": 0,
-            "duration_ms": duration_ms,
-            "rate_samples_per_sec": rate_samples_per_sec
-        }),
-    );
+    let mut event_fields = serde_json::Map::from_iter([
+        (
+            "artifact".to_string(),
+            Value::from(args.artifact.display().to_string()),
+        ),
+        (
+            "artifact_version".to_string(),
+            Value::from(artifact_version.clone()),
+        ),
+        ("accuracy".to_string(), Value::from(accuracy)),
+        ("samples".to_string(), Value::from(total)),
+        ("batches_evaluated".to_string(), Value::from(seen_batches)),
+        ("batch_size".to_string(), Value::from(args.batch_size)),
+        ("seed".to_string(), Value::from(args.seed)),
+        ("error_count".to_string(), Value::from(0)),
+        ("duration_ms".to_string(), Value::from(duration_ms)),
+        (
+            "rate_samples_per_sec".to_string(),
+            Value::from(rate_samples_per_sec),
+        ),
+    ]);
+    attach_trace_fields(&mut event_fields, &trace);
+    emit_event("info", "eval_cli", "eval_done", Value::Object(event_fields));
 
     if let Some(min_accuracy) = args.min_accuracy {
         if let Err(err) = enforce_accuracy_gate(accuracy, min_accuracy) {

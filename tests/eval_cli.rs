@@ -215,6 +215,8 @@ fn eval_summary_schema_fixture_has_required_monitoring_fields() {
         "event",
         "artifact",
         "artifact_version",
+        "traceparent",
+        "trace_id",
         "seed",
         "batch_size",
         "max_batches",
@@ -310,6 +312,12 @@ fn infer_and_eval_monitoring_fixtures_share_duration_and_identity_fields() {
             "eval fixture must carry `{required}`"
         );
     }
+    for required in ["traceparent", "trace_id"] {
+        assert!(
+            eval_fields.contains_key(required),
+            "eval fixture must carry `{required}`"
+        );
+    }
 
     assert!(
         !infer_fields.contains_key("elapsed_ms"),
@@ -368,7 +376,7 @@ fn eval_checked_in_summary_matches_monitoring_schema_contract() {
         summary.get("event").and_then(Value::as_str),
         Some("mnist_eval_summary")
     );
-    for key in ["artifact", "artifact_version"] {
+    for key in ["artifact", "artifact_version", "traceparent", "trace_id"] {
         let value = summary
             .get(key)
             .and_then(Value::as_str)
@@ -481,6 +489,14 @@ fn normalize_eval_done_event(event: &Value) -> Value {
     fields.insert(
         "artifact".to_string(),
         Value::from("<artifact>/artifacts/inference/0.1.0/model.mpk"),
+    );
+    fields.insert(
+        "traceparent".to_string(),
+        Value::from("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"),
+    );
+    fields.insert(
+        "trace_id".to_string(),
+        Value::from("4bf92f3577b34da6a3ce929d0e0e4736"),
     );
 
     let duration_ms = fields

@@ -228,6 +228,14 @@ fn normalize_http_infer_done_event(event: &Value) -> Value {
         .and_then(Value::as_object_mut)
         .expect("http infer_done fields must be an object");
     fields.insert("request_id".to_string(), json!("<request_id>"));
+    fields.insert(
+        "traceparent".to_string(),
+        json!("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"),
+    );
+    fields.insert(
+        "trace_id".to_string(),
+        json!("4bf92f3577b34da6a3ce929d0e0e4736"),
+    );
 
     let duration_ms = fields
         .get("duration_ms")

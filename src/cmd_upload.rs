@@ -2,6 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use afterburner::manifest::{ArtifactManifest, ManifestError};
+use afterburner::observability::{attach_trace_fields, current_trace_context, emit_event};
 use serde_json::{Value, json};
 
 const UPLOAD_REQUEST_SCHEMA_VERSION: &str = "1";
@@ -84,6 +85,7 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
+    let trace = current_trace_context("upload_cli");
     let manifest = ArtifactManifest::load_from_path(&args.manifest_path)?;
     let artifact_dir = args.manifest_path.parent().ok_or_else(|| {
         UploadError::InvalidArg("manifest path must have a parent directory".to_string())
@@ -99,11 +101,13 @@ where
             .join("artifact_upload_request.json")
     });
 
-    let request = json!({
+    let provider = args.provider.clone();
+    let destination = args.destination.clone();
+    let mut request = json!({
         "schema_version": UPLOAD_REQUEST_SCHEMA_VERSION,
         "operation": UPLOAD_OPERATION,
-        "provider": args.provider,
-        "destination": args.destination,
+        "provider": provider,
+        "destination": destination,
         "artifact_version": manifest.artifact_version,
         "artifact_manifest": args.manifest_path.display().to_string(),
         "artifact_file": artifact_path.display().to_string(),
@@ -115,6 +119,12 @@ where
         "approval_ticket": ownership.approval_ticket,
         "approved_at_unix_ms": ownership.approved_at_unix_ms
     });
+    attach_trace_fields(
+        request
+            .as_object_mut()
+            .expect("upload request must be an object"),
+        &trace,
+    );
     let request = serde_json::to_string_pretty(&request).map_err(|err| {
         UploadError::InvalidArg(format!("failed to serialize upload request json: {err}"))
     })?;
@@ -122,6 +132,19 @@ where
         fs::create_dir_all(parent)?;
     }
     fs::write(&out_path, request)?;
+    emit_event(
+        "info",
+        "deploy_cli",
+        "artifact_upload_request_written",
+        json!({
+            "request_path": out_path.display().to_string(),
+            "artifact_version": manifest.artifact_version,
+            "provider": args.provider,
+            "destination": args.destination,
+            "traceparent": trace.traceparent,
+            "trace_id": trace.trace_id,
+        }),
+    );
     Ok(out_path)
 }
 

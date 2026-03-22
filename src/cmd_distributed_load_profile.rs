@@ -6,7 +6,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Instant;
 
-use afterburner::observability::emit_event;
+use afterburner::observability::{attach_trace_fields, current_trace_context, emit_event};
 use serde_json::json;
 
 const DISTRIBUTED_LOAD_PROFILE_PATH: &str = "artifacts/deploy/distributed_load_profile.json";
@@ -85,6 +85,7 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
+    let trace = current_trace_context("deploy_cli");
     let payload = Arc::new(INFER_PAYLOAD.trim().as_bytes().to_vec());
     let started = Instant::now();
 
@@ -95,7 +96,9 @@ where
         let addr = args.addr.clone();
         let payload = Arc::clone(&payload);
         let assigned = base + usize::from(worker_index < remainder);
-        let handle = thread::spawn(move || run_worker(worker_index, addr, payload, assigned));
+        let traceparent = trace.traceparent.clone();
+        let handle =
+            thread::spawn(move || run_worker(worker_index, addr, payload, assigned, traceparent));
         handles.push(handle);
     }
 
@@ -132,7 +135,7 @@ where
     let passed =
         error_ratio <= args.error_budget_ratio && latency_ms_p99 <= args.latency_budget_ms_p99;
 
-    let profile = json!({
+    let mut profile = json!({
         "schema_version": "1",
         "target_addr": args.addr,
         "request_count": args.requests,
@@ -156,6 +159,12 @@ where
             })
         }).collect::<Vec<_>>()
     });
+    attach_trace_fields(
+        profile
+            .as_object_mut()
+            .expect("distributed load profile must be an object"),
+        &trace,
+    );
 
     if let Some(parent) = args.out_path.parent() {
         fs::create_dir_all(parent)?;
@@ -174,6 +183,8 @@ where
         json!({
             "profile_path": args.out_path.display().to_string(),
             "profile": profile,
+            "traceparent": trace.traceparent,
+            "trace_id": trace.trace_id,
         }),
     );
     Ok(())
@@ -184,6 +195,7 @@ fn run_worker(
     addr: String,
     payload: Arc<Vec<u8>>,
     request_count: usize,
+    traceparent: String,
 ) -> Result<WorkerRun, DistributedLoadProfileError> {
     let mut success_count = 0usize;
     let mut error_count = 0usize;
@@ -191,7 +203,7 @@ fn run_worker(
 
     for _ in 0..request_count {
         let started = Instant::now();
-        let status = send_infer_request(addr.as_str(), payload.as_slice())?;
+        let status = send_infer_request(addr.as_str(), payload.as_slice(), traceparent.as_str())?;
         latencies_ms.push(started.elapsed().as_secs_f64() * 1000.0);
         if (200..300).contains(&status) {
             success_count += 1;
@@ -211,11 +223,15 @@ fn run_worker(
     })
 }
 
-fn send_infer_request(addr: &str, payload: &[u8]) -> Result<u16, DistributedLoadProfileError> {
+fn send_infer_request(
+    addr: &str,
+    payload: &[u8],
+    traceparent: &str,
+) -> Result<u16, DistributedLoadProfileError> {
     let mut stream = TcpStream::connect(addr)?;
     let request = format!(
-        "POST /infer HTTP/1.1\r\nHost: {addr}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
-        payload.len()
+        "POST /infer HTTP/1.1\r\nHost: {addr}\r\nContent-Type: application/json\r\ntraceparent: {traceparent}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        payload.len(),
     );
     stream.write_all(request.as_bytes())?;
     stream.write_all(payload)?;

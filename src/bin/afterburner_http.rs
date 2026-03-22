@@ -11,7 +11,10 @@ use afterburner::infer::{
     validate_artifacts,
 };
 use afterburner::manifest::{ArtifactManifest, ManifestPrecision};
-use afterburner::observability::emit_event;
+use afterburner::observability::{
+    TRACEPARENT_HEADER, TraceContext, attach_trace_fields, emit_event,
+    trace_context_from_optional_traceparent,
+};
 use afterburner::preprocess::mnist_image_to_tensor;
 use base64::Engine as _;
 use burn::prelude::*;
@@ -367,22 +370,35 @@ fn route_request<B: Backend>(
     infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
+    let trace = trace_context_from_optional_traceparent(
+        header_value(request, TRACEPARENT_HEADER),
+        "http_request",
+    );
+    let mut request_fields = serde_json::Map::from_iter([
+        (
+            "method".to_string(),
+            Value::from(request.method().as_str().to_string()),
+        ),
+        ("path".to_string(), Value::from(request.url().to_string())),
+        (
+            "request_id".to_string(),
+            Value::from(request_id.to_string()),
+        ),
+        ("worker".to_string(), Value::from(worker_idx)),
+    ]);
+    attach_trace_fields(&mut request_fields, &trace);
     emit_event(
         "info",
         "http_adapter",
         "http_request",
-        json!({
-            "request_id": request_id.to_string(),
-            "worker": worker_idx,
-            "method": request.method().as_str(),
-            "path": request.url()
-        }),
+        Value::Object(request_fields),
     );
 
     let response = match (request.method(), request.url()) {
         (&Method::Get, "/healthz") => ok_response("ok\n"),
         (&Method::Post, "/infer") => handle_infer(
             request_id,
+            &trace,
             request,
             model,
             device,
@@ -394,7 +410,7 @@ fn route_request<B: Backend>(
         ),
         _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
     };
-    with_request_id(response, request_id)
+    with_request_context(response, request_id, &trace)
 }
 
 fn parse_env_usize(name: &str, default: usize) -> usize {
@@ -821,6 +837,7 @@ impl Deadline {
 
 fn handle_infer<B: Backend>(
     request_id: u64,
+    trace: &TraceContext,
     request: &mut tiny_http::Request,
     model: &afterburner::model::Model<B>,
     device: &B::Device,
@@ -830,7 +847,7 @@ fn handle_infer<B: Backend>(
     envelope: &EnvelopeLimits,
     infer_limiter: &InferConcurrencyLimiter,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
-    if let Err(err) = evaluate_rollout_budget_admission(request_id, request, envelope) {
+    if let Err(err) = evaluate_rollout_budget_admission(request_id, trace, request, envelope) {
         return json_error(err.status, err.kind, &err.detail);
     }
 
@@ -854,18 +871,24 @@ fn handle_infer<B: Backend>(
         envelope,
         deadline,
         request_id,
+        trace,
     );
     if let Err(err) = &response {
+        let mut error_fields = serde_json::Map::from_iter([
+            (
+                "request_id".to_string(),
+                Value::from(request_id.to_string()),
+            ),
+            ("kind".to_string(), Value::from(err.kind)),
+            ("status".to_string(), Value::from(err.status.0)),
+            ("detail".to_string(), Value::from(err.detail.clone())),
+        ]);
+        attach_trace_fields(&mut error_fields, trace);
         emit_event(
             "error",
             "http_adapter",
             "http_error",
-            json!({
-                "request_id": request_id.to_string(),
-                "kind": err.kind,
-                "status": err.status.0,
-                "detail": err.detail
-            }),
+            Value::Object(error_fields),
         );
     }
 
@@ -879,6 +902,7 @@ fn handle_infer<B: Backend>(
 
 fn evaluate_rollout_budget_admission(
     request_id: u64,
+    trace: &TraceContext,
     request: &tiny_http::Request,
     envelope: &EnvelopeLimits,
 ) -> Result<(), HttpFailure> {
@@ -899,20 +923,43 @@ fn evaluate_rollout_budget_admission(
 
     let admitted = observed_latency_ms_p99 <= rollout_budget.latency_budget_ms_p99
         && observed_error_ratio <= rollout_budget.error_budget_ratio;
+    let mut fields = serde_json::Map::from_iter([
+        (
+            "request_id".to_string(),
+            Value::from(request_id.to_string()),
+        ),
+        (
+            "service".to_string(),
+            Value::from(rollout_budget.service.clone()),
+        ),
+        (
+            "window".to_string(),
+            Value::from(rollout_budget.window.clone()),
+        ),
+        ("admitted".to_string(), Value::from(admitted)),
+        (
+            "observed_latency_ms_p99".to_string(),
+            Value::from(observed_latency_ms_p99),
+        ),
+        (
+            "latency_budget_ms_p99".to_string(),
+            Value::from(rollout_budget.latency_budget_ms_p99),
+        ),
+        (
+            "observed_error_ratio".to_string(),
+            Value::from(observed_error_ratio),
+        ),
+        (
+            "error_budget_ratio".to_string(),
+            Value::from(rollout_budget.error_budget_ratio),
+        ),
+    ]);
+    attach_trace_fields(&mut fields, trace);
     emit_event(
         "info",
         "http_adapter",
         "rollout_budget_admission",
-        json!({
-            "request_id": request_id.to_string(),
-            "service": rollout_budget.service,
-            "window": rollout_budget.window,
-            "admitted": admitted,
-            "observed_latency_ms_p99": observed_latency_ms_p99,
-            "latency_budget_ms_p99": rollout_budget.latency_budget_ms_p99,
-            "observed_error_ratio": observed_error_ratio,
-            "error_budget_ratio": rollout_budget.error_budget_ratio
-        }),
+        Value::Object(fields),
     );
     if admitted {
         return Ok(());
@@ -999,6 +1046,7 @@ fn handle_infer_inner<B: Backend>(
     envelope: &EnvelopeLimits,
     deadline: Deadline,
     request_id: u64,
+    trace: &TraceContext,
 ) -> Result<String, HttpFailure> {
     let body = read_body_limited(request, envelope.max_request_bytes)?;
     deadline.check("request_read")?;
@@ -1043,20 +1091,23 @@ fn handle_infer_inner<B: Backend>(
     let rows = logits_to_rows(logits, images.len())?;
     deadline.check("inference")?;
 
-    let duration_ms = deadline.elapsed_ms();
-    emit_event(
-        "info",
-        "http_adapter",
-        "infer_done",
-        json!({
-            "request_id": request_id.to_string(),
-            "backend": backend,
-            "artifact_version": artifact_version,
-            "precision": precision_json(precision),
-            "duration_ms": duration_ms,
-            "batch_size": images.len()
-        }),
-    );
+    let duration_ms = u64::try_from(deadline.elapsed_ms()).unwrap_or(u64::MAX);
+    let mut fields = serde_json::Map::from_iter([
+        (
+            "request_id".to_string(),
+            Value::from(request_id.to_string()),
+        ),
+        ("backend".to_string(), Value::from(backend.to_string())),
+        (
+            "artifact_version".to_string(),
+            Value::from(artifact_version.to_string()),
+        ),
+        ("precision".to_string(), precision_json(precision)),
+        ("duration_ms".to_string(), Value::from(duration_ms)),
+        ("batch_size".to_string(), Value::from(images.len())),
+    ]);
+    attach_trace_fields(&mut fields, trace);
+    emit_event("info", "http_adapter", "infer_done", Value::Object(fields));
 
     Ok(infer_success_payload(&rows))
 }
@@ -1220,15 +1271,22 @@ fn content_type_json() -> Header {
     Header::from_bytes("Content-Type", "application/json").expect("valid header")
 }
 
-fn with_request_id(
+fn with_request_context(
     response: Response<std::io::Cursor<Vec<u8>>>,
     request_id: u64,
+    trace: &TraceContext,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
-    response.with_header(request_id_header(request_id))
+    response
+        .with_header(request_id_header(request_id))
+        .with_header(traceparent_header(trace.traceparent.as_str()))
 }
 
 fn request_id_header(request_id: u64) -> Header {
     Header::from_bytes("X-Request-Id", request_id.to_string()).expect("valid header")
+}
+
+fn traceparent_header(traceparent: &str) -> Header {
+    Header::from_bytes("Traceparent", traceparent).expect("valid traceparent header")
 }
 
 fn emit_error_and_exit(err: &InferError) -> ! {

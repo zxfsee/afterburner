@@ -1,7 +1,9 @@
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 
-use afterburner::observability::OBS_JSONL_SINK_ENV;
+use afterburner::observability::{
+    OBS_JSONL_SINK_ENV, attach_trace_fields, current_trace_context, emit_event,
+};
 use serde_json::{Value, json};
 
 const DEPLOYMENT_STACK_SCHEMA_VERSION: &str = "1";
@@ -67,6 +69,7 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
+    let trace = current_trace_context("deploy_cli");
     let target = load_json_object(&args.target_profile)?;
     let stack = load_json_object(&args.stack_profile)?;
 
@@ -158,7 +161,7 @@ where
             .join("deployment_stack_check.json")
     });
 
-    let output = json!({
+    let mut output = json!({
         "schema_version": DEPLOYMENT_STACK_SCHEMA_VERSION,
         "profile_name": profile_name,
         "deploy_hostname": deploy_hostname,
@@ -183,6 +186,12 @@ where
             "default_events_path": artifact_root.join(&default_events_path).display().to_string(),
         }
     });
+    attach_trace_fields(
+        output
+            .as_object_mut()
+            .expect("deployment stack check output must be an object"),
+        &trace,
+    );
 
     if let Some(parent) = out_path.parent() {
         fs::create_dir_all(parent)?;
@@ -192,6 +201,17 @@ where
         serde_json::to_string_pretty(&output)
             .map_err(|err| DeploymentStackCheckError::Json(err.to_string()))?,
     )?;
+    emit_event(
+        "info",
+        "deploy_cli",
+        "deployment_stack_check_written",
+        json!({
+            "check_path": out_path.display().to_string(),
+            "profile_name": output.get("profile_name").and_then(Value::as_str).unwrap_or_default(),
+            "traceparent": trace.traceparent,
+            "trace_id": trace.trace_id,
+        }),
+    );
     Ok(out_path)
 }
 

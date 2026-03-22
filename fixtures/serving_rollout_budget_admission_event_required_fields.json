@@ -1,1 +1,1 @@
-{"required":["admitted","error_budget_ratio","latency_budget_ms_p99","observed_error_ratio","observed_latency_ms_p99","request_id","service","window"]}
+{"required":["admitted","error_budget_ratio","latency_budget_ms_p99","observed_error_ratio","observed_latency_ms_p99","request_id","service","trace_id","traceparent","window"]}

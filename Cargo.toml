@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed tracing correlation contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define distributed tracing propagation and correlation across the deployable Afterburner stack so load tests, rollout checks, and service traffic can be traced coherently across components and nodes.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `event`, `ops`, `artifact`
-  - Scope: `src/`, `tests/`, `fixtures/`, `README.md`, `justfile`, `docs/adr/`
-
 - Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
   - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model for in-job distributed execution instead of continuing to treat `worker_parallelism` as only a local throughput knob.
   - Kind: `gate`
@@ -33,6 +26,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Native Metal backend migration contract [Runtime Infra, Kernels, Frameworks]
+  - Goal: Cut over Apple Silicon training from the current `wgpu` path to a native Metal-backed runtime when the measured backend profile justifies it, so MacBook-hosted training can use the most direct GPU execution path without keeping parallel backend semantics longer than necessary.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`, `ops`
+  - Scope: `Cargo.toml`, `src/`, `tests/`, `fixtures/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`, `artifacts/`
 
 - Burn distributed runtime capability surface gate [Distributed Training, Frameworks]
   - Goal: Define the supported versus unsupported Burn distributed runtime surface for DP, ZeRO-1/2/3, TP, PP, SP/CP, and EP so profiling work does not claim configurations the current Burn/runtime stack cannot execute.

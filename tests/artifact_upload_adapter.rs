@@ -77,6 +77,8 @@ fn artifact_upload_request_schema_and_docs_are_explicit() {
         "operation",
         "provider",
         "destination",
+        "traceparent",
+        "trace_id",
         "artifact_version",
         "artifact_manifest",
         "artifact_file",
@@ -197,6 +199,14 @@ fn normalize_upload_request(value: &mut serde_json::Value) {
     let object = value
         .as_object_mut()
         .expect("upload request must be represented as an object");
+    object.insert(
+        "traceparent".to_string(),
+        serde_json::json!("00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"),
+    );
+    object.insert(
+        "trace_id".to_string(),
+        serde_json::json!("4bf92f3577b34da6a3ce929d0e0e4736"),
+    );
     object.insert(
         "artifact_manifest".to_string(),
         serde_json::json!("<artifact>/manifest.toml"),

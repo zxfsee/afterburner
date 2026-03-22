@@ -8,6 +8,8 @@
     "event",
     "artifact",
     "artifact_version",
+    "traceparent",
+    "trace_id",
     "seed",
     "batch_size",
     "max_batches",
@@ -28,6 +30,14 @@
       "minLength": 1
     },
     "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "traceparent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trace_id": {
       "type": "string",
       "minLength": 1
     },
