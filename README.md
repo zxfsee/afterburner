@@ -78,6 +78,11 @@ It produces artifacts under `artifacts/`, including:
   capturing the current convolution footprint and the evidence threshold for custom kernel work
 
 Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
+For distributed-training planning, keep one distinction explicit: `worker_parallelism` is only a
+local throughput knob in the current trainer. Future Burn-side distributed execution should align
+with Burn's strategy-oriented training model rather than stretching `worker_parallelism` into a
+distributed topology surrogate. See
+[ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md).
 
 ## Inference
 

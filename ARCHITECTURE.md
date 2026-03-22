@@ -231,6 +231,10 @@ auto-versioning, embedded serving) are intentionally absent.
   grounded in explicit training scalability, distributed_shard_metadata, manifest precision,
   rollout ownership, upload request, and deployment target profile contracts before runtime
   orchestration expands.
+- The current training scalability contract is not a distributed strategy contract.
+  - `worker_parallelism` is a local throughput knob for the current trainer only.
+  - Future Burn-side distributed execution should align with Burn's strategy-oriented training
+    model, with explicit topology/device-group contracts instead of overloading `worker_parallelism`.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
@@ -317,3 +321,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md)
 - [ADR-036: Deployment Stack Contract](./docs/adr/036-deployment-stack-contract.md)
 - [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)
+- [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)

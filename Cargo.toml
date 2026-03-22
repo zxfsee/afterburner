@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn distributed learning-strategy fit gate [Distributed Training, Frameworks]
-  - Goal: Evaluate whether Afterburner should mirror Burn's distributed learning-strategy model for in-job distributed execution instead of continuing to treat `worker_parallelism` as only a local throughput knob.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Burn world and rank topology gate [Distributed Training, Runtime Infra]
   - Goal: Define explicit world-size, rank, and device-group metadata for future Burn-side distributed training so in-job execution topology is not inferred from local worker IDs or shard filenames alone.
   - Kind: `gate`
@@ -56,6 +49,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
+  - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
 ## [Trunk]

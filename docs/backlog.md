@@ -72,13 +72,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
-  - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - FineWeb-Edu slice source adoption gate [Pre-training, Data Infra]
   - Goal: Define the approved FineWeb-Edu slice source key, `source_revision`, license/usage envelope, shard/checksum expectations, and local size budget so MacBook-scale text corpus selection is explicit and reproducible instead of a one-off download choice.
   - Kind: `gate`
