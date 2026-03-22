@@ -19,7 +19,6 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Burn distributed runtime profile schema gate [Distributed Training, Experimentation/Eval Infra]
   - Goal: Define the versioned scaling-profile artifact schema for 8-GPU nodes so each model-size and node-count cell records Burn runtime choices such as DP, TP, PP, GAS, MBS, ZeRO stage, MFU, memory usage, runtime settings, and environment fingerprint explicitly.
   - Kind: `gate`
@@ -54,6 +53,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `flake.nix`
+
+- Burn distributed runtime layout feasibility gate [Distributed Training, Runtime Infra]
+  - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 ## [Trunk]
 """

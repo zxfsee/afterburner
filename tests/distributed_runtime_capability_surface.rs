@@ -1,0 +1,49 @@
+use std::fs;
+use std::path::PathBuf;
+
+fn repo_file(path: &str) -> String {
+    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
+        .unwrap_or_else(|err| panic!("read {path}: {err}"))
+}
+
+#[test]
+fn distributed_runtime_capability_surface_is_documented() {
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-041"),
+        "architecture decisions index must link ADR-041"
+    );
+    for needle in [
+        "single-device execution only",
+        "First candidate expansion: DP",
+        "ZeRO-1/2/3",
+        "TP, PP, SP/CP, EP",
+    ] {
+        assert!(
+            architecture.contains(needle),
+            "architecture must mention `{needle}` as part of the capability surface"
+        );
+    }
+
+    let adr = repo_file("docs/adr/041-distributed-runtime-capability-surface.md");
+    for needle in [
+        "single-device execution only",
+        "data parallel execution",
+        "ZeRO-1/2/3",
+        "tensor parallelism",
+        "pipeline parallelism",
+        "sequence/context parallelism",
+        "expert parallelism",
+    ] {
+        assert!(
+            adr.contains(needle),
+            "ADR-041 must mention `{needle}` as part of the capability surface decision"
+        );
+    }
+
+    let readme = repo_file("README.md");
+    assert!(
+        readme.contains("single-device execution"),
+        "README must document the current capability surface"
+    );
+}

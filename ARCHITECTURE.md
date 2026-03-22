@@ -244,6 +244,10 @@ auto-versioning, embedded serving) are intentionally absent.
   - `distributed_shard_metadata.schema.json` is not the topology source of truth.
   - world-size, rank, and device-group semantics should come from a dedicated topology contract
     instead of being inferred from local worker ids or shard layout.
+- The current distributed runtime capability surface is also explicit.
+  - Supported now: single-device execution only.
+  - First candidate expansion: DP after explicit topology, collectives, and checkpoint contracts.
+  - Unsupported now: ZeRO-1/2/3, TP, PP, SP/CP, EP, and generic multi-axis combinations.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
@@ -333,3 +337,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
 - [ADR-040: Native Metal Backend Fit](./docs/adr/040-native-metal-backend-fit.md)
+- [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)

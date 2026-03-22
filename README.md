@@ -87,6 +87,11 @@ That also means topology stays explicit: future distributed execution should
 declare `world_size`, ranks, and `device_group` metadata directly instead of
 inferring them from shard ownership or local worker ids. See
 [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md).
+The current distributed runtime capability surface is still narrower than Burn's
+longer-term strategy vocabulary: Afterburner supports single-device execution
+today, treats DP as the first candidate expansion, and does not claim ZeRO,
+TP, PP, SP/CP, or EP support yet. See
+[ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md).
 
 ## Inference
 

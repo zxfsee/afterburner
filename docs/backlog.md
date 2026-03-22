@@ -20,14 +20,6 @@ Rules:
 
 ## Items
 
-- Burn distributed runtime layout feasibility gate [Distributed Training, Runtime Infra]
-  - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by: Burn distributed runtime capability surface gate.
-
 - Burn distributed runtime benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible benchmark runner for Burn distributed runtime profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
   - Kind: `mixed`
