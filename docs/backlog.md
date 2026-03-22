@@ -8,6 +8,7 @@ Parked items live here until promoted into the active TODO queue.
 - This is a narrative model, not a priority rule. Active work is still driven by the runnable TODO queue and dependency unlocks.
 - Promotion rule (default): promote the highest-priority runnable backlog item into the active TODO horizon.
 - Burn-side distributed runtime work covers in-job execution semantics, topology, checkpoint/resume, and training state; scheduler/allocator work covers cross-job GPU placement, queueing, leases, and lifecycle, and the two tracks meet only at explicit lifecycle boundaries.
+- Distributed-training runtime backlog items should follow workload-driven capability growth, not framework-parity work; use DeepSpeed-class systems as pattern references, not as parity targets.
 
 Rules:
 - Keep this list priority-ranked within backlog.

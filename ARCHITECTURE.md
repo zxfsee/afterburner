@@ -65,6 +65,11 @@ it must not own model-state semantics or internal parallelism choices. The
 runtime may choose internal composition such as DP, TP, PP, SP/CP, EP, or ZeRO
 variants, but it must not absorb cluster-level scheduling policy.
 
+Distributed-training scope is workload-driven. The repo is not targeting
+framework parity with DeepSpeed-class systems; it is implementing the minimum
+capability subset required by real workloads, with explicit contracts,
+profiling, and dependency order.
+
 ### Trade-offs
 
 This design prioritizes explicit boundaries and reproducibility over rapid iteration.
@@ -115,6 +120,11 @@ auto-versioning, embedded serving) are intentionally absent.
   - The platform layer owns launch substrate and host/cluster provisioning only.
   - The only required scheduler/runtime coupling is the explicit lifecycle boundary
     (`START`/`STOP`/`KILL`, `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`).
+- Distributed-training runtime work is capability-subset work, not framework-parity work.
+  - Prioritize the smallest workload-driven subset in dependency order.
+  - Treat DeepSpeed-class systems as sources of patterns, not parity targets.
+  - Do not promise broad generic support across all DP/TP/PP/SP-CP/EP/ZeRO combinations
+    unless a concrete workload and contract require it.
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Adapter monitoring events may keep local operation names (`infer_done`, `eval_done`), but shared
@@ -235,3 +245,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-032: Distributed Shard Lineage Evidence Provenance](./docs/adr/032-distributed-shard-lineage-evidence-provenance.md)
 - [ADR-033: Burn Dependency Refresh](./docs/adr/033-burn-dependency-refresh.md)
 - [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md)
+- [ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md)

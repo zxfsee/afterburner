@@ -59,6 +59,10 @@ the distributed training runtime decides how one job uses GPUs, the scheduler
 decides who gets GPUs and when, and the platform layer provides the execution
 substrate on MacBook, NixOS, or Kubernetes. See
 [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md).
+Distributed-training work is also intentionally workload-driven: the goal is the
+minimum useful capability subset for repo workloads, not parity with a general
+DeepSpeed-class framework. See
+[ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md).
 
 ## Training
 
