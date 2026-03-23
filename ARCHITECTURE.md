@@ -247,6 +247,10 @@ auto-versioning, embedded serving) are intentionally absent.
 - CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
   because the current Burn GPU stack already carries them transitively. They remain out of
   the repo's direct dependencies and public contracts until the checked threshold is crossed.
+- `cutile-rs` is a later NVIDIA-specific backend-extension candidate, not the
+  default follow-on path.
+  - Reconsider it only if measured need is specifically CUDA/NVIDIA-oriented
+    and the current CubeCL/CubeK path is insufficient.
 - On Apple hardware, Burn's Metal path is also treated as an extension of the existing GPU stack,
   not as a separate repo-local backend family.
   - `BACKEND=metal` is a Burn-aligned runtime choice under the existing GPU adapter surface.
@@ -410,5 +414,6 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
+- [ADR-057: `cutile-rs` Backend Extension Fit](./docs/adr/057-cutile-backend-extension-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- `cutile-rs` backend extension fit gate [Kernels, Frameworks, Runtime Infra]
-  - Goal: Evaluate whether Afterburner should later extend Burn with `cutile-rs` as a custom backend path, and under what measured conditions that would complement or displace the current Burn/CubeCL-aligned kernel and backend strategy.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
   - Kind: `mixed`

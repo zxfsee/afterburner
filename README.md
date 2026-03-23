@@ -402,6 +402,9 @@ and backend profile regressions must remain sustained before replacing backend-p
 If that threshold is ever crossed, `CubeCL`/`CubeK` are the first implementation path to
 evaluate because the current Burn GPU stack already carries them transitively; no direct
 `cubecl` or `cubek` dependency is added until that measured need exists.
+`cutile-rs` is tracked as a later NVIDIA-specific backend-extension candidate,
+but it is not the default next path while the repo is still aligned to Burn and
+CubeCL/CubeK first.
 The current Burn refresh stance is also explicit: stay on Burn 0.20.1 while it remains the latest
 stable line, and treat the repo's `.mpk` to `.bpk` artifact-format cutover as a separate migration
 decision instead of bundling it into a pre-release dependency bump.
