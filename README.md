@@ -246,6 +246,10 @@ The current source fit for that path is a bounded `fineweb-edu/slice`, not a
 full-corpus mirror. Keep `source_revision` pinned to one local slice snapshot
 and keep the source size small enough for one MacBook workflow. See
 [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md).
+The tokenizer and packing side of that path should also stay explicit through a
+single tokenizer profile: pin tokenizer identity and revision, BOS/EOS/PAD
+tokens, `1024` token context length, and explicit truncation/packing rules. See
+[ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md).
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and

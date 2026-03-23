@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/text-tokenizer-packing-profile/v1",
+  "title": "Text Tokenizer Packing Profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tokenizer_id",
+    "tokenizer_revision",
+    "vocab_size",
+    "bos_token",
+    "eos_token",
+    "pad_token",
+    "context_length",
+    "truncation_policy",
+    "packing_policy"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "tokenizer_id": { "type": "string", "minLength": 1 },
+    "tokenizer_revision": { "type": "string", "minLength": 1 },
+    "vocab_size": { "type": "integer", "minimum": 1 },
+    "bos_token": { "type": "string", "minLength": 1 },
+    "eos_token": { "type": "string", "minLength": 1 },
+    "pad_token": { "type": "string", "minLength": 1 },
+    "context_length": { "type": "integer", "minimum": 1 },
+    "truncation_policy": {
+      "type": "string",
+      "enum": ["right-trim", "drop-overlength"]
+    },
+    "packing_policy": {
+      "type": "string",
+      "enum": ["single-sample", "packed-contiguous"]
+    }
+  }
+}

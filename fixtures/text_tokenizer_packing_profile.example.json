@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "tokenizer_id": "gpt2",
+  "tokenizer_revision": "2026-03-22-openai-gpt2",
+  "vocab_size": 50257,
+  "bos_token": "<|endoftext|>",
+  "eos_token": "<|endoftext|>",
+  "pad_token": "<|endoftext|>",
+  "context_length": 1024,
+  "truncation_policy": "right-trim",
+  "packing_policy": "packed-contiguous"
+}
