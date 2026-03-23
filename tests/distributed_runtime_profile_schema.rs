@@ -2,6 +2,8 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
+use assert_cmd::cargo::cargo_bin_cmd;
+
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
@@ -85,6 +87,8 @@ fn distributed_runtime_profile_schema_is_documented() {
     let adr = repo_file("docs/adr/043-distributed-runtime-profile-schema.md");
     for needle in [
         "distributed_runtime_profile.schema.json",
+        "distributed-runtime-profile",
+        "distributed_runtime_profile.json",
         "model_size",
         "node_count",
         "gpus_per_node",
@@ -109,7 +113,44 @@ fn distributed_runtime_profile_schema_is_documented() {
 
     let readme = repo_file("README.md");
     assert!(
-        readme.contains("distributed runtime trials"),
-        "README must mention the distributed runtime profile artifact stance"
+        readme.contains("distributed_runtime_profile.json"),
+        "README must mention the distributed runtime profile artifact"
+    );
+}
+
+#[test]
+fn distributed_runtime_profile_command_writes_normalized_profile() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let benchmark_run = tmp.path().join("distributed_runtime_benchmark_run.json");
+    let out = tmp.path().join("distributed_runtime_profile.json");
+    fs::copy(
+        fixture_path("distributed_runtime_benchmark_run.example.json"),
+        &benchmark_run,
+    )
+    .expect("copy benchmark run fixture");
+
+    let mut cmd = cargo_bin_cmd!("afterburner");
+    cmd.arg("profile")
+        .arg("distributed-runtime-profile")
+        .arg("--benchmark-run")
+        .arg(&benchmark_run)
+        .arg("--out")
+        .arg(&out);
+    let assert = cmd.assert().success();
+
+    let actual_text = fs::read_to_string(&out).expect("read runtime profile");
+    let actual: serde_json::Value =
+        serde_json::from_str(&actual_text).expect("parse runtime profile");
+    let expected_text =
+        fs::read_to_string(fixture_path("distributed_runtime_profile.example.json"))
+            .expect("read expected runtime profile");
+    let expected: serde_json::Value =
+        serde_json::from_str(&expected_text).expect("parse expected runtime profile");
+    assert_eq!(actual, expected);
+
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("\"event\":\"distributed_runtime_profile_written\""),
+        "runtime profile command must emit a profile-written event"
     );
 }

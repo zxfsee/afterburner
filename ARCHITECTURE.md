@@ -288,6 +288,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - Keep that profile artifact separate from `distributed_load_profile.json`.
   - Record model-size/node-count identity, runtime parallelism choices, performance/memory
     metrics, runtime settings, and environment fingerprint explicitly.
+- Profile synthesis should normalize passed benchmark runs into
+  `distributed_runtime_profile.json` instead of treating benchmark-run artifacts as the
+  long-lived comparison surface directly.
 - Executed distributed runtime benchmark runs should also persist one explicit
   artifact with benchmark configuration and result status so trial execution is
   reproducible instead of shell-script-local.

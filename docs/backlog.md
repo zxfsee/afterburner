@@ -40,17 +40,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- MacBook text pretraining adapter [Pre-training, Frameworks, Runtime Infra]
-  - Goal: Materialize a small decoder-only language-model training path over the approved FineWeb-Edu slice with deterministic local caching, checkpoint/resume, and a bounded training recipe that fits a single MacBook while MNIST remains available as a separate smoke workflow.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `cli`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-  - Blocked-by:
-    - FineWeb-Edu slice source adoption gate.
-    - Text tokenizer and sequence-packing contract.
-    - Text model artifact and inference contract gate.
-
 - Text pretraining eval and smoke gate [Pre-training, Experimentation/Eval Infra]
   - Goal: Add a deterministic text-side acceptance surface over loss/perplexity or a tiny overfit fixture so the new language-model path has a real regression gate while MNIST remains the cheapest end-to-end runtime sanity check.
   - Kind: `mixed`

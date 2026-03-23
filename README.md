@@ -384,6 +384,10 @@ For distributed runtime profile trials, use
 command and persist `artifacts/train/distributed_runtime_benchmark_run.json`
 with layout, benchmark configuration, metrics, runtime settings, and
 environment fingerprint.
+Use `afterburner profile distributed-runtime-profile --benchmark-run <path>`
+to normalize one passed benchmark run into
+`artifacts/train/distributed_runtime_profile.json`, the stable profile artifact
+used for model-size and node-count comparisons.
 Use `just profile-refresh-environment-snapshot <current-snapshot> <profiler-path> <captured-at-unix-ms>`
 to refresh that snapshot in place and materialize
 `artifacts/profiling/profiling_environment_snapshot_refresh.json`, the receipt that records what

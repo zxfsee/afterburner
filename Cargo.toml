@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Burn distributed runtime profile contract [Distributed Training, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed Burn distributed runtime profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
+- MacBook text pretraining adapter [Pre-training, Frameworks, Runtime Infra]
+  - Goal: Materialize a small decoder-only language-model training path over the approved FineWeb-Edu slice with deterministic local caching, checkpoint/resume, and a bounded training recipe that fits a single MacBook while MNIST remains available as a separate smoke workflow.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Contracts: `artifact`, `cli`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.

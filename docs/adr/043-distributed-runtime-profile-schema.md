@@ -18,6 +18,8 @@ parallelism choices hard to review or compare mechanically.
 Define one explicit distributed runtime profile artifact:
 
 - `distributed_runtime_profile.schema.json`
+- `afterburner profile distributed-runtime-profile --benchmark-run PATH`
+- `artifacts/train/distributed_runtime_profile.json`
 
 The minimum profile contract records, per model-size and node-count cell:
 
@@ -51,13 +53,15 @@ The minimum profile contract records, per model-size and node-count cell:
   - `gpu_model`
   - `burn_version`
 
-Current stance: this ADR defines the artifact schema only. It does not claim
-the repo can execute all listed parallelism modes today.
+Current stance: the profile command normalizes one passed benchmark run into
+the stable profile artifact. It does not claim the repo can execute all listed
+parallelism modes today.
 
 ## Consequences
 
 - Future distributed runtime trials get one stable artifact shape instead of ad
-  hoc benchmark outputs.
+  hoc benchmark outputs, and one explicit command that materializes that shape
+  from executed benchmark runs.
 - The profile schema stays separate from both the local throughput contract and
   the deployment-side load profile contract.
 - Layout-feasibility and benchmark-harness work can reuse one explicit profile
