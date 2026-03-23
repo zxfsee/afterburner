@@ -16,6 +16,7 @@ mod cmd_drift_baseline_supersession;
 mod cmd_drift_baseline_transport_locator;
 mod cmd_drift_receipt;
 mod cmd_eval;
+mod cmd_hf_publish;
 mod cmd_infer;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
@@ -104,6 +105,7 @@ where
         return 2;
     };
     match subcommand.as_str() {
+        "hf-publish" => cmd_hf_publish::run(args),
         "upload" => cmd_upload::run(args),
         "stack-check" => cmd_deployment_stack_check::run(args),
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "repo_id": "afterburner/model",
+  "revision": "main",
+  "request_path": "<request>",
+  "traceparent": "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+  "artifact_version": "0.1.0",
+  "uploaded_files": [
+    {
+      "local_path": "<artifact>/model.mpk",
+      "path_in_repo": "afterburner/0.1.0/model.mpk"
+    },
+    {
+      "local_path": "<artifact>/manifest.toml",
+      "path_in_repo": "afterburner/0.1.0/manifest.toml"
+    },
+    {
+      "local_path": "<request>",
+      "path_in_repo": "afterburner/0.1.0/artifact_upload_request.json"
+    }
+  ],
+  "published_at_unix_ms": 1735689600000
+}

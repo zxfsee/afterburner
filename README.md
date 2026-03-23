@@ -195,6 +195,9 @@ or heavy OpenTelemetry SDK.
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
+For Hugging Face specifically, `afterburner deploy hf-publish --request <path>`
+consumes that provider-neutral upload request, shells out to `hf upload`, and
+writes `artifacts/deploy/<artifact_version>/huggingface_publish_receipt.json`.
 If remote model save/load is added later, keep it adapter-first as well: use a
 provider-neutral remote locator contract instead of hardwiring one storage SDK
 or remote path format into core artifact logic. See

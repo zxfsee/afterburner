@@ -186,6 +186,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Remote model save/load should follow the same rule: use a provider-neutral
   locator contract in adapters rather than binding core artifact logic directly
   to one storage SDK or remote path shape.
+- Provider-specific publish adapters should also stay thin on top of the
+  provider-neutral upload request contract rather than inventing new core-facing
+  approval or artifact identity surfaces.
 - Promotion and rollback orchestration are currently local justfile contracts over the explicit
   eval, upload, deploy-check, and current-pointer surfaces; they are not a separate long-running
   deployment subsystem.
@@ -400,6 +403,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
+- [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
