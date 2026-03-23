@@ -88,6 +88,14 @@ Rules:
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by: MacBook text pretraining adapter.
 
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
 - Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
   - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.
   - Kind: `gate`
