@@ -104,6 +104,7 @@ It produces artifacts under `artifacts/`, including:
 For `--task text`, the adapter also writes:
 - `artifacts/train/text_pretraining_run.json`
 - Burn learner checkpoints under `artifacts/train/text/checkpoint/`
+- `artifacts/eval/text_pretraining_eval_summary.json`
 - `artifacts/text_inference/<version>/model.mpk`
 - `artifacts/text_inference/<version>/text_inference_profile.json`
 
@@ -292,6 +293,10 @@ event instead of overloading `infer_done`. See
 The first adapter cut now writes that sidecar into
 `artifacts/text_inference/<version>/` alongside the trained text weights and
 records one `text_pretraining_run.json` artifact plus a `text_train_done` event.
+For deterministic acceptance, `afterburner train --task text` now also writes
+`artifacts/eval/text_pretraining_eval_summary.json` and can enforce
+`--max-validation-loss` / `--max-validation-perplexity` thresholds. Use
+`just train-text-smoke` for the bounded fixture-backed smoke path.
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and

@@ -122,7 +122,7 @@ fn run_task<B: AutodiffBackend>(
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 struct TrainArgs {
     task: TrainTask,
     batch_size: Option<usize>,
@@ -132,6 +132,8 @@ struct TrainArgs {
     tokenizer_profile: Option<PathBuf>,
     token_cache: Option<PathBuf>,
     resume_epoch: Option<usize>,
+    max_validation_loss: Option<f64>,
+    max_validation_perplexity: Option<f64>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -182,6 +184,8 @@ fn text_training_config_from_env(args: &TrainArgs) -> Option<TextTrainingConfig>
             .clone()
             .expect("token cache required for text task"),
         resume_epoch: args.resume_epoch,
+        max_validation_loss: args.max_validation_loss,
+        max_validation_perplexity: args.max_validation_perplexity,
     })
 }
 
@@ -211,6 +215,8 @@ where
         tokenizer_profile: None,
         token_cache: None,
         resume_epoch: None,
+        max_validation_loss: None,
+        max_validation_perplexity: None,
     };
 
     while let Some(arg) = args.next() {
@@ -240,6 +246,13 @@ where
             "--resume-epoch" => {
                 parsed.resume_epoch = Some(parse_value(&mut args, "--resume-epoch")?)
             }
+            "--max-validation-loss" => {
+                parsed.max_validation_loss = Some(parse_value(&mut args, "--max-validation-loss")?)
+            }
+            "--max-validation-perplexity" => {
+                parsed.max_validation_perplexity =
+                    Some(parse_value(&mut args, "--max-validation-perplexity")?)
+            }
             _ if arg.starts_with("--task=") => {
                 parsed.task = parse_task_value(arg.trim_start_matches("--task="))?
             }
@@ -259,6 +272,18 @@ where
                 parsed.num_epochs = Some(parse_inline_value(
                     arg.trim_start_matches("--num-epochs="),
                     "--num-epochs",
+                )?)
+            }
+            _ if arg.starts_with("--max-validation-loss=") => {
+                parsed.max_validation_loss = Some(parse_inline_value(
+                    arg.trim_start_matches("--max-validation-loss="),
+                    "--max-validation-loss",
+                )?)
+            }
+            _ if arg.starts_with("--max-validation-perplexity=") => {
+                parsed.max_validation_perplexity = Some(parse_inline_value(
+                    arg.trim_start_matches("--max-validation-perplexity="),
+                    "--max-validation-perplexity",
                 )?)
             }
             _ => return Err(format!("unknown argument for train: {arg}\n{}", usage())),
@@ -345,7 +370,7 @@ fn is_missing_gpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N]]"
+    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N] [--max-validation-loss F64] [--max-validation-perplexity F64]]"
 }
 
 #[cfg(test)]
@@ -376,6 +401,8 @@ mod tests {
                 tokenizer_profile: None,
                 token_cache: None,
                 resume_epoch: None,
+                max_validation_loss: None,
+                max_validation_perplexity: None,
             }
         );
     }
@@ -405,6 +432,8 @@ mod tests {
             tokenizer_profile: None,
             token_cache: None,
             resume_epoch: None,
+            max_validation_loss: None,
+            max_validation_perplexity: None,
         });
         assert_eq!(config.num_epochs, 1);
     }
@@ -429,11 +458,16 @@ mod tests {
             "fixtures/text_token_cache.example.json".to_string(),
             "--resume-epoch".to_string(),
             "1".to_string(),
+            "--max-validation-loss".to_string(),
+            "4.0".to_string(),
+            "--max-validation-perplexity=80.0".to_string(),
         ];
 
         let parsed = parse_args(args.into_iter()).expect("parse text args");
         assert_eq!(parsed.task, TrainTask::Text);
         assert_eq!(parsed.resume_epoch, Some(1));
+        assert_eq!(parsed.max_validation_loss, Some(4.0));
+        assert_eq!(parsed.max_validation_perplexity, Some(80.0));
         assert_eq!(
             parsed.dataset_manifest.as_deref(),
             Some(Path::new(

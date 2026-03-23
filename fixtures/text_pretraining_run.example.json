@@ -17,5 +17,6 @@
   "checkpoint_root": "artifacts/train/text/checkpoint",
   "resume_epoch": null,
   "text_model": "artifacts/text_inference/0.2.0-text/model.mpk",
-  "text_inference_profile": "artifacts/text_inference/0.2.0-text/text_inference_profile.json"
+  "text_inference_profile": "artifacts/text_inference/0.2.0-text/text_inference_profile.json",
+  "eval_summary": "artifacts/eval/text_pretraining_eval_summary.json"
 }

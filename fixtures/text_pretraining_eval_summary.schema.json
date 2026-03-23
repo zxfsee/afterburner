@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/text-pretraining-eval-summary/v1",
+  "title": "Text Pretraining Eval Summary v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event",
+    "traceparent",
+    "trace_id",
+    "artifact_version",
+    "task",
+    "source",
+    "source_revision",
+    "batch_size",
+    "num_epochs",
+    "batches_evaluated",
+    "validation_sequences",
+    "validation_tokens",
+    "validation_loss",
+    "validation_perplexity",
+    "duration_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "event": { "const": "text_pretraining_eval_summary" },
+    "traceparent": { "type": "string", "minLength": 1 },
+    "trace_id": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "task": { "const": "causal-lm" },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "batch_size": { "type": "integer", "minimum": 1 },
+    "num_epochs": { "type": "integer", "minimum": 1 },
+    "batches_evaluated": { "type": "integer", "minimum": 1 },
+    "validation_sequences": { "type": "integer", "minimum": 1 },
+    "validation_tokens": { "type": "integer", "minimum": 1 },
+    "validation_loss": { "type": "number", "minimum": 0.0 },
+    "validation_perplexity": { "type": "number", "minimum": 1.0 },
+    "duration_ms": { "type": "integer", "minimum": 0 }
+  }
+}

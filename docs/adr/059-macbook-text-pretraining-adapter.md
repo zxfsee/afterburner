@@ -26,6 +26,7 @@ The adapter:
 - trains a small causal language-model path on one device
 - uses Burn learner checkpointing with epoch-based checkpoint/resume
 - writes `text_pretraining_run.json`
+- writes `text_pretraining_eval_summary.json`
 - writes a separate text inference sidecar under `artifacts/text_inference/<version>/`
 - emits `text_train_done`
 
@@ -36,6 +37,8 @@ tokenizer implementation, large-model parity, or a prompt-sampling runtime yet.
 
 - The text-pretraining track now has a real executable path instead of only fit
   and contract ADRs.
+- The path now has one deterministic validation-loss/perplexity smoke artifact
+  instead of relying on raw metric logs for acceptance.
 - MNIST remains the cheapest smoke workflow because text training stays behind
   an explicit `--task text` path.
 - Deterministic local cache, checkpoint/resume, and text artifact placement are

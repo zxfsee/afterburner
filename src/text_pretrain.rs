@@ -28,13 +28,14 @@ use serde_json::{Value, json};
 
 use crate::{
     data::parse_pretraining_dataset_manifest,
-    observability::{append_json_line, emit_event, event_line},
+    observability::{append_json_line, current_trace_context, emit_event, event_line},
 };
 
 pub const TEXT_TOKEN_CACHE_SCHEMA_VERSION: &str = "1";
 pub const TEXT_PRETRAINING_RUN_SCHEMA_VERSION: &str = "1";
 pub const TEXT_PRETRAINING_RUN_FILENAME: &str = "text_pretraining_run.json";
 pub const TEXT_INFERENCE_PROFILE_FILENAME: &str = "text_inference_profile.json";
+pub const TEXT_PRETRAINING_EVAL_SUMMARY_FILENAME: &str = "text_pretraining_eval_summary.json";
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct TextTrainingConfig {
@@ -49,6 +50,8 @@ pub struct TextTrainingConfig {
     pub tokenizer_profile_path: PathBuf,
     pub token_cache_path: PathBuf,
     pub resume_epoch: Option<usize>,
+    pub max_validation_loss: Option<f64>,
+    pub max_validation_perplexity: Option<f64>,
 }
 
 #[derive(Debug)]
@@ -251,6 +254,7 @@ pub fn train_text<B: AutodiffBackend>(
     device: B::Device,
 ) -> Result<(), TextTrainingError> {
     B::seed(&device, config.seed);
+    let trace = current_trace_context("train_text");
 
     let dataset_manifest = load_dataset_manifest(&config.dataset_manifest_path)?;
     let tokenizer_profile = load_tokenizer_profile(&config.tokenizer_profile_path)?;
@@ -309,6 +313,22 @@ pub fn train_text<B: AutodiffBackend>(
 
     let result = training.launch(learner);
 
+    let eval_summary = evaluate_text_model(
+        &result.model,
+        text_loader::<B::InnerBackend>(
+            token_cache.validation_sequences.clone(),
+            config.batch_size,
+            config.num_workers,
+            config.seed,
+            sequence_length,
+            device.clone(),
+            false,
+        ),
+        &config,
+        &token_cache,
+        &trace,
+    );
+
     let text_model_path = inference_dir.join("model.mpk");
     result
         .model
@@ -319,12 +339,21 @@ pub fn train_text<B: AutodiffBackend>(
     let text_inference_profile_path = inference_dir.join(TEXT_INFERENCE_PROFILE_FILENAME);
     write_json_file(&text_inference_profile_path, &text_inference_profile)?;
 
+    let eval_summary_path = root
+        .join("eval")
+        .join(TEXT_PRETRAINING_EVAL_SUMMARY_FILENAME);
+    write_json_file(&eval_summary_path, &eval_summary)?;
+    emit_event("info", "eval_cli", "text_eval_done", eval_summary.clone());
+
+    enforce_text_eval_gate(&config, &eval_summary)?;
+
     let run_artifact = text_pretraining_run_value(
         &config,
         &token_cache,
         &train_dir,
         &text_model_path,
         &text_inference_profile_path,
+        &eval_summary_path,
     );
     let run_path = root.join("train").join(TEXT_PRETRAINING_RUN_FILENAME);
     write_json_file(&run_path, &run_artifact)?;
@@ -522,6 +551,7 @@ fn text_pretraining_run_value(
     train_dir: &Path,
     text_model_path: &Path,
     text_inference_profile_path: &Path,
+    eval_summary_path: &Path,
 ) -> Value {
     json!({
         "schema_version": TEXT_PRETRAINING_RUN_SCHEMA_VERSION,
@@ -542,8 +572,137 @@ fn text_pretraining_run_value(
         "checkpoint_root": train_dir.join("checkpoint").display().to_string(),
         "resume_epoch": config.resume_epoch,
         "text_model": text_model_path.display().to_string(),
-        "text_inference_profile": text_inference_profile_path.display().to_string()
+        "text_inference_profile": text_inference_profile_path.display().to_string(),
+        "eval_summary": eval_summary_path.display().to_string()
     })
+}
+
+fn evaluate_text_model<B: Backend>(
+    model: &TextModel<B>,
+    loader: Arc<dyn DataLoader<B, TextBatch<B>>>,
+    config: &TextTrainingConfig,
+    token_cache: &TextTokenCache,
+    trace: &crate::observability::TraceContext,
+) -> Value {
+    let started = std::time::Instant::now();
+    let mut batches_evaluated = 0_u64;
+    let mut total_tokens = 0_u64;
+    let mut total_loss = 0.0_f64;
+
+    for batch in loader.iter() {
+        let output = model.forward_classification(batch.input_tokens, batch.targets);
+        let token_count = output.targets.dims()[0] as u64;
+        let loss = output
+            .loss
+            .into_data()
+            .iter::<f32>()
+            .next()
+            .map(f64::from)
+            .unwrap_or(0.0);
+
+        total_loss += loss * token_count as f64;
+        total_tokens += token_count;
+        batches_evaluated += 1;
+    }
+
+    let validation_loss = if total_tokens > 0 {
+        total_loss / total_tokens as f64
+    } else {
+        0.0
+    };
+    let validation_perplexity = validation_loss.exp();
+    let duration_ms = u64::try_from(started.elapsed().as_millis()).unwrap_or(u64::MAX);
+
+    json!({
+        "schema_version": "1",
+        "event": "text_pretraining_eval_summary",
+        "traceparent": trace.traceparent,
+        "trace_id": trace.trace_id,
+        "artifact_version": config.artifact_version,
+        "task": "causal-lm",
+        "source": token_cache.source,
+        "source_revision": token_cache.source_revision,
+        "batch_size": config.batch_size,
+        "num_epochs": config.num_epochs,
+        "batches_evaluated": batches_evaluated,
+        "validation_sequences": token_cache.validation_sequences.len(),
+        "validation_tokens": total_tokens,
+        "validation_loss": validation_loss,
+        "validation_perplexity": validation_perplexity,
+        "duration_ms": duration_ms
+    })
+}
+
+fn enforce_text_eval_gate(
+    config: &TextTrainingConfig,
+    eval_summary: &Value,
+) -> Result<(), TextTrainingError> {
+    let validation_loss = eval_summary
+        .get("validation_loss")
+        .and_then(Value::as_f64)
+        .ok_or_else(|| {
+            TextTrainingError::Parse("text eval summary missing validation_loss".to_string())
+        })?;
+    let validation_perplexity = eval_summary
+        .get("validation_perplexity")
+        .and_then(Value::as_f64)
+        .ok_or_else(|| {
+            TextTrainingError::Parse("text eval summary missing validation_perplexity".to_string())
+        })?;
+
+    if let Some(max_loss) = config.max_validation_loss
+        && validation_loss > max_loss
+    {
+        emit_event(
+            "error",
+            "eval_cli",
+            "text_eval_gate_failed",
+            json!({
+                "reason": "validation_loss",
+                "validation_loss": validation_loss,
+                "max_validation_loss": max_loss,
+                "validation_perplexity": validation_perplexity
+            }),
+        );
+        return Err(TextTrainingError::Parse(format!(
+            "text validation loss above threshold: {validation_loss:.6} > {max_loss:.6}"
+        )));
+    }
+
+    if let Some(max_perplexity) = config.max_validation_perplexity
+        && validation_perplexity > max_perplexity
+    {
+        emit_event(
+            "error",
+            "eval_cli",
+            "text_eval_gate_failed",
+            json!({
+                "reason": "validation_perplexity",
+                "validation_loss": validation_loss,
+                "validation_perplexity": validation_perplexity,
+                "max_validation_perplexity": max_perplexity
+            }),
+        );
+        return Err(TextTrainingError::Parse(format!(
+            "text validation perplexity above threshold: {validation_perplexity:.6} > {max_perplexity:.6}"
+        )));
+    }
+
+    if config.max_validation_loss.is_some() || config.max_validation_perplexity.is_some() {
+        emit_event(
+            "info",
+            "eval_cli",
+            "text_eval_gate_passed",
+            json!({
+                "validation_loss": validation_loss,
+                "validation_perplexity": validation_perplexity,
+                "max_validation_loss": config.max_validation_loss,
+                "max_validation_perplexity": config.max_validation_perplexity
+            }),
+        );
+    }
+
+    Ok(())
 }
 
 fn write_text_train_done_event(

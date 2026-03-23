@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Text pretraining eval and smoke gate [Pre-training, Experimentation/Eval Infra]
-  - Goal: Add a deterministic text-side acceptance surface over loss/perplexity or a tiny overfit fixture so the new language-model path has a real regression gate while MNIST remains the cheapest end-to-end runtime sanity check.
+- Shared artifact/event emission helper extraction [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Consolidate repeated artifact-writing and event-emission logic into one internal helper surface so adapter commands stop drifting in output paths, field handling, and write semantics as contracts grow.
   - Kind: `mixed`
-  - Boundary: `adapter-cli`
+  - Boundary: `none`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
+  - Scope: `src/`, `tests/`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.

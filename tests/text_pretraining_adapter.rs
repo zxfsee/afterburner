@@ -74,6 +74,7 @@ fn text_token_cache_contract_and_adapter_are_documented() {
         "afterburner train --task text",
         "text_token_cache.schema.json",
         "text_pretraining_run.json",
+        "text_pretraining_eval_summary.json",
         "checkpoint/resume",
     ] {
         assert!(

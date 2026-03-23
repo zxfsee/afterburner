@@ -34,6 +34,9 @@ train:
 train-text dataset_manifest tokenizer_profile token_cache:
     cargo run --locked --bin afterburner -- train --task text --dataset-manifest {{ dataset_manifest }} --tokenizer-profile {{ tokenizer_profile }} --token-cache {{ token_cache }}
 
+train-text-smoke:
+    cargo run --locked --bin afterburner -- train --task text --dataset-manifest fixtures/pretraining_dataset_manifest.example.json --tokenizer-profile fixtures/text_tokenizer_packing_profile.example.json --token-cache fixtures/text_token_cache.example.json --batch-size 2 --num-epochs 1 --max-validation-loss 4.0 --max-validation-perplexity 80.0
+
 # run inference using trained artifact
 infer:
     cargo run --locked --bin afterburner -- infer

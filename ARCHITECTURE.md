@@ -367,6 +367,8 @@ auto-versioning, embedded serving) are intentionally absent.
   - Burn learner checkpoint/resume at epoch boundaries
   - `text_pretraining_run.json` plus `artifacts/text_inference/<version>/`
     sidecars instead of overloading the current MNIST inference root
+  - one deterministic `text_pretraining_eval_summary.json` artifact for
+    validation loss/perplexity smoke admission
 
 ### Assumptions
 

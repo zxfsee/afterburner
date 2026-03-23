@@ -23,7 +23,8 @@
     "checkpoint_root",
     "resume_epoch",
     "text_model",
-    "text_inference_profile"
+    "text_inference_profile",
+    "eval_summary"
   ],
   "properties": {
     "schema_version": { "const": "1" },
@@ -47,6 +48,7 @@
       "minimum": 1
     },
     "text_model": { "type": "string", "minLength": 1 },
-    "text_inference_profile": { "type": "string", "minLength": 1 }
+    "text_inference_profile": { "type": "string", "minLength": 1 },
+    "eval_summary": { "type": "string", "minLength": 1 }
   }
 }
