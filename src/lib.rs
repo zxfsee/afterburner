@@ -6,4 +6,5 @@ pub mod infer;
 pub mod manifest;
 pub mod model;
 pub mod observability;
+pub mod text_pretrain;
 pub mod train;

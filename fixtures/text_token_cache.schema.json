@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/text-token-cache/v1",
+  "title": "Text Token Cache v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "source_revision",
+    "tokenizer_id",
+    "tokenizer_revision",
+    "context_length",
+    "vocab_size",
+    "train_sequences",
+    "validation_sequences"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tokenizer_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tokenizer_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "context_length": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "vocab_size": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "train_sequences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/tokenSequence"
+      }
+    },
+    "validation_sequences": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/tokenSequence"
+      }
+    }
+  },
+  "$defs": {
+    "tokenSequence": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  }
+}

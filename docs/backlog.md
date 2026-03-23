@@ -40,14 +40,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- Text pretraining eval and smoke gate [Pre-training, Experimentation/Eval Infra]
-  - Goal: Add a deterministic text-side acceptance surface over loss/perplexity or a tiny overfit fixture so the new language-model path has a real regression gate while MNIST remains the cheapest end-to-end runtime sanity check.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: MacBook text pretraining adapter.
-
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`

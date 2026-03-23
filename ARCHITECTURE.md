@@ -361,6 +361,12 @@ auto-versioning, embedded serving) are intentionally absent.
   - one text inference profile sidecar for prompt-oriented sampling
   - explicit task identity (`causal-lm`)
   - explicit sampling defaults and sampling event fields
+- The first bounded text adapter should also stay explicit:
+  - `afterburner train --task text`
+  - deterministic local token cache input
+  - Burn learner checkpoint/resume at epoch boundaries
+  - `text_pretraining_run.json` plus `artifacts/text_inference/<version>/`
+    sidecars instead of overloading the current MNIST inference root
 
 ### Assumptions
 
@@ -417,6 +423,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md)
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
+- [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)

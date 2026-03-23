@@ -88,6 +88,10 @@ DeepSpeed-class framework. See
 
 Training is executed via the `afterburner train` subcommand.
 Use `--batch-size <N>` and `--num-workers <N>` to exercise the explicit training scalability controls.
+Use `--task text --dataset-manifest <path> --tokenizer-profile <path> --token-cache <path>`
+to run the bounded text-pretraining adapter over a deterministic local token cache.
+`just train-text <dataset-manifest> <tokenizer-profile> <token-cache>` is the
+canonical harness entrypoint for that path.
 
 It produces artifacts under `artifacts/`, including:
 - a trained model output under `artifacts/train/`
@@ -96,6 +100,12 @@ It produces artifacts under `artifacts/`, including:
   capturing `batch_size`, `worker_parallelism`, `planned_samples`, and `throughput_samples_per_sec`
 - a kernel adoption threshold contract at `artifacts/train/kernel_adoption_thresholds.json`
   capturing the current convolution footprint and the evidence threshold for custom kernel work
+
+For `--task text`, the adapter also writes:
+- `artifacts/train/text_pretraining_run.json`
+- Burn learner checkpoints under `artifacts/train/text/checkpoint/`
+- `artifacts/text_inference/<version>/model.mpk`
+- `artifacts/text_inference/<version>/text_inference_profile.json`
 
 Training code owns experimentation and optimization, but does **not** define the inference contract or runtime behavior.
 For distributed-training planning, keep one distinction explicit: `worker_parallelism` is only a
@@ -269,12 +279,19 @@ The tokenizer and packing side of that path should also stay explicit through a
 single tokenizer profile: pin tokenizer identity and revision, BOS/EOS/PAD
 tokens, `1024` token context length, and explicit truncation/packing rules. See
 [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md).
+The current adapter cut consumes a deterministic local token cache rather than
+performing tokenizer implementation in-repo. That cache is now explicit through
+`text_token_cache.schema.json`, and `afterburner train --task text` validates it
+against the dataset-manifest and tokenizer-profile identities before training.
 Text-trained models should not reuse the current MNIST/logits infer surface. The
 future text artifact path should carry a separate text inference profile sidecar
 with `task = causal-lm`, tokenizer profile linkage, context length, and default
 sampling settings, and future sampling should emit a dedicated `text_sample_done`
 event instead of overloading `infer_done`. See
 [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md).
+The first adapter cut now writes that sidecar into
+`artifacts/text_inference/<version>/` alongside the trained text weights and
+records one `text_pretraining_run.json` artifact plus a `text_train_done` event.
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and

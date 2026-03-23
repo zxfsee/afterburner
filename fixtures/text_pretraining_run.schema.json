@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/text-pretraining-run/v1",
+  "title": "Text Pretraining Run v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task",
+    "artifact_version",
+    "backend",
+    "dataset_manifest",
+    "tokenizer_profile",
+    "token_cache",
+    "source",
+    "source_revision",
+    "context_length",
+    "vocab_size",
+    "train_sequence_count",
+    "validation_sequence_count",
+    "num_epochs",
+    "batch_size",
+    "checkpoint_root",
+    "resume_epoch",
+    "text_model",
+    "text_inference_profile"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "task": { "const": "causal-lm" },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "backend": { "type": "string", "minLength": 1 },
+    "dataset_manifest": { "type": "string", "minLength": 1 },
+    "tokenizer_profile": { "type": "string", "minLength": 1 },
+    "token_cache": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "context_length": { "type": "integer", "minimum": 2 },
+    "vocab_size": { "type": "integer", "minimum": 2 },
+    "train_sequence_count": { "type": "integer", "minimum": 1 },
+    "validation_sequence_count": { "type": "integer", "minimum": 1 },
+    "num_epochs": { "type": "integer", "minimum": 1 },
+    "batch_size": { "type": "integer", "minimum": 1 },
+    "checkpoint_root": { "type": "string", "minLength": 1 },
+    "resume_epoch": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "text_model": { "type": "string", "minLength": 1 },
+    "text_inference_profile": { "type": "string", "minLength": 1 }
+  }
+}

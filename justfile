@@ -31,6 +31,9 @@ fmt:
 train:
     cargo run --locked --bin afterburner -- train
 
+train-text dataset_manifest tokenizer_profile token_cache:
+    cargo run --locked --bin afterburner -- train --task text --dataset-manifest {{ dataset_manifest }} --tokenizer-profile {{ tokenizer_profile }} --token-cache {{ token_cache }}
+
 # run inference using trained artifact
 infer:
     cargo run --locked --bin afterburner -- infer

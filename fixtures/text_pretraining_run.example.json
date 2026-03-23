@@ -1,0 +1,21 @@
+{
+  "schema_version": "1",
+  "task": "causal-lm",
+  "artifact_version": "0.2.0-text",
+  "backend": "cpu",
+  "dataset_manifest": "fixtures/pretraining_dataset_manifest.example.json",
+  "tokenizer_profile": "fixtures/text_tokenizer_packing_profile.example.json",
+  "token_cache": "fixtures/text_token_cache.example.json",
+  "source": "fineweb-edu/slice",
+  "source_revision": "2026-03-22-macbook-100m-tokens",
+  "context_length": 8,
+  "vocab_size": 32,
+  "train_sequence_count": 4,
+  "validation_sequence_count": 1,
+  "num_epochs": 1,
+  "batch_size": 2,
+  "checkpoint_root": "artifacts/train/text/checkpoint",
+  "resume_epoch": null,
+  "text_model": "artifacts/text_inference/0.2.0-text/model.mpk",
+  "text_inference_profile": "artifacts/text_inference/0.2.0-text/text_inference_profile.json"
+}

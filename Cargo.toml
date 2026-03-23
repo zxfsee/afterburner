@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- MacBook text pretraining adapter [Pre-training, Frameworks, Runtime Infra]
-  - Goal: Materialize a small decoder-only language-model training path over the approved FineWeb-Edu slice with deterministic local caching, checkpoint/resume, and a bounded training recipe that fits a single MacBook while MNIST remains available as a separate smoke workflow.
+- Text pretraining eval and smoke gate [Pre-training, Experimentation/Eval Infra]
+  - Goal: Add a deterministic text-side acceptance surface over loss/perplexity or a tiny overfit fixture so the new language-model path has a real regression gate while MNIST remains the cheapest end-to-end runtime sanity check.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `cli`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
