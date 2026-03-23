@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-runtime-benchmark-run/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_version",
+    "model_size",
+    "node_count",
+    "gpus_per_node",
+    "world_size",
+    "parallelism",
+    "benchmark_config",
+    "metrics",
+    "runtime_settings",
+    "environment_fingerprint",
+    "benchmark_duration_ms",
+    "benchmark_status"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "model_size": { "type": "string", "minLength": 1 },
+    "node_count": { "type": "integer", "minimum": 1 },
+    "gpus_per_node": { "type": "integer", "minimum": 1 },
+    "world_size": { "type": "integer", "minimum": 1 },
+    "parallelism": { "$ref": "https://afterburner.local/schemas/distributed-runtime-profile/v1#/properties/parallelism" },
+    "benchmark_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seed", "measurement_window_steps", "benchmark_command"],
+      "properties": {
+        "seed": { "type": "integer", "minimum": 0 },
+        "measurement_window_steps": { "type": "integer", "minimum": 1 },
+        "benchmark_command": { "type": "string", "minLength": 1 }
+      }
+    },
+    "metrics": { "$ref": "https://afterburner.local/schemas/distributed-runtime-profile/v1#/properties/metrics" },
+    "runtime_settings": { "$ref": "https://afterburner.local/schemas/distributed-runtime-profile/v1#/properties/runtime_settings" },
+    "environment_fingerprint": { "$ref": "https://afterburner.local/schemas/distributed-runtime-profile/v1#/properties/environment_fingerprint" },
+    "benchmark_duration_ms": { "type": "integer", "minimum": 0 },
+    "benchmark_status": {
+      "type": "string",
+      "enum": ["passed", "failed"]
+    }
+  }
+}

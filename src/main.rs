@@ -3,6 +3,7 @@ mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_verification_bundle;
 mod cmd_distributed_load_profile;
+mod cmd_distributed_runtime_benchmark;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_bundle;
@@ -86,6 +87,7 @@ where
     };
     match subcommand.as_str() {
         "environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
+        "distributed-runtime-benchmark" => cmd_distributed_runtime_benchmark::run(args),
         "refresh-environment-snapshot" => cmd_profiling_environment_snapshot_refresh::run(args),
         _ => {
             eprintln!("unknown profile subcommand: {subcommand}");

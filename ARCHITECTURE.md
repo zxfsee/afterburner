@@ -200,6 +200,8 @@ auto-versioning, embedded serving) are intentionally absent.
   - The platform layer owns launch substrate and host/cluster provisioning only.
   - The only required scheduler/runtime coupling is the explicit lifecycle boundary
     (`START`/`STOP`/`KILL`, `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`).
+  - Scheduler/control-plane work is also a workload-driven capability subset,
+    not a Slurm parity target.
   - Scheduler preemption is cooperative checkpoint/resume only; transparent GPU
     task suspension is not a supported assumption.
   - GPU colocation/sharing is a separate scheduling mode, not a synonym for
@@ -286,6 +288,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - Keep that profile artifact separate from `distributed_load_profile.json`.
   - Record model-size/node-count identity, runtime parallelism choices, performance/memory
     metrics, runtime settings, and environment fingerprint explicitly.
+- Executed distributed runtime benchmark runs should also persist one explicit
+  artifact with benchmark configuration and result status so trial execution is
+  reproducible instead of shell-script-local.
 - Candidate distributed runtime layouts should also be checked by one explicit
   feasibility artifact before benchmark or training launch.
   - Keep that feasibility artifact separate from the runtime capability list.
@@ -413,6 +418,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
+- [ADR-058: Distributed Runtime Benchmark Harness](./docs/adr/058-distributed-runtime-benchmark-harness.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
 - [ADR-057: `cutile-rs` Backend Extension Fit](./docs/adr/057-cutile-backend-extension-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)

@@ -379,6 +379,11 @@ Use `just profile-environment-snapshot` to materialize
 `artifacts/profiling/profiling_environment_snapshot.json`, the stable host and profiler
 provenance artifact for the current profiling toolchain. `just profile-infer` now writes that
 snapshot alongside the hotspot summary.
+For distributed runtime profile trials, use
+`afterburner profile distributed-runtime-benchmark ...` to execute a benchmark
+command and persist `artifacts/train/distributed_runtime_benchmark_run.json`
+with layout, benchmark configuration, metrics, runtime settings, and
+environment fingerprint.
 Use `just profile-refresh-environment-snapshot <current-snapshot> <profiler-path> <captured-at-unix-ms>`
 to refresh that snapshot in place and materialize
 `artifacts/profiling/profiling_environment_snapshot_refresh.json`, the receipt that records what

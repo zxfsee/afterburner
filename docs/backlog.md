@@ -20,14 +20,6 @@ Rules:
 
 ## Items
 
-- Burn distributed runtime profile contract [Distributed Training, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible scaling-profile artifact over model size and node count from executed Burn distributed runtime profile trials so parallelization choices come from measured profiles instead of ad hoc tuning.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: Burn distributed runtime benchmark harness contract.
-
 - Cooperative checkpoint preemption fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define the scheduler-side contract for cooperative checkpoint/resume preemption so urgent jobs can interrupt lower-priority work only at safe runtime checkpoint boundaries instead of assuming transparent GPU task suspension.
   - Kind: `gate`

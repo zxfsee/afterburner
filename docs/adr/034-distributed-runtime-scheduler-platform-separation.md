@@ -40,6 +40,10 @@ it does not interpret TP/PP/ZeRO or model-state internals. The runtime may
 choose its internal parallelism strategy, but it does not own cluster
 scheduling policy or infrastructure orchestration.
 
+The scheduler side is also a workload-driven capability subset, not a Slurm
+parity target. Queueing, admission, placement, leases, lifecycle, and related
+fit decisions should grow only as real workloads require them.
+
 Current stance: this ADR defines separation and coupling boundaries only. It
 does not define a final job schema, Kubernetes object model, or preemption
 protocol beyond the lifecycle split above.
