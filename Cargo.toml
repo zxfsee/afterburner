@@ -13,19 +13,19 @@ header = """# Changelog
 
 ## TODO
 
-- MacBook text pretraining fit gate [Pre-training, Frameworks, Runtime Infra]
-  - Goal: Define the smallest useful decoder-only language-model training envelope for a single MacBook so parameter count, token budget, sequence length, optimizer settings, checkpoint cadence, and acceptance metrics are explicit before the repo pivots away from MNIST as the only training workload.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - `process-compose-flake` local substrate fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Evaluate whether `process-compose-flake` should be the MacBook-local process substrate for running the Afterburner runtime stack and scheduler prototype so local multi-process orchestration stays reproducible without conflating local orchestration with `systemd`, Kubernetes, or scheduler policy.
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `flake.nix`
+
+- FineWeb-Edu slice source adoption gate [Pre-training, Data Infra]
+  - Goal: Define the approved FineWeb-Edu slice source key, `source_revision`, license/usage envelope, shard/checksum expectations, and local size budget so MacBook-scale text corpus selection is explicit and reproducible instead of a one-off download choice.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.

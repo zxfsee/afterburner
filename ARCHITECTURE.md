@@ -309,6 +309,13 @@ auto-versioning, embedded serving) are intentionally absent.
 - Pretraining source approvals should also carry a source provenance receipt layer over time, so
   approval receipts can point back to `upstream_locator` and the reviewed registry entry instead of
   relying on surrounding process logs for review context.
+- The current local-first text-pretraining target is also bounded explicitly:
+  - decoder-only language model
+  - single-node, single-device execution
+  - roughly `50M` to `300M` parameters
+  - `1024` token context length
+  - `50M` to `200M` token budgets per run
+  - `AdamW` with checkpoint/resume inside the bounded run
 
 ### Assumptions
 
@@ -361,4 +368,5 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
 - [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
 - [ADR-046: Single-Node GPU Lease And Systemd Adapter](./docs/adr/046-single-node-gpu-lease-systemd-adapter.md)
+- [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

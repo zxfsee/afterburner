@@ -59,14 +59,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- FineWeb-Edu slice source adoption gate [Pre-training, Data Infra]
-  - Goal: Define the approved FineWeb-Edu slice source key, `source_revision`, license/usage envelope, shard/checksum expectations, and local size budget so MacBook-scale text corpus selection is explicit and reproducible instead of a one-off download choice.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by: MacBook text pretraining fit gate.
-
 - Text tokenizer and sequence-packing contract [Pre-training, Data Infra, Runtime Infra]
   - Goal: Define tokenizer identity, vocabulary/versioning, special tokens, sequence length, truncation/packing policy, and text-sample manifest fields so MacBook-scale text batches do not depend on ad hoc preprocessing scripts or unstated tokenizer drift.
   - Kind: `gate`
@@ -143,6 +135,13 @@ Rules:
   - Blocked-by:
     - Optimized model packaging and export contract.
     - Hugging Face model publish adapter.
+
+- `cutile-rs` backend extension fit gate [Kernels, Frameworks, Runtime Infra]
+  - Goal: Evaluate whether Afterburner should later extend Burn with `cutile-rs` as a custom backend path, and under what measured conditions that would complement or displace the current Burn/CubeCL-aligned kernel and backend strategy.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 - Tokio adapter runtime fit gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Evaluate whether adapter-side concurrency, tracing, and deployment pressure justify adopting a Tokio-based runtime in adapters so the repo can grow into heavier async workflows without changing core/runtime boundaries prematurely.

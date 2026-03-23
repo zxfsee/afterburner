@@ -233,6 +233,11 @@ For pretraining data, the repo now distinguishes per-sample metadata from datase
 `pretraining_sample_metadata.schema.json` stays the sample contract, while
 `pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts,
 and checksum rollups for larger dataset refreshes.
+The current local-first text-pretraining target is intentionally bounded as a
+decoder-only language model that still fits a single MacBook: roughly `50M` to
+`300M` parameters, `1024` token context, `50M` to `200M` token budgets, `AdamW`,
+and regular checkpoint/resume within the run. See
+[ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md).
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and
