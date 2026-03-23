@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "inventory_path": "artifacts/deploy/artifact_cleanup_inventory.json",
+  "policy_path": "artifacts/deploy/artifact_cleanup_policy.json",
+  "policy_profile": "retention-default",
+  "planned_removals": [
+    "inference/0.1.0",
+    "profiling"
+  ],
+  "retained_count": 5,
+  "prune_candidate_count": 2,
+  "generated_at_unix_ms": 1735689600000
+}

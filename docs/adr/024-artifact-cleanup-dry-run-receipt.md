@@ -10,7 +10,7 @@ the preview was generated.
 
 ## Decision
 
-Future cleanup dry-runs should write one explicit artifact:
+Cleanup dry-runs now write one explicit artifact:
 `artifacts/deploy/artifact_cleanup_dry_run_receipt.json`
 
 The minimum receipt contract should include:
@@ -22,8 +22,8 @@ The minimum receipt contract should include:
 - `prune_candidate_count`: how many prune candidates were reviewed
 - `generated_at_unix_ms`: when the dry-run receipt was produced
 
-Current stance: this decision defines the dry-run receipt boundary only. It does
-not add a cleanup command or deletion behavior yet.
+Current stance: the repo now materializes this receipt through
+`afterburner cleanup dry-run`. It still does not add deletion behavior.
 
 ## Consequences
 

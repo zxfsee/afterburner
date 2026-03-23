@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/artifact-cleanup-dry-run-receipt/v1",
+  "title": "Artifact Cleanup Dry Run Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "inventory_path",
+    "policy_path",
+    "policy_profile",
+    "planned_removals",
+    "retained_count",
+    "prune_candidate_count",
+    "generated_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "inventory_path": { "type": "string", "minLength": 1 },
+    "policy_path": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 },
+    "planned_removals": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "retained_count": { "type": "integer", "minimum": 0 },
+    "prune_candidate_count": { "type": "integer", "minimum": 0 },
+    "generated_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}

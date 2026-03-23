@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Artifact cleanup dry-run receipt [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize a cleanup dry-run receipt over the existing inventory and policy artifacts so removal planning becomes inspectable and repeatable instead of living in operator judgment and README prose.
+- Artifact cleanup execution receipt adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize the execution-side cleanup receipt over an approved dry-run plan so actual removals and skips become inspectable and auditable instead of living in shell history and operator memory.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

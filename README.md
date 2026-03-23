@@ -239,9 +239,11 @@ Use `just cleanup-policy <profile>` to materialize `artifacts/deploy/artifact_cl
 the named cleanup-policy artifact that declares which inventory categories are protected versus
 prune candidates so later dry-run receipts can cite a stable `profile_name` instead of command-line
 heuristics.
-The future review artifact for that next layer should be
-`artifacts/deploy/artifact_cleanup_dry_run_receipt.json`, carrying at least the
-`artifact_cleanup_inventory.json` input path, `planned_removals`, `retained_count`,
+Use `just cleanup-dry-run <inventory> <policy> <generated-at-unix-ms>` to
+materialize `artifacts/deploy/artifact_cleanup_dry_run_receipt.json`, the
+review receipt over the current cleanup inventory and policy artifacts. The
+receipt carries the `artifact_cleanup_inventory.json` input path, the
+policy/profile used for the review, `planned_removals`, `retained_count`,
 `prune_candidate_count`, and `generated_at_unix_ms`.
 If cleanup ever becomes destructive, the execution-side audit artifact should be
 `artifact_cleanup_execution_receipt.json`, carrying at least the referenced
