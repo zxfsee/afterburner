@@ -198,6 +198,9 @@ auto-versioning, embedded serving) are intentionally absent.
     task suspension is not a supported assumption.
   - GPU colocation/sharing is a separate scheduling mode, not a synonym for
     preemption.
+  - For MacBook-local multi-process orchestration, `process-compose-flake` is a
+    valid platform candidate, but only as a local substrate and never as a
+    replacement for `systemd`, Kubernetes, or scheduler policy.
 - Distributed-training runtime work is capability-subset work, not framework-parity work.
   - Prioritize the smallest workload-driven subset in dependency order.
   - Treat DeepSpeed-class systems as sources of patterns, not parity targets.
@@ -369,4 +372,5 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
 - [ADR-046: Single-Node GPU Lease And Systemd Adapter](./docs/adr/046-single-node-gpu-lease-systemd-adapter.md)
 - [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
+- [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

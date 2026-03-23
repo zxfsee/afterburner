@@ -72,6 +72,10 @@ The current single-node scheduler path is intentionally bounded: `afterburner de
 admits one-GPU jobs onto the first free local GPU, writes a lease artifact plus
 a systemd service unit, and uses `SIGTERM` for graceful stop. It is a
 single-node adapter, not a queue daemon or cluster scheduler.
+For MacBook-local multi-process orchestration, `process-compose-flake` is the
+current best-fit substrate candidate because it matches the repo's `flake-parts`
+setup. It is a local process substrate only, not a replacement for `systemd`,
+Kubernetes, or the scheduler layer.
 Distributed-training work is also intentionally workload-driven: the goal is the
 minimum useful capability subset for repo workloads, not parity with a general
 DeepSpeed-class framework. See

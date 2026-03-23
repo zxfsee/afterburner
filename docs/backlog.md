@@ -153,13 +153,6 @@ Rules:
     - Distributed tracing correlation contract.
     - HTTP infer load profile contract.
 
-- Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define whether Afterburner should support remote model artifact save/load beyond local filesystem paths, and if so, keep the contract adapter-first so artifact resolution and transfer do not couple core logic to one storage backend or SDK.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `cli`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `src/`
-
 - Hugging Face model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize a Hugging Face publishing adapter that consumes the existing provider-neutral `artifact_upload_request.json` contract and pushes approved model artifacts plus required metadata to Hugging Face without collapsing upload approval, artifact identity, or rollout vocabulary into vendor-specific CLI semantics.
   - Kind: `mixed`
