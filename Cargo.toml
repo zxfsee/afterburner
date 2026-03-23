@@ -13,11 +13,11 @@ header = """# Changelog
 
 ## TODO
 
-- FineWeb-Edu slice source adoption gate [Pre-training, Data Infra]
-  - Goal: Define the approved FineWeb-Edu slice source key, `source_revision`, license/usage envelope, shard/checksum expectations, and local size budget so MacBook-scale text corpus selection is explicit and reproducible instead of a one-off download choice.
+- Text tokenizer and sequence-packing contract [Pre-training, Data Infra, Runtime Infra]
+  - Goal: Define tokenizer identity, vocabulary/versioning, special tokens, sequence length, truncation/packing policy, and text-sample manifest fields so MacBook-scale text batches do not depend on ad hoc preprocessing scripts or unstated tokenizer drift.
   - Kind: `gate`
   - Boundary: `core-contract`
-  - Contracts: `artifact`
+  - Contracts: `artifact`, `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
 
 - Remote model save/load fit gate [Serving/Deployment Infra, Runtime Infra]

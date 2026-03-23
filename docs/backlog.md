@@ -59,16 +59,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- Text tokenizer and sequence-packing contract [Pre-training, Data Infra, Runtime Infra]
-  - Goal: Define tokenizer identity, vocabulary/versioning, special tokens, sequence length, truncation/packing policy, and text-sample manifest fields so MacBook-scale text batches do not depend on ad hoc preprocessing scripts or unstated tokenizer drift.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by:
-    - MacBook text pretraining fit gate.
-    - FineWeb-Edu slice source adoption gate.
-
 - Text model artifact and inference contract gate [Pre-training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Define how a text-trained artifact is versioned, loaded, and sampled so decoder-only language-model outputs do not get forced through the current MNIST-oriented infer/eval surface when the repo starts training on text.
   - Kind: `gate`

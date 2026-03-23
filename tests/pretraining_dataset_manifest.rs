@@ -19,8 +19,8 @@ fn pretraining_dataset_manifest_parses_valid_contract() {
 
     let parsed = parse_pretraining_dataset_manifest(&value).expect("valid dataset manifest");
     assert_eq!(parsed.schema_version, 1);
-    assert_eq!(parsed.source, "c4/en");
-    assert_eq!(parsed.source_revision, "2026-03-10-snapshot");
+    assert_eq!(parsed.source, "fineweb-edu/slice");
+    assert_eq!(parsed.source_revision, "2026-03-22-macbook-100m-tokens");
     assert_eq!(parsed.shard_count, 3);
     assert_eq!(parsed.total_samples, 1500);
     assert_eq!(parsed.split_sample_counts.train, 1200);
@@ -40,8 +40,8 @@ fn pretraining_dataset_manifest_parses_valid_contract() {
 fn pretraining_dataset_manifest_rejects_split_count_mismatch() {
     let value = serde_json::json!({
         "schema_version": "1",
-        "source": "c4/en",
-        "source_revision": "2026-03-10-snapshot",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
         "shard_count": 1,
         "total_samples": 100,
         "split_sample_counts": {
@@ -75,8 +75,8 @@ fn pretraining_dataset_manifest_rejects_split_count_mismatch() {
 fn pretraining_dataset_manifest_rejects_duplicate_shard_id() {
     let value = serde_json::json!({
         "schema_version": "1",
-        "source": "c4/en",
-        "source_revision": "2026-03-10-snapshot",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
         "shard_count": 2,
         "total_samples": 2,
         "split_sample_counts": {

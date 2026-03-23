@@ -242,6 +242,10 @@ decoder-only language model that still fits a single MacBook: roughly `50M` to
 `300M` parameters, `1024` token context, `50M` to `200M` token budgets, `AdamW`,
 and regular checkpoint/resume within the run. See
 [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md).
+The current source fit for that path is a bounded `fineweb-edu/slice`, not a
+full-corpus mirror. Keep `source_revision` pinned to one local slice snapshot
+and keep the source size small enough for one MacBook workflow. See
+[ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md).
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and

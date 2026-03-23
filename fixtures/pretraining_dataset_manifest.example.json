@@ -1,7 +1,7 @@
 {
   "schema_version": "1",
-  "source": "c4/en",
-  "source_revision": "2026-03-10-snapshot",
+  "source": "fineweb-edu/slice",
+  "source_revision": "2026-03-22-macbook-100m-tokens",
   "shard_count": 3,
   "total_samples": 1500,
   "split_sample_counts": {

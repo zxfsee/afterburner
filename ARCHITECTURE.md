@@ -319,6 +319,10 @@ auto-versioning, embedded serving) are intentionally absent.
   - `1024` token context length
   - `50M` to `200M` token budgets per run
   - `AdamW` with checkpoint/resume inside the bounded run
+- The current local-first text source fit is also explicit:
+  - treat `fineweb-edu/slice` as the intended source family
+  - keep `source_revision` pinned to one bounded local slice snapshot
+  - keep source size small enough for one MacBook workflow rather than mirroring the full corpus
 
 ### Assumptions
 
@@ -372,5 +376,6 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
 - [ADR-046: Single-Node GPU Lease And Systemd Adapter](./docs/adr/046-single-node-gpu-lease-systemd-adapter.md)
 - [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
+- [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)
