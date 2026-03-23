@@ -14,14 +14,14 @@ fn repo_file(path: &str) -> String {
 }
 
 #[test]
-fn text_inference_profile_schema_is_explicit() {
-    let schema_text = fs::read_to_string(fixture_path("text_inference_profile.schema.json"))
-        .expect("read text inference profile schema");
+fn model_optimization_profile_schema_is_explicit() {
+    let schema_text = fs::read_to_string(fixture_path("model_optimization_profile.schema.json"))
+        .expect("read optimization profile schema");
     let schema: serde_json::Value = serde_json::from_str(&schema_text).expect("parse schema json");
 
     assert_eq!(
         schema.get("$id").and_then(|v| v.as_str()),
-        Some("https://afterburner.local/schemas/text-inference-profile/v1")
+        Some("https://afterburner.local/schemas/model-optimization-profile/v1")
     );
 
     let required = schema
@@ -37,10 +37,10 @@ fn text_inference_profile_schema_is_explicit() {
         .collect::<BTreeSet<_>>();
     let expected = [
         "schema_version",
-        "task",
-        "tokenizer_profile",
-        "max_context_tokens",
-        "sampling_defaults",
+        "input_artifact_version",
+        "target_environment",
+        "optimization_steps",
+        "output_constraints",
     ]
     .into_iter()
     .map(str::to_string)
@@ -49,37 +49,35 @@ fn text_inference_profile_schema_is_explicit() {
 }
 
 #[test]
-fn text_model_artifact_and_inference_contract_is_documented() {
+fn model_optimization_and_packaging_fit_is_documented() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
-        architecture.contains("ADR-052"),
-        "architecture decisions index must link ADR-052"
+        architecture.contains("ADR-053"),
+        "architecture decisions index must link ADR-053"
     );
     assert!(
-        architecture.contains("text inference profile sidecar"),
-        "architecture must mention the text inference sidecar"
+        architecture.contains("distinct post-training pipeline"),
+        "architecture must mention the separate optimization pipeline"
     );
 
-    let adr = repo_file("docs/adr/052-text-model-artifact-and-inference-contract.md");
+    let adr = repo_file("docs/adr/053-model-optimization-and-packaging-fit.md");
     for needle in [
-        "text_inference_profile.schema.json",
-        "causal-lm",
-        "`afterburner sample --artifact PATH --prompt TEXT --max-new-tokens N`",
-        "`text_sample_done`",
-        "`prompt_token_count`",
-        "`generated_token_count`",
+        "model_optimization_profile.schema.json",
+        "quantization",
+        "compression",
+        "export",
+        "packaging",
+        "output_constraints",
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-052 must mention `{needle}` as part of the text inference contract"
+            "ADR-053 must mention `{needle}` as part of the optimization fit decision"
         );
     }
 
     let readme = repo_file("README.md");
     assert!(
-        readme.contains(
-            "Text-trained models should not reuse the current MNIST/logits infer surface"
-        ),
-        "README must mention the separate text inference surface"
+        readme.contains("separate post-training pipeline"),
+        "README must mention the optimization/package pipeline stance"
     );
 }

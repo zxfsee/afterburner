@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "input_artifact_version": "0.1.0",
+  "target_environment": "macbook-local",
+  "optimization_steps": [
+    "quantization",
+    "compression",
+    "export",
+    "packaging"
+  ],
+  "output_constraints": {
+    "max_package_bytes": 2147483648,
+    "max_latency_ms_p99": 250.0,
+    "max_memory_bytes": 4294967296
+  }
+}

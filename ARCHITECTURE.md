@@ -245,6 +245,9 @@ auto-versioning, embedded serving) are intentionally absent.
   not as a separate repo-local backend family.
   - `BACKEND=metal` is a Burn-aligned runtime choice under the existing GPU adapter surface.
   - `wgpu` remains the default until backend-profile evidence justifies preferring Metal more broadly.
+- Model optimization and packaging are also a distinct post-training pipeline.
+  - quantization, compression, export, and packaging should be driven by explicit artifact
+    profiles and constraints, not folded into runtime-scale or scheduler decisions.
 - Burn dependency refreshes should stay on the latest stable line, not pre-release churn. The
   current explicit stance is Burn `0.20.1`; a later refresh should wait for a newer stable release
   and keep `.mpk` to `.bpk` migration as a separate contract decision.
@@ -393,5 +396,6 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
+- [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

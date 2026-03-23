@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/model-optimization-profile/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "input_artifact_version",
+    "target_environment",
+    "optimization_steps",
+    "output_constraints"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "input_artifact_version": { "type": "string", "minLength": 1 },
+    "target_environment": { "type": "string", "minLength": 1 },
+    "optimization_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["quantization", "compression", "export", "packaging"]
+      }
+    },
+    "output_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_package_bytes",
+        "max_latency_ms_p99",
+        "max_memory_bytes"
+      ],
+      "properties": {
+        "max_package_bytes": { "type": "integer", "minimum": 1 },
+        "max_latency_ms_p99": { "type": "number", "minimum": 0.0 },
+        "max_memory_bytes": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

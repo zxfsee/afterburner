@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Burn distributed runtime layout feasibility gate [Distributed Training, Runtime Infra]
   - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
   - Kind: `gate`

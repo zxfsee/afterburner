@@ -195,6 +195,11 @@ If remote model save/load is added later, keep it adapter-first as well: use a
 provider-neutral remote locator contract instead of hardwiring one storage SDK
 or remote path format into core artifact logic. See
 [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md).
+Model optimization and packaging are a separate post-training pipeline as well:
+use explicit optimization profiles and output constraints for quantization,
+compression, export, and packaging work instead of folding those decisions into
+runtime scale or scheduler policy. See
+[ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md).
 Use `just distributed-load-profile <addr> <requests> <concurrency> <latency-budget-ms-p99> <error-budget-ratio>`
 to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-side load artifact
 that summarizes sustained multi-worker request distribution, success/error counts, latency
