@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Text model artifact and inference contract gate [Pre-training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define how a text-trained artifact is versioned, loaded, and sampled so decoder-only language-model outputs do not get forced through the current MNIST-oriented infer/eval surface when the repo starts training on text.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-
 - Model optimization and packaging fit gate [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the post-training optimization surface for quantization, compression, export, and packaging so efficiency work for constrained hardware stays a separate artifact pipeline from distributed runtime scale-out work.
   - Kind: `gate`
@@ -34,19 +27,19 @@ header = """# Changelog
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
 
-- GPU colocation fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define whether selected low-saturation jobs may share one GPU under explicit compatibility and interference limits so utilization improvements stay separate from the scheduler's preemption model.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Hugging Face model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize a Hugging Face publishing adapter that consumes the existing provider-neutral `artifact_upload_request.json` contract and pushes approved model artifacts plus required metadata to Hugging Face without collapsing upload approval, artifact identity, or rollout vocabulary into vendor-specific CLI semantics.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `cli`, `ops`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+
+- GPU colocation fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define whether selected low-saturation jobs may share one GPU under explicit compatibility and interference limits so utilization improvements stay separate from the scheduler's preemption model.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 ## [Trunk]
 """

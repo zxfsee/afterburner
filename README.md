@@ -254,6 +254,12 @@ The tokenizer and packing side of that path should also stay explicit through a
 single tokenizer profile: pin tokenizer identity and revision, BOS/EOS/PAD
 tokens, `1024` token context length, and explicit truncation/packing rules. See
 [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md).
+Text-trained models should not reuse the current MNIST/logits infer surface. The
+future text artifact path should carry a separate text inference profile sidecar
+with `task = causal-lm`, tokenizer profile linkage, context length, and default
+sampling settings, and future sampling should emit a dedicated `text_sample_done`
+event instead of overloading `infer_done`. See
+[ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md).
 Within that dataset manifest, treat `source` as a stable source registry key and
 `source_revision` as the approved snapshot selector. A future source registry
 contract should minimally pin each source's `upstream_locator`, `license`, and

@@ -331,6 +331,11 @@ auto-versioning, embedded serving) are intentionally absent.
   - explicit BOS/EOS/PAD tokens
   - `1024` token context length
   - explicit truncation and packing policies
+- Text-trained inference should also stay explicit and separate from the current
+  MNIST/image contract:
+  - one text inference profile sidecar for prompt-oriented sampling
+  - explicit task identity (`causal-lm`)
+  - explicit sampling defaults and sampling event fields
 
 ### Assumptions
 
@@ -386,6 +391,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
 - [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md)
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
+- [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

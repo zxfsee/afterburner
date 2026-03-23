@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "task": "causal-lm",
+  "tokenizer_profile": "text_tokenizer_packing_profile.example.json",
+  "max_context_tokens": 1024,
+  "sampling_defaults": {
+    "max_new_tokens": 128,
+    "temperature": 0.8,
+    "top_k": 40,
+    "top_p": 0.95
+  }
+}

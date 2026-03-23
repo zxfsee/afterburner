@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/text-inference-profile/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "task",
+    "tokenizer_profile",
+    "max_context_tokens",
+    "sampling_defaults"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "task": {
+      "type": "string",
+      "enum": ["causal-lm"]
+    },
+    "tokenizer_profile": { "type": "string", "minLength": 1 },
+    "max_context_tokens": { "type": "integer", "minimum": 1 },
+    "sampling_defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_new_tokens",
+        "temperature",
+        "top_k",
+        "top_p"
+      ],
+      "properties": {
+        "max_new_tokens": { "type": "integer", "minimum": 1 },
+        "temperature": { "type": "number", "minimum": 0.0 },
+        "top_k": { "type": "integer", "minimum": 1 },
+        "top_p": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+      }
+    }
+  }
+}

@@ -59,16 +59,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Single-node GPU lease and systemd scheduler adapter.
 
-- Text model artifact and inference contract gate [Pre-training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define how a text-trained artifact is versioned, loaded, and sampled so decoder-only language-model outputs do not get forced through the current MNIST-oriented infer/eval surface when the repo starts training on text.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by:
-    - MacBook text pretraining fit gate.
-    - Text tokenizer and sequence-packing contract.
-
 - MacBook text pretraining adapter [Pre-training, Frameworks, Runtime Infra]
   - Goal: Materialize a small decoder-only language-model training path over the approved FineWeb-Edu slice with deterministic local caching, checkpoint/resume, and a bounded training recipe that fits a single MacBook while MNIST remains available as a separate smoke workflow.
   - Kind: `mixed`
