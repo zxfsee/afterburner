@@ -1,0 +1,22 @@
+{
+  "schema_version": "1",
+  "node_count": 1,
+  "gpus_per_node": 8,
+  "world_size": 8,
+  "parallelism": {
+    "dp": 8,
+    "tp": 1,
+    "pp": 1,
+    "sp_cp": 1,
+    "ep": 1,
+    "gas": 4,
+    "microbatch_size": 8,
+    "zero_stage": 0
+  },
+  "feasible": true,
+  "checks": [
+    { "name": "world_size_matches_inventory", "passed": true },
+    { "name": "parallelism_product_matches_world_size", "passed": true },
+    { "name": "single_node_tp_fit", "passed": true }
+  ]
+}

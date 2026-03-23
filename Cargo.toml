@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn distributed runtime layout feasibility gate [Distributed Training, Runtime Infra]
-  - Goal: Define feasibility validation for candidate Burn-side DP/TP/PP/GAS/MBS/ZeRO layouts on 8-GPU nodes so invalid divisibility, topology, and memory combinations are rejected before any benchmark or training launch.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Hugging Face model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize a Hugging Face publishing adapter that consumes the existing provider-neutral `artifact_upload_request.json` contract and pushes approved model artifacts plus required metadata to Hugging Face without collapsing upload approval, artifact identity, or rollout vocabulary into vendor-specific CLI semantics.
   - Kind: `mixed`

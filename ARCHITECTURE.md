@@ -276,6 +276,10 @@ auto-versioning, embedded serving) are intentionally absent.
   - Keep that profile artifact separate from `distributed_load_profile.json`.
   - Record model-size/node-count identity, runtime parallelism choices, performance/memory
     metrics, runtime settings, and environment fingerprint explicitly.
+- Candidate distributed runtime layouts should also be checked by one explicit
+  feasibility artifact before benchmark or training launch.
+  - Keep that feasibility artifact separate from the runtime capability list.
+  - Keep that feasibility artifact separate from the executed runtime profile artifact.
 - Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
   declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
   of inferring shard membership from directory layout alone.
@@ -396,6 +400,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
+- [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)
