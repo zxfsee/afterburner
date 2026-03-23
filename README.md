@@ -191,6 +191,10 @@ or heavy OpenTelemetry SDK.
 validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
 `artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
 to any network service directly.
+If remote model save/load is added later, keep it adapter-first as well: use a
+provider-neutral remote locator contract instead of hardwiring one storage SDK
+or remote path format into core artifact logic. See
+[ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md).
 Use `just distributed-load-profile <addr> <requests> <concurrency> <latency-budget-ms-p99> <error-budget-ratio>`
 to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-side load artifact
 that summarizes sustained multi-worker request distribution, success/error counts, latency

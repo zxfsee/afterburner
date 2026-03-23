@@ -1,0 +1,66 @@
+use std::collections::BTreeSet;
+use std::fs;
+use std::path::PathBuf;
+
+fn fixture_path(name: &str) -> PathBuf {
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures")
+        .join(name)
+}
+
+fn repo_file(path: &str) -> String {
+    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
+        .unwrap_or_else(|err| panic!("read {path}: {err}"))
+}
+
+#[test]
+fn remote_model_save_load_fit_is_documented() {
+    let schema_text = fs::read_to_string(fixture_path("remote_artifact_locator.schema.json"))
+        .expect("read remote locator schema");
+    let schema: serde_json::Value = serde_json::from_str(&schema_text).expect("parse schema json");
+
+    assert_eq!(
+        schema.get("$id").and_then(|v| v.as_str()),
+        Some("https://afterburner.local/schemas/remote-artifact-locator/v1")
+    );
+    let required = schema
+        .get("required")
+        .and_then(|v| v.as_array())
+        .expect("schema.required must be array")
+        .iter()
+        .map(|v| {
+            v.as_str()
+                .expect("required values must be strings")
+                .to_string()
+        })
+        .collect::<BTreeSet<_>>();
+    let expected = ["schema_version", "provider", "locator", "mode"]
+        .into_iter()
+        .map(str::to_string)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(required, expected);
+
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-051"),
+        "architecture decisions index must link ADR-051"
+    );
+    assert!(
+        architecture.contains("provider-neutral"),
+        "architecture must mention the provider-neutral remote locator stance"
+    );
+
+    let adr = repo_file("docs/adr/051-remote-model-save-load-fit.md");
+    for needle in ["provider", "locator", "mode", "storage SDK"] {
+        assert!(
+            adr.contains(needle),
+            "ADR-051 must mention `{needle}` as part of the remote fit decision"
+        );
+    }
+
+    let readme = repo_file("README.md");
+    assert!(
+        readme.contains("remote locator contract"),
+        "README must mention the remote save/load locator stance"
+    );
+}

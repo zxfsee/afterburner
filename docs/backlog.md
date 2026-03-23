@@ -143,14 +143,6 @@ Rules:
     - Distributed tracing correlation contract.
     - HTTP infer load profile contract.
 
-- Hugging Face model publish adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize a Hugging Face publishing adapter that consumes the existing provider-neutral `artifact_upload_request.json` contract and pushes approved model artifacts plus required metadata to Hugging Face without collapsing upload approval, artifact identity, or rollout vocabulary into vendor-specific CLI semantics.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `cli`, `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-  - Blocked-by: Remote model save/load fit gate.
-
 - HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
   - Kind: `mixed`

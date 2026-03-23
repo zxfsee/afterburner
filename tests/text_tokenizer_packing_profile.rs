@@ -15,8 +15,9 @@ fn repo_file(path: &str) -> String {
 
 #[test]
 fn text_tokenizer_packing_profile_schema_is_explicit() {
-    let schema_text = fs::read_to_string(fixture_path("text_tokenizer_packing_profile.schema.json"))
-        .expect("read tokenizer profile schema");
+    let schema_text =
+        fs::read_to_string(fixture_path("text_tokenizer_packing_profile.schema.json"))
+            .expect("read tokenizer profile schema");
     let schema: serde_json::Value = serde_json::from_str(&schema_text).expect("parse schema json");
 
     assert_eq!(
@@ -29,7 +30,11 @@ fn text_tokenizer_packing_profile_schema_is_explicit() {
         .and_then(|v| v.as_array())
         .expect("schema.required must be an array")
         .iter()
-        .map(|v| v.as_str().expect("required values must be strings").to_string())
+        .map(|v| {
+            v.as_str()
+                .expect("required values must be strings")
+                .to_string()
+        })
         .collect::<BTreeSet<_>>();
     let expected = [
         "schema_version",
@@ -48,9 +53,11 @@ fn text_tokenizer_packing_profile_schema_is_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let example_text = fs::read_to_string(fixture_path("text_tokenizer_packing_profile.example.json"))
-        .expect("read tokenizer profile example");
-    let example: serde_json::Value = serde_json::from_str(&example_text).expect("parse example json");
+    let example_text =
+        fs::read_to_string(fixture_path("text_tokenizer_packing_profile.example.json"))
+            .expect("read tokenizer profile example");
+    let example: serde_json::Value =
+        serde_json::from_str(&example_text).expect("parse example json");
     let example = example.as_object().expect("example must be object");
     for key in &expected {
         assert!(

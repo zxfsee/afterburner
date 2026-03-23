@@ -183,6 +183,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - The first upload adapter remains provider-neutral: it validates the manifest plus rollout
   ownership contracts and materializes an `artifact_upload_request.json` artifact instead of
   binding core or adapter code directly to a storage SDK.
+- Remote model save/load should follow the same rule: use a provider-neutral
+  locator contract in adapters rather than binding core artifact logic directly
+  to one storage SDK or remote path shape.
 - Promotion and rollback orchestration are currently local justfile contracts over the explicit
   eval, upload, deploy-check, and current-pointer surfaces; they are not a separate long-running
   deployment subsystem.
@@ -383,5 +386,6 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
 - [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md)
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
+- [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)
