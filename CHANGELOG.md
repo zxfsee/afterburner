@@ -2,12 +2,12 @@
 
 ## TODO
 
-- HTTP infer load profile contract [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Materialize a reproducible HTTP inference load profile and results artifact so deployment decisions can be checked against concurrency, latency, and error budgets under sustained load instead of only single-request fixtures.
+- Burn distributed runtime benchmark harness contract [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Materialize a reproducible benchmark runner for Burn distributed runtime profile trials so candidate configurations can be executed with seeded config, fixed measurement windows, stable metrics capture, and artifact persistence instead of ad hoc scripts.
   - Kind: `mixed`
-  - Boundary: `adapter-http`
+  - Boundary: `adapter-cli`
   - Contracts: `artifact`, `ops`
-  - Scope: `src/bin/afterburner_http.rs`, `tests/`, `fixtures/`, `README.md`, `justfile`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
@@ -112,12 +112,12 @@
 - Add profiling environment snapshot refresh receipt ([011b945])
 - Add distributed load profile ([d96a0a7])
 - Group operator subcommands ([7bf677b])
-- Define deployment stack contract ([5ec6062])
-- Add tracing correlation contract ([299717f])
-- Expose metal runtime option ([27e2985])
-- Group deployment commands ([9ec2d33])
-- Add single-node lease adapter ([ce191a4])
-- Add hugging face publish adapter ([4a0c6f3])
+- Define deployment stack contract ([a4b7835])
+- Add tracing correlation contract ([5000595])
+- Expose metal runtime option ([583a515])
+- Group deployment commands ([563476b])
+- Add single-node lease adapter ([007426e])
+- Add hugging face publish adapter ([9eaf953])
 
 ### Changed
 
@@ -237,31 +237,32 @@
 - Add blocked-by chain for distributed training profile work ([372f9db])
 - Use blocked-by lists for distributed training chain ([76abac1])
 - Restore distributed training prerequisite chain ([f000bc8])
-- Clarify burn runtime and scheduler tracks ([71e9ee8])
-- Add native metal migration todo ([b5b62c6])
-- Add hugging face publish todo ([2e6e6b1])
-- Add macbook text pretraining todo chain ([a3b372e])
-- Separate runtime scheduler and platform layers ([d932175])
-- Scope distributed training subset ([cda7874])
-- Add optimization and packaging track ([b7834ac])
-- Add distributed layer diagram ([bbaa3da])
-- Add process-compose local substrate fit ([1536353])
-- Add burn learning strategy fit gate ([7e48a72])
-- Define world and rank topology gate ([ec75681])
-- Define runtime capability surface ([f81eae9])
-- Define preemption and colocation stance ([bbcf0a9])
-- Add runtime profile schema gate ([5ea679f])
-- Define lifecycle boundary contract ([cc5a31f])
-- Define macbook text fit ([4174385])
-- Add process-compose local fit ([60071fc])
-- Adopt fineweb-edu source gate ([25b6ff7])
-- Add tokenizer packing contract ([10a90fd])
-- Add remote save load fit ([47ab101])
-- Park blocked bpk migration ([58d3a27])
-- Define text artifact contract ([e619449])
-- Define optimization packaging fit ([678296d])
-- Add layout feasibility gate ([038ec33])
-- Constrain gpu colocation fit ([5649a2b])
+- Clarify burn runtime and scheduler tracks ([df8c1e6])
+- Add native metal migration todo ([953848f])
+- Add hugging face publish todo ([904cc7a])
+- Add macbook text pretraining todo chain ([fd35014])
+- Separate runtime scheduler and platform layers ([6c3aca6])
+- Scope distributed training subset ([486da79])
+- Add optimization and packaging track ([5d8881c])
+- Add distributed layer diagram ([e66dbe8])
+- Add process-compose local substrate fit ([f6a9bb5])
+- Add burn learning strategy fit gate ([88b14e1])
+- Define world and rank topology gate ([4e567a5])
+- Define runtime capability surface ([d708257])
+- Define preemption and colocation stance ([55bce19])
+- Add runtime profile schema gate ([00e256b])
+- Define lifecycle boundary contract ([0c969b5])
+- Define macbook text fit ([0020673])
+- Add process-compose local fit ([e4e9c1c])
+- Adopt fineweb-edu source gate ([b946e88])
+- Add tokenizer packing contract ([150abf2])
+- Add remote save load fit ([f3aeb32])
+- Park blocked bpk migration ([3e3c04a])
+- Define text artifact contract ([9001f06])
+- Define optimization packaging fit ([e7d722b])
+- Add layout feasibility gate ([6e2e7b4])
+- Constrain gpu colocation fit ([ed9d7eb])
+- Add cutile fit gate ([7b0fb2f])
 
 ### Fixed
 
@@ -508,36 +509,37 @@
 [372f9db]: https://github.com/zxfsee/afterburner/commit/372f9dbda6dc4250cb636f6e9e2c46336ce784d2
 [76abac1]: https://github.com/zxfsee/afterburner/commit/76abac1903d4255ad83bc3e9f0cb7957f94b7f2f
 [f000bc8]: https://github.com/zxfsee/afterburner/commit/f000bc85d5f625368120599dee418923906abbd2
-[71e9ee8]: https://github.com/zxfsee/afterburner/commit/71e9ee8283a90f3a521f4a6860e4ee1051f59b65
-[b5b62c6]: https://github.com/zxfsee/afterburner/commit/b5b62c60eb361c44569ab377c120aa7ad790f6e8
-[2e6e6b1]: https://github.com/zxfsee/afterburner/commit/2e6e6b1cc099e9e28ef26f1cce766e9a9f1bffa6
-[a3b372e]: https://github.com/zxfsee/afterburner/commit/a3b372e4fc561f896eefa8e5d37e51e9613823d2
-[d932175]: https://github.com/zxfsee/afterburner/commit/d9321751a1892baa4098409f939a858a5d901978
-[cda7874]: https://github.com/zxfsee/afterburner/commit/cda78749af16bdf907238a75fce45d427c1880d3
-[b7834ac]: https://github.com/zxfsee/afterburner/commit/b7834ac5a78c41720039d803ccb6565492a9644f
-[bbaa3da]: https://github.com/zxfsee/afterburner/commit/bbaa3daf8b2858009f59e1ceeae8bd6c200c951c
-[5ec6062]: https://github.com/zxfsee/afterburner/commit/5ec6062c1302028f09865442e46a4af6ba6cb746
-[299717f]: https://github.com/zxfsee/afterburner/commit/299717fdb070ca83cc58812bb9e034310fd68247
-[1536353]: https://github.com/zxfsee/afterburner/commit/1536353fa8f7bc117cf809264f20ec10e444e501
-[7e48a72]: https://github.com/zxfsee/afterburner/commit/7e48a72c216052a1be8f9e20c242fca04ee01531
-[ec75681]: https://github.com/zxfsee/afterburner/commit/ec756818924e7e689ab9aa772f54ed1ee7697225
-[27e2985]: https://github.com/zxfsee/afterburner/commit/27e2985464e4716f7d99a99e9123afb3a123df03
-[f81eae9]: https://github.com/zxfsee/afterburner/commit/f81eae9b891621564ffaa391ccf4ba01880cb24c
-[bbcf0a9]: https://github.com/zxfsee/afterburner/commit/bbcf0a9288b5ff3e534bcff7a08d640cd74a4b8e
-[5ea679f]: https://github.com/zxfsee/afterburner/commit/5ea679f46d30387cb43286d33574fda33fd32ed4
-[9ec2d33]: https://github.com/zxfsee/afterburner/commit/9ec2d33d1c5465d7251681c73639da21763de366
-[cc5a31f]: https://github.com/zxfsee/afterburner/commit/cc5a31f63f7a3b6034c4d39c542c608199f558fa
-[ce191a4]: https://github.com/zxfsee/afterburner/commit/ce191a469e33a37b8ea8b44aeada9451283f882e
-[4174385]: https://github.com/zxfsee/afterburner/commit/4174385949fe45dc17b3f01e8b7cf529af29b819
-[60071fc]: https://github.com/zxfsee/afterburner/commit/60071fc9f1dc512c62b47293b6ba7a3e9ec23f05
-[25b6ff7]: https://github.com/zxfsee/afterburner/commit/25b6ff759c2137eff6271a4bd2fc16595abbea1b
-[10a90fd]: https://github.com/zxfsee/afterburner/commit/10a90fded02bd84551271cb4d59f1045c6f107f1
-[47ab101]: https://github.com/zxfsee/afterburner/commit/47ab10106ce40c3c31594955e7f806132ad8071b
-[58d3a27]: https://github.com/zxfsee/afterburner/commit/58d3a27758f2d5b8e23ca52051c93f9284d2bd25
-[e619449]: https://github.com/zxfsee/afterburner/commit/e61944952abe391875736ceb119d0cf9f430e29b
-[678296d]: https://github.com/zxfsee/afterburner/commit/678296d727ccdb3e6bebd0e21640d1c70c443855
-[038ec33]: https://github.com/zxfsee/afterburner/commit/038ec33c9f4f22799541af93a31dbd521f0377cf
-[4a0c6f3]: https://github.com/zxfsee/afterburner/commit/4a0c6f35722ab8f8d0193e712cdfa0d53917897b
-[5649a2b]: https://github.com/zxfsee/afterburner/commit/5649a2b90a4b4fd8846e2aee7dc12aeb1bd485a6
+[df8c1e6]: https://github.com/zxfsee/afterburner/commit/df8c1e60d72895a56451357250448ab27b7c97c9
+[953848f]: https://github.com/zxfsee/afterburner/commit/953848f02e1c614cc97a87a852b803b3c291924f
+[904cc7a]: https://github.com/zxfsee/afterburner/commit/904cc7ab3e611816ffb6ff3f8d99fe6ae11d0da6
+[fd35014]: https://github.com/zxfsee/afterburner/commit/fd3501464cc96b561c827f1d3ccdd2766daa3818
+[6c3aca6]: https://github.com/zxfsee/afterburner/commit/6c3aca629e66aebe35cc568e2c575f6cb84377da
+[486da79]: https://github.com/zxfsee/afterburner/commit/486da79e81827eb165f295538977f86e5f391fc7
+[5d8881c]: https://github.com/zxfsee/afterburner/commit/5d8881cd7247e3d1e6732fa857ce3f2e69a131a1
+[e66dbe8]: https://github.com/zxfsee/afterburner/commit/e66dbe8e2ce745127371b68c21b75c59a1cb4096
+[a4b7835]: https://github.com/zxfsee/afterburner/commit/a4b783597f576d10a3ee6c2dee5aba66d467cb13
+[5000595]: https://github.com/zxfsee/afterburner/commit/5000595ad779a9026c56d10a02713ef240d8aea6
+[f6a9bb5]: https://github.com/zxfsee/afterburner/commit/f6a9bb56d84f6827388d0a45508516a23a2a571b
+[88b14e1]: https://github.com/zxfsee/afterburner/commit/88b14e1d51ed0ca03f7cf43c50aa2f7982237432
+[4e567a5]: https://github.com/zxfsee/afterburner/commit/4e567a5b8edbaa0916eed05a4a6681941d2b5faf
+[583a515]: https://github.com/zxfsee/afterburner/commit/583a51577684037990acd272a49a25e921d74297
+[d708257]: https://github.com/zxfsee/afterburner/commit/d70825734d5e420e74ff4464fb7c758319d07892
+[55bce19]: https://github.com/zxfsee/afterburner/commit/55bce199bda6f46b7082471c6ef2eae762eff658
+[00e256b]: https://github.com/zxfsee/afterburner/commit/00e256b2c9454ff12befa4cc5407d3de7c1af090
+[563476b]: https://github.com/zxfsee/afterburner/commit/563476b0757870436e0768f4c3c3cad34c0fbe13
+[0c969b5]: https://github.com/zxfsee/afterburner/commit/0c969b5941a8fc276969933e368eae0a35e3d030
+[007426e]: https://github.com/zxfsee/afterburner/commit/007426e76edbca41b91d486adf2cfeb27171cf81
+[0020673]: https://github.com/zxfsee/afterburner/commit/002067333206df833364159bee3e21db0ceaa60a
+[e4e9c1c]: https://github.com/zxfsee/afterburner/commit/e4e9c1c0eb8fea17e3e5d2f0906e98da6db85292
+[b946e88]: https://github.com/zxfsee/afterburner/commit/b946e8888abc8bd3d7b117fabb25120e90016baa
+[150abf2]: https://github.com/zxfsee/afterburner/commit/150abf2619fc51a71be57931f8f3c69e23d325ab
+[f3aeb32]: https://github.com/zxfsee/afterburner/commit/f3aeb3276e88868365cd7755813af583c712b54e
+[3e3c04a]: https://github.com/zxfsee/afterburner/commit/3e3c04a5f8c8f9992248f42036fa78ec7239d8ab
+[9001f06]: https://github.com/zxfsee/afterburner/commit/9001f066ff357f881c7d189fe6dc5289f9b5cc12
+[e7d722b]: https://github.com/zxfsee/afterburner/commit/e7d722b8adc5489ab285051abf199defe75f8fc1
+[6e2e7b4]: https://github.com/zxfsee/afterburner/commit/6e2e7b4526cfd0107a69ece7cf6350ca2de67da7
+[9eaf953]: https://github.com/zxfsee/afterburner/commit/9eaf953eef0e0ead61345789d18746476732e6a3
+[ed9d7eb]: https://github.com/zxfsee/afterburner/commit/ed9d7eb574b891b65dbcd128ffe8991bbe015689
+[7b0fb2f]: https://github.com/zxfsee/afterburner/commit/7b0fb2f38f60cb765bc1b807da46f8ba6cb9e0af
 
 <!-- generated by git-cliff -->

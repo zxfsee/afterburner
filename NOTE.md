@@ -31,3 +31,5 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Park profiling/flamegraph work unless a near-term runtime/kernel/quantization decision actually depends on measured hotspot evidence; otherwise it is easy to over-invest in tooling before the next leverage point is ready.
 - When passing commit messages through `shell_command`, avoid unescaped backticks in the shell string; they trigger command substitution and silently corrupt the commit body.
 - If consecutive TODOs are only refining adjacent contract/receipt/provenance layers with little new runtime or decision leverage, stop and call that out instead of continuing mechanically. Park or regroup low-leverage follow-ons before they turn into busywork.
+- When a gate can be folded into a nearby mixed item without losing clarity, prefer folding it; if a gate only restates an already-decided boundary, park or remove it instead of adding another ADR.
+- In constrained time, prioritize the highest-ROI item that still benefits from an explicit spec; keep enough architecture context to avoid drift, but do not expand documentation or ADR surface beyond what materially preserves the direction of travel.
