@@ -34,3 +34,5 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - When a gate can be folded into a nearby mixed item without losing clarity, prefer folding it; if a gate only restates an already-decided boundary, park or remove it instead of adding another ADR.
 - In constrained time, prioritize the highest-ROI item that still benefits from an explicit spec; keep enough architecture context to avoid drift, but do not expand documentation or ADR surface beyond what materially preserves the direction of travel.
 - Prefer the lowest-energy change that preserves architectural direction, avoids drift, and unlocks the next real capability; do not spend complexity, process, or implementation effort unless it materially increases leverage.
+- When the repo shows repeated command paths for the same workflow, prefer consolidating toward one canonical execution surface instead of adding more process around the divergence.
+- When artifact writing plus event emission repeats across multiple commands, treat that as a signal to extract a small shared helper layer before drift in fields, paths, or guarantees spreads further.
