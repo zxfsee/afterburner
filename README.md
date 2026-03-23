@@ -18,7 +18,9 @@ just eval-gate
 
 `just infer` and `just eval` resolve the artifact through `artifacts/inference/current` by default.
 Override with `--artifact <path>`, `--artifact=<path>`, or positional `[artifact_path]` for compatibility.
-The canonical CLI is `afterburner <train|infer|eval>`.
+The canonical workflow surface is `just`; use `just --list` or `just workflows`
+to discover repo-managed entrypoints. The `afterburner <...>` CLI remains the
+underlying contract surface behind those recipes.
 
 ## What this is
 

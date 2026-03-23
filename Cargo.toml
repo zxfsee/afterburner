@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Canonical `just` execution surface consolidation [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Converge user-facing workflows onto `just` as the canonical execution harness so cargo/manual command drift does not fragment reproducibility, documentation, or operator entrypoints.
+- Artifact cleanup dry-run receipt [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize a cleanup dry-run receipt over the existing inventory and policy artifacts so removal planning becomes inspectable and repeatable instead of living in operator judgment and README prose.
   - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `cli`, `ops`
-  - Scope: `justfile`, `README.md`, `tests/`, `src/bin/`, `src/`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.

@@ -23,6 +23,10 @@ cargo-check:
 dev:
     nix develop
 
+# list the canonical repo-managed workflow surface
+workflows:
+    just --list
+
 # format rust + toml + nix
 fmt:
     nix fmt
