@@ -1,9 +1,10 @@
-use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 use std::time::Instant;
 
-use afterburner::observability::emit_event;
+use afterburner::command_artifacts::{
+    JsonArtifactError, emit_json_artifact_written, write_json_value,
+};
 use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str = "artifacts/train/distributed_runtime_benchmark_run.json";
@@ -32,6 +33,17 @@ impl std::error::Error for DistributedRuntimeBenchmarkError {}
 impl From<std::io::Error> for DistributedRuntimeBenchmarkError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for DistributedRuntimeBenchmarkError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!("serialize benchmark artifact: {err}"))
+            }
+        }
     }
 }
 
@@ -153,22 +165,14 @@ where
         "benchmark_status": "passed",
     });
 
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(&artifact).map_err(|err| {
-        DistributedRuntimeBenchmarkError::Parse(format!("serialize benchmark artifact: {err}"))
-    })?;
-    fs::write(&args.out_path, text)?;
-
-    emit_event(
-        "info",
+    write_json_value(&args.out_path, &artifact)?;
+    emit_json_artifact_written(
         "profile_cli",
         "distributed_runtime_benchmark_run_written",
-        json!({
-            "artifact_path": args.out_path.display().to_string(),
-            "artifact": artifact,
-        }),
+        "artifact_path",
+        &args.out_path,
+        "artifact",
+        artifact.clone(),
     );
 
     Ok(args.out_path)

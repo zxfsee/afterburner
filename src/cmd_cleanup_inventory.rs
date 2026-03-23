@@ -1,7 +1,9 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use afterburner::observability::emit_event;
+use afterburner::command_artifacts::{
+    JsonArtifactError, emit_json_artifact_written, write_json_value,
+};
 use serde_json::{Value, json};
 
 const ARTIFACT_CLEANUP_INVENTORY_PATH: &str = "artifacts/deploy/artifact_cleanup_inventory.json";
@@ -28,6 +30,17 @@ impl std::error::Error for CleanupInventoryError {}
 impl From<std::io::Error> for CleanupInventoryError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for CleanupInventoryError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!("serialize cleanup inventory json: {err}"))
+            }
+        }
     }
 }
 
@@ -173,22 +186,14 @@ where
         "prune_candidates": prune_candidates.iter().map(entry_json).collect::<Vec<_>>(),
     });
 
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(&inventory).map_err(|err| {
-        CleanupInventoryError::Parse(format!("serialize cleanup inventory json: {err}"))
-    })?;
-    fs::write(&args.out_path, text)?;
-
-    emit_event(
-        "info",
+    write_json_value(&args.out_path, &inventory)?;
+    emit_json_artifact_written(
         "ops_cli",
         "artifact_cleanup_inventory_written",
-        json!({
-            "inventory_path": args.out_path.display().to_string(),
-            "inventory": inventory,
-        }),
+        "inventory_path",
+        &args.out_path,
+        "inventory",
+        inventory.clone(),
     );
     Ok(())
 }

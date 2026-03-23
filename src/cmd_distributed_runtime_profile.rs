@@ -1,6 +1,8 @@
-use std::fs;
 use std::path::PathBuf;
 
+use afterburner::command_artifacts::{
+    JsonArtifactError, path_payload_fields_with_extra, write_json_value,
+};
 use afterburner::observability::emit_event;
 use serde_json::{Map, Value, json};
 
@@ -28,6 +30,17 @@ impl std::error::Error for DistributedRuntimeProfileError {}
 impl From<std::io::Error> for DistributedRuntimeProfileError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for DistributedRuntimeProfileError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!("serialize distributed runtime profile: {err}"))
+            }
+        }
     }
 }
 
@@ -85,32 +98,31 @@ where
         "environment_fingerprint": required_object_value(&benchmark_run, "environment_fingerprint")?,
     });
 
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(&profile).map_err(|err| {
-        DistributedRuntimeProfileError::Parse(format!(
-            "serialize distributed runtime profile: {err}"
-        ))
-    })?;
-    fs::write(&args.out_path, text)?;
+    write_json_value(&args.out_path, &profile)?;
 
+    let mut extra = Map::new();
+    extra.insert(
+        "benchmark_run_path".to_string(),
+        Value::from(args.benchmark_run_path.display().to_string()),
+    );
     emit_event(
         "info",
         "profile_cli",
         "distributed_runtime_profile_written",
-        json!({
-            "benchmark_run_path": args.benchmark_run_path.display().to_string(),
-            "profile_path": args.out_path.display().to_string(),
-            "profile": profile,
-        }),
+        path_payload_fields_with_extra(
+            "profile_path",
+            &args.out_path,
+            "profile",
+            profile.clone(),
+            extra,
+        ),
     );
 
     Ok(args.out_path)
 }
 
 fn read_json_object(path: &PathBuf) -> Result<Map<String, Value>, DistributedRuntimeProfileError> {
-    let text = fs::read_to_string(path)?;
+    let text = std::fs::read_to_string(path)?;
     let value: Value = serde_json::from_str(&text).map_err(|err| {
         DistributedRuntimeProfileError::Parse(format!(
             "parse benchmark run json from {}: {err}",

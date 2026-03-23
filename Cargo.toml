@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Shared artifact/event emission helper extraction [Runtime Infra, Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Consolidate repeated artifact-writing and event-emission logic into one internal helper surface so adapter commands stop drifting in output paths, field handling, and write semantics as contracts grow.
+- Canonical `just` execution surface consolidation [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Converge user-facing workflows onto `just` as the canonical execution harness so cargo/manual command drift does not fragment reproducibility, documentation, or operator entrypoints.
   - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `tests/`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`, `ops`
+  - Scope: `justfile`, `README.md`, `tests/`, `src/bin/`, `src/`
 
 - Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.

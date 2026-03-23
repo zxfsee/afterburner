@@ -27,6 +27,7 @@ use burn::{
 use serde_json::{Value, json};
 
 use crate::{
+    command_artifacts::{JsonArtifactError, write_json_value},
     data::parse_pretraining_dataset_manifest,
     observability::{append_json_line, current_trace_context, emit_event, event_line},
 };
@@ -74,6 +75,15 @@ impl std::error::Error for TextTrainingError {}
 impl From<std::io::Error> for TextTrainingError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for TextTrainingError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => Self::Parse(format!("serialize json: {err}")),
+        }
     }
 }
 
@@ -337,12 +347,12 @@ pub fn train_text<B: AutodiffBackend>(
 
     let text_inference_profile = text_inference_profile_value(&config.tokenizer_profile_path);
     let text_inference_profile_path = inference_dir.join(TEXT_INFERENCE_PROFILE_FILENAME);
-    write_json_file(&text_inference_profile_path, &text_inference_profile)?;
+    write_json_value(&text_inference_profile_path, &text_inference_profile)?;
 
     let eval_summary_path = root
         .join("eval")
         .join(TEXT_PRETRAINING_EVAL_SUMMARY_FILENAME);
-    write_json_file(&eval_summary_path, &eval_summary)?;
+    write_json_value(&eval_summary_path, &eval_summary)?;
     emit_event("info", "eval_cli", "text_eval_done", eval_summary.clone());
 
     enforce_text_eval_gate(&config, &eval_summary)?;
@@ -356,7 +366,7 @@ pub fn train_text<B: AutodiffBackend>(
         &eval_summary_path,
     );
     let run_path = root.join("train").join(TEXT_PRETRAINING_RUN_FILENAME);
-    write_json_file(&run_path, &run_artifact)?;
+    write_json_value(&run_path, &run_artifact)?;
     write_text_train_done_event(&train_dir, &run_artifact)?;
 
     Ok(())
@@ -713,17 +723,6 @@ fn write_text_train_done_event(
     let line = event_line("info", "train", "text_train_done", run_artifact.clone());
     append_json_line(&path, &line)?;
     emit_event("info", "train", "text_train_done", run_artifact.clone());
-    Ok(())
-}
-
-fn write_json_file(path: &Path, value: &Value) -> Result<(), TextTrainingError> {
-    if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(value).map_err(|err| {
-        TextTrainingError::Parse(format!("serialize json for {}: {err}", path.display()))
-    })?;
-    fs::write(path, text)?;
     Ok(())
 }
 

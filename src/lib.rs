@@ -2,6 +2,7 @@
 
 pub use afterburner_core::{data, preprocess};
 
+pub mod command_artifacts;
 pub mod infer;
 pub mod manifest;
 pub mod model;

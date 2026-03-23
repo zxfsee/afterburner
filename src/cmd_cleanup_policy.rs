@@ -1,7 +1,8 @@
-use std::fs;
 use std::path::PathBuf;
 
-use afterburner::observability::emit_event;
+use afterburner::command_artifacts::{
+    JsonArtifactError, emit_json_artifact_written, write_json_value,
+};
 use serde_json::json;
 
 const ARTIFACT_CLEANUP_POLICY_PATH: &str = "artifacts/deploy/artifact_cleanup_policy.json";
@@ -28,6 +29,17 @@ impl std::error::Error for CleanupPolicyError {}
 impl From<std::io::Error> for CleanupPolicyError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for CleanupPolicyError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!("serialize cleanup policy json: {err}"))
+            }
+        }
     }
 }
 
@@ -77,22 +89,14 @@ where
         ]
     });
 
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(&policy).map_err(|err| {
-        CleanupPolicyError::Parse(format!("serialize cleanup policy json: {err}"))
-    })?;
-    fs::write(&args.out_path, text)?;
-
-    emit_event(
-        "info",
+    write_json_value(&args.out_path, &policy)?;
+    emit_json_artifact_written(
         "ops_cli",
         "artifact_cleanup_policy_written",
-        json!({
-            "policy_path": args.out_path.display().to_string(),
-            "policy": policy,
-        }),
+        "policy_path",
+        &args.out_path,
+        "policy",
+        policy.clone(),
     );
     Ok(())
 }
