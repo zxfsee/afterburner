@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- GPU colocation fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define whether selected low-saturation jobs may share one GPU under explicit compatibility and interference limits so utilization improvements stay separate from the scheduler's preemption model.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - `cutile-rs` backend extension fit gate [Kernels, Frameworks, Runtime Infra]
   - Goal: Evaluate whether Afterburner should later extend Burn with `cutile-rs` as a custom backend path, and under what measured conditions that would complement or displace the current Burn/CubeCL-aligned kernel and backend strategy.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
+  - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]

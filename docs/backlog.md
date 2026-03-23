@@ -134,13 +134,6 @@ Rules:
     - Distributed tracing correlation contract.
     - HTTP infer load profile contract.
 
-- Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
-  - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
   - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
   - Kind: `gate`

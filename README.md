@@ -63,6 +63,9 @@ For modest clusters, scheduler policy is intentionally conservative: queueing
 and priority come first, supported preemption is cooperative checkpoint/resume
 only, and GPU colocation is treated as a separate resource-management mode
 rather than transparent pause/resume.
+If GPU colocation is added later, it should stay opt-in and limited to known
+low-saturation workloads with measured interference bounds; it is not meant to
+be the default scheduler policy.
 The runtime/scheduler lifecycle boundary is explicit as well: scheduler-side
 messages carry `START`/`STOP`/`KILL`, runtime-side messages carry
 `READY`/`CHECKPOINTED`/`FAILED`/`HEARTBEAT`, and `START` includes explicit

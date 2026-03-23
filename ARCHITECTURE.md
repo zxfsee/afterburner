@@ -204,6 +204,9 @@ auto-versioning, embedded serving) are intentionally absent.
     task suspension is not a supported assumption.
   - GPU colocation/sharing is a separate scheduling mode, not a synonym for
     preemption.
+  - GPU colocation is only a fit for explicitly approved low-saturation
+    workloads with measured interference limits; it is not the default
+    scheduler policy.
   - For MacBook-local multi-process orchestration, `process-compose-flake` is a
     valid platform candidate, but only as a local substrate and never as a
     replacement for `systemd`, Kubernetes, or scheduler policy.
@@ -403,6 +406,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
+- [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
