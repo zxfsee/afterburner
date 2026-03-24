@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-handoff/v1",
+  "title": "Deployment Verification Evidence Handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_path",
+    "artifact_version",
+    "profile_name",
+    "verification_status",
+    "evidence_count"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "bundle_path": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "profile_name": { "type": "string", "minLength": 1 },
+    "verification_status": { "type": "string", "minLength": 1 },
+    "evidence_count": { "type": "integer", "minimum": 0 }
+  }
+}

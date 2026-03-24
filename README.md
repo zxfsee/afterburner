@@ -271,6 +271,9 @@ artifact without changing the rest of the rollout flow yet.
 Use `just deployment-verification-bundle <receipt>` to materialize
 `artifacts/deploy/deployment_verification_evidence_bundle.json`, the compact deployment-side
 bundle over the receipt's declared evidence sources.
+Use `just deployment-verification-handoff <bundle>` to materialize
+`deployment_verification_evidence_handoff.json`, the stable handoff artifact
+over the current deployment verification evidence bundle.
 For future data-oriented artifact surfaces, the current fit decision is conservative:
 `Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
 JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or

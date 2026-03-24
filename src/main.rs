@@ -5,6 +5,7 @@ mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_verification_bundle;
+mod cmd_deployment_verification_handoff;
 mod cmd_deployment_verification_receipt;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
@@ -175,6 +176,7 @@ where
         "stack-check" => cmd_deployment_stack_check::run(args),
         "verification-receipt" => cmd_deployment_verification_receipt::run(args),
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),
+        "verification-handoff" => cmd_deployment_verification_handoff::run(args),
         "load-profile" => cmd_distributed_load_profile::run(args),
         "single-node-scheduler" => cmd_single_node_scheduler::run(args),
         _ => {
