@@ -477,6 +477,10 @@ carrying `shard_id`, `source`, `source_revision`, `checkpoint_group`,
 That receipt now carries lineage evidence provenance, with
 `evidence_sources` entries that can at least identify `metadata_path`,
 `checkpoint_root`, and `observed_at_unix_ms`.
+Use `just distributed-shard-lineage-evidence-bundle <receipt>` to package the
+lineage receipt plus its referenced shard metadata and checkpoint-root evidence
+into `distributed_shard_lineage_evidence_bundle.json`, the stable entrypoint
+for downstream lineage review tooling.
 If distributed checkpoint recovery is added later, the repo expects a checkpoint index contract
 that declares `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path`
 explicitly instead of reconstructing shard membership from directory layout.

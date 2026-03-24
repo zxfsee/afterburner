@@ -9,6 +9,7 @@ mod cmd_deployment_verification_receipt;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
 mod cmd_distributed_runtime_profile;
+mod cmd_distributed_shard_lineage_evidence_bundle;
 mod cmd_distributed_shard_lineage_receipt;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
@@ -122,6 +123,7 @@ where
         return 2;
     };
     match subcommand.as_str() {
+        "evidence-bundle" => cmd_distributed_shard_lineage_evidence_bundle::run(args),
         "receipt" => cmd_distributed_shard_lineage_receipt::run(args),
         _ => {
             eprintln!("unknown lineage subcommand: {subcommand}");

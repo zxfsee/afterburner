@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-evidence-bundle/v1",
+  "title": "Distributed Shard Lineage Evidence Bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "receipt_path",
+    "shard_id",
+    "source",
+    "source_revision",
+    "checkpoint_group",
+    "evidence_count",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "receipt_path": { "type": "string", "minLength": 1 },
+    "shard_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "checkpoint_group": { "type": "string", "minLength": 1 },
+    "evidence_count": { "type": "integer", "minimum": 0 },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metadata_path",
+          "checkpoint_root",
+          "observed_at_unix_ms"
+        ],
+        "properties": {
+          "metadata_path": { "type": "string", "minLength": 1 },
+          "checkpoint_root": { "type": "string", "minLength": 1 },
+          "observed_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

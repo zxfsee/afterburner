@@ -37,3 +37,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - When the repo shows repeated command paths for the same workflow, prefer consolidating toward one canonical execution surface instead of adding more process around the divergence.
 - When artifact writing plus event emission repeats across multiple commands, treat that as a signal to extract a small shared helper layer before drift in fields, paths, or guarantees spreads further.
 - Treat this repo as a monorepo for workflow purposes: monorepo-local helper binaries, Nushell scripts, and Nix-integrated harness code are acceptable implementation tools as long as they stay behind the canonical `just` entry surface instead of creating parallel user-facing workflows.
+- In this repo, use a short commit body by default when a change touches public contracts, queue/changelog state, or architecture-adjacent behavior; subject-only commits are often too thin for later review.
