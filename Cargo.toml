@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage evidence provenance receipt adapter [Distributed Training, Data Infra]
-  - Goal: Materialize explicit `evidence_sources` on the distributed shard lineage receipt so lineage reviews can trace each verified shard back to shard metadata and checkpoint roots without raw logs.
+- Distributed shard lineage evidence bundle adapter [Distributed Training, Data Infra]
+  - Goal: Package distributed shard lineage receipts plus their referenced shard metadata and checkpoint-root evidence into one stable bundle artifact so downstream lineage review tooling can consume a single entrypoint.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`

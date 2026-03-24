@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-receipt/v1",
+  "title": "Distributed Shard Lineage Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "shard_id",
+    "source",
+    "source_revision",
+    "checkpoint_group",
+    "checked_at_unix_ms",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "shard_id": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "checkpoint_group": { "type": "string", "minLength": 1 },
+    "checked_at_unix_ms": { "type": "integer", "minimum": 0 },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "metadata_path",
+          "checkpoint_root",
+          "observed_at_unix_ms"
+        ],
+        "properties": {
+          "metadata_path": { "type": "string", "minLength": 1 },
+          "checkpoint_root": { "type": "string", "minLength": 1 },
+          "observed_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

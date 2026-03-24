@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "shard_id": "train-shard-0003",
+  "source": "fineweb-edu/slice",
+  "source_revision": "2026-03-22-macbook-100m-tokens",
+  "checkpoint_group": "ckpt-group-0007",
+  "checked_at_unix_ms": 1735689600000,
+  "evidence_sources": [
+    {
+      "metadata_path": "fixtures/distributed_shard_metadata.example.json",
+      "checkpoint_root": "artifacts/train/checkpoints/group-0007",
+      "observed_at_unix_ms": 1735689600000
+    }
+  ]
+}

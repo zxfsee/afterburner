@@ -9,7 +9,7 @@ to infer lineage validation from surrounding run notes or future metadata edits.
 
 ## Decision
 
-Future lineage updates should write one explicit artifact:
+Lineage updates can now write one explicit artifact:
 `distributed_shard_lineage_receipt.json`
 
 The minimum receipt contract should include:
@@ -20,8 +20,8 @@ The minimum receipt contract should include:
 - `checkpoint_group`
 - `checked_at_unix_ms`
 
-Current stance: this decision defines the lineage receipt boundary only. It does
-not add a new shard metadata parser or runtime workflow yet.
+Current stance: the repo now materializes this receipt through
+`afterburner lineage receipt`.
 
 ## Consequences
 

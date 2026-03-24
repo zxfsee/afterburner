@@ -308,8 +308,8 @@ auto-versioning, embedded serving) are intentionally absent.
 - Distributed shard lineage should also gain an explicit distributed shard lineage receipt layer so
   later provenance checks can record when `shard_id`, `source`, `source_revision`, and
   `checkpoint_group` were reviewed without mutating the lineage payload itself.
-- Distributed shard lineage evidence provenance should also be explicit: future distributed shard
-  lineage receipts should carry distributed shard lineage evidence provenance through structured
+- Distributed shard lineage evidence provenance is also explicit: distributed shard
+  lineage receipts carry distributed shard lineage evidence provenance through structured
   `evidence_sources` references instead of treating reviewed shard metadata and checkpoint roots as
   unstated context.
 - Artifact cleanup should preserve a minimum retention envelope: keep

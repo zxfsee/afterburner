@@ -9,16 +9,16 @@ infer which shard metadata file or checkpoint root the receipt summarized.
 
 ## Decision
 
-Keep `distributed_shard_lineage_receipt.json` as the anchor artifact, but
-require future lineage receipts to make evidence provenance explicit through an
+Keep `distributed_shard_lineage_receipt.json` as the anchor artifact, and
+require lineage receipts to make evidence provenance explicit through an
 `evidence_sources` layer that can at least carry:
 
 - `metadata_path`
 - `checkpoint_root`
 - `observed_at_unix_ms`
 
-Current stance: this decision defines the minimum evidence provenance boundary
-only. It does not add a new lineage verification command or event yet.
+Current stance: the repo now materializes this provenance layer through
+`afterburner lineage receipt`.
 
 ## Consequences
 

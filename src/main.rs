@@ -9,6 +9,7 @@ mod cmd_deployment_verification_receipt;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
 mod cmd_distributed_runtime_profile;
+mod cmd_distributed_shard_lineage_receipt;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_bundle;
@@ -45,6 +46,7 @@ fn main() {
         "eval" => cmd_eval::run(args),
         "cleanup" => run_cleanup(args),
         "deploy" => run_deploy(args),
+        "lineage" => run_lineage(args),
         "profile" => run_profile(args),
         "drift" => run_drift(args),
         "--help" | "-h" | "help" => {
@@ -110,6 +112,25 @@ where
     }
 }
 
+fn run_lineage<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing lineage subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "receipt" => cmd_distributed_shard_lineage_receipt::run(args),
+        _ => {
+            eprintln!("unknown lineage subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
 fn run_deploy<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
@@ -166,5 +187,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>> [args]"
 }
