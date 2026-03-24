@@ -13,10 +13,10 @@ header = """# Changelog
 
 ## TODO
 
-- Artifact cleanup evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Package cleanup dry-run and execution receipts plus their referenced inventory/policy evidence into one stable bundle artifact so downstream cleanup review tooling can consume a single entrypoint.
+- Profiling provenance evidence bundle adapter [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Package profiling environment snapshot and hotspot summary provenance into one stable bundle artifact so downstream profiling review tooling can consume a single entrypoint instead of chasing separate artifacts manually.
   - Kind: `mixed`
-  - Boundary: `adapter-deployment`
+  - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 

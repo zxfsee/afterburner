@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/artifact-cleanup-evidence-bundle/v1",
+  "title": "Artifact Cleanup Evidence Bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "dry_run_receipt_path",
+    "execution_receipt_path",
+    "policy_profile",
+    "removed_count",
+    "skipped_count",
+    "evidence_count",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "dry_run_receipt_path": { "type": "string", "minLength": 1 },
+    "execution_receipt_path": { "type": "string", "minLength": 1 },
+    "policy_profile": { "type": "string", "minLength": 1 },
+    "removed_count": { "type": "integer", "minimum": 0 },
+    "skipped_count": { "type": "integer", "minimum": 0 },
+    "evidence_count": { "type": "integer", "minimum": 0 },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_path",
+          "artifact_role",
+          "observed_at_unix_ms"
+        ],
+        "properties": {
+          "artifact_path": { "type": "string", "minLength": 1 },
+          "artifact_role": { "type": "string", "minLength": 1 },
+          "observed_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

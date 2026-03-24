@@ -250,6 +250,10 @@ to execute one approved dry-run plan and materialize
 `artifact_cleanup_execution_receipt.json`, the execution-side audit artifact
 carrying the referenced dry-run receipt, `policy_profile`, `evidence_sources`,
 `removed_paths`, `skipped_paths`, and `executed_at_unix_ms`.
+Use `just cleanup-evidence-bundle <execution-receipt>` to package the cleanup
+dry-run receipt, cleanup execution receipt, and their referenced inventory/policy
+evidence into `artifact_cleanup_evidence_bundle.json`, the stable bundle entrypoint
+for downstream cleanup review tooling.
 For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
 and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
 rollback all stay explicit and reversible.
