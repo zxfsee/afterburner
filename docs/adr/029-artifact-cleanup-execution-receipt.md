@@ -9,7 +9,7 @@ what was actually deleted or skipped.
 
 ## Decision
 
-Future cleanup runs should write one explicit artifact:
+Cleanup runs now write one explicit artifact:
 `artifact_cleanup_execution_receipt.json`
 
 The minimum receipt contract should include:
@@ -20,8 +20,9 @@ The minimum receipt contract should include:
 - `skipped_paths`: the paths intentionally not removed during execution
 - `executed_at_unix_ms`: when the cleanup execution was recorded
 
-Current stance: this decision defines the cleanup execution receipt boundary
-only. It does not add a deletion command yet.
+Current stance: the repo now materializes this receipt through
+`afterburner cleanup execute`. Execution stays strictly downstream of an
+approved dry-run receipt.
 
 ## Consequences
 

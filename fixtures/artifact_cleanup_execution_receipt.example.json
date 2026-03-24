@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "dry_run_receipt_path": "artifacts/deploy/artifact_cleanup_dry_run_receipt.json",
+  "policy_profile": "retention-default",
+  "removed_paths": [
+    "inference/0.1.0",
+    "profiling"
+  ],
+  "skipped_paths": [
+    "logs"
+  ],
+  "executed_at_unix_ms": 1735689605000
+}

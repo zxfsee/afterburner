@@ -94,6 +94,10 @@ cleanup-policy profile:
 cleanup-dry-run inventory policy generated_at_unix_ms:
     cargo run --locked --bin afterburner -- cleanup dry-run --inventory {{ inventory }} --policy {{ policy }} --generated-at-unix-ms {{ generated_at_unix_ms }} --out artifacts/deploy/artifact_cleanup_dry_run_receipt.json
 
+# execute one approved cleanup dry-run receipt and write the execution audit artifact
+cleanup-execute dry_run_receipt artifacts_root executed_at_unix_ms:
+    cargo run --locked --bin afterburner -- cleanup execute --dry-run-receipt {{ dry_run_receipt }} --artifacts-root {{ artifacts_root }} --executed-at-unix-ms {{ executed_at_unix_ms }} --out artifacts/deploy/artifact_cleanup_execution_receipt.json
+
 # compare candidate and current infer drift summaries using a named policy profile
 drift-receipt candidate_summary current_summary policy:
     cargo run --locked --bin afterburner -- drift receipt --candidate {{ candidate_summary }} --current {{ current_summary }} --policy {{ policy }} --out artifacts/eval/infer_output_drift_receipt.json

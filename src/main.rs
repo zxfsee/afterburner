@@ -1,4 +1,5 @@
 mod cmd_cleanup_dry_run;
+mod cmd_cleanup_execute;
 mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
@@ -69,6 +70,7 @@ where
     };
     match subcommand.as_str() {
         "dry-run" => cmd_cleanup_dry_run::run(args),
+        "execute" => cmd_cleanup_execute::run(args),
         "inventory" => cmd_cleanup_inventory::run(args),
         "policy" => cmd_cleanup_policy::run(args),
         _ => {

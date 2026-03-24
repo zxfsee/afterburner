@@ -245,10 +245,11 @@ review receipt over the current cleanup inventory and policy artifacts. The
 receipt carries the `artifact_cleanup_inventory.json` input path, the
 policy/profile used for the review, `planned_removals`, `retained_count`,
 `prune_candidate_count`, and `generated_at_unix_ms`.
-If cleanup ever becomes destructive, the execution-side audit artifact should be
-`artifact_cleanup_execution_receipt.json`, carrying at least the referenced
-dry-run receipt, `policy_profile`, `removed_paths`, `skipped_paths`, and
-`executed_at_unix_ms`.
+Use `just cleanup-execute <dry-run-receipt> <artifacts-root> <executed-at-unix-ms>`
+to execute one approved dry-run plan and materialize
+`artifact_cleanup_execution_receipt.json`, the execution-side audit artifact
+carrying the referenced dry-run receipt, `policy_profile`, `removed_paths`,
+`skipped_paths`, and `executed_at_unix_ms`.
 For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
 and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
 rollback all stay explicit and reversible.
