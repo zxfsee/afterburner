@@ -13,26 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence provenance receipt adapter [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Materialize explicit `evidence_sources` on the deployment verification receipt so rollout verification reviews can trace decisions back to concrete eval and deploy artifacts without raw logs.
+- Distributed shard lineage evidence provenance receipt adapter [Distributed Training, Data Infra]
+  - Goal: Materialize explicit `evidence_sources` on the distributed shard lineage receipt so lineage reviews can trace each verified shard back to shard metadata and checkpoint roots without raw logs.
   - Kind: `mixed`
-  - Boundary: `adapter-deployment`
+  - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
-- Artifact cleanup execution evidence provenance gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define the minimum evidence-reference fields for cleanup execution receipts so later cleanup reviews can trace each removal or skip back to the dry-run inputs and observed artifacts without raw logs.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `ops`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- Profiling provenance evidence bundle gate [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum evidence-bundle fields that profiling provenance receipts should eventually package so later profiling-side tooling can move provenance evidence without rewalking raw environment outputs and workflow logs ad hoc.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 - Deployment verification evidence bundle handoff gate [Serving/Deployment Infra, Experimentation/Eval Infra]
   - Goal: Define the minimum handoff contract for deployment verification evidence bundles so downstream deployment-side consumers can resolve one stable bundle entrypoint without depending on surrounding rollout workspace layout.

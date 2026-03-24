@@ -10,7 +10,7 @@ split across raw logs and ad hoc command output.
 
 ## Decision
 
-Future deployment verification should write one explicit artifact:
+Deployment verification can now write one explicit artifact:
 `artifacts/deploy/<artifact_version>/deployment_verification_receipt.json`
 
 and emit one matching event:
@@ -25,8 +25,9 @@ The minimum receipt contract should include:
 - `evidence`: references to the concrete checks or artifacts that justified the
   verification outcome
 
-Current stance: this decision defines the verification receipt boundary only. It
-does not add a new runtime command or deployment adapter yet.
+Current stance: the repo now materializes this receipt through
+`afterburner deploy verification-receipt`. It still keeps rollout orchestration
+separate from the receipt adapter.
 
 ## Consequences
 

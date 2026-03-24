@@ -257,14 +257,17 @@ for downstream cleanup review tooling.
 For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
 and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
 rollback all stay explicit and reversible.
-The future stable audit output for `rollout-verify` should be
+The stable audit output for `rollout-verify` can be
 `artifacts/deploy/<artifact_version>/deployment_verification_receipt.json`,
 paired with a `deployment_verification_receipt_written` event and carrying at
 least `artifact_version`, `profile_name`, `verification_status`,
 `verified_at_unix_ms`, and `evidence`.
-That receipt should also converge on explicit evidence provenance, with
+That receipt also carries explicit evidence provenance, with
 `evidence_sources` entries that can at least identify `artifact_path`,
 `event_name`, and `observed_at_unix_ms` for each verification input.
+Use `just deployment-verification-receipt <artifact-version> <profile-name> <verification-status> <verified-at-unix-ms> <evidence> <evidence-source-1> <evidence-source-2>`
+to materialize that receipt explicitly when rollout verification needs an audit
+artifact without changing the rest of the rollout flow yet.
 Use `just deployment-verification-bundle <receipt>` to materialize
 `artifacts/deploy/deployment_verification_evidence_bundle.json`, the compact deployment-side
 bundle over the receipt's declared evidence sources.

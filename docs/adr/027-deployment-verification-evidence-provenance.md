@@ -9,16 +9,16 @@ artifacts, or events inconsistently and make review harder.
 
 ## Decision
 
-Keep `deployment_verification_receipt.json` as the anchor artifact, but require
-future verification receipts to make evidence provenance explicit through an
+Keep `deployment_verification_receipt.json` as the anchor artifact, and require
+verification receipts to make evidence provenance explicit through an
 `evidence_sources` layer that can at least carry:
 
 - `artifact_path`
 - `event_name`
 - `observed_at_unix_ms`
 
-Current stance: this decision defines the minimum evidence provenance boundary
-only. It does not add a new deployment verification command or event yet.
+Current stance: the repo now materializes this provenance layer through
+`afterburner deploy verification-receipt`.
 
 ## Consequences
 

@@ -5,6 +5,7 @@ mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_verification_bundle;
+mod cmd_deployment_verification_receipt;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
 mod cmd_distributed_runtime_profile;
@@ -122,6 +123,7 @@ where
         "hf-publish" => cmd_hf_publish::run(args),
         "upload" => cmd_upload::run(args),
         "stack-check" => cmd_deployment_stack_check::run(args),
+        "verification-receipt" => cmd_deployment_verification_receipt::run(args),
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "load-profile" => cmd_distributed_load_profile::run(args),
         "single-node-scheduler" => cmd_single_node_scheduler::run(args),

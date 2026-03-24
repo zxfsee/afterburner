@@ -326,11 +326,11 @@ auto-versioning, embedded serving) are intentionally absent.
 - Cleanup execution provenance should also be explicit: execution receipts should carry
   structured `evidence_sources` references back to the dry-run receipt plus its inventory and
   policy inputs instead of treating the destructive step as self-justifying.
-- Deployment verification should also converge on one explicit deployment verification receipt
-  per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
+- Deployment verification now uses one explicit deployment verification receipt per
+  promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
   and matching event instead of raw logs alone.
-- Deployment verification evidence provenance should also be explicit: future deployment
-  verification receipts should carry deployment verification evidence provenance through
+- Deployment verification evidence provenance is also explicit: deployment
+  verification receipts carry deployment verification evidence provenance through
   structured `evidence_sources` references instead of treating the `evidence` field as an
   untyped log dump.
 - Pretraining dataset manifests should treat `source` as a source registry key
