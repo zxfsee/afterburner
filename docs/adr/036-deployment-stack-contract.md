@@ -28,6 +28,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-check` validates the deployment target profile
   plus the deployment stack profile and writes a checked
   `deployment_stack_check.json` artifact.
+- `afterburner deploy stack-launch-plan` resolves the deployment target profile
+  plus the deployment stack profile into one checked
+  `deployment_stack_launch_plan.json` artifact.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
@@ -42,5 +45,7 @@ service or provider-specific deployment logic.
   reducing deployment to model-file placement.
 - Service entrypoint, rollout pointer, and observability wiring become explicit,
   inspectable contract data.
+- Deployment-side launch planning can consume one resolved launch artifact
+  instead of reconstructing environment and path expectations from recipes.
 - Future deployment adapters can consume one checked stack artifact instead of
   rediscovering runtime layout from recipes or host-local conventions.

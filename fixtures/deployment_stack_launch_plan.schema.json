@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-stack-launch-plan/v1",
+  "title": "Deployment Stack Launch Plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile_name",
+    "deploy_hostname",
+    "ssh_user",
+    "system",
+    "deployable_unit",
+    "activation_strategy",
+    "working_directory",
+    "service_entrypoint",
+    "rollout_entrypoint",
+    "required_env",
+    "default_env"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "profile_name": { "type": "string", "minLength": 1 },
+    "deploy_hostname": { "type": "string", "minLength": 1 },
+    "ssh_user": { "type": "string", "minLength": 1 },
+    "system": { "type": "string", "minLength": 1 },
+    "deployable_unit": { "type": "string", "minLength": 1 },
+    "activation_strategy": { "type": "string", "minLength": 1 },
+    "working_directory": { "type": "string", "minLength": 1 },
+    "service_entrypoint": { "type": "string", "minLength": 1 },
+    "rollout_entrypoint": { "type": "string", "minLength": 1 },
+    "required_env": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "default_env": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

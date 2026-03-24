@@ -201,6 +201,9 @@ service entrypoint, service surface, artifact roots, rollout entrypoint, and
 observability hook. `just deploy-check` materializes
 `artifacts/deploy/deployment_stack_check.json` from that stack contract before
 running the deploy-rs checks.
+Use `just deploy-launch-plan <target-profile> <stack-profile>` to materialize
+`deployment_stack_launch_plan.json`, the resolved launch plan over the current
+deployment target and stack profiles.
 For lightweight distributed tracing correlation, adapters use W3C `traceparent`
 plus a derived `trace_id` in deployment/load-test artifacts and request-scoped
 events. HTTP requests may supply `traceparent`, and CLI/deployment workflows can

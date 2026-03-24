@@ -169,6 +169,8 @@ auto-versioning, embedded serving) are intentionally absent.
   - The deployable unit is the Afterburner runtime stack, not just the model file.
   - Service entrypoint, service surface, artifact roots, rollout entrypoint, and observability
     hooks are contract data, not implied by recipes or host-local layout.
+  - Launch planning should also resolve target and stack profiles into one explicit launch artifact
+    instead of relying on shell-local startup assumptions.
 - The baseline deploy-rs adapter consumes the deployment target profile contract directly from the
   checked fixture/example and uses `activate.custom` against the packaged `afterburner` binary
   rather than inventing a NixOS system deployment surface.

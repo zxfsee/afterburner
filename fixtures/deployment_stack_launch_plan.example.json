@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "profile_name": "staging-a",
+  "deploy_hostname": "staging.example.net",
+  "ssh_user": "deploy",
+  "system": "aarch64-darwin",
+  "deployable_unit": "afterburner-runtime-stack",
+  "activation_strategy": "current-pointer",
+  "working_directory": "/srv/afterburner/artifacts",
+  "service_entrypoint": "./bin/afterburner-http",
+  "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current",
+  "required_env": [
+    "PORT",
+    "AFTERBURNER_OBS_JSONL_PATH"
+  ],
+  "default_env": {
+    "AFTERBURNER_OBS_JSONL_PATH": "/srv/afterburner/artifacts/train/observability.jsonl"
+  }
+}

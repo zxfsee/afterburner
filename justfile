@@ -63,6 +63,9 @@ deploy-check:
     nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 
+deploy-launch-plan target_profile stack_profile:
+    cargo run --locked --bin afterburner -- deploy stack-launch-plan --target-profile {{ target_profile }} --stack-profile {{ stack_profile }} --out artifacts/deploy/deployment_stack_launch_plan.json
+
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:
     cargo run --locked --bin afterburner -- eval --artifact {{ candidate_artifact }} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
