@@ -423,6 +423,10 @@ Use `just profile-refresh-environment-snapshot <current-snapshot> <profiler-path
 to refresh that snapshot in place and materialize
 `artifacts/profiling/profiling_environment_snapshot_refresh.json`, the receipt that records what
 changed between the previous and refreshed profiling environment snapshot.
+Use `just profile-provenance-bundle <snapshot> <summary> <captured-at-unix-ms>`
+to package the current profiling environment snapshot and hotspot summary into
+`artifacts/profiling/profiling_provenance_evidence_bundle.json`, the stable
+bundle entrypoint for downstream profiling review tooling.
 The next audit layer there should be `profiling_provenance_receipt.json`, carrying at least the
 referenced `profiling_environment_snapshot.json`, `profile_kind`, `profiler_version`, and
 `captured_at_unix_ms`.

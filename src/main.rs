@@ -25,6 +25,7 @@ mod cmd_hf_publish;
 mod cmd_infer;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
+mod cmd_profiling_provenance_bundle;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
@@ -96,6 +97,7 @@ where
         "environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
         "distributed-runtime-benchmark" => cmd_distributed_runtime_benchmark::run(args),
         "distributed-runtime-profile" => cmd_distributed_runtime_profile::run(args),
+        "provenance-bundle" => cmd_profiling_provenance_bundle::run(args),
         "refresh-environment-snapshot" => cmd_profiling_environment_snapshot_refresh::run(args),
         _ => {
             eprintln!("unknown profile subcommand: {subcommand}");

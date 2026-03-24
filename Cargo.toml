@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling provenance evidence bundle adapter [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Package profiling environment snapshot and hotspot summary provenance into one stable bundle artifact so downstream profiling review tooling can consume a single entrypoint instead of chasing separate artifacts manually.
+- Profiling provenance receipt adapter [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Materialize the profiling provenance receipt over the current environment snapshot and captured profiling metadata so profiling reviews can audit one explicit provenance record instead of relying on surrounding workflow state.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`
