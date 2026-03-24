@@ -9,7 +9,7 @@ durable audit artifact explaining who approved it and when.
 
 ## Decision
 
-Future pretraining source approval updates should write one explicit artifact:
+Pretraining source approval updates can now write one explicit artifact:
 `pretraining_source_approval_receipt.json`
 
 The minimum receipt contract should include:
@@ -21,8 +21,8 @@ The minimum receipt contract should include:
 - `approval_ticket`
 - `approved_at_unix_ms`
 
-Current stance: this decision defines the approval receipt boundary only. It
-does not add a source registry artifact or a receipt-writing command yet.
+Current stance: the repo now materializes this receipt through
+`afterburner source approval-receipt`.
 
 ## Consequences
 

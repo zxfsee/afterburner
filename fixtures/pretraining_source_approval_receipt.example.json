@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "source": "fineweb-edu/slice",
+  "source_revision": "2026-03-22-macbook-100m-tokens",
+  "approval_status": "approved",
+  "approved_by": "ml-release",
+  "approval_ticket": "CHG-4242",
+  "approved_at_unix_ms": 1735689600000
+}

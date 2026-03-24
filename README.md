@@ -314,10 +314,10 @@ Within that dataset manifest, treat `source` as a stable source registry key and
 contract should minimally pin each source's `upstream_locator`, `license`, and
 `approval_status` so corpus identity does not depend on free-form manifest
 labels alone.
-Approval changes there should also converge on one explicit
-`pretraining_source_approval_receipt.json` artifact carrying at least `source`,
-`source_revision`, `approval_status`, `approved_by`, `approval_ticket`, and
-`approved_at_unix_ms`.
+Use `just pretraining-source-approval-receipt <source> <source-revision> <approval-status> <approved-by> <approval-ticket> <approved-at-unix-ms>`
+to materialize one explicit `pretraining_source_approval_receipt.json` artifact
+carrying `source`, `source_revision`, `approval_status`, `approved_by`,
+`approval_ticket`, and `approved_at_unix_ms`.
 That approval receipt should also grow a source provenance receipt layer with at
 least `registry_entry_path`, `upstream_locator`, and `reviewed_metadata_sha256`
 so later dataset and registry workflows can trace what metadata was actually

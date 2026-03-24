@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/pretraining-source-approval-receipt/v1",
+  "title": "Pretraining Source Approval Receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source",
+    "source_revision",
+    "approval_status",
+    "approved_by",
+    "approval_ticket",
+    "approved_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "approval_status": { "type": "string", "minLength": 1 },
+    "approved_by": { "type": "string", "minLength": 1 },
+    "approval_ticket": { "type": "string", "minLength": 1 },
+    "approved_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}

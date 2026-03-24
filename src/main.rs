@@ -26,6 +26,7 @@ mod cmd_drift_receipt;
 mod cmd_eval;
 mod cmd_hf_publish;
 mod cmd_infer;
+mod cmd_pretraining_source_approval_receipt;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
 mod cmd_profiling_provenance_bundle;
@@ -49,6 +50,7 @@ fn main() {
         "deploy" => run_deploy(args),
         "lineage" => run_lineage(args),
         "profile" => run_profile(args),
+        "source" => run_source(args),
         "drift" => run_drift(args),
         "--help" | "-h" | "help" => {
             println!("{}", usage());
@@ -133,6 +135,25 @@ where
     }
 }
 
+fn run_source<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing source subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match subcommand.as_str() {
+        "approval-receipt" => cmd_pretraining_source_approval_receipt::run(args),
+        _ => {
+            eprintln!("unknown source subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
 fn run_deploy<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
@@ -189,5 +210,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>> [args]"
 }

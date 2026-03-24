@@ -337,8 +337,8 @@ auto-versioning, embedded serving) are intentionally absent.
   and `source_revision` as the approved snapshot selector within that source,
   so corpus identity does not degrade into free-form manifest labels as
   pretraining data expands.
-- Pretraining source registry state should also have an explicit source approval receipt layer over
-  time, so `approval_status` changes can be audited with `approved_by`, `approval_ticket`, and
+- Pretraining source registry state also has an explicit source approval receipt layer, so
+  `approval_status` changes can be audited with `approved_by`, `approval_ticket`, and
   `approved_at_unix_ms` instead of being inferred from registry edits alone.
 - Pretraining source approvals should also carry a source provenance receipt layer over time, so
   approval receipts can point back to `upstream_locator` and the reviewed registry entry instead of
