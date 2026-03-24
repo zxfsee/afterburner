@@ -13,10 +13,10 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling provenance receipt adapter [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Materialize the profiling provenance receipt over the current environment snapshot and captured profiling metadata so profiling reviews can audit one explicit provenance record instead of relying on surrounding workflow state.
+- Deployment verification evidence provenance receipt adapter [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Materialize explicit `evidence_sources` on the deployment verification receipt so rollout verification reviews can trace decisions back to concrete eval and deploy artifacts without raw logs.
   - Kind: `mixed`
-  - Boundary: `adapter-cli`
+  - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 

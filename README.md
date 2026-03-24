@@ -427,8 +427,10 @@ Use `just profile-provenance-bundle <snapshot> <summary> <captured-at-unix-ms>`
 to package the current profiling environment snapshot and hotspot summary into
 `artifacts/profiling/profiling_provenance_evidence_bundle.json`, the stable
 bundle entrypoint for downstream profiling review tooling.
-The next audit layer there should be `profiling_provenance_receipt.json`, carrying at least the
-referenced `profiling_environment_snapshot.json`, `profile_kind`, `profiler_version`, and
+Use `just profile-provenance-receipt <snapshot> <captured-at-unix-ms>` to
+materialize `profiling_provenance_receipt.json`, the explicit provenance record
+for a captured profiling environment snapshot. It carries the referenced
+`profiling_environment_snapshot.json`, `profile_kind`, `profiler_version`, and
 `captured_at_unix_ms`.
 The current profiling summary intentionally stops short of OpenTelemetry distributed tracing/resource
 correlation: use its local identity fields (`artifact_version`, `backend`, `weights_artifact`,
