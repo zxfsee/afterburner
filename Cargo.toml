@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Artifact cleanup execution evidence provenance receipt [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize explicit evidence-source references on the cleanup execution receipt so removal and skip reviews can trace each execution back to the dry-run plan and inventory/policy inputs without raw logs.
+- Artifact cleanup evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Package cleanup dry-run and execution receipts plus their referenced inventory/policy evidence into one stable bundle artifact so downstream cleanup review tooling can consume a single entrypoint.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

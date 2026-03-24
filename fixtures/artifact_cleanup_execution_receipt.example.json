@@ -2,6 +2,23 @@
   "schema_version": "1",
   "dry_run_receipt_path": "artifacts/deploy/artifact_cleanup_dry_run_receipt.json",
   "policy_profile": "retention-default",
+  "evidence_sources": [
+    {
+      "artifact_path": "artifacts/deploy/artifact_cleanup_dry_run_receipt.json",
+      "artifact_role": "cleanup_dry_run_receipt",
+      "observed_at_unix_ms": 1735689600000
+    },
+    {
+      "artifact_path": "artifacts/deploy/artifact_cleanup_inventory.json",
+      "artifact_role": "cleanup_inventory",
+      "observed_at_unix_ms": 1735689600000
+    },
+    {
+      "artifact_path": "artifacts/deploy/artifact_cleanup_policy.json",
+      "artifact_role": "cleanup_policy",
+      "observed_at_unix_ms": 1735689600000
+    }
+  ],
   "removed_paths": [
     "inference/0.1.0",
     "profiling"

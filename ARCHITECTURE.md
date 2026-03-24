@@ -323,6 +323,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Cleanup execution should also converge on one explicit cleanup execution receipt layered on
   `artifact_cleanup_dry_run_receipt.json`, so future destructive runs can audit actual removals
   and skips separately from preview planning.
+- Cleanup execution provenance should also be explicit: execution receipts should carry
+  structured `evidence_sources` references back to the dry-run receipt plus its inventory and
+  policy inputs instead of treating the destructive step as self-justifying.
 - Deployment verification should also converge on one explicit deployment verification receipt
   per promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
   and matching event instead of raw logs alone.

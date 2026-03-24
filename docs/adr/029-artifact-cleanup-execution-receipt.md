@@ -16,6 +16,8 @@ The minimum receipt contract should include:
 
 - `artifact_cleanup_dry_run_receipt.json`: the dry-run input it executed from
 - `policy_profile`: the cleanup policy profile applied to the run
+- `evidence_sources`: references back to the dry-run receipt plus its inventory
+  and policy inputs
 - `removed_paths`: the paths actually removed
 - `skipped_paths`: the paths intentionally not removed during execution
 - `executed_at_unix_ms`: when the cleanup execution was recorded
@@ -28,6 +30,8 @@ approved dry-run receipt.
 
 - Future cleanup runs can be audited from one explicit receipt instead of raw
   terminal output.
+- Removal and skip reviews can trace execution back to the approved dry-run
+  plan and its inventory/policy inputs without consulting raw logs.
 - Execution remains layered on the existing inventory and dry-run contracts
   instead of inventing a parallel cleanup vocabulary.
 - The repo records the execution audit surface now before any destructive

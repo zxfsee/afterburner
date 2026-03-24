@@ -46,6 +46,7 @@ fn artifact_cleanup_execution_receipt_contract_is_documented() {
     for needle in [
         "artifact_cleanup_execution_receipt.json",
         "artifact_cleanup_dry_run_receipt.json",
+        "evidence_sources",
         "removed_paths",
         "skipped_paths",
         "executed_at_unix_ms",
@@ -118,6 +119,23 @@ fn cleanup_execute_writes_receipt_and_removes_planned_paths() {
             "schema_version": "1",
             "dry_run_receipt_path": dry_run_receipt.display().to_string(),
             "policy_profile": "retention-default",
+            "evidence_sources": [
+                {
+                    "artifact_path": dry_run_receipt.display().to_string(),
+                    "artifact_role": "cleanup_dry_run_receipt",
+                    "observed_at_unix_ms": 1735689600000_u64
+                },
+                {
+                    "artifact_path": artifacts_root.join("deploy/inventory.json").display().to_string(),
+                    "artifact_role": "cleanup_inventory",
+                    "observed_at_unix_ms": 1735689600000_u64
+                },
+                {
+                    "artifact_path": artifacts_root.join("deploy/policy.json").display().to_string(),
+                    "artifact_role": "cleanup_policy",
+                    "observed_at_unix_ms": 1735689600000_u64
+                }
+            ],
             "removed_paths": ["inference/0.1.0", "profiling"],
             "skipped_paths": ["logs"],
             "executed_at_unix_ms": 1735689605000_u64

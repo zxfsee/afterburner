@@ -96,6 +96,33 @@ where
                 args.dry_run_receipt_path.display()
             ))
         })?;
+    let inventory_path = dry_run_receipt
+        .get("inventory_path")
+        .and_then(Value::as_str)
+        .ok_or_else(|| {
+            CleanupExecuteError::Parse(format!(
+                "cleanup dry-run receipt `{}` must contain `inventory_path`",
+                args.dry_run_receipt_path.display()
+            ))
+        })?;
+    let policy_path = dry_run_receipt
+        .get("policy_path")
+        .and_then(Value::as_str)
+        .ok_or_else(|| {
+            CleanupExecuteError::Parse(format!(
+                "cleanup dry-run receipt `{}` must contain `policy_path`",
+                args.dry_run_receipt_path.display()
+            ))
+        })?;
+    let observed_at_unix_ms = dry_run_receipt
+        .get("generated_at_unix_ms")
+        .and_then(Value::as_u64)
+        .ok_or_else(|| {
+            CleanupExecuteError::Parse(format!(
+                "cleanup dry-run receipt `{}` must contain `generated_at_unix_ms`",
+                args.dry_run_receipt_path.display()
+            ))
+        })?;
 
     let mut removed_paths = Vec::new();
     let mut skipped_paths = Vec::new();
@@ -126,6 +153,23 @@ where
         "schema_version": "1",
         "dry_run_receipt_path": args.dry_run_receipt_path.display().to_string(),
         "policy_profile": policy_profile,
+        "evidence_sources": [
+            {
+                "artifact_path": args.dry_run_receipt_path.display().to_string(),
+                "artifact_role": "cleanup_dry_run_receipt",
+                "observed_at_unix_ms": observed_at_unix_ms
+            },
+            {
+                "artifact_path": inventory_path,
+                "artifact_role": "cleanup_inventory",
+                "observed_at_unix_ms": observed_at_unix_ms
+            },
+            {
+                "artifact_path": policy_path,
+                "artifact_role": "cleanup_policy",
+                "observed_at_unix_ms": observed_at_unix_ms
+            }
+        ],
         "removed_paths": removed_paths,
         "skipped_paths": skipped_paths,
         "executed_at_unix_ms": args.executed_at_unix_ms
