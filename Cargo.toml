@@ -13,22 +13,22 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Define the next concrete launch-fit contract for the deployable Afterburner runtime stack so local and remote rollout tooling can converge on one explicit stack launch surface instead of shell-local startup assumptions.
+- Deployment stack launch receipt adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize the deployment stack launch receipt over the current launch plan and launch-time parameters so local and remote rollout tooling can audit one explicit launch record instead of shell history.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
 
-- Deployment verification evidence bundle handoff gate [Serving/Deployment Infra, Experimentation/Eval Infra]
-  - Goal: Define the minimum handoff contract for deployment verification evidence bundles so downstream deployment-side consumers can resolve one stable bundle entrypoint without depending on surrounding rollout workspace layout.
+- JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
+  - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
   - Kind: `gate`
-  - Boundary: `adapter-deployment`
+  - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
-- Pretraining source provenance evidence bundle gate [Data Infra, Pre-training]
-  - Goal: Define the minimum evidence-bundle fields that pretraining source provenance receipts should eventually package so later dataset and registry tooling can move approval provenance evidence without rewalking source metadata and review logs ad hoc.
+- Burn distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
+  - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`

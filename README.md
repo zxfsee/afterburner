@@ -335,6 +335,10 @@ Use `just pretraining-source-provenance-evidence-bundle <provenance-receipt>`
 to package the source approval receipt and provenance receipt into
 `pretraining_source_provenance_evidence_bundle.json`, the stable entrypoint for
 downstream dataset review tooling.
+Use `just pretraining-source-provenance-evidence-bundle <provenance-receipt>`
+to package the source approval receipt and provenance receipt into
+`pretraining_source_provenance_evidence_bundle.json`, the stable entrypoint for
+downstream dataset review tooling.
 
 Rollback example:
 ```sh
@@ -494,6 +498,9 @@ Use `just distributed-shard-lineage-evidence-bundle <receipt>` to package the
 lineage receipt plus its referenced shard metadata and checkpoint-root evidence
 into `distributed_shard_lineage_evidence_bundle.json`, the stable entrypoint
 for downstream lineage review tooling.
+Use `just distributed-shard-lineage-handoff <bundle>` to materialize
+`distributed_shard_lineage_evidence_handoff.json`, the stable handoff artifact
+over the current lineage evidence bundle.
 If distributed checkpoint recovery is added later, the repo expects a checkpoint index contract
 that declares `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path`
 explicitly instead of reconstructing shard membership from directory layout.
