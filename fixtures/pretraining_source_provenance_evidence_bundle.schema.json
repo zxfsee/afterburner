@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/pretraining-source-provenance-evidence-bundle/v1",
+  "title": "Pretraining Source Provenance Evidence Bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "approval_receipt_path",
+    "provenance_receipt_path",
+    "source",
+    "source_revision",
+    "approval_status",
+    "evidence_count",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "approval_receipt_path": { "type": "string", "minLength": 1 },
+    "provenance_receipt_path": { "type": "string", "minLength": 1 },
+    "source": { "type": "string", "minLength": 1 },
+    "source_revision": { "type": "string", "minLength": 1 },
+    "approval_status": { "type": "string", "minLength": 1 },
+    "evidence_count": { "type": "integer", "minimum": 0 },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "registry_entry_path",
+          "upstream_locator",
+          "reviewed_metadata_sha256"
+        ],
+        "properties": {
+          "registry_entry_path": { "type": "string", "minLength": 1 },
+          "upstream_locator": { "type": "string", "minLength": 1 },
+          "reviewed_metadata_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

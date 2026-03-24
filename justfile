@@ -98,6 +98,9 @@ pretraining-source-approval-receipt source source_revision approval_status appro
 pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:
     cargo run --locked --bin afterburner -- source provenance-receipt --approval-receipt {{ approval_receipt }} --registry-entry-path {{ registry_entry_path }} --upstream-locator {{ upstream_locator }} --reviewed-metadata-sha256 {{ reviewed_metadata_sha256 }} --out artifacts/data/pretraining_source_provenance_receipt.json
 
+pretraining-source-provenance-evidence-bundle provenance_receipt:
+    cargo run --locked --bin afterburner -- source provenance-evidence-bundle --provenance-receipt {{ provenance_receipt }} --out artifacts/data/pretraining_source_provenance_evidence_bundle.json
+
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:
     cargo run --locked --bin afterburner -- cleanup inventory --artifacts-root artifacts --out artifacts/deploy/artifact_cleanup_inventory.json

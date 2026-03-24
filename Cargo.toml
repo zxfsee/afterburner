@@ -13,10 +13,10 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining source provenance evidence bundle adapter [Data Infra, Pre-training]
-  - Goal: Package pretraining source approval and provenance receipts into one stable bundle artifact so downstream dataset review tooling can consume a single entrypoint instead of chasing separate approval artifacts manually.
+- Deployment verification evidence bundle handoff adapter [Serving/Deployment Infra, Experimentation/Eval Infra]
+  - Goal: Materialize the deployment verification evidence bundle handoff artifact over the current verification bundle so downstream deployment-side consumers can resolve one stable bundle entrypoint without surrounding rollout workspace assumptions.
   - Kind: `mixed`
-  - Boundary: `adapter-cli`
+  - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
 

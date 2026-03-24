@@ -325,6 +325,10 @@ reviewed.
 Use `just pretraining-source-provenance-receipt <approval-receipt> <registry-entry-path> <upstream-locator> <reviewed-metadata-sha256>`
 to materialize one explicit `pretraining_source_provenance_receipt.json`
 record over the approval receipt and reviewed source metadata.
+Use `just pretraining-source-provenance-evidence-bundle <provenance-receipt>`
+to package the source approval receipt and provenance receipt into
+`pretraining_source_provenance_evidence_bundle.json`, the stable entrypoint for
+downstream dataset review tooling.
 
 Rollback example:
 ```sh
