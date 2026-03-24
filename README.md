@@ -322,6 +322,9 @@ That approval receipt should also grow a source provenance receipt layer with at
 least `registry_entry_path`, `upstream_locator`, and `reviewed_metadata_sha256`
 so later dataset and registry workflows can trace what metadata was actually
 reviewed.
+Use `just pretraining-source-provenance-receipt <approval-receipt> <registry-entry-path> <upstream-locator> <reviewed-metadata-sha256>`
+to materialize one explicit `pretraining_source_provenance_receipt.json`
+record over the approval receipt and reviewed source metadata.
 
 Rollback example:
 ```sh

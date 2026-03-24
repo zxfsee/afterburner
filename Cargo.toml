@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining source provenance receipt adapter [Data Infra, Pre-training]
-  - Goal: Materialize the pretraining source provenance receipt over the current approval receipt and reviewed source metadata so dataset reviews can audit one explicit provenance record instead of relying on surrounding workflow state.
+- Pretraining source provenance evidence bundle adapter [Data Infra, Pre-training]
+  - Goal: Package pretraining source approval and provenance receipts into one stable bundle artifact so downstream dataset review tooling can consume a single entrypoint instead of chasing separate approval artifacts manually.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`

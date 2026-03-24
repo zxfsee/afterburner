@@ -27,6 +27,7 @@ mod cmd_eval;
 mod cmd_hf_publish;
 mod cmd_infer;
 mod cmd_pretraining_source_approval_receipt;
+mod cmd_pretraining_source_provenance_receipt;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
 mod cmd_profiling_provenance_bundle;
@@ -146,6 +147,7 @@ where
     };
     match subcommand.as_str() {
         "approval-receipt" => cmd_pretraining_source_approval_receipt::run(args),
+        "provenance-receipt" => cmd_pretraining_source_provenance_receipt::run(args),
         _ => {
             eprintln!("unknown source subcommand: {subcommand}");
             eprintln!("{}", usage());

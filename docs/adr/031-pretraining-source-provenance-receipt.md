@@ -10,17 +10,16 @@ logs.
 
 ## Decision
 
-Keep `pretraining_source_approval_receipt.json` as the anchor artifact, but
-require future source approval receipts to make provenance references explicit
+Keep `pretraining_source_approval_receipt.json` as the anchor artifact, and
+require source approval receipts to make provenance references explicit
 through at least:
 
 - `registry_entry_path`
 - `upstream_locator`
 - `reviewed_metadata_sha256`
 
-Current stance: this decision defines the source provenance receipt boundary
-only. It does not add a source registry artifact or a receipt-writing command
-yet.
+Current stance: the repo now materializes this provenance receipt through
+`afterburner source provenance-receipt`.
 
 ## Consequences
 

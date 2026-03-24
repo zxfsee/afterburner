@@ -95,6 +95,9 @@ distributed-shard-lineage-evidence-bundle receipt:
 pretraining-source-approval-receipt source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- source approval-receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }} --out artifacts/data/pretraining_source_approval_receipt.json
 
+pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:
+    cargo run --locked --bin afterburner -- source provenance-receipt --approval-receipt {{ approval_receipt }} --registry-entry-path {{ registry_entry_path }} --upstream-locator {{ upstream_locator }} --reviewed-metadata-sha256 {{ reviewed_metadata_sha256 }} --out artifacts/data/pretraining_source_provenance_receipt.json
+
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:
     cargo run --locked --bin afterburner -- cleanup inventory --artifacts-root artifacts --out artifacts/deploy/artifact_cleanup_inventory.json
