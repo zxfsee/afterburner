@@ -204,6 +204,9 @@ running the deploy-rs checks.
 Use `just deploy-launch-plan <target-profile> <stack-profile>` to materialize
 `deployment_stack_launch_plan.json`, the resolved launch plan over the current
 deployment target and stack profiles.
+Use `just deploy-launch-receipt <plan> <port> <launched-at-unix-ms>` to
+materialize `deployment_stack_launch_receipt.json`, the explicit launch record
+over the current stack launch plan and launch-time parameters.
 For lightweight distributed tracing correlation, adapters use W3C `traceparent`
 plus a derived `trace_id` in deployment/load-test artifacts and request-scoped
 events. HTTP requests may supply `traceparent`, and CLI/deployment workflows can
