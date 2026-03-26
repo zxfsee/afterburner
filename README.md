@@ -429,6 +429,9 @@ under `artifacts/profiling/` and a parsed hotspot summary at
 selected so `xcrun xctrace version` succeeds. The recipe clears `DEVELOPER_DIR` and
 `SDKROOT` and forces `XCTRACE=/usr/bin/xctrace` so the system Instruments templates
 win over the Nix Apple SDK environment.
+`just profile-infer` resolves the profiled weights artifact through the current pointer
+under `artifacts/inference/current`, and follows the active `BACKEND` env contract
+instead of pinning a specific artifact version or backend in the recipe itself.
 Use `just profile-environment-snapshot` to materialize
 `artifacts/profiling/profiling_environment_snapshot.json`, the stable host and profiler
 provenance artifact for the current profiling toolchain. `just profile-infer` now writes that

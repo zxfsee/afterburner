@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Profiling recipe current-pointer cutover [Runtime Infra, Experimentation/Eval Infra]
-  - Goal: Align profiling recipes with the repo’s current-pointer and active-backend contract so profiling workflows stop hardcoding artifact versions, backend choices, and model paths that can silently drift from the canonical runtime surface.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `cli`, `ops`
-  - Scope: `justfile`, `README.md`, `tests/`, `src/bin/`, `src/`
-
 - README frontpage clarity pass [Runtime Infra, Serving/Deployment Infra]
   - Goal: Refocus `README.md` into a sharper project frontpage so system shape, key workflows, and why the repo exists are legible before deep operational and contract detail.
   - Kind: `mixed`

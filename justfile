@@ -1,11 +1,8 @@
 set shell := ["nu", "-c"]
 set dotenv-load := true
 
-profile-infer-artifact := "artifacts/inference/0.1.0/model.mpk"
 profile-infer-flamegraph := "artifacts/profiling/infer_flamegraph.svg"
 profile-infer-summary := "artifacts/profiling/infer_hotspot_summary.json"
-profile-infer-backend := "wgpu"
-profile-infer-command := "env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk"
 
 # build the project via nix (reproducible)
 build:
@@ -222,8 +219,12 @@ distributed-runtime-profile benchmark_run:
 profile-infer:
     mkdir artifacts/profiling
     rm -rf cargo-flamegraph.trace
-    {{ profile-infer-command }}
-    cargo run --locked --bin afterburner_profile_summary -- --input {{ profile-infer-flamegraph }} --output {{ profile-infer-summary }} --weights-artifact {{ profile-infer-artifact }} --backend {{ profile-infer-backend }} --profile-command '{{ profile-infer-command }}'
+    let artifact_version = (open artifacts/inference/current | str trim)
+    let artifact = $"artifacts/inference/($artifact_version)/model.mpk"
+    let backend = (if ("BACKEND" in $env) { $env.BACKEND | str downcase } else { "wgpu" })
+    let profile_command = $"env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o {{ profile-infer-flamegraph }} -- infer ($artifact)"
+    env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o {{ profile-infer-flamegraph }} -- infer $artifact
+    cargo run --locked --bin afterburner_profile_summary -- --input {{ profile-infer-flamegraph }} --output {{ profile-infer-summary }} --weights-artifact $artifact --backend $backend --profile-command $profile_command
     just profile-environment-snapshot
 
 # open the terminal dashboard with profiling summary context
