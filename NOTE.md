@@ -14,6 +14,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - If the next phase will use `jj` repo metadata operations (`status`, `diff`, `log`, `commit`, workspace management) in a sandboxed repo, request `.git` read/write permission up front instead of waiting for the first lock failure.
 - If the user gives a process reminder during active changes (for example commit hygiene), treat it as a request to execute the missing step now, not as documentation work.
 - If proposing additional work outside the active TODO queue, either add it to TODO immediately or do not mention it.
+- If the user asks to append or reprioritize TODO items, treat that as queue-only work; do not start implementing the queued item in the same pass unless they explicitly ask for execution too.
 - If a requested skill appears unavailable from session discovery, verify `~/.config/codex/skills/<skill>/SKILL.md` before declaring it missing.
 - In a `jj` workspace path, run `direnv allow` once, then run toolchain commands directly; use `direnv exec <workspace> <command>` only if direct execution proves the environment is missing required tools.
 - On macOS, use the canonical physical path (for example via `pwd -P`) for temp workspaces when running `direnv` or tooling that tracks approval/state by path. Mixing symlink paths (for example `/tmp` vs `/private/tmp`) can cause duplicate approval states.

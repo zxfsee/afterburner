@@ -2,6 +2,27 @@
 
 ## TODO
 
+- Train module boundary split [Runtime Infra, Frameworks, Serving/Deployment Infra]
+  - Goal: Split `src/train.rs` into runtime, artifact export, distributed metadata, and observability-focused modules so training no longer owns filesystem/export/event concerns directly and boundary drift becomes harder.
+  - Kind: `mixed`
+  - Boundary: `core-adapter`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/train.rs`, `src/`, `tests/`, `README.md`, `ARCHITECTURE.md`
+
+- Profiling recipe current-pointer cutover [Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Align profiling recipes with the repo’s current-pointer and active-backend contract so profiling workflows stop hardcoding artifact versions, backend choices, and model paths that can silently drift from the canonical runtime surface.
+  - Kind: `mixed`
+  - Boundary: `adapter-cli`
+  - Contracts: `cli`, `ops`
+  - Scope: `justfile`, `README.md`, `tests/`, `src/bin/`, `src/`
+
+- README frontpage clarity pass [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Refocus `README.md` into a sharper project frontpage so system shape, key workflows, and why the repo exists are legible before deep operational and contract detail.
+  - Kind: `mixed`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `README.md`, `tests/`, `ARCHITECTURE.md`
+
 - Deployment stack launch evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Package deployment stack launch plan and launch receipt into one stable bundle artifact so downstream rollout tooling can consume a single launch entrypoint instead of chasing separate stack-launch artifacts manually.
   - Kind: `mixed`
@@ -104,25 +125,26 @@
 - Group deployment commands ([563476b])
 - Add single-node lease adapter ([007426e])
 - Add hugging face publish adapter ([9eaf953])
-- Add benchmark harness ([bfcf9a4])
-- Add runtime profile command ([aa5256a])
-- Add macbook text adapter ([5f2217a])
-- Add text smoke eval gate ([a00230b])
-- Add dry-run receipt ([f9cf0be])
-- Add execution receipt adapter ([3fcbd81])
-- Add execution provenance receipt ([26a405b])
-- Add evidence bundle adapter ([b8b8be7])
-- Add provenance bundle adapter ([7b43aa6])
-- Add provenance receipt adapter ([0d6c480])
-- Add verification receipt adapter ([ad001f5])
-- Add shard lineage receipt adapter ([ae34f76])
-- Add shard lineage evidence bundle adapter ([ee26802])
-- Add source approval receipt adapter ([f4885cb])
-- Add source provenance receipt adapter ([9050e4e])
-- Add source provenance evidence bundle ([e14b815])
-- Add verification handoff adapter ([367f14e])
-- Add stack launch plan adapter ([e34a2bb])
-- Add shard lineage handoff adapter ([7a1cf51])
+- Add benchmark harness ([0661586])
+- Add runtime profile command ([9d787dc])
+- Add macbook text adapter ([9f8e082])
+- Add text smoke eval gate ([31cc68e])
+- Add dry-run receipt ([11a4225])
+- Add execution receipt adapter ([792f803])
+- Add execution provenance receipt ([91325b2])
+- Add evidence bundle adapter ([49cfe2f])
+- Add provenance bundle adapter ([99144c7])
+- Add provenance receipt adapter ([a5defc4])
+- Add verification receipt adapter ([c4742ee])
+- Add shard lineage receipt adapter ([23bac29])
+- Add shard lineage evidence bundle adapter ([1654689])
+- Add source approval receipt adapter ([392e980])
+- Add source provenance receipt adapter ([eafc870])
+- Add source provenance evidence bundle ([3d38394])
+- Add verification handoff adapter ([1994c27])
+- Add stack launch plan adapter ([8d7c2b9])
+- Add shard lineage handoff adapter ([d298d6d])
+- Add stack launch receipt adapter ([4b2be9e])
 
 ### Changed
 
@@ -131,7 +153,7 @@
 - Rename artifacts/infer → artifacts/inference (update code/docs/justfile) ([cadcadb])
 - Return [1,28,28] tensor from mnist_image_to_tensor ([5ab0036])
 - Unify CLI into afterburner subcommands ([13179ee])
-- Extract artifact event helper ([eb652b6])
+- Extract artifact event helper ([93c5056])
 
 ### Chore
 
@@ -269,11 +291,11 @@
 - Add layout feasibility gate ([6e2e7b4])
 - Constrain gpu colocation fit ([ed9d7eb])
 - Add cutile fit gate ([7b0fb2f])
-- Advance past completed load profile ([58c4c8d])
-- Record consolidation heuristics ([466042d])
-- Record monorepo harness heuristic ([78c1cf1])
-- Make just canonical surface ([ae3d06c])
-- Advance to source provenance receipt ([d133e35])
+- Advance past completed load profile ([edd955a])
+- Record consolidation heuristics ([1f7a198])
+- Record monorepo harness heuristic ([bdfabea])
+- Make just canonical surface ([32d63a5])
+- Advance to source provenance receipt ([f62c75c])
 
 ### Fixed
 
@@ -552,30 +574,31 @@
 [9eaf953]: https://github.com/zxfsee/afterburner/commit/9eaf953eef0e0ead61345789d18746476732e6a3
 [ed9d7eb]: https://github.com/zxfsee/afterburner/commit/ed9d7eb574b891b65dbcd128ffe8991bbe015689
 [7b0fb2f]: https://github.com/zxfsee/afterburner/commit/7b0fb2f38f60cb765bc1b807da46f8ba6cb9e0af
-[58c4c8d]: https://github.com/zxfsee/afterburner/commit/58c4c8d841c4850ab25570aef997d2c1d983bcc3
-[bfcf9a4]: https://github.com/zxfsee/afterburner/commit/bfcf9a46bcd67b0fe9c52e3f284c4a065bff87fb
-[aa5256a]: https://github.com/zxfsee/afterburner/commit/aa5256ac2565b6ef8ae2b51cda57582d49eba1ef
-[466042d]: https://github.com/zxfsee/afterburner/commit/466042dd02602be6afa8fe670a15e478bb8def9b
-[78c1cf1]: https://github.com/zxfsee/afterburner/commit/78c1cf102e29b4e8324a7673450ff82418166a78
-[5f2217a]: https://github.com/zxfsee/afterburner/commit/5f2217a0b02ab99d8a3d5a452dbe939b2ee04198
-[a00230b]: https://github.com/zxfsee/afterburner/commit/a00230bfd585eb5ed9c9176405d3a55aae9e0e6f
-[eb652b6]: https://github.com/zxfsee/afterburner/commit/eb652b61fb2fd78047351366057fab941f353de1
-[ae3d06c]: https://github.com/zxfsee/afterburner/commit/ae3d06c8ae952bc858a8636e956ab187607f3217
-[f9cf0be]: https://github.com/zxfsee/afterburner/commit/f9cf0beec88af57de74f43a457e5e14fee4c2917
-[3fcbd81]: https://github.com/zxfsee/afterburner/commit/3fcbd81b8dde2534897a161466ae8afea023abf5
-[26a405b]: https://github.com/zxfsee/afterburner/commit/26a405b30cc6df8ea627c5d62b82281ebf053806
-[b8b8be7]: https://github.com/zxfsee/afterburner/commit/b8b8be7c3f0a6bfba61dea1f4238309ac3a9b920
-[7b43aa6]: https://github.com/zxfsee/afterburner/commit/7b43aa6b7be1a187344c61337f05094c8f125491
-[0d6c480]: https://github.com/zxfsee/afterburner/commit/0d6c4801300a86353be809d44bc9952e4d65e384
-[ad001f5]: https://github.com/zxfsee/afterburner/commit/ad001f5b88748015df67a483b1c9ff62bb9a84bf
-[ae34f76]: https://github.com/zxfsee/afterburner/commit/ae34f762463765e51bddda246432675f550156c2
-[ee26802]: https://github.com/zxfsee/afterburner/commit/ee268021b1f80f62c41e167e03c15054ab3512a8
-[d133e35]: https://github.com/zxfsee/afterburner/commit/d133e35156f547964e0c7d25f8e96501505aabbd
-[f4885cb]: https://github.com/zxfsee/afterburner/commit/f4885cb2e768b170e2cc721705cd961b9d533f8b
-[9050e4e]: https://github.com/zxfsee/afterburner/commit/9050e4e54c63c24f939bf63f4beddca3113ead55
-[e14b815]: https://github.com/zxfsee/afterburner/commit/e14b815f6c8dd8c786dc514b9513fa9b1eb9201c
-[367f14e]: https://github.com/zxfsee/afterburner/commit/367f14e8164f65959e022399d867434569e9c123
-[e34a2bb]: https://github.com/zxfsee/afterburner/commit/e34a2bb0096399b2dfa6b989a10344359fef49b2
-[7a1cf51]: https://github.com/zxfsee/afterburner/commit/7a1cf510801084582b4b09a8da95e3932af9c5d9
+[edd955a]: https://github.com/zxfsee/afterburner/commit/edd955af7eb36b77025271a735e2adf858801a96
+[0661586]: https://github.com/zxfsee/afterburner/commit/066158646ad1e67ea89aa81d8def48c6e7f11846
+[9d787dc]: https://github.com/zxfsee/afterburner/commit/9d787dc63ffecc033156dcf0a0154af5667d0daa
+[1f7a198]: https://github.com/zxfsee/afterburner/commit/1f7a1982f5b1790f6f398d265cba1bb533b1a23a
+[bdfabea]: https://github.com/zxfsee/afterburner/commit/bdfabeaad4892d271cebea028bd43dc79595d836
+[9f8e082]: https://github.com/zxfsee/afterburner/commit/9f8e0820f267d3a8e1402711d81ddf609183badf
+[31cc68e]: https://github.com/zxfsee/afterburner/commit/31cc68e9805f2251630747bfcec95523c2e50a66
+[93c5056]: https://github.com/zxfsee/afterburner/commit/93c50569f426ee55198848f18db7cfa8a6b39e59
+[32d63a5]: https://github.com/zxfsee/afterburner/commit/32d63a5929b3699cd85c6856f2eda0d6864df70d
+[11a4225]: https://github.com/zxfsee/afterburner/commit/11a42259710fab15d374aff4a2d3852eab03c8b7
+[792f803]: https://github.com/zxfsee/afterburner/commit/792f8033a687760372dadd465e23822f543046d3
+[91325b2]: https://github.com/zxfsee/afterburner/commit/91325b26be04b3bb39c2f4436fc51e1b5aee9929
+[49cfe2f]: https://github.com/zxfsee/afterburner/commit/49cfe2fcef8b2be7fa061ff8f239579615eadaf4
+[99144c7]: https://github.com/zxfsee/afterburner/commit/99144c782cf9fae1fff8b7f363849b21ae7e8cad
+[a5defc4]: https://github.com/zxfsee/afterburner/commit/a5defc47556595580bc610af4997a4c8da90a7d3
+[c4742ee]: https://github.com/zxfsee/afterburner/commit/c4742ee0ac99e305a76ad687bb4ea76c1bc141cf
+[23bac29]: https://github.com/zxfsee/afterburner/commit/23bac2912cdf760ce3593a782f2ce46c3d3808cf
+[1654689]: https://github.com/zxfsee/afterburner/commit/165468913f83ebeb9ea90092312b2ca8bf55d287
+[f62c75c]: https://github.com/zxfsee/afterburner/commit/f62c75caf3ebd1d6ffad61e17e8c231960c7870f
+[392e980]: https://github.com/zxfsee/afterburner/commit/392e980dfa9de2dc0ab672d915935d7fc6ebb0b9
+[eafc870]: https://github.com/zxfsee/afterburner/commit/eafc87039534330fe0ace1f715994eba7273b8d3
+[3d38394]: https://github.com/zxfsee/afterburner/commit/3d38394a4e15b205c4af3f7496fdb2622cf9c7f7
+[1994c27]: https://github.com/zxfsee/afterburner/commit/1994c270491cb61755ba1c4c1c9063836be1f5d5
+[8d7c2b9]: https://github.com/zxfsee/afterburner/commit/8d7c2b91135fc80d771ef1386c04103be39c8ba0
+[d298d6d]: https://github.com/zxfsee/afterburner/commit/d298d6df5e306d296c669797e31165ef563879b2
+[4b2be9e]: https://github.com/zxfsee/afterburner/commit/4b2be9e57855f37403e44b8417f3fa3ed8be1d2b
 
 <!-- generated by git-cliff -->

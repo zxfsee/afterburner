@@ -103,17 +103,3 @@ Rules:
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
-
-- JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
-  - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
-- Burn distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
-  - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
