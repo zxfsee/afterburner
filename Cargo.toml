@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Train module boundary split [Runtime Infra, Frameworks, Serving/Deployment Infra]
-  - Goal: Split `src/train.rs` into runtime, artifact export, distributed metadata, and observability-focused modules so training no longer owns filesystem/export/event concerns directly and boundary drift becomes harder.
-  - Kind: `mixed`
-  - Boundary: `core-adapter`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/train.rs`, `src/`, `tests/`, `README.md`, `ARCHITECTURE.md`
-
 - Profiling recipe current-pointer cutover [Runtime Infra, Experimentation/Eval Infra]
   - Goal: Align profiling recipes with the repo’s current-pointer and active-backend contract so profiling workflows stop hardcoding artifact versions, backend choices, and model paths that can silently drift from the canonical runtime surface.
   - Kind: `mixed`

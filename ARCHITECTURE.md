@@ -35,6 +35,10 @@ Training-side contract artifacts also capture optimization decision guards
 separately from runtime contracts. For example, custom kernel adoption is gated
 by a checked contract that records the current convolution footprint plus the
 objective evidence required before replacing backend-provided kernels.
+The train module should stay split by responsibility: runtime orchestration,
+artifact export, distributed metadata validation, observability emission, and
+contract builders should live in separate train-side modules rather than being
+collapsed into one file.
 
 ## Distributed Training Layers
 
