@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- README GitHub frontpage clarity pass [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Restructure `README.md` for GitHub frontpage readability so system shape, quick start, and primary workflows fit the first screen, line-wrapped text becomes real paragraphs, and deep operational/reference detail moves into `docs/`.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `README.md`, `docs/`, `tests/`, `ARCHITECTURE.md`
-
 - Deployment stack launch evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Package deployment stack launch plan and launch receipt into one stable bundle artifact so downstream rollout tooling can consume a single launch entrypoint instead of chasing separate stack-launch artifacts manually.
   - Kind: `mixed`

@@ -42,27 +42,36 @@ underlying contract surface behind those recipes.
 
 ## What this is
 
-Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
-It is intentionally small, but structured to reflect how production ML systems separate concerns between training, artifacts, and runtime.
-While the example model uses MNIST, the system boundaries are designed for scientific ML workloads (e.g. molecular, protein, or graph-based models) where inference contracts, auditability, and deployment safety matter more than model accuracy.
+Afterburner is a Rust-first ML systems repo built around explicit boundaries:
+training, artifacts, inference, deployment, and observability each get their
+own contract surface.
+
+It uses Burn for model/runtime work, Nix for reproducible environments, and
+`just` as the workflow surface. The example workloads stay small on purpose,
+but the repo is structured to reflect how larger ML systems avoid blurring
+training code, runtime code, and deployment contracts together.
 
 ## What this is not
 
-This is not a production model, training pipeline, or serving system.
-It is a boundary-focused reference implementation intended to demonstrate
-system design judgment, not model performance.
-It intentionally omits serving layers, rollout tooling, and multi-node scheduling concerns.
+This is not a production benchmark repo or a full serving platform.
 
-## Why this exists
+It is a boundary-focused systems repo. The point is to make system shape and
+contract edges explicit and mechanically checkable, not to maximize model
+quality on MNIST.
 
-This repository focuses on **system boundaries**, not model quality.
+## Why Afterburner
 
-It demonstrates how to design ML systems where:
-- training is experimental and mutable
-- inference is stable, auditable, and deployable
-- infrastructure choices are explicit and reproducible
+Most ML repos are clear about models and unclear about contracts. Afterburner
+optimizes for the opposite.
 
-The goal is to make training, artifacts, and runtime behavior easy to reason about and hard to misuse.
+The repo exists to show how training can stay experimental while inference,
+deployment, and audit surfaces stay explicit. That is the main value here.
+
+In practice, that means:
+- training stays mutable
+- inference stays stable and deployable
+- infrastructure choices stay explicit and reproducible
+- evolution happens behind inspectable contract boundaries
 
 Future extensions are listed in [Changelog](./CHANGELOG.md).
 
@@ -73,6 +82,12 @@ Future extensions are listed in [Changelog](./CHANGELOG.md).
 - Inspectable, versioned artifacts
 - Minimal but intentional infrastructure
 - The system must remain incrementally expandable across all defined research infrastructure domains without requiring architectural rewrites, favoring evolution behind stable contract boundaries.
+
+If you are orienting in the repo, read in this order:
+- this README for project shape and workflow entrypoints
+- [Architecture](./ARCHITECTURE.md) for boundaries and invariants
+- [ADRs](./docs/adr/) for individual decisions
+- [Changelog](./CHANGELOG.md) for the active TODO horizon
 
 As the repo grows toward distributed training, it keeps three layers separate:
 the distributed training runtime decides how one job uses GPUs, the scheduler
