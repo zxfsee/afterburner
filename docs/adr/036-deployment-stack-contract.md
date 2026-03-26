@@ -37,6 +37,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-launch-bundle` packages the launch plan plus launch
   receipt into one `deployment_stack_launch_evidence_bundle.json` artifact so
   downstream rollout tooling can consume a single stack launch entrypoint.
+- `afterburner deploy stack-launch-handoff` exports one compact
+  `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
+  current launch evidence bundle for downstream transport or deployment tools.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
@@ -55,5 +58,7 @@ service or provider-specific deployment logic.
   instead of reconstructing environment and path expectations from recipes.
 - Deployment-side rollout tooling can consume one packaged launch bundle rather
   than chasing separate launch plan and launch receipt artifacts.
+- Downstream launch consumers can also resolve one smaller handoff artifact
+  without depending on the full bundle layout.
 - Future deployment adapters can consume one checked stack artifact instead of
   rediscovering runtime layout from recipes or host-local conventions.

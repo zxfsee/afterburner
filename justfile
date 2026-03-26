@@ -69,6 +69,9 @@ deploy-launch-receipt plan port launched_at_unix_ms:
 deploy-launch-bundle receipt:
     cargo run --locked --bin afterburner -- deploy stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
 
+deploy-launch-handoff bundle:
+    cargo run --locked --bin afterburner -- deploy stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
+
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:
     cargo run --locked --bin afterburner -- eval --artifact {{ candidate_artifact }} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json

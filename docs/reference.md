@@ -33,6 +33,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `deployment_stack_launch_plan.json`
   - `deployment_stack_launch_receipt.json`
   - `deployment_stack_launch_evidence_bundle.json`
+  - `deployment_stack_launch_evidence_handoff.json`
   - `deployment_verification_receipt.json`
   - `deployment_verification_evidence_bundle.json`
   - `deployment_verification_evidence_handoff.json`

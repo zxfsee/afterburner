@@ -236,6 +236,7 @@ Detailed operational workflow reference lives in [docs/workflows.md](./docs/work
   `just deploy-launch-plan` -> `deployment_stack_launch_plan.json`
   `just deploy-launch-receipt` -> `deployment_stack_launch_receipt.json`
   `just deploy-launch-bundle` -> `deployment_stack_launch_evidence_bundle.json`
+  `just deploy-launch-handoff` -> `deployment_stack_launch_evidence_handoff.json`
   `just distributed-load-profile` -> `distributed_load_profile.json`
   `afterburner deploy hf-publish --request <path>` -> `huggingface_publish_receipt.json`
 - Rollout verification:
