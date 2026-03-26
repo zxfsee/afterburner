@@ -227,7 +227,8 @@ The manifest now also carries a `[precision]` section. The current runtime requi
 unsupported reduced-precision artifacts fail fast at startup in both CLI and HTTP adapters.
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 
-Operational workflow index:
+<details>
+<summary>Operational workflow index</summary>
 
 - Deployment:
   `fixtures/deployment_stack_profile.example.json` defines the stack profile contract;
@@ -261,11 +262,16 @@ Operational workflow index:
   `just distributed-shard-lineage-receipt` -> `distributed_shard_lineage_receipt.json`
   `just distributed-shard-lineage-evidence-bundle` -> `distributed_shard_lineage_evidence_bundle.json`
   `just distributed-shard-lineage-handoff` -> `distributed_shard_lineage_evidence_handoff.json`
+</details>
+
 For pretraining data, the repo now distinguishes per-sample metadata from dataset-level manifests:
 `pretraining_sample_metadata.schema.json` stays the sample contract, while
 `pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts, and checksum rollups for larger dataset refreshes.
 
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).
+
+<details>
+<summary>Contract and capability index</summary>
 
 ## Capability index
 
@@ -283,6 +289,8 @@ Deeper contract and capability detail now lives in [docs/reference.md](./docs/re
 - Optimization work stays orthogonal to scale: quantization, compression, export, and packaging are a separate post-training pipeline, not runtime/scheduler logic.
 - The distributed shard lineage review path stays explicit: `distributed_shard_lineage_receipt.json`, `distributed_shard_lineage_evidence_bundle.json`, and `distributed_shard_lineage_evidence_handoff.json` define the current lineage review path; lineage evidence provenance stays explicit through `evidence_sources`, `metadata_path`, `checkpoint_root`, and `observed_at_unix_ms`; and the future distributed checkpoint index contract should keep `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` explicit.
 - Future envelopes stay contract-first: `fixtures/rl_rollout_metadata.schema.json`, the vectorized-environment stance, the multibillion-scale target envelope, the shard metadata contract `distributed_shard_metadata.schema.json`, `Parquet` as the likely first larger data format, and parked `DataFusion`/`Ballista` fit decisions all remain explicit planning surfaces rather than implied implementation scope.
+
+</details>
 
 See [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md) for rationale.
 
