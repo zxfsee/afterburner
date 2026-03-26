@@ -37,6 +37,7 @@ underlying contract surface behind those recipes.
 ## Read next
 
 - [Architecture](./ARCHITECTURE.md): boundaries, invariants, and the current system shape
+- [Workflow reference](./docs/workflows.md): operational recipes and artifact/receipt paths
 - [ADRs](./docs/adr/): concrete architectural and contract decisions
 - [Changelog](./CHANGELOG.md): active TODO queue and recent landed work
 
@@ -223,100 +224,41 @@ If `signature.scheme != "none"`, inference requires non-empty `signature.key_id`
 The manifest now also carries a `[precision]` section. The current runtime requires
 `weights_dtype = "f32"`, `activation_dtype = "f32"`, and `quantization = "none"`;
 unsupported reduced-precision artifacts fail fast at startup in both CLI and HTTP adapters.
-Deployment-side work now has a canonical example target profile at
-`fixtures/deployment_target_profile.example.json` alongside the schema fixture, so
-future deploy-rs wiring can reference one inspectable baseline profile.
-`just deploy-check` validates the baseline deploy-rs wiring from that profile contract
-without requiring a real deployment target.
-Deployment now also treats the full Afterburner runtime stack as the deployable
-unit through `fixtures/deployment_stack_profile.example.json`, which pins the
-service entrypoint, service surface, artifact roots, rollout entrypoint, and
-observability hook. `just deploy-check` materializes
-`artifacts/deploy/deployment_stack_check.json` from that stack contract before
-running the deploy-rs checks.
-Use `just deploy-launch-plan <target-profile> <stack-profile>` to materialize
-`deployment_stack_launch_plan.json`, the resolved launch plan over the current
-deployment target and stack profiles.
-Use `just deploy-launch-receipt <plan> <port> <launched-at-unix-ms>` to
-materialize `deployment_stack_launch_receipt.json`, the explicit launch record
-over the current stack launch plan and launch-time parameters.
-For lightweight distributed tracing correlation, adapters use W3C `traceparent`
-plus a derived `trace_id` in deployment/load-test artifacts and request-scoped
-events. HTTP requests may supply `traceparent`, and CLI/deployment workflows can
-propagate one through `AFTERBURNER_TRACEPARENT` to correlate `just rollout-check`
-and `just distributed-load-profile` activity without introducing a Tokio runtime
-or heavy OpenTelemetry SDK.
-`afterburner deploy upload --manifest <path> --ownership <path> --provider <name> --destination <ref>`
-validates a versioned inference artifact plus rollout ownership approval and writes a provider-neutral
-`artifacts/deploy/<artifact_version>/artifact_upload_request.json` plan artifact instead of talking
-to any network service directly.
-For Hugging Face specifically, `afterburner deploy hf-publish --request <path>`
-consumes that provider-neutral upload request, shells out to `hf upload`, and
-writes `artifacts/deploy/<artifact_version>/huggingface_publish_receipt.json`.
-If remote model save/load is added later, keep it adapter-first as well: use a
-provider-neutral remote locator contract instead of hardwiring one storage SDK
-or remote path format into core artifact logic. See
-[ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md).
-Model optimization and packaging are a separate post-training pipeline as well:
-use explicit optimization profiles and output constraints for quantization,
-compression, export, and packaging work instead of folding those decisions into
-runtime scale or scheduler policy. See
-[ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md).
-Use `just distributed-load-profile <addr> <requests> <concurrency> <latency-budget-ms-p99> <error-budget-ratio>`
-to materialize `artifacts/deploy/distributed_load_profile.json`, the deployment-side load artifact
-that summarizes sustained multi-worker request distribution, success/error counts, latency
-percentiles, throughput, and pass/fail against the supplied latency and error budgets.
-The operator-heavy CLI now groups related workflows under shared namespaces:
-`afterburner deploy <subcommand>`, `afterburner drift <subcommand>`,
-`afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>`,
-while `train`, `infer`, and `eval` stay top-level.
-Use `just cleanup-inventory` to materialize `artifacts/deploy/artifact_cleanup_inventory.json`,
-the conservative retained-versus-prune-candidate inventory that distinguishes the active runtime,
-deploy/train/eval state, inactive inference version directories, and profiling artifacts before any
-future cleanup dry-run receipt decides what would actually be removed.
-Use `just cleanup-policy <profile>` to materialize `artifacts/deploy/artifact_cleanup_policy.json`,
-the named cleanup-policy artifact that declares which inventory categories are protected versus
-prune candidates so later dry-run receipts can cite a stable `profile_name` instead of command-line
-heuristics.
-Use `just cleanup-dry-run <inventory> <policy> <generated-at-unix-ms>` to
-materialize `artifacts/deploy/artifact_cleanup_dry_run_receipt.json`, the
-review receipt over the current cleanup inventory and policy artifacts. The
-receipt carries the `artifact_cleanup_inventory.json` input path, the
-policy/profile used for the review, `planned_removals`, `retained_count`,
-`prune_candidate_count`, and `generated_at_unix_ms`.
-Use `just cleanup-execute <dry-run-receipt> <artifacts-root> <executed-at-unix-ms>`
-to execute one approved dry-run plan and materialize
-`artifact_cleanup_execution_receipt.json`, the execution-side audit artifact
-carrying the referenced dry-run receipt, `policy_profile`, `evidence_sources`,
-`removed_paths`, `skipped_paths`, and `executed_at_unix_ms`.
-Use `just cleanup-evidence-bundle <execution-receipt>` to package the cleanup
-dry-run receipt, cleanup execution receipt, and their referenced inventory/policy
-evidence into `artifact_cleanup_evidence_bundle.json`, the stable bundle entrypoint
-for downstream cleanup review tooling.
-For local promotion flow, use `just rollout-check`, `just rollout-promote`, `just rollout-verify`,
-and `just rollout-rollback` so eval, upload planning, deploy-check, current-pointer update, and
-rollback all stay explicit and reversible.
-The stable audit output for `rollout-verify` can be
-`artifacts/deploy/<artifact_version>/deployment_verification_receipt.json`,
-paired with a `deployment_verification_receipt_written` event and carrying at
-least `artifact_version`, `profile_name`, `verification_status`,
-`verified_at_unix_ms`, and `evidence`.
-That receipt also carries explicit evidence provenance, with
-`evidence_sources` entries that can at least identify `artifact_path`,
-`event_name`, and `observed_at_unix_ms` for each verification input.
-Use `just deployment-verification-receipt <artifact-version> <profile-name> <verification-status> <verified-at-unix-ms> <evidence> <evidence-source-1> <evidence-source-2>`
-to materialize that receipt explicitly when rollout verification needs an audit
-artifact without changing the rest of the rollout flow yet.
-Use `just deployment-verification-bundle <receipt>` to materialize
-`artifacts/deploy/deployment_verification_evidence_bundle.json`, the compact deployment-side
-bundle over the receipt's declared evidence sources.
-Use `just deployment-verification-handoff <bundle>` to materialize
-`deployment_verification_evidence_handoff.json`, the stable handoff artifact
-over the current deployment verification evidence bundle.
-For future data-oriented artifact surfaces, the current fit decision is conservative:
-`Parquet` is the likely first columnar storage format if dataset/eval/export artifacts outgrow
-JSON/TOML, while `DataFusion` and `Ballista` stay parked until there is a concrete analytical or
-distributed query problem. No Arrow/DataFusion/Ballista dependency is added yet.
+Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
+
+Operational workflow index:
+
+- Deployment:
+  `fixtures/deployment_stack_profile.example.json` defines the stack profile contract;
+  `just deploy-check` -> `deployment_stack_check.json`
+  `just deploy-launch-plan` -> `deployment_stack_launch_plan.json`
+  `just deploy-launch-receipt` -> `deployment_stack_launch_receipt.json`
+  `just distributed-load-profile` -> `distributed_load_profile.json`
+  `afterburner deploy hf-publish --request <path>` -> `huggingface_publish_receipt.json`
+- Rollout verification:
+  `just rollout-check`, `just rollout-promote`, `just rollout-verify`, `just rollout-rollback`
+  `just deployment-verification-receipt` -> `deployment_verification_receipt.json`
+  `just deployment-verification-bundle` -> `deployment_verification_evidence_bundle.json`
+  `just deployment-verification-handoff` -> `deployment_verification_evidence_handoff.json`
+- Cleanup:
+  `just cleanup-inventory` -> `artifact_cleanup_inventory.json`
+  `just cleanup-policy` -> `artifact_cleanup_policy.json`
+  `just cleanup-dry-run` -> `artifact_cleanup_dry_run_receipt.json`
+  `just cleanup-execute` -> `artifact_cleanup_execution_receipt.json`
+  `just cleanup-evidence-bundle` -> `artifact_cleanup_evidence_bundle.json`
+- Profiling:
+  `just profile-infer` -> `infer_hotspot_summary.json`
+  `just profile-environment-snapshot` -> `profiling_environment_snapshot.json`
+  `just profile-refresh-environment-snapshot` -> `profiling_environment_snapshot_refresh.json`
+  `just profile-provenance-receipt` -> `profiling_provenance_receipt.json`
+  `just profile-provenance-bundle` -> `profiling_provenance_evidence_bundle.json`
+- Data provenance:
+  `just pretraining-source-approval-receipt` -> `pretraining_source_approval_receipt.json`
+  `just pretraining-source-provenance-receipt` -> `pretraining_source_provenance_receipt.json`
+  `just pretraining-source-provenance-evidence-bundle` -> `pretraining_source_provenance_evidence_bundle.json`
+  `just distributed-shard-lineage-receipt` -> `distributed_shard_lineage_receipt.json`
+  `just distributed-shard-lineage-evidence-bundle` -> `distributed_shard_lineage_evidence_bundle.json`
+  `just distributed-shard-lineage-handoff` -> `distributed_shard_lineage_evidence_handoff.json`
 For pretraining data, the repo now distinguishes per-sample metadata from dataset-level manifests:
 `pretraining_sample_metadata.schema.json` stays the sample contract, while
 `pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts,
