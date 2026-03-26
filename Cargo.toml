@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- README frontpage clarity pass [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Refocus `README.md` into a sharper project frontpage so system shape, key workflows, and why the repo exists are legible before deep operational and contract detail.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `README.md`, `tests/`, `ARCHITECTURE.md`
-
 - Deployment stack launch evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Package deployment stack launch plan and launch receipt into one stable bundle artifact so downstream rollout tooling can consume a single launch entrypoint instead of chasing separate stack-launch artifacts manually.
   - Kind: `mixed`

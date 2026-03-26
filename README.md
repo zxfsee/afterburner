@@ -22,6 +22,24 @@ The canonical workflow surface is `just`; use `just --list` or `just workflows`
 to discover repo-managed entrypoints. The `afterburner <...>` CLI remains the
 underlying contract surface behind those recipes.
 
+## At a glance
+
+- Rust-first ML systems repo focused on boundaries, contracts, and reproducible workflows.
+- Uses Burn for model/runtime work, Nix for reproducible environments, and `just` as the workflow surface.
+- Optimized for clarity of training, artifact, deployment, and observability contracts over model quality benchmarks.
+
+## System shape
+
+- Training/runtime: model execution, artifact export, checkpointing, and training-side observability.
+- Control plane: rollout, upload, cleanup, and deployment-side verification artifacts.
+- Platform: local MacBook workflows first, then NixOS nodes and later cluster adapters.
+
+## Read next
+
+- [Architecture](./ARCHITECTURE.md): boundaries, invariants, and the current system shape
+- [ADRs](./docs/adr/): concrete architectural and contract decisions
+- [Changelog](./CHANGELOG.md): active TODO queue and recent landed work
+
 ## What this is
 
 Afterburner is a minimal Rust-based ML system demonstrating **training, inference, and reproducible infrastructure** using Burn and Nix.
