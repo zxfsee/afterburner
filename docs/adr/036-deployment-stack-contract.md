@@ -31,6 +31,12 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-launch-plan` resolves the deployment target profile
   plus the deployment stack profile into one checked
   `deployment_stack_launch_plan.json` artifact.
+- `afterburner deploy stack-launch-receipt` materializes the launch-time
+  parameters over one checked launch plan as
+  `deployment_stack_launch_receipt.json`.
+- `afterburner deploy stack-launch-bundle` packages the launch plan plus launch
+  receipt into one `deployment_stack_launch_evidence_bundle.json` artifact so
+  downstream rollout tooling can consume a single stack launch entrypoint.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
@@ -47,5 +53,7 @@ service or provider-specific deployment logic.
   inspectable contract data.
 - Deployment-side launch planning can consume one resolved launch artifact
   instead of reconstructing environment and path expectations from recipes.
+- Deployment-side rollout tooling can consume one packaged launch bundle rather
+  than chasing separate launch plan and launch receipt artifacts.
 - Future deployment adapters can consume one checked stack artifact instead of
   rediscovering runtime layout from recipes or host-local conventions.

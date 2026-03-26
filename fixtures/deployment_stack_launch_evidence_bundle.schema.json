@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-stack-launch-evidence-bundle/v1",
+  "title": "Deployment Stack Launch Evidence Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "plan_path",
+    "receipt_path",
+    "profile_name",
+    "deploy_hostname",
+    "deployable_unit",
+    "working_directory",
+    "service_entrypoint",
+    "rollout_entrypoint",
+    "launch_env",
+    "launched_at_unix_ms",
+    "evidence_count",
+    "evidence_sources"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "plan_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receipt_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deploy_hostname": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deployable_unit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "working_directory": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rollout_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    },
+    "launch_env": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "required": [
+        "PORT",
+        "AFTERBURNER_OBS_JSONL_PATH"
+      ],
+      "properties": {
+        "PORT": {
+          "type": "string",
+          "minLength": 1
+        },
+        "AFTERBURNER_OBS_JSONL_PATH": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "launched_at_unix_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evidence_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "evidence_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_path",
+          "artifact_role"
+        ],
+        "properties": {
+          "artifact_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "artifact_role": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

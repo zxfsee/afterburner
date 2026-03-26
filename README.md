@@ -233,6 +233,7 @@ Operational workflow index:
   `just deploy-check` -> `deployment_stack_check.json`
   `just deploy-launch-plan` -> `deployment_stack_launch_plan.json`
   `just deploy-launch-receipt` -> `deployment_stack_launch_receipt.json`
+  `just deploy-launch-bundle` -> `deployment_stack_launch_evidence_bundle.json`
   `just distributed-load-profile` -> `distributed_load_profile.json`
   `afterburner deploy hf-publish --request <path>` -> `huggingface_publish_receipt.json`
 - Rollout verification:

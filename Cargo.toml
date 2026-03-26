@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch evidence bundle adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Package deployment stack launch plan and launch receipt into one stable bundle artifact so downstream rollout tooling can consume a single launch entrypoint instead of chasing separate stack-launch artifacts manually.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+- README GitHub frontpage completion pass [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Finish `README.md` as a GitHub frontpage by keeping the first screen concise, moving the remaining contract-heavy operational/reference material into `docs/`, and leaving README as a navigation document rather than an internal reference notebook.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `README.md`, `docs/`, `tests/`
 
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
@@ -33,6 +33,13 @@ header = """# Changelog
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
+
+- Deployment stack launch evidence handoff adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Export one stable handoff artifact over the deployment stack launch evidence bundle so downstream deployment or transport tooling can resolve a single stack-launch locator without depending on local bundle path conventions.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
 
 ## [Trunk]
 """

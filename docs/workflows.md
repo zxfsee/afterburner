@@ -7,6 +7,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
 - `just deploy-launch-plan <target-profile> <stack-profile>` writes `deployment_stack_launch_plan.json`.
 - `just deploy-launch-receipt <plan> <port> <launched-at-unix-ms>` writes `deployment_stack_launch_receipt.json`.
+- `just deploy-launch-bundle <receipt>` writes `deployment_stack_launch_evidence_bundle.json`.
 - `just distributed-load-profile <addr> <requests> <concurrency> <latency-budget-ms-p99> <error-budget-ratio>` writes `distributed_load_profile.json`.
 - `afterburner deploy hf-publish --request <path>` writes `huggingface_publish_receipt.json`.
 

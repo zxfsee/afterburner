@@ -1,0 +1,27 @@
+{
+  "schema_version": "1",
+  "plan_path": "artifacts/deploy/deployment_stack_launch_plan.json",
+  "receipt_path": "artifacts/deploy/deployment_stack_launch_receipt.json",
+  "profile_name": "staging-a",
+  "deploy_hostname": "staging.example.net",
+  "deployable_unit": "afterburner-runtime-stack",
+  "working_directory": "/srv/afterburner/artifacts",
+  "service_entrypoint": "./bin/afterburner-http",
+  "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current",
+  "launch_env": {
+    "PORT": "8080",
+    "AFTERBURNER_OBS_JSONL_PATH": "/srv/afterburner/artifacts/train/observability.jsonl"
+  },
+  "launched_at_unix_ms": 1735689600000,
+  "evidence_count": 2,
+  "evidence_sources": [
+    {
+      "artifact_path": "artifacts/deploy/deployment_stack_launch_plan.json",
+      "artifact_role": "deployment_stack_launch_plan"
+    },
+    {
+      "artifact_path": "artifacts/deploy/deployment_stack_launch_receipt.json",
+      "artifact_role": "deployment_stack_launch_receipt"
+    }
+  ]
+}
