@@ -13,12 +13,26 @@ header = """# Changelog
 
 ## TODO
 
-- README GitHub frontpage completion pass [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Finish `README.md` as a GitHub frontpage by keeping the first screen concise, moving the remaining contract-heavy operational/reference material into `docs/`, and leaving README as a navigation document rather than an internal reference notebook.
+- Reference index coverage gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep `docs/reference.md` aligned with the contract and capability surfaces that README points to so the frontpage can stay concise without losing discoverability of artifact, workflow, and stance contracts.
   - Kind: `gate`
   - Boundary: `none`
   - Contracts: `none`
-  - Scope: `README.md`, `docs/`, `tests/`
+  - Scope: `README.md`, `docs/reference.md`, `tests/`
+
+- Deployment stack launch evidence handoff adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Export one stable handoff artifact over the deployment stack launch evidence bundle so downstream deployment or transport tooling can resolve a single stack-launch locator without depending on local bundle path conventions.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+
+- Workflow reference completeness gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` aligned with the canonical `just` workflow surface and the current artifact/receipt families so README can stay frontpage-first without drifting from operator entrypoints.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `README.md`, `docs/workflows.md`, `justfile`, `tests/`
 
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
@@ -27,19 +41,19 @@ header = """# Changelog
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
-- Burn distributed optimizer and checkpoint state contract [Distributed Training, Runtime Infra]
+- Burn distributed optimizer and checkpoint state gate [Distributed Training, Runtime Infra]
   - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`
   - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
-- Deployment stack launch evidence handoff adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Export one stable handoff artifact over the deployment stack launch evidence bundle so downstream deployment or transport tooling can resolve a single stack-launch locator without depending on local bundle path conventions.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
+- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
+  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`
+  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
 
 ## [Trunk]
 """

@@ -96,10 +96,3 @@ Rules:
     - Distributed tracing correlation contract.
     - HTTP infer load profile contract.
 
-- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
