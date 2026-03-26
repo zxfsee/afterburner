@@ -150,6 +150,8 @@ auto-versioning, embedded serving) are intentionally absent.
 
 ## Invariants
 
+### Core boundaries
+
 - Adapters depend on core; core must not depend on adapters.
   - “Core” = library modules implementing artifact contract + preprocessing + inference logic.
   - “Adapters” = binaries/transport layers (CLI, HTTP wrapper) and any integration glue.
@@ -166,6 +168,9 @@ auto-versioning, embedded serving) are intentionally absent.
   declare itself explicitly and remain rejected until a dedicated runtime path is introduced.
 - No async runtime is adopted. The current HTTP adapter remains synchronous and `tiny_http`-based
   until profiling or deployment requirements show that a Tokio-class runtime is necessary.
+
+### Deployment and rollout contracts
+
 - Deployment adapters must resolve through an explicit deployment target profile contract before
   introducing deploy tooling. Target host, user, system, artifact root, and activation strategy
   are contract data, not ad-hoc shell configuration.
@@ -200,6 +205,9 @@ auto-versioning, embedded serving) are intentionally absent.
   deployment subsystem.
 - Deployment-oriented CLI entrypoints are grouped under one `deploy` command family so stack checks,
   upload planning, verification bundles, and load profiles share one operator-facing namespace.
+
+### Runtime, scheduler, and platform
+
 - Distributed runtime, scheduler, and platform concerns remain distinct layers.
   - The runtime owns in-job execution semantics and checkpoint/state handling.
   - The scheduler owns queueing, placement, leases, and lifecycle policy.
@@ -223,6 +231,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - Treat DeepSpeed-class systems as sources of patterns, not parity targets.
   - Do not promise broad generic support across all DP/TP/PP/SP-CP/EP/ZeRO combinations
     unless a concrete workload and contract require it.
+
+### Adapter and observability constraints
+
 - Standards integration (e.g. OpenTelemetry, OpenAPI) occurs in adapters only;
   core remains framework- and SDK-independent.
 - Distributed tracing correlation also stays adapter-local and lightweight.
@@ -235,6 +246,13 @@ auto-versioning, embedded serving) are intentionally absent.
   (`duration_ms`, `batch_size`, `artifact_version`) so adapter-local logs can be mapped
   deliberately onto OpenTelemetry conventions later without claiming full semconv naming or
   pulling an SDK into core.
+
+### Reference-owned stance catalog
+
+- `docs/reference.md` owns the capability and fit catalog that grows faster than the core
+  architecture boundaries. This file should stay focused on system shape, stable boundaries,
+  architectural invariants, and the ADR index.
+
 - Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
   (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
   OpenTelemetry distributed tracing/resource fields or SDK/runtime dependencies yet.
