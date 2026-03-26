@@ -30,16 +30,6 @@ Rules:
     - GPU scheduler boundary and lifecycle gate.
     - Burn distributed optimizer and checkpoint state contract.
 
-- kube-rs GPU scheduler placement fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define a kube-rs-compatible control-plane contract for node inventory, topology-aware GPU placement, queue admission, and job lifecycle reconciliation so the later cluster path can reuse the same lease and state-boundary model as the single-node scheduler.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by:
-    - GPU scheduler boundary and lifecycle gate.
-    - Single-node GPU lease and systemd scheduler adapter.
-
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
@@ -95,4 +85,3 @@ Rules:
   - Blocked-by:
     - Distributed tracing correlation contract.
     - HTTP infer load profile contract.
-
