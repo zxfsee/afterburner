@@ -40,9 +40,9 @@ fn process_compose_local_substrate_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("process-compose-flake"),
-        "README must document the local process-compose fit"
+        "reference index must document the local process-compose fit"
     );
 }

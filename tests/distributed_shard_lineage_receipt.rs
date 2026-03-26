@@ -57,14 +57,14 @@ fn distributed_shard_lineage_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("distributed_shard_lineage_receipt.json"),
-        "README must mention the distributed shard lineage receipt artifact"
+        "workflow reference must mention the distributed shard lineage receipt artifact"
     );
     assert!(
         readme.contains("just distributed-shard-lineage-receipt"),
-        "README must mention the distributed shard lineage receipt workflow"
+        "workflow reference must mention the distributed shard lineage receipt workflow"
     );
 }
 

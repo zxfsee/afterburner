@@ -68,10 +68,10 @@ fn infer_output_drift_summary_schema_is_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("infer_output_drift_summary.json"),
-        "README must mention the infer output drift summary artifact"
+        "reference index must mention the infer output drift summary artifact"
     );
 }
 

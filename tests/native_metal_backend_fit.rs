@@ -36,10 +36,10 @@ fn native_metal_backend_fit_is_documented_and_registered() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("BACKEND=cpu|wgpu|metal"),
-        "README must document the explicit Metal backend option"
+        "reference index must document the explicit Metal backend option"
     );
 
     let cargo_toml = repo_file("Cargo.toml");

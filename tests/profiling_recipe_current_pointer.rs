@@ -26,13 +26,13 @@ fn profiling_recipe_resolves_current_pointer_and_active_backend() {
         "profile-infer must not pin a fixed backend variable in justfile"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("current pointer"),
-        "README should explain that profiling resolves through the current pointer"
+        "workflow reference should explain that profiling resolves through the current pointer"
     );
     assert!(
         readme.contains("BACKEND"),
-        "README should mention that profiling follows the active backend env contract"
+        "workflow reference should mention that profiling follows the active backend env contract"
     );
 }

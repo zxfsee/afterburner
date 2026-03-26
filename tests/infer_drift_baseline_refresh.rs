@@ -63,14 +63,14 @@ fn infer_output_drift_baseline_refresh_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-refresh-baseline workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_baseline_refresh.json"),
-        "README must mention the baseline refresh artifact"
+        "workflow reference must mention the baseline refresh artifact"
     );
     assert!(
         readme.contains("just drift-refresh-baseline"),
-        "README must mention the baseline refresh workflow"
+        "workflow reference must mention the baseline refresh workflow"
     );
 }
 

@@ -59,11 +59,12 @@ fn artifact_exported_event_matches_fixture_contract() {
         "artifact_exported event must match the fixture-backed contract"
     );
 
-    let readme = fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("README.md"))
-        .expect("read README");
+    let readme =
+        fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("docs/reference.md"))
+            .expect("read docs/reference.md");
     assert!(
         readme.contains("artifact_exported"),
-        "README must mention artifact_exported event fields"
+        "reference index must mention artifact_exported event fields"
     );
 }
 

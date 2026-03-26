@@ -75,11 +75,11 @@ fn text_model_artifact_and_inference_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains(
             "Text-trained models should not reuse the current MNIST/logits infer surface"
         ),
-        "README must mention the separate text inference surface"
+        "reference index must mention the separate text inference surface"
     );
 }

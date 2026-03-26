@@ -108,14 +108,14 @@ fn distributed_load_profile_schema_and_workflow_are_explicit() {
         "justfile must expose the distributed-load-profile workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("distributed_load_profile.json"),
-        "README must mention the distributed load profile artifact"
+        "workflow reference must mention the distributed load profile artifact"
     );
     assert!(
         readme.contains("just distributed-load-profile"),
-        "README must mention the distributed load profile workflow"
+        "workflow reference must mention the distributed load profile workflow"
     );
 }
 

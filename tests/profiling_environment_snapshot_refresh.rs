@@ -66,14 +66,14 @@ fn profiling_environment_snapshot_refresh_schema_and_workflow_are_explicit() {
         "justfile must expose the profile-refresh-environment-snapshot workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("profiling_environment_snapshot_refresh.json"),
-        "README must mention the profiling environment snapshot refresh receipt"
+        "workflow reference must mention the profiling environment snapshot refresh receipt"
     );
     assert!(
         readme.contains("just profile-refresh-environment-snapshot"),
-        "README must mention the profiling environment snapshot refresh workflow"
+        "workflow reference must mention the profiling environment snapshot refresh workflow"
     );
 }
 

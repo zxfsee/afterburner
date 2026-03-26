@@ -58,9 +58,9 @@ fn remote_model_save_load_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("remote locator contract"),
-        "README must mention the remote save/load locator stance"
+        "reference index must mention the remote save/load locator stance"
     );
 }

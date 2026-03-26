@@ -40,14 +40,14 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         "usage must not advertise the old flat drift subcommand names"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("afterburner drift <subcommand>"),
-        "README must mention the grouped drift command family"
+        "reference index must mention the grouped drift command family"
     );
     assert!(
         readme.contains("afterburner deploy <subcommand>"),
-        "README must mention the grouped deploy command family"
+        "reference index must mention the grouped deploy command family"
     );
 
     let architecture = repo_file("ARCHITECTURE.md");

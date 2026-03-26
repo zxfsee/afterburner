@@ -61,14 +61,14 @@ fn deployment_stack_launch_evidence_handoff_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-launch-handoff workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("deployment_stack_launch_evidence_handoff.json"),
-        "README must mention the deployment stack launch evidence handoff artifact"
+        "workflow reference must mention the deployment stack launch evidence handoff artifact"
     );
     assert!(
         readme.contains("just deploy-launch-handoff"),
-        "README must mention the deployment stack launch evidence handoff workflow"
+        "workflow reference must mention the deployment stack launch evidence handoff workflow"
     );
 }
 

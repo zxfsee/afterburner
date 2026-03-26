@@ -97,9 +97,9 @@ fn text_tokenizer_packing_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("tokenizer and packing side"),
-        "README must mention the tokenizer/packing profile stance"
+        "reference index must mention the tokenizer/packing profile stance"
     );
 }

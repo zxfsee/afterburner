@@ -40,9 +40,9 @@ fn pretraining_source_registry_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("source registry"),
-        "README must mention the pretraining source registry contract"
+        "reference index must mention the pretraining source registry contract"
     );
 }

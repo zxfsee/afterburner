@@ -31,9 +31,9 @@ fn cutile_backend_extension_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("later NVIDIA-specific backend-extension candidate"),
-        "README must mention the cutile-rs fit stance"
+        "reference index must mention the cutile-rs fit stance"
     );
 }

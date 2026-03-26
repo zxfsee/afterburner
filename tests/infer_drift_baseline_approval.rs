@@ -64,14 +64,14 @@ fn infer_output_drift_baseline_approval_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-approve-baseline workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_baseline_approval.json"),
-        "README must mention the baseline approval artifact"
+        "workflow reference must mention the baseline approval artifact"
     );
     assert!(
         readme.contains("just drift-approve-baseline"),
-        "README must mention the baseline approval workflow"
+        "workflow reference must mention the baseline approval workflow"
     );
 }
 

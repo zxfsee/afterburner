@@ -37,13 +37,13 @@ fn artifact_retention_envelope_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("retention envelope"),
-        "README must mention the artifact retention envelope"
+        "reference index must mention the artifact retention envelope"
     );
     assert!(
         readme.contains("artifacts/profiling/"),
-        "README must mention the profiling retention policy"
+        "reference index must mention the profiling retention policy"
     );
 }

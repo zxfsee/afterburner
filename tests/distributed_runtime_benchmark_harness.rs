@@ -78,10 +78,10 @@ fn distributed_runtime_benchmark_harness_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("distributed_runtime_benchmark_run.json"),
-        "README must mention the benchmark run artifact"
+        "reference index must mention the benchmark run artifact"
     );
 }
 

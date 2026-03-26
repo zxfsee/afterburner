@@ -63,14 +63,14 @@ fn deployment_stack_launch_plan_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-launch-plan workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("deployment_stack_launch_plan.json"),
-        "README must mention the deployment stack launch plan artifact"
+        "workflow reference must mention the deployment stack launch plan artifact"
     );
     assert!(
         readme.contains("just deploy-launch-plan"),
-        "README must mention the deployment stack launch plan workflow"
+        "workflow reference must mention the deployment stack launch plan workflow"
     );
 }
 

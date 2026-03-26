@@ -44,9 +44,9 @@ fn distributed_training_capability_subset_scope_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("minimum useful capability subset"),
-        "README must mention the workload-driven distributed-training subset stance"
+        "reference index must mention the workload-driven distributed-training subset stance"
     );
 }

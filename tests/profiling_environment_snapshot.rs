@@ -64,14 +64,14 @@ fn profiling_environment_snapshot_schema_and_workflow_are_explicit() {
         "profile-infer workflow must invoke the environment snapshot recipe"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("profiling_environment_snapshot.json"),
-        "README must mention the profiling environment snapshot artifact"
+        "workflow reference must mention the profiling environment snapshot artifact"
     );
     assert!(
         readme.contains("just profile-environment-snapshot"),
-        "README must mention the profiling environment snapshot workflow"
+        "workflow reference must mention the profiling environment snapshot workflow"
     );
 }
 

@@ -39,9 +39,9 @@ fn gpu_colocation_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("low-saturation workloads"),
-        "README must mention the constrained colocation stance"
+        "reference index must mention the constrained colocation stance"
     );
 }

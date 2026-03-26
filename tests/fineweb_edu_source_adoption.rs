@@ -31,9 +31,9 @@ fn fineweb_edu_source_adoption_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("fineweb-edu/slice"),
-        "README must mention the FineWeb-Edu source fit"
+        "reference index must mention the FineWeb-Edu source fit"
     );
 }

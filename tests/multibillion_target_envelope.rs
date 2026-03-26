@@ -44,13 +44,13 @@ fn multibillion_target_envelope_is_documented() {
         "ADR-015 must describe the precision constraint"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("multibillion"),
-        "README must mention the multibillion-scale target envelope"
+        "reference index must mention the multibillion-scale target envelope"
     );
     assert!(
         readme.contains("distributed_shard_metadata.schema.json"),
-        "README must mention the shard metadata contract"
+        "reference index must mention the shard metadata contract"
     );
 }

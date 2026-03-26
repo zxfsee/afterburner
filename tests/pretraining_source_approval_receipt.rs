@@ -58,14 +58,14 @@ fn pretraining_source_approval_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("pretraining_source_approval_receipt.json"),
-        "README must mention the pretraining source approval receipt artifact"
+        "workflow reference must mention the pretraining source approval receipt artifact"
     );
     assert!(
         readme.contains("just pretraining-source-approval-receipt"),
-        "README must mention the pretraining source approval receipt workflow"
+        "workflow reference must mention the pretraining source approval receipt workflow"
     );
 }
 

@@ -62,10 +62,10 @@ fn text_pretraining_eval_summary_contract_is_documented() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("text_pretraining_eval_summary.json"),
-        "README must mention the text eval summary artifact"
+        "workflow reference must mention the text eval summary artifact"
     );
 
     let architecture = repo_file("ARCHITECTURE.md");

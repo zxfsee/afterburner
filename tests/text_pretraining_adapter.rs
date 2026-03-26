@@ -83,10 +83,10 @@ fn text_token_cache_contract_and_adapter_are_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("train --task text"),
-        "README must mention the text training adapter entrypoint"
+        "workflow reference must mention the text training adapter entrypoint"
     );
 }
 

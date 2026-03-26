@@ -2,6 +2,15 @@
 
 Operational workflow details live here so the README can stay focused on project shape and first-run orientation.
 
+## Training and operator entrypoints
+
+- `just eval-gate` runs the deterministic eval acceptance gate.
+- `just backend-profile-gate` validates the backend performance decision profile.
+- `just dashboard` opens the terminal observability dashboard.
+- `afterburner train --task text --dataset-manifest <path> --tokenizer-profile <path> --token-cache <path>` is the text training adapter entrypoint.
+- `just train-text <dataset-manifest> <tokenizer-profile> <token-cache>` runs the bounded text adapter path.
+- `just train-text-smoke` exercises the bounded text smoke path and writes `text_pretraining_eval_summary.json`.
+
 ## Deployment
 
 - `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
@@ -47,7 +56,9 @@ Operational workflow details live here so the README can stay focused on project
 
 ## Profiling
 
-- `just profile-infer` writes `infer_hotspot_summary.json` and follows `artifacts/inference/current`.
+- `just profile-infer` writes `infer_hotspot_summary.json`, follows `artifacts/inference/current`, and follows the active `BACKEND` env contract.
+- On macOS, profiling requires `xcrun xctrace version` under full Xcode.
+- The profiling recipe forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`.
 - `just profile-environment-snapshot` writes `profiling_environment_snapshot.json`.
 - `just profile-refresh-environment-snapshot <current-snapshot> <profiler-path> <captured-at-unix-ms>` writes `profiling_environment_snapshot_refresh.json`.
 - `just profile-provenance-receipt <snapshot> <captured-at-unix-ms>` writes `profiling_provenance_receipt.json`.
@@ -57,6 +68,7 @@ Operational workflow details live here so the README can stay focused on project
 
 - `just pretraining-source-approval-receipt <source> <source-revision> <approval-status> <approved-by> <approval-ticket> <approved-at-unix-ms>` writes `pretraining_source_approval_receipt.json`.
 - `just pretraining-source-provenance-receipt <approval-receipt> <registry-entry-path> <upstream-locator> <reviewed-metadata-sha256>` writes `pretraining_source_provenance_receipt.json`.
+- That workflow is the source provenance receipt layer over the source approval receipt and reviewed source metadata.
 - `just pretraining-source-provenance-evidence-bundle <provenance-receipt>` writes `pretraining_source_provenance_evidence_bundle.json`.
 - `just distributed-shard-lineage-receipt <metadata> <shard-id> <source> <source-revision> <checkpoint-group> <checkpoint-root> <checked-at-unix-ms>` writes `distributed_shard_lineage_receipt.json`.
 - `just distributed-shard-lineage-evidence-bundle <receipt>` writes `distributed_shard_lineage_evidence_bundle.json`.

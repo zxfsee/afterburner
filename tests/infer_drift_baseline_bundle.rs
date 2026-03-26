@@ -63,14 +63,14 @@ fn infer_output_drift_baseline_bundle_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-export-baseline-bundle workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_baseline_bundle.json"),
-        "README must mention the baseline bundle artifact"
+        "workflow reference must mention the baseline bundle artifact"
     );
     assert!(
         readme.contains("just drift-export-baseline-bundle"),
-        "README must mention the baseline bundle workflow"
+        "workflow reference must mention the baseline bundle workflow"
     );
 }
 

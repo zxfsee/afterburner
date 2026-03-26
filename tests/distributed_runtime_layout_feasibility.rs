@@ -87,9 +87,9 @@ fn distributed_runtime_layout_feasibility_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("feasibility artifact"),
-        "README must mention the distributed layout feasibility stance"
+        "reference index must mention the distributed layout feasibility stance"
     );
 }

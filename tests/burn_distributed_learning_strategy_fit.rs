@@ -38,9 +38,9 @@ fn burn_distributed_learning_strategy_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("`worker_parallelism` is only a"),
-        "README must document the local-only worker_parallelism stance"
+        "reference index must document the local-only worker_parallelism stance"
     );
 }

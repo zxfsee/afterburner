@@ -11,6 +11,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `train_start`
   - `train_done`
   - `artifact_exported`
+  - `artifact_exported` event fields: `backend`, `artifact_version`, `artifact_path`, `manifest_path`, `current_path`
 - Inference-side contract surfaces:
   - versioned artifacts under `artifacts/inference/<version>/`
   - `manifest.toml`
@@ -19,12 +20,17 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - normalized stderr event envelopes
 - Text-pretraining path:
   - bounded MacBook target
+  - decoder-only language model
   - `fineweb-edu/slice`
   - `text_token_cache.schema.json`
   - `artifacts/text_inference/<version>/`
   - `text_pretraining_run.json`
   - `artifacts/eval/text_pretraining_eval_summary.json`
   - `just train-text-smoke`
+  - tokenizer and packing side
+  - Text-trained models should not reuse the current MNIST/logits infer surface
+  - source provenance receipt
+  - pretraining source registry contract
 
 ## Workflow and artifact families
 
@@ -79,7 +85,19 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 ## Capability and stance summary
 
 - Distributed runtime stays workload-driven: DP first, explicit `world_size`/rank/`device_group` topology, and a separate `distributed_runtime_profile.json` surface for executed trials.
+- The workload-driven distributed-training subset stance stays explicit: pursue the minimum useful capability subset rather than framework parity.
+- The distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when.
+- The current capability surface is single-device execution today with DP as the first candidate expansion.
+- The local-only worker_parallelism stance remains explicit: `worker_parallelism` is only a local throughput knob and not a distributed topology surrogate.
+- The scheduler lifecycle boundary keeps lease-owned resources and rank assignments explicit.
+- The explicit topology stance keeps `world_size`, ranks, and `device_group` metadata direct.
+- The distributed layout feasibility stance rejects invalid DP/TP/PP and inventory combinations before runtime launch.
+- The distributed runtime layout feasibility artifact is the explicit feasibility artifact for DP/TP/PP and inventory planning.
+- The benchmark run artifact is `distributed_runtime_benchmark_run.json`.
 - Scheduler policy stays conservative: priority and queueing first, cooperative checkpoint/resume preemption only, and constrained GPU colocation for known low-saturation workloads.
+- The scheduler preemption stance is explicit: supported preemption is cooperative checkpoint/resume, with no transparent GPU suspension assumptions.
+- The scheduler preemption stance is cooperative checkpoint/resume, not transparent GPU suspension.
+- The explicit lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`.
 - Operator command families stay grouped:
   - `afterburner deploy <subcommand>`
   - `afterburner drift <subcommand>`
@@ -92,6 +110,11 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
   - `cutile-rs`
   - Burn 0.20.1
   - `.mpk` to `.bpk`
+  - later NVIDIA-specific backend-extension candidate
+  - explicit Metal backend option
+  - `process-compose-flake`
+  - `BACKEND=cpu|wgpu|metal`
+  - local process-compose fit
 - Profiling remains local-first and adapter-only:
   - current pointer
   - `BACKEND`
@@ -101,6 +124,7 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
   - `DEVELOPER_DIR`
   - `SDKROOT`
   - OpenTelemetry fit stays parked
+  - `AFTERBURNER_TRACEPARENT`
 - Provenance stays explicit:
   - deployment verification evidence provenance
   - distributed shard lineage evidence provenance
@@ -109,13 +133,16 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
   - artifact retention envelope
   - profiling retention policy
   - profiling hotspot taxonomy
+  - `artifacts/profiling/`
 - Longer-horizon reference points remain explicit:
   - remote locator contract
   - separate post-training pipeline
   - distributed checkpoint index contract
   - RL rollout metadata contract
+  - `rl_rollout_metadata.schema.json`
   - vectorized-environment stance
   - multibillion-scale target envelope
   - shard metadata contract
+  - `distributed_shard_metadata.schema.json`
   - `Parquet`
   - `DataFusion`

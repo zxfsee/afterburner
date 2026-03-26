@@ -90,13 +90,13 @@ fn rl_rollout_schema_fixture_has_required_contract_fields() {
         "ADR-013 must anchor the decision to the rollout metadata contract"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("rl_rollout_metadata.schema.json"),
-        "README must mention the RL rollout metadata contract"
+        "reference index must mention the RL rollout metadata contract"
     );
     assert!(
         readme.contains("vectorized"),
-        "README must mention the vectorized-environment stance"
+        "reference index must mention the vectorized-environment stance"
     );
 }

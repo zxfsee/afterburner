@@ -62,14 +62,14 @@ fn distributed_shard_lineage_evidence_bundle_schema_and_workflow_are_explicit() 
         "justfile must expose the distributed-shard-lineage-evidence-bundle workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("distributed_shard_lineage_evidence_bundle.json"),
-        "README must mention the distributed shard lineage evidence bundle artifact"
+        "workflow reference must mention the distributed shard lineage evidence bundle artifact"
     );
     assert!(
         readme.contains("just distributed-shard-lineage-evidence-bundle"),
-        "README must mention the distributed shard lineage evidence bundle workflow"
+        "workflow reference must mention the distributed shard lineage evidence bundle workflow"
     );
 }
 

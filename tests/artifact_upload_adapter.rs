@@ -111,10 +111,10 @@ fn artifact_upload_request_schema_and_docs_are_explicit() {
         "ADR-014 must describe the provider-neutral upload contract"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("artifact_upload_request.json"),
-        "README must mention the upload request artifact"
+        "reference index must mention the upload request artifact"
     );
 }
 

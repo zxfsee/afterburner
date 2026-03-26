@@ -55,14 +55,14 @@ fn pretraining_source_provenance_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("source provenance receipt"),
-        "README must mention the pretraining source provenance receipt contract"
+        "workflow reference must mention the pretraining source provenance receipt contract"
     );
     assert!(
         readme.contains("just pretraining-source-provenance-receipt"),
-        "README must mention the pretraining source provenance receipt workflow"
+        "workflow reference must mention the pretraining source provenance receipt workflow"
     );
 }
 

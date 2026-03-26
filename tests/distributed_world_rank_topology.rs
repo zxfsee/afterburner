@@ -42,9 +42,9 @@ fn distributed_world_rank_topology_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("`world_size`, ranks, and `device_group` metadata"),
-        "README must document the explicit topology stance"
+        "reference index must document the explicit topology stance"
     );
 }

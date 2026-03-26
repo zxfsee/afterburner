@@ -106,9 +106,9 @@ fn gpu_scheduler_boundary_and_lifecycle_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("lease-owned resources and rank assignments"),
-        "README must document the scheduler lifecycle boundary"
+        "reference index must document the scheduler lifecycle boundary"
     );
 }

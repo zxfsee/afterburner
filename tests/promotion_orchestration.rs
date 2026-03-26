@@ -45,7 +45,7 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
         "ADR-017 must describe the rollback recipe"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     for workflow in [
         "just rollout-check",
         "just rollout-promote",
@@ -54,7 +54,7 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
     ] {
         assert!(
             readme.contains(workflow),
-            "README must document `{workflow}`"
+            "workflow reference must document `{workflow}`"
         );
     }
 }

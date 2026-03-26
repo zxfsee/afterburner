@@ -46,9 +46,9 @@ fn distributed_runtime_scheduler_platform_separation_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("decides who gets GPUs and when"),
-        "README must mention the scheduler/runtime/platform separation"
+        "reference index must mention the scheduler/runtime/platform separation"
     );
 }

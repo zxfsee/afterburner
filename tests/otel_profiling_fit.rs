@@ -55,9 +55,9 @@ fn otel_profiling_correlation_fit_is_documented() {
         "ADR-016 must state the no-heavy-SDK stance"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("OpenTelemetry"),
-        "README must mention the OpenTelemetry profiling fit stance"
+        "reference index must mention the OpenTelemetry profiling fit stance"
     );
 }

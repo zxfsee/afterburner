@@ -59,14 +59,14 @@ fn infer_output_drift_baseline_pointer_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-point-approved-baseline workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_baseline_pointer.json"),
-        "README must mention the baseline pointer artifact"
+        "workflow reference must mention the baseline pointer artifact"
     );
     assert!(
         readme.contains("just drift-point-approved-baseline"),
-        "README must mention the baseline pointer workflow"
+        "workflow reference must mention the baseline pointer workflow"
     );
 }
 

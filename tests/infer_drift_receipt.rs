@@ -67,14 +67,14 @@ fn infer_output_drift_receipt_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-receipt workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_receipt.json"),
-        "README must mention the infer drift receipt artifact"
+        "workflow reference must mention the infer drift receipt artifact"
     );
     assert!(
         readme.contains("just drift-receipt"),
-        "README must mention the drift receipt workflow"
+        "workflow reference must mention the drift receipt workflow"
     );
     let policy_text = fs::read_to_string(fixture_path("infer_output_drift_policy.schema.json"))
         .expect("read infer drift policy schema");

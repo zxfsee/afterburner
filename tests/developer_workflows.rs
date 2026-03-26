@@ -52,7 +52,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "profiling workflow must document the macOS xctrace override path"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     for workflow in [
         "just eval-gate",
         "just backend-profile-gate",
@@ -61,21 +61,21 @@ fn developer_workflows_are_repo_managed_and_documented() {
     ] {
         assert!(
             readme.contains(workflow),
-            "README must document `{workflow}`"
+            "workflow reference must document `{workflow}`"
         );
     }
     assert!(
         readme.contains("xcrun xctrace version"),
-        "README must document the host-profiler prerequisite"
+        "workflow reference must document the host-profiler prerequisite"
     );
     assert!(
         readme.contains("full Xcode"),
-        "README must document the full Xcode requirement on macOS"
+        "workflow reference must document the full Xcode requirement on macOS"
     );
     assert!(
         readme.contains("XCTRACE=/usr/bin/xctrace")
             && readme.contains("DEVELOPER_DIR")
             && readme.contains("SDKROOT"),
-        "README must document the macOS xctrace override path"
+        "workflow reference must document the macOS xctrace override path"
     );
 }

@@ -36,9 +36,9 @@ fn profiling_environment_provenance_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("profiling environment provenance"),
-        "README must mention the profiling environment provenance contract"
+        "reference index must mention the profiling environment provenance contract"
     );
 }

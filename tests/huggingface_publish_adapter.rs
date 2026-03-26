@@ -109,10 +109,10 @@ fn huggingface_publish_receipt_schema_and_docs_are_explicit() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("deploy hf-publish"),
-        "README must mention the Hugging Face publish command"
+        "workflow reference must mention the Hugging Face publish command"
     );
 }
 

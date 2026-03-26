@@ -75,9 +75,9 @@ fn model_optimization_and_packaging_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("separate post-training pipeline"),
-        "README must mention the optimization/package pipeline stance"
+        "reference index must mention the optimization/package pipeline stance"
     );
 }

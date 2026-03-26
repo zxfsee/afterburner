@@ -30,9 +30,9 @@ fn burn_dependency_refresh_stance_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("Burn 0.20.1"),
-        "README must mention the current Burn refresh stance"
+        "reference index must mention the current Burn refresh stance"
     );
 }

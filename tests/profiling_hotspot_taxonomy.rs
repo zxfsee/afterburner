@@ -71,9 +71,9 @@ fn profiling_hotspot_taxonomy_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("hotspot taxonomy"),
-        "README must mention the profiling hotspot taxonomy"
+        "reference index must mention the profiling hotspot taxonomy"
     );
 }

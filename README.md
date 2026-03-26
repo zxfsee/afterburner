@@ -226,72 +226,8 @@ The manifest now also carries a `[precision]` section. The current runtime requi
 `weights_dtype = "f32"`, `activation_dtype = "f32"`, and `quantization = "none"`;
 unsupported reduced-precision artifacts fail fast at startup in both CLI and HTTP adapters.
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
-
-<details>
-<summary>Operational workflow index</summary>
-
-- Deployment:
-  `fixtures/deployment_stack_profile.example.json` defines the stack profile contract;
-  `just deploy-check` -> `deployment_stack_check.json`
-  `just deploy-launch-plan` -> `deployment_stack_launch_plan.json`
-  `just deploy-launch-receipt` -> `deployment_stack_launch_receipt.json`
-  `just deploy-launch-bundle` -> `deployment_stack_launch_evidence_bundle.json`
-  `just deploy-launch-handoff` -> `deployment_stack_launch_evidence_handoff.json`
-  `just distributed-load-profile` -> `distributed_load_profile.json`
-  `afterburner deploy hf-publish --request <path>` -> `huggingface_publish_receipt.json`
-- Rollout verification:
-  `just rollout-check`, `just rollout-promote`, `just rollout-verify`, `just rollout-rollback`
-  `just deployment-verification-receipt` -> `deployment_verification_receipt.json`
-  `just deployment-verification-bundle` -> `deployment_verification_evidence_bundle.json`
-  `just deployment-verification-handoff` -> `deployment_verification_evidence_handoff.json`
-- Cleanup:
-  `just cleanup-inventory` -> `artifact_cleanup_inventory.json`
-  `just cleanup-policy` -> `artifact_cleanup_policy.json`
-  `just cleanup-dry-run` -> `artifact_cleanup_dry_run_receipt.json`
-  `just cleanup-execute` -> `artifact_cleanup_execution_receipt.json`
-  `just cleanup-evidence-bundle` -> `artifact_cleanup_evidence_bundle.json`
-- Profiling:
-  `just profile-infer` -> `infer_hotspot_summary.json`
-  `just profile-environment-snapshot` -> `profiling_environment_snapshot.json`
-  `just profile-refresh-environment-snapshot` -> `profiling_environment_snapshot_refresh.json`
-  `just profile-provenance-receipt` -> `profiling_provenance_receipt.json`
-  `just profile-provenance-bundle` -> `profiling_provenance_evidence_bundle.json`
-- Data provenance:
-  `just pretraining-source-approval-receipt` -> `pretraining_source_approval_receipt.json`
-  `just pretraining-source-provenance-receipt` -> `pretraining_source_provenance_receipt.json`
-  `just pretraining-source-provenance-evidence-bundle` -> `pretraining_source_provenance_evidence_bundle.json`
-  `just distributed-shard-lineage-receipt` -> `distributed_shard_lineage_receipt.json`
-  `just distributed-shard-lineage-evidence-bundle` -> `distributed_shard_lineage_evidence_bundle.json`
-  `just distributed-shard-lineage-handoff` -> `distributed_shard_lineage_evidence_handoff.json`
-</details>
-
-For pretraining data, the repo now distinguishes per-sample metadata from dataset-level manifests:
-`pretraining_sample_metadata.schema.json` stays the sample contract, while
-`pretraining_dataset_manifest.schema.json` pins corpus revision, shard inventory, split counts, and checksum rollups for larger dataset refreshes.
-
+`docs/workflows.md` owns the operator-facing workflow and artifact family index.
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).
-
-<details>
-<summary>Contract and capability index</summary>
-
-## Capability index
-
-- Training-side observability stays explicit: `artifacts/train/observability.jsonl`, `train_start`, `train_done`, and `artifact_exported` keep stable fields such as `backend`, `artifact_version`, `artifact_path`, `manifest_path`, and `current_path`. `afterburner train --num-epochs 1` remains the short contract-refresh path.
-- Inference-side contract surfaces stay inspectable: inference binaries consume the immutable versioned artifact only, may surface `calibration_artifact_metadata.json`, honor `AFTERBURNER_OBS_JSONL_PATH`, and emit normalized event envelopes with `ts_ms`, `level`, `source`, `event`, and `fields`.
-- Data and text pretraining stay bounded: the MacBook text-pretraining target remains a bounded decoder-only language model over `fineweb-edu/slice`; `afterburner train --task text`, `text_token_cache.schema.json`, `artifacts/text_inference/<version>/`, `text_pretraining_run.json`, `artifacts/eval/text_pretraining_eval_summary.json`, `just train-text-smoke`, and the tokenizer and packing side keep the current text path explicit. Text-trained models should not reuse the current MNIST/logits infer surface.
-- Source identity stays explicit: `source` and `source_revision` remain stable dataset identifiers, with `pretraining_source_approval_receipt.json`, the source provenance receipt `pretraining_source_provenance_receipt.json`, `pretraining_source_provenance_evidence_bundle.json`, and the future pretraining source registry contract keeping `upstream_locator`, `license`, and `approval_status` visible.
-- Drift and eval are approval-driven: `infer_output_drift_summary.json`, `infer_output_drift_receipt.json`, `infer_output_drift_baseline.json`, `infer_output_drift_baseline_approval.json`, `infer_output_drift_baseline_pointer.json`, `infer_output_drift_baseline_history.json`, `infer_output_drift_baseline_checkpoint.json`, `infer_output_drift_baseline_bundle.json`, `infer_output_drift_baseline_handoff.json`, `infer_output_drift_baseline_transport_locator.json`, `infer_output_drift_baseline_rollback.json`, `infer_output_drift_baseline_supersession.json`, and `infer_output_drift_baseline_refresh.json` remain explicit rollout artifacts. `just eval-gate`, `just drift-receipt`, `just drift-baseline`, `just drift-approve-baseline`, `just drift-point-approved-baseline`, `just drift-record-approved-baseline-history`, `just drift-checkpoint-baseline`, `just drift-export-baseline-bundle`, `just drift-export-baseline-handoff`, `just drift-point-baseline-transport-locator`, `just drift-rollback-approved-baseline`, `just drift-supersede-baseline-approval`, and `just drift-refresh-baseline` stay as the operator workflows.
-- Artifact lifecycle is explicit: the current artifact retention envelope keeps `artifacts/inference/current`, the active `artifacts/inference/<version>/` directory, current rollout evidence, and current train/eval state; `artifacts/profiling/` remains the profiling retention policy boundary for prune candidates.
-- Profiling keeps one explicit local-first contract: `just profile-infer` follows the current pointer and active `BACKEND` contract; it writes `infer_hotspot_summary.json`, `profiling_environment_snapshot.json`, `profiling_environment_snapshot_refresh.json`, `profiling_provenance_receipt.json`, `profiling_provenance_evidence_bundle.json`, `distributed_runtime_benchmark_run.json`, and `distributed_runtime_profile.json`. The profiling environment provenance contract stays explicit through `host_os`, `host_arch`, `profiler_version`, and `profiler_path`. On macOS this still requires `xcrun xctrace version` under full Xcode, and the recipe forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`. The profiling hotspot taxonomy remains execution/framework/compiler-runtime/incidental, and OpenTelemetry linkage stays a later adapter-only fit.
-- Operator CLI families stay grouped: `afterburner deploy <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>` remain the canonical grouped command surface instead of flat operator verbs.
-- Runtime and backend decisions stay measured: `backend_performance_profile.json` and `just backend-profile-gate` gate CPU vs `wgpu`; `just dashboard` remains the terminal observability entrypoint; `kernel_adoption_thresholds.json` guards custom kernels; `CubeCL` and `CubeK` remain the first backend-extension path if that threshold is crossed; `cutile-rs` stays parked as a later NVIDIA-specific backend-extension candidate; Burn 0.20.1 stays pinned until a separate `.mpk` to `.bpk` migration is justified.
-- Deployment and remote artifact movement stay adapter-first: `artifact_upload_request.json` remains the provider-neutral upload artifact, `afterburner deploy hf-publish --request <path>` writes `huggingface_publish_receipt.json`, `AFTERBURNER_TRACEPARENT` remains the tracing correlation propagation hook for deployment-side workflows, and any future remote save/load path must stay behind a provider-neutral remote locator contract rather than a storage-SDK-specific path.
-- Deployment verification evidence provenance stays explicit through `evidence_sources` on the deployment verification receipt, including `artifact_path`, `event_name`, and `observed_at_unix_ms`.
-- Optimization work stays orthogonal to scale: quantization, compression, export, and packaging are a separate post-training pipeline, not runtime/scheduler logic.
-- The distributed shard lineage review path stays explicit: `distributed_shard_lineage_receipt.json`, `distributed_shard_lineage_evidence_bundle.json`, and `distributed_shard_lineage_evidence_handoff.json` define the current lineage review path; lineage evidence provenance stays explicit through `evidence_sources`, `metadata_path`, `checkpoint_root`, and `observed_at_unix_ms`; and the future distributed checkpoint index contract should keep `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` explicit.
-- Future envelopes stay contract-first: `fixtures/rl_rollout_metadata.schema.json`, the vectorized-environment stance, the multibillion-scale target envelope, the shard metadata contract `distributed_shard_metadata.schema.json`, `Parquet` as the likely first larger data format, and parked `DataFusion`/`Ballista` fit decisions all remain explicit planning surfaces rather than implied implementation scope.
-
-</details>
 
 See [ADR-002: Artifact Contract](./docs/adr/002-artifact-contract.md) for rationale.
 

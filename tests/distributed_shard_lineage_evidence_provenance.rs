@@ -36,9 +36,9 @@ fn distributed_shard_lineage_evidence_provenance_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("lineage evidence provenance"),
-        "README must mention the distributed shard lineage evidence provenance contract"
+        "reference index must mention the distributed shard lineage evidence provenance contract"
     );
 }

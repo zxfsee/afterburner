@@ -36,9 +36,9 @@ fn distributed_shard_lineage_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("distributed shard lineage"),
-        "README must mention the distributed shard lineage contract"
+        "reference index must mention the distributed shard lineage contract"
     );
 }

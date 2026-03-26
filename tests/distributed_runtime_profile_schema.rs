@@ -111,10 +111,10 @@ fn distributed_runtime_profile_schema_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("distributed_runtime_profile.json"),
-        "README must mention the distributed runtime profile artifact"
+        "reference index must mention the distributed runtime profile artifact"
     );
 }
 

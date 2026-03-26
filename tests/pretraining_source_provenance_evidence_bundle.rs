@@ -62,14 +62,14 @@ fn pretraining_source_provenance_evidence_bundle_schema_and_workflow_are_explici
         "justfile must expose the pretraining-source-provenance-evidence-bundle workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("pretraining_source_provenance_evidence_bundle.json"),
-        "README must mention the pretraining source provenance evidence bundle artifact"
+        "workflow reference must mention the pretraining source provenance evidence bundle artifact"
     );
     assert!(
         readme.contains("just pretraining-source-provenance-evidence-bundle"),
-        "README must mention the pretraining source provenance evidence bundle workflow"
+        "workflow reference must mention the pretraining source provenance evidence bundle workflow"
     );
 }
 

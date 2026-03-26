@@ -40,9 +40,9 @@ fn distributed_checkpoint_index_contract_is_documented() {
         "ADR-018 must make the index-only stance explicit"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("checkpoint index"),
-        "README must mention the distributed checkpoint index contract"
+        "reference index must mention the distributed checkpoint index contract"
     );
 }

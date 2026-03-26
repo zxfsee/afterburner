@@ -36,13 +36,13 @@ fn cubecl_fit_decision_is_documented() {
         "ADR-012 must make the transitive-dependency stance explicit"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("CubeCL"),
-        "README must mention the CubeCL fit stance"
+        "reference index must mention the CubeCL fit stance"
     );
     assert!(
         readme.contains("CubeK"),
-        "README must mention the CubeK fit stance"
+        "reference index must mention the CubeK fit stance"
     );
 }

@@ -57,18 +57,18 @@ fn deployment_verification_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("deployment_verification_receipt.json"),
-        "README must mention the deployment verification receipt artifact"
+        "workflow reference must mention the deployment verification receipt artifact"
     );
     assert!(
         readme.contains("rollout-verify"),
-        "README must anchor the receipt to rollout-verify"
+        "workflow reference must anchor the receipt to rollout-verify"
     );
     assert!(
         readme.contains("just deployment-verification-receipt"),
-        "README must mention the deployment verification receipt workflow"
+        "workflow reference must mention the deployment verification receipt workflow"
     );
 }
 

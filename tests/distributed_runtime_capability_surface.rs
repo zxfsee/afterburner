@@ -41,9 +41,9 @@ fn distributed_runtime_capability_surface_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("single-device execution"),
-        "README must document the current capability surface"
+        "reference index must document the current capability surface"
     );
 }

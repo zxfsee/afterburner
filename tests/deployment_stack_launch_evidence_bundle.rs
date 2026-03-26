@@ -66,14 +66,14 @@ fn deployment_stack_launch_evidence_bundle_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-launch-bundle workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("deployment_stack_launch_evidence_bundle.json"),
-        "README must mention the deployment stack launch evidence bundle artifact"
+        "workflow reference must mention the deployment stack launch evidence bundle artifact"
     );
     assert!(
         readme.contains("just deploy-launch-bundle"),
-        "README must mention the deployment stack launch evidence bundle workflow"
+        "workflow reference must mention the deployment stack launch evidence bundle workflow"
     );
 
     let adr = repo_file("docs/adr/036-deployment-stack-contract.md");

@@ -54,14 +54,14 @@ fn profiling_provenance_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("profiling_provenance_receipt.json"),
-        "README must mention the profiling provenance receipt artifact"
+        "workflow reference must mention the profiling provenance receipt artifact"
     );
     assert!(
         readme.contains("just profile-provenance-receipt"),
-        "README must mention the profiling provenance receipt workflow"
+        "workflow reference must mention the profiling provenance receipt workflow"
     );
 }
 

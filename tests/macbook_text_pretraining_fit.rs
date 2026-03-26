@@ -43,9 +43,9 @@ fn macbook_text_pretraining_fit_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("decoder-only language model"),
-        "README must mention the bounded MacBook text-pretraining target"
+        "reference index must mention the bounded MacBook text-pretraining target"
     );
 }

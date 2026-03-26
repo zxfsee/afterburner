@@ -39,9 +39,9 @@ fn distributed_tracing_correlation_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("AFTERBURNER_TRACEPARENT"),
-        "README must document the tracing correlation propagation hook"
+        "reference index must document the tracing correlation propagation hook"
     );
 }

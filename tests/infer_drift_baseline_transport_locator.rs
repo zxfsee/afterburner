@@ -59,14 +59,14 @@ fn infer_output_drift_baseline_transport_locator_schema_and_workflow_are_explici
         "justfile must expose the drift-point-baseline-transport-locator workflow"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("infer_output_drift_baseline_transport_locator.json"),
-        "README must mention the baseline transport locator artifact"
+        "workflow reference must mention the baseline transport locator artifact"
     );
     assert!(
         readme.contains("just drift-point-baseline-transport-locator"),
-        "README must mention the baseline transport locator workflow"
+        "workflow reference must mention the baseline transport locator workflow"
     );
 }
 

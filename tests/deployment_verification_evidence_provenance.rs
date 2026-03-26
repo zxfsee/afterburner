@@ -36,9 +36,9 @@ fn deployment_verification_evidence_provenance_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("evidence provenance"),
-        "README must mention the deployment verification evidence provenance contract"
+        "reference index must mention the deployment verification evidence provenance contract"
     );
 }

@@ -38,9 +38,9 @@ fn scheduler_preemption_and_colocation_stance_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("supported preemption is cooperative checkpoint/resume"),
-        "README must document the scheduler preemption stance"
+        "reference index must document the scheduler preemption stance"
     );
 }

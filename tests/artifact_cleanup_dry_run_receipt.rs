@@ -56,14 +56,14 @@ fn artifact_cleanup_dry_run_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/workflows.md");
     assert!(
         readme.contains("artifact_cleanup_dry_run_receipt.json"),
-        "README must mention the cleanup dry-run receipt artifact"
+        "workflow reference must mention the cleanup dry-run receipt artifact"
     );
     assert!(
         readme.contains("just cleanup-dry-run"),
-        "README must mention the cleanup dry-run workflow"
+        "workflow reference must mention the cleanup dry-run workflow"
     );
 }
 

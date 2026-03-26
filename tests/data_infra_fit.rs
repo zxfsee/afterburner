@@ -44,13 +44,13 @@ fn arrow_datafusion_ballista_parquet_fit_is_documented() {
         "ADR-011 must make the current no-dependency stance explicit"
     );
 
-    let readme = repo_file("README.md");
+    let readme = repo_file("docs/reference.md");
     assert!(
         readme.contains("Parquet"),
-        "README must mention the current Parquet fit stance"
+        "reference index must mention the current Parquet fit stance"
     );
     assert!(
         readme.contains("DataFusion"),
-        "README must mention the current DataFusion fit stance"
+        "reference index must mention the current DataFusion fit stance"
     );
 }
