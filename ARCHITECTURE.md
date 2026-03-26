@@ -253,149 +253,75 @@ auto-versioning, embedded serving) are intentionally absent.
   architecture boundaries. This file should stay focused on system shape, stable boundaries,
   architectural invariants, and the ADR index.
 
-- Profiling artifacts follow the same rule: the current hotspot summary keeps local identity fields
-  (`artifact_version`, `backend`, `weights_artifact`, `profile_command`) and does not add
-  OpenTelemetry distributed tracing/resource fields or SDK/runtime dependencies yet.
-- Profiling artifacts also need a small profiling environment provenance layer over time:
-  `profiling_hotspot_summary.schema.json` should eventually be accompanied by at least `host_os`,
-  `host_arch`, `profiler_version`, and `profiler_path` so hotspot comparisons do not depend on
-  unstated host assumptions.
-- Profiling provenance should also gain an explicit profiling provenance receipt layer over time,
-  so later profiling reviews can audit when `profiling_environment_snapshot.json` was captured or
-  refreshed instead of inferring timing from surrounding workflow logs.
-- Profiling summaries also use a lightweight hotspot taxonomy for interpretation:
-  execution (`afterburner::...`), framework (`burn_tensor::...`), compiler/runtime (`cubecl...`),
-  and incidental support work. The raw symbol remains the contract; the taxonomy is for triage.
-- Optimization policy changes must be expressed as explicit artifacts or gates before
-  introducing new execution paths. Custom kernels are justified only when the checked
-  kernel-adoption contract is refreshed with current model coverage and supporting
-  backend profile evidence.
-- CubeCL/CubeK are the preferred first candidate if custom-kernel work is ever justified,
-  because the current Burn GPU stack already carries them transitively. They remain out of
-  the repo's direct dependencies and public contracts until the checked threshold is crossed.
-- `cutile-rs` is a later NVIDIA-specific backend-extension candidate, not the
-  default follow-on path.
-  - Reconsider it only if measured need is specifically CUDA/NVIDIA-oriented
-    and the current CubeCL/CubeK path is insufficient.
-- On Apple hardware, Burn's Metal path is also treated as an extension of the existing GPU stack,
-  not as a separate repo-local backend family.
-  - `BACKEND=metal` is a Burn-aligned runtime choice under the existing GPU adapter surface.
-  - `wgpu` remains the default until backend-profile evidence justifies preferring Metal more broadly.
-- Model optimization and packaging are also a distinct post-training pipeline.
-  - quantization, compression, export, and packaging should be driven by explicit artifact
-    profiles and constraints, not folded into runtime-scale or scheduler decisions.
-- Burn dependency refreshes should stay on the latest stable line, not pre-release churn. The
-  current explicit stance is Burn `0.20.1`; a later refresh should wait for a newer stable release
-  and keep `.mpk` to `.bpk` migration as a separate contract decision.
-- RL work remains artifact-first for now: `rl_rollout_metadata.schema.json` is the current
-  contract surface, with a single-environment identity string and no in-repo simulator
-  bindings or vectorized environment runtime until measured need justifies them.
-- The multibillion-scale target envelope is also contract-first: larger-scale claims must stay
-  grounded in explicit training scalability, distributed_shard_metadata, manifest precision,
-  rollout ownership, upload request, and deployment target profile contracts before runtime
-  orchestration expands.
-- The current training scalability contract is not a distributed strategy contract.
-  - `worker_parallelism` is a local throughput knob for the current trainer only.
-  - Future Burn-side distributed execution should align with Burn's strategy-oriented training
-    model, with explicit topology/device-group contracts instead of overloading `worker_parallelism`.
-- Future distributed execution topology must also be explicit.
-  - `training_scalability_contract.json` is not the topology source of truth.
-  - `distributed_shard_metadata.schema.json` is not the topology source of truth.
-  - world-size, rank, and device-group semantics should come from a dedicated topology contract
-    instead of being inferred from local worker ids or shard layout.
-- The current distributed runtime capability surface is also explicit.
-  - Supported now: single-device execution only.
-  - First candidate expansion: DP after explicit topology, collectives, and checkpoint contracts.
-  - Unsupported now: ZeRO-1/2/3, TP, PP, SP/CP, EP, and generic multi-axis combinations.
-- Future distributed runtime profile trials should also use one explicit artifact contract.
-  - Keep that profile artifact separate from `training_scalability_contract.json`.
-  - Keep that profile artifact separate from `distributed_load_profile.json`.
-  - Record model-size/node-count identity, runtime parallelism choices, performance/memory
-    metrics, runtime settings, and environment fingerprint explicitly.
-- Profile synthesis should normalize passed benchmark runs into
-  `distributed_runtime_profile.json` instead of treating benchmark-run artifacts as the
-  long-lived comparison surface directly.
-- Executed distributed runtime benchmark runs should also persist one explicit
-  artifact with benchmark configuration and result status so trial execution is
-  reproducible instead of shell-script-local.
-- Candidate distributed runtime layouts should also be checked by one explicit
-  feasibility artifact before benchmark or training launch.
-  - Keep that feasibility artifact separate from the runtime capability list.
-  - Keep that feasibility artifact separate from the executed runtime profile artifact.
-- Distributed checkpoint recovery should also stay contract-first: a future checkpoint index must
-  declare `artifact_version`, `checkpoint_root`, `shard_count`, and `shard_metadata_path` instead
-  of inferring shard membership from directory layout alone.
-- Distributed shard metadata also needs an explicit distributed shard lineage layer over time:
-  shard ownership alone is not enough, and future lineage-aware metadata should at least tie each
-  `shard_id` back to `source`, `source_revision`, and `checkpoint_group` instead of host-local
-  naming.
-- Distributed shard lineage should also gain an explicit distributed shard lineage receipt layer so
-  later provenance checks can record when `shard_id`, `source`, `source_revision`, and
-  `checkpoint_group` were reviewed without mutating the lineage payload itself.
-- Distributed shard lineage evidence provenance is also explicit: distributed shard
-  lineage receipts carry distributed shard lineage evidence provenance through structured
-  `evidence_sources` references instead of treating reviewed shard metadata and checkpoint roots as
-  unstated context.
-- Artifact cleanup should preserve a minimum retention envelope: keep
-  `artifacts/inference/current`, the referenced `artifacts/inference/<version>/`,
-  active rollout evidence under `artifacts/deploy/`, required decision artifacts under
-  `artifacts/train/`, and the current approved drift baseline state; `artifacts/profiling/`
-  and superseded eval artifacts are prune candidates once nothing active references them.
-- Cleanup review should also converge on one explicit cleanup dry-run receipt layered on
-  `artifact_cleanup_inventory.json`, so planned removals can be audited without mixing preview
-  decisions into the inventory classification artifact itself.
-- Cleanup execution should also converge on one explicit cleanup execution receipt layered on
-  `artifact_cleanup_dry_run_receipt.json`, so future destructive runs can audit actual removals
-  and skips separately from preview planning.
-- Cleanup execution provenance should also be explicit: execution receipts should carry
-  structured `evidence_sources` references back to the dry-run receipt plus its inventory and
-  policy inputs instead of treating the destructive step as self-justifying.
-- Deployment verification now uses one explicit deployment verification receipt per
-  promoted `artifact_version`, so post-deploy checks can be audited from a receipt artifact
-  and matching event instead of raw logs alone.
-- Deployment verification evidence provenance is also explicit: deployment
-  verification receipts carry deployment verification evidence provenance through
-  structured `evidence_sources` references instead of treating the `evidence` field as an
-  untyped log dump.
-- Pretraining dataset manifests should treat `source` as a source registry key
-  and `source_revision` as the approved snapshot selector within that source,
-  so corpus identity does not degrade into free-form manifest labels as
-  pretraining data expands.
-- Pretraining source registry state also has an explicit source approval receipt layer, so
-  `approval_status` changes can be audited with `approved_by`, `approval_ticket`, and
-  `approved_at_unix_ms` instead of being inferred from registry edits alone.
-- Pretraining source approvals should also carry a source provenance receipt layer over time, so
-  approval receipts can point back to `upstream_locator` and the reviewed registry entry instead of
-  relying on surrounding process logs for review context.
-- The current local-first text-pretraining target is also bounded explicitly:
-  - decoder-only language model
-  - single-node, single-device execution
-  - roughly `50M` to `300M` parameters
-  - `1024` token context length
-  - `50M` to `200M` token budgets per run
-  - `AdamW` with checkpoint/resume inside the bounded run
-- The current local-first text source fit is also explicit:
-  - treat `fineweb-edu/slice` as the intended source family
-  - keep `source_revision` pinned to one bounded local slice snapshot
-  - keep source size small enough for one MacBook workflow rather than mirroring the full corpus
-- The tokenizer and packing surface for that path should also stay explicit:
-  - one tokenizer profile with pinned tokenizer identity and revision
-  - explicit BOS/EOS/PAD tokens
-  - `1024` token context length
-  - explicit truncation and packing policies
-- Text-trained inference should also stay explicit and separate from the current
-  MNIST/image contract:
-  - one text inference profile sidecar for prompt-oriented sampling
-  - explicit task identity (`causal-lm`)
-  - explicit sampling defaults and sampling event fields
-- The first bounded text adapter should also stay explicit:
-  - `afterburner train --task text`
-  - deterministic local token cache input
-  - Burn learner checkpoint/resume at epoch boundaries
-  - `text_pretraining_run.json` plus `artifacts/text_inference/<version>/`
-    sidecars instead of overloading the current MNIST inference root
-  - one deterministic `text_pretraining_eval_summary.json` artifact for
-    validation loss/perplexity smoke admission
+#### Profiling and observability fits
+
+- Profiling keeps local identity fields (`artifact_version`, `backend`, `weights_artifact`,
+  `profile_command`) and remains adapter-only; `OpenTelemetry` fit stays parked.
+- `profiling_hotspot_summary.schema.json`, profiling provenance receipt, and profiling environment
+  provenance keep `host_os`, `host_arch`, `profiler_version`, and `profiler_path` explicit.
+- The profiling environment provenance contract remains anchored to
+  `profiling_hotspot_summary.schema.json`.
+- The profiling provenance receipt contract remains anchored to
+  `profiling_environment_snapshot.json`.
+- The hotspot taxonomy remains explicit: `execution`, `framework`, `compiler`, and `incidental`.
+
+#### Backend and optimization fits
+
+- Custom-kernel work stays evidence-gated; `CubeCL` and `CubeK` are the first candidates if the
+  threshold is crossed, and `cutile-rs` remains a later NVIDIA-specific backend-extension candidate.
+- On Apple hardware, `BACKEND=metal` is a Burn-aligned runtime choice; `wgpu` remains the default
+  until evidence justifies preferring Metal more broadly.
+- Burn dependency refresh stays on the latest stable line, currently `0.20.1`, and `.mpk` to
+  `.bpk` remains a separate contract decision.
+- Model optimization and packaging remain a distinct post-training pipeline driven by explicit
+  artifact profiles and constraints.
+
+#### Distributed runtime and lineage fits
+
+- The multibillion target envelope stays contract-first through training scalability,
+  `distributed_shard_metadata`, manifest precision, rollout ownership, upload request, and
+  deployment target profile contracts.
+- The multibillion target envelope also stays anchored to `distributed_shard_metadata`.
+- The current training scalability contract is not a distributed strategy contract:
+  `worker_parallelism` is a local throughput knob and future topology stays explicit.
+- The current distributed runtime capability surface stays explicit:
+  `single-device execution only`, `First candidate expansion: DP`, and
+  `ZeRO-1/2/3`, `TP, PP, SP/CP, EP` remain unsupported.
+- Distributed runtime profile trials, benchmark-run artifacts, and the feasibility artifact remain
+  separate contract surfaces. `distributed runtime profile trials` stays anchored to
+  `distributed_runtime_profile.json`.
+- Future distributed execution topology stays explicit:
+  `training_scalability_contract.json` and `distributed_shard_metadata.schema.json` are
+  `not the topology source of truth`; topology must stay explicit through `world-size`
+  and `device-group` semantics.
+- Distributed checkpoint recovery remains explicit through the `checkpoint index`, anchored to
+  `distributed_shard_metadata`.
+- Distributed shard lineage receipt remains explicit and anchors to `checkpoint_group`.
+- The distributed shard lineage evidence provenance contract remains explicit and anchors to the
+  `distributed shard lineage receipt`.
+
+#### Data and artifact lifecycle fits
+
+- Artifact retention envelope, cleanup dry-run receipt, and cleanup execution receipt remain
+  explicit contract layers; `artifacts/profiling/` stays a prune-candidate domain.
+- The cleanup dry-run receipt remains anchored to `artifact_cleanup_inventory.json`.
+- The cleanup execution receipt remains anchored to `artifact_cleanup_dry_run_receipt.json`.
+- Deployment verification receipt and deployment verification evidence provenance remain explicit
+  contract layers.
+- The deployment verification receipt remains anchored to `artifact_version`.
+- Deployment verification evidence provenance remains anchored to the
+  `deployment verification receipt`.
+- Pretraining data keeps explicit `source` / `source_revision` identity, source registry,
+  source approval receipt, and source provenance receipt layers.
+- The source approval receipt remains anchored to `approval_status`.
+- The source provenance receipt remains anchored to `upstream_locator`.
+- The local-first text path remains explicit: `decoder-only language model`, `fineweb-edu/slice`,
+  `single-node, single-device execution`, `50M` to `300M` parameters,
+  `1024` token context length, `50M` to `200M` token budgets, `AdamW`,
+  tokenizer and packing surface, text inference profile sidecar, and
+  `text_pretraining_eval_summary.json`.
+- RL remains artifact-first through `rl_rollout_metadata.schema.json` and the vectorized
+  environment stance.
 
 ### Assumptions
 
