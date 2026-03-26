@@ -33,6 +33,9 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `deployment_stack_launch_plan.json`
   - `deployment_stack_launch_receipt.json`
   - `deployment_stack_launch_evidence_bundle.json`
+  - `deployment_verification_receipt.json`
+  - `deployment_verification_evidence_bundle.json`
+  - `deployment_verification_evidence_handoff.json`
   - `distributed_load_profile.json`
   - `artifact_upload_request.json`
   - `huggingface_publish_receipt.json`
@@ -76,6 +79,11 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 
 - Distributed runtime stays workload-driven: DP first, explicit `world_size`/rank/`device_group` topology, and a separate `distributed_runtime_profile.json` surface for executed trials.
 - Scheduler policy stays conservative: priority and queueing first, cooperative checkpoint/resume preemption only, and constrained GPU colocation for known low-saturation workloads.
+- Operator command families stay grouped:
+  - `afterburner deploy <subcommand>`
+  - `afterburner drift <subcommand>`
+  - `afterburner cleanup <subcommand>`
+  - `afterburner profile <subcommand>`
 - Backend/runtime evolution stays measured:
   - `backend_performance_profile.json`
   - `CubeCL`
@@ -92,6 +100,14 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
   - `DEVELOPER_DIR`
   - `SDKROOT`
   - OpenTelemetry fit stays parked
+- Provenance stays explicit:
+  - deployment verification evidence provenance
+  - distributed shard lineage evidence provenance
+  - profiling environment provenance
+- Artifact lifecycle stays explicit:
+  - artifact retention envelope
+  - profiling retention policy
+  - profiling hotspot taxonomy
 - Longer-horizon reference points remain explicit:
   - remote locator contract
   - separate post-training pipeline

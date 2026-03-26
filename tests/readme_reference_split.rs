@@ -33,10 +33,14 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
     }
     for needle in [
         "artifact_upload_request.json",
+        "deployment_verification_evidence_bundle.json",
         "infer_output_drift_baseline_pointer.json",
         "profiling_provenance_evidence_bundle.json",
         "distributed_shard_lineage_evidence_handoff.json",
         "remote locator contract",
+        "deployment verification evidence provenance",
+        "artifact retention envelope",
+        "afterburner deploy <subcommand>",
     ] {
         assert!(
             reference.contains(needle),
