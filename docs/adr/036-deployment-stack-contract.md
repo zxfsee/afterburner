@@ -47,6 +47,10 @@ Add an explicit deployment stack contract.
 - `afterburner deploy record-launch-handoff-history` appends one compact
   `deployment_stack_launch_evidence_handoff_history.json` artifact over handoff
   changes for downstream deployment audit tooling.
+- `afterburner deploy record-launch-handoff-reconciliation-history` appends one
+  compact `deployment_stack_launch_evidence_handoff_reconciliation_history.json`
+  artifact over desired-versus-current handoff updates for downstream
+  deployment audit tooling.
 - `afterburner deploy point-launch-transport-locator` exports one stable
   `deployment_stack_launch_transport_locator.json` locator over the current
   launch handoff for transport-facing consumers.
