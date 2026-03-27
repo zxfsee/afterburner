@@ -21,6 +21,9 @@ scheduler model.
   - job lifecycle reconciliation
 - The Kubernetes path should reuse the same lease and lifecycle boundary model
   as the single-node scheduler.
+- Cluster-path scheduler consumers should resolve the active lease state through
+  one stable pointer artifact over the kube-rs reconciliation surface instead of
+  depending on local reconciliation artifact paths.
 - `kube-rs` is the adapter layer for the cluster path; it is not a separate
   scheduler or a subset-of-Kubernetes product target.
 
