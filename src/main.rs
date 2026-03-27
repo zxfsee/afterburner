@@ -19,6 +19,7 @@ mod cmd_distributed_runtime_profile;
 mod cmd_distributed_shard_lineage_evidence_bundle;
 mod cmd_distributed_shard_lineage_handoff;
 mod cmd_distributed_shard_lineage_receipt;
+mod cmd_distributed_shard_lineage_transport_locator;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_bundle;
@@ -137,6 +138,7 @@ where
     match subcommand.as_str() {
         "evidence-bundle" => cmd_distributed_shard_lineage_evidence_bundle::run(args),
         "handoff" => cmd_distributed_shard_lineage_handoff::run(args),
+        "point-transport-locator" => cmd_distributed_shard_lineage_transport_locator::run(args),
         "receipt" => cmd_distributed_shard_lineage_receipt::run(args),
         _ => {
             eprintln!("unknown lineage subcommand: {subcommand}");

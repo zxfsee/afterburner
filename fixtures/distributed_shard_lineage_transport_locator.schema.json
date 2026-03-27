@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-transport-locator/v1",
+  "title": "Distributed Shard Lineage Transport Locator",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_path",
+    "shard_id",
+    "source",
+    "source_revision",
+    "checkpoint_group"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "handoff_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "shard_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "checkpoint_group": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}
