@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Turn objective lock guard [Runtime Infra]
-  - Goal: Pin the current execution objective class and reject out-of-scope repo mutations before work proceeds so queue-only, backlog-only, docs-only, and execute-item turns cannot silently drift into each other.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `src/bin/`, `tests/`, `justfile`, `NOTE.md`
-
 - Deployment verification evidence bundle reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment verification evidence bundle so downstream deployment consumers can compare desired receipt-resolved verification state against the current bundle without depending on ad hoc shell checks.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- `capnproto-rust` wire-format fit gate [Data Infra, Runtime Infra]
+  - Goal: Evaluate whether `capnproto-rust` is a useful later wire-format or structured artifact reference for high-volume runtime/data surfaces without replacing the current JSON/TOML contract layer prematurely.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
 
 ## [Trunk]
 """

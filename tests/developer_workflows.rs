@@ -24,6 +24,13 @@ fn developer_workflows_are_repo_managed_and_documented() {
 
     let justfile = repo_file("justfile");
     for recipe in [
+        "objective-lock-pin-queue:",
+        "objective-lock-pin-backlog:",
+        "objective-lock-pin-docs:",
+        "objective-lock-pin-review:",
+        "objective-lock-pin-execute-top-item:",
+        "objective-lock-check-worktree action:",
+        "objective-lock-clear:",
         "eval-gate:",
         "backend-profile-gate:",
         "dashboard:",
@@ -56,6 +63,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
 
     let readme = repo_file("docs/workflows.md");
     for workflow in [
+        "just objective-lock-pin-execute-top-item",
+        "just objective-lock-pin-queue",
+        "just objective-lock-check-worktree <action>",
+        "just objective-lock-clear",
         "just eval-gate",
         "just backend-profile-gate",
         "just dashboard",

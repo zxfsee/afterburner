@@ -24,6 +24,35 @@ dev:
 workflows:
     just --list
 
+# pin the current queue-maintenance objective before editing queue files
+objective-lock-pin-queue:
+    cargo run --locked --bin workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh
+
+# pin the current backlog-maintenance objective before editing docs/backlog.md
+objective-lock-pin-backlog:
+    cargo run --locked --bin workflow_objective_lock -- pin --objective backlog-only --expected-action backlog-edit
+
+# pin the current docs-only objective before editing docs/reference surfaces
+objective-lock-pin-docs:
+    cargo run --locked --bin workflow_objective_lock -- pin --objective docs-only --expected-action docs-edit
+
+# pin the current review-only objective; any repo mutation will fail the guard
+objective-lock-pin-review:
+    cargo run --locked --bin workflow_objective_lock -- pin --objective review-only --expected-action review-pass
+
+# validate queue freshness, then pin the top active TODO scope as the current execute objective
+objective-lock-pin-execute-top-item:
+    just queue-snapshot-check
+    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+
+# verify current repo mutations against the active objective lock
+objective-lock-check-worktree action:
+    cargo run --locked --bin workflow_objective_lock -- check-worktree --action {{ action }}
+
+# clear the current objective lock before switching objective classes
+objective-lock-clear:
+    cargo run --locked --bin workflow_objective_lock -- clear
+
 # format rust + toml + nix
 fmt:
     nix fmt
@@ -350,6 +379,7 @@ test-cargo:
 
 # regenerate CHANGELOG.md from git history
 changelog:
+    cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
     let parent = (git rev-parse --verify HEAD | str trim); cargo run --locked --bin afterburner_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
 
