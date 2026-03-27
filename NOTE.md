@@ -26,6 +26,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Keep strict active-queue order by default. After completing the top TODO, the next pre-existing queued item should become top unless there is a real blocker or the user explicitly approves reprioritization.
 - If a same-theme follow-on mixed item is worth tracking, prefer adding it below the already-queued next item or parking it in backlog; do not silently insert it at the top just to satisfy queue-balance preferences.
 - Before announcing or starting the next queue item, re-read the live `CHANGELOG.md` TODO block and use it as the source of truth rather than relying on prior mental state or earlier intermediate snapshots.
+- Treat queue freshness as part of completing each queue item: after landing a TODO, refresh the active queue immediately in the same change stream, and before continuing confirm the top visible item is not already represented by a freshly landed commit.
 - Do not volunteer half-finished reminders (optional cleanup/follow-up) in normal status updates; report only completed state and required blockers unless the user asks for open items.
 - If a repo mutation is rejected as `unacceptable risk`, treat it as a fresh policy gate: ask again with an explicit approval prompt instead of relying on prior or plain-text approval.
 - Do not add environment-preflight or host-availability gate recipes to `justfile`; keep `just` focused on the composable workflow entrypoints and let prerequisites fail naturally or live in tests/TODOs.

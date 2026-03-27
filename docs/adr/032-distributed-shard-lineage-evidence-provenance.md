@@ -40,6 +40,10 @@ Current stance: the repo now materializes this provenance layer through
   acceptable as a downstream comparison surface as long as it remains derived
   from the explicit handoff and locator artifacts instead of controller or
   shell checks.
+- Compact append-only history over lineage transport locator reconciliation
+  changes can also stay downstream and audit-focused as long as it remains
+  derived from the explicit reconciliation artifact instead of controller or
+  shell logs.
 - Future distributed provenance tooling can reuse one evidence-reference
   vocabulary instead of inventing ad hoc lineage source fields.
 - A reconciliation artifact over lineage evidence bundle state is also

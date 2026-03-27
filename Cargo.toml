@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage transport locator reconciliation history adapter [Distributed Training, Data Infra]
-  - Goal: Append one compact history artifact over distributed shard lineage transport locator reconciliation changes so downstream lineage tooling can audit desired-versus-current transport locator updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment stack launch evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment stack launch evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current bundle updates without reading shell or process logs.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification evidence handoff reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence handoff reconciliation changes so downstream deployment tooling can audit desired-versus-current verification handoff updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current verification bundle updates without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

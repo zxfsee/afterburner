@@ -37,6 +37,7 @@ mod cmd_distributed_shard_lineage_locator_pointer;
 mod cmd_distributed_shard_lineage_receipt;
 mod cmd_distributed_shard_lineage_transport_locator;
 mod cmd_distributed_shard_lineage_transport_locator_reconcile;
+mod cmd_distributed_shard_lineage_transport_locator_reconciliation_history;
 mod cmd_drift_baseline;
 mod cmd_drift_baseline_approval;
 mod cmd_drift_baseline_bundle;
@@ -171,6 +172,9 @@ where
         "point-locator" => cmd_distributed_shard_lineage_locator_pointer::run(args),
         "reconcile-transport-locator" => {
             cmd_distributed_shard_lineage_transport_locator_reconcile::run(args)
+        }
+        "record-transport-locator-reconciliation-history" => {
+            cmd_distributed_shard_lineage_transport_locator_reconciliation_history::run(args)
         }
         "point-transport-locator" => cmd_distributed_shard_lineage_transport_locator::run(args),
         "receipt" => cmd_distributed_shard_lineage_receipt::run(args),
