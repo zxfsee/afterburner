@@ -2,14 +2,30 @@
 
 Operational workflow details live here so the README can stay focused on project shape and first-run orientation.
 
+## Core repo workflows
+
+- `just build` runs the reproducible Nix build.
+- `just check` runs the full flake checks.
+- `just fmt` runs the repo formatter.
+- `just workflows` lists the canonical repo-managed entrypoints.
+- `just test` runs the default fast test surface.
+
 ## Training and operator entrypoints
 
+- `just train` runs the default training path.
+- `just infer` runs inference through the current artifact pointer.
+- `just eval` writes the deterministic eval summary artifact.
 - `just eval-gate` runs the deterministic eval acceptance gate.
 - `just backend-profile-gate` validates the backend performance decision profile.
 - `just dashboard` opens the terminal observability dashboard.
 - `afterburner train --task text --dataset-manifest <path> --tokenizer-profile <path> --token-cache <path>` is the text training adapter entrypoint.
 - `just train-text <dataset-manifest> <tokenizer-profile> <token-cache>` runs the bounded text adapter path.
 - `just train-text-smoke` exercises the bounded text smoke path and writes `text_pretraining_eval_summary.json`.
+
+## Validation and hygiene
+
+- `just workspace-gate` validates the workspace/core dependency boundaries.
+- `just huggingface-publish <request>` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment
 

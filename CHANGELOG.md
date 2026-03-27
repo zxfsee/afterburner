@@ -2,13 +2,6 @@
 
 ## TODO
 
-- Workflow reference completeness gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` aligned with the canonical `just` workflow surface and the current artifact/receipt families so README can stay frontpage-first without drifting from operator entrypoints.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `README.md`, `docs/workflows.md`, `justfile`, `tests/`
-
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
   - Kind: `gate`
@@ -43,6 +36,13 @@
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Architecture reference ownership gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep `ARCHITECTURE.md` focused on system shape and invariants while `docs/reference.md` owns the faster-moving capability and fit catalog, so future doc cleanup does not drift back into duplicated architecture prose.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `ARCHITECTURE.md`, `docs/reference.md`, `tests/`
 
 ## [Trunk]
 
@@ -145,8 +145,9 @@
 - Add stack launch plan adapter ([8d7c2b9])
 - Add shard lineage handoff adapter ([d298d6d])
 - Add stack launch receipt adapter ([4b2be9e])
-- Cut over recipe to current pointer ([c62bd5a])
-- Add stack launch evidence bundle adapter ([bac2905])
+- Cut over recipe to current pointer ([c2ceccf])
+- Add stack launch evidence bundle adapter ([5e9bc18])
+- Add stack launch evidence handoff adapter ([129e859])
 
 ### Changed
 
@@ -156,7 +157,7 @@
 - Return [1,28,28] tensor from mnist_image_to_tensor ([5ab0036])
 - Unify CLI into afterburner subcommands ([13179ee])
 - Extract artifact event helper ([93c5056])
-- Split runtime artifacts metadata and events ([bc12a72])
+- Split runtime artifacts metadata and events ([15485b7])
 
 ### Chore
 
@@ -299,15 +300,20 @@
 - Record monorepo harness heuristic ([bdfabea])
 - Make just canonical surface ([32d63a5])
 - Advance to source provenance receipt ([f62c75c])
-- Reprioritize train profiling and readme items ([1b54d33])
-- Sharpen frontpage ([7b4695e])
-- Prioritize readme frontpage pass ([6b0e370])
-- Sharpen frontpage ([a644f55])
-- Split workflow reference from frontpage ([e402eff])
-- Split frontpage reference index ([b167a4c])
-- Expand contract coverage index ([4941233])
-- Advance past reference coverage gate ([1046908])
-- Collapse heavy reference sections ([17bee52])
+- Reprioritize train profiling and readme items ([14c151f])
+- Sharpen frontpage ([de024d0])
+- Prioritize readme frontpage pass ([1637413])
+- Sharpen frontpage ([4af8aac])
+- Split workflow reference from frontpage ([c289810])
+- Split frontpage reference index ([4932265])
+- Expand contract coverage index ([e0cfe47])
+- Advance past reference coverage gate ([1e507eb])
+- Collapse heavy reference sections ([33640a8])
+- Move deep contract checks into docs ([27002f3])
+- Tighten frontpage scope ([31ce7d7])
+- Reduce frontpage to core navigation ([87abf6a])
+- Section invariants by concern ([656e2bb])
+- Compress fit catalog summaries ([de3db83])
 
 ### Fixed
 
@@ -612,17 +618,23 @@
 [8d7c2b9]: https://github.com/zxfsee/afterburner/commit/8d7c2b91135fc80d771ef1386c04103be39c8ba0
 [d298d6d]: https://github.com/zxfsee/afterburner/commit/d298d6df5e306d296c669797e31165ef563879b2
 [4b2be9e]: https://github.com/zxfsee/afterburner/commit/4b2be9e57855f37403e44b8417f3fa3ed8be1d2b
-[1b54d33]: https://github.com/zxfsee/afterburner/commit/1b54d335da4c11337157429027e503afae6bfa59
-[bc12a72]: https://github.com/zxfsee/afterburner/commit/bc12a72c3bea08bd2ad02fb615cf4b3fba288ca1
-[c62bd5a]: https://github.com/zxfsee/afterburner/commit/c62bd5aa3a3336058116b0c053ba73d9be48f626
-[7b4695e]: https://github.com/zxfsee/afterburner/commit/7b4695e538e327013e210fe88611b6543d2ac892
-[6b0e370]: https://github.com/zxfsee/afterburner/commit/6b0e3706b0f2e95c06051dc9250cda005de9597d
-[a644f55]: https://github.com/zxfsee/afterburner/commit/a644f558a247e988bd28f6c5a68e26c0bc34e05e
-[e402eff]: https://github.com/zxfsee/afterburner/commit/e402effb5b470422758b5c210b247324cd41b7e7
-[bac2905]: https://github.com/zxfsee/afterburner/commit/bac29050c944ee9721ffa8a2338dc4abc53b4220
-[b167a4c]: https://github.com/zxfsee/afterburner/commit/b167a4cf94ec26deeeb9582bfd6520e55bc890a4
-[4941233]: https://github.com/zxfsee/afterburner/commit/4941233114d9c8529ca850ea23717566d0002244
-[1046908]: https://github.com/zxfsee/afterburner/commit/1046908d8fbf30768fa769187ca4a57385735ca1
-[17bee52]: https://github.com/zxfsee/afterburner/commit/17bee52ff393b931cded7f9c746a09542458df51
+[14c151f]: https://github.com/zxfsee/afterburner/commit/14c151f1bef06a928e4da6745029f71dc4f02cf5
+[15485b7]: https://github.com/zxfsee/afterburner/commit/15485b73b186df7168c65a3a3baab16c9e5a1c18
+[c2ceccf]: https://github.com/zxfsee/afterburner/commit/c2ceccf37d05579ca42ebeabfd70d79f701747a2
+[de024d0]: https://github.com/zxfsee/afterburner/commit/de024d0f0df48cfc3743067e3b8b679cba227a11
+[1637413]: https://github.com/zxfsee/afterburner/commit/16374133b19f7876163661d5d267b06ddfeaf1b4
+[4af8aac]: https://github.com/zxfsee/afterburner/commit/4af8aac8287be1c93f539d0c7b4b560493d0069f
+[c289810]: https://github.com/zxfsee/afterburner/commit/c289810c74a231d2564912244e8c2dbbeaf39961
+[5e9bc18]: https://github.com/zxfsee/afterburner/commit/5e9bc18426bbb8d2fd1064129f1d38a14738c1b3
+[4932265]: https://github.com/zxfsee/afterburner/commit/4932265adea2a9b4df63f46d5995378d45e60d3a
+[e0cfe47]: https://github.com/zxfsee/afterburner/commit/e0cfe4720924f5d2095e72d4268065d5ec1271a6
+[1e507eb]: https://github.com/zxfsee/afterburner/commit/1e507eb8bde9a72374773f73b34a08fdce949b2c
+[33640a8]: https://github.com/zxfsee/afterburner/commit/33640a89b78dacf73da656dbc6ff26b06858a36c
+[129e859]: https://github.com/zxfsee/afterburner/commit/129e8594eedf1c11638f7585d1339621898a7a0b
+[27002f3]: https://github.com/zxfsee/afterburner/commit/27002f34cfce060ab41cf67c55da73f48e771ae1
+[31ce7d7]: https://github.com/zxfsee/afterburner/commit/31ce7d7f0a776cf47890cab7bf1c541d5d341259
+[87abf6a]: https://github.com/zxfsee/afterburner/commit/87abf6ae5d25aa7704e8d81b23fad398c2e222c4
+[656e2bb]: https://github.com/zxfsee/afterburner/commit/656e2bb3a869c78edc8d42624c2e7779eb315395
+[de3db83]: https://github.com/zxfsee/afterburner/commit/de3db8329e449677c73a6d769442b35453a4a819
 
 <!-- generated by git-cliff -->

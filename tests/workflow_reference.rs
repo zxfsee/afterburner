@@ -20,7 +20,9 @@ fn workflow_reference_is_split_from_frontpage() {
 
     let workflows = repo_file("docs/workflows.md");
     for section in [
+        "## Core repo workflows",
         "## Deployment",
+        "## Validation and hygiene",
         "## Rollout verification",
         "## Cleanup",
         "## Drift",
@@ -34,7 +36,16 @@ fn workflow_reference_is_split_from_frontpage() {
     }
 
     for workflow in [
+        "just build",
+        "just check",
+        "just fmt",
+        "just workflows",
+        "just train",
+        "just infer",
+        "just eval",
         "just deploy-check",
+        "just workspace-gate",
+        "just huggingface-publish",
         "just rollout-verify",
         "just cleanup-dry-run",
         "just profile-provenance-bundle",

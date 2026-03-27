@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Workflow reference completeness gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` aligned with the canonical `just` workflow surface and the current artifact/receipt families so README can stay frontpage-first without drifting from operator entrypoints.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `README.md`, `docs/workflows.md`, `justfile`, `tests/`
-
 - JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Architecture reference ownership gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep `ARCHITECTURE.md` focused on system shape and invariants while `docs/reference.md` owns the faster-moving capability and fit catalog, so future doc cleanup does not drift back into duplicated architecture prose.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `ARCHITECTURE.md`, `docs/reference.md`, `tests/`
 
 ## [Trunk]
 """
