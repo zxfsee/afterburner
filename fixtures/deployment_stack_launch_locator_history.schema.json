@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-stack-launch-locator-history/v1",
+  "title": "Deployment Stack Launch Locator History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "pointer_path",
+          "locator_path",
+          "profile_name",
+          "deploy_hostname",
+          "rollout_entrypoint",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "pointer_path": { "type": "string", "minLength": 1 },
+          "locator_path": { "type": "string", "minLength": 1 },
+          "profile_name": { "type": "string", "minLength": 1 },
+          "deploy_hostname": { "type": "string", "minLength": 1 },
+          "rollout_entrypoint": { "type": "string", "minLength": 1 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
