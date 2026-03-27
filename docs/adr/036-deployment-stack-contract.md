@@ -41,6 +41,10 @@ Add an explicit deployment stack contract.
   `deployment_stack_launch_evidence_bundle_reconciliation.json` artifact so
   downstream deployment tooling can compare desired plan-and-receipt-resolved
   bundle state against the current bundle without ad hoc shell checks.
+- `afterburner deploy record-launch-bundle-reconciliation-history` appends one
+  compact `deployment_stack_launch_evidence_bundle_reconciliation_history.json`
+  artifact over desired-versus-current bundle updates for downstream deployment
+  audit tooling.
 - `afterburner deploy stack-launch-handoff` exports one compact
   `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
   current launch evidence bundle for downstream transport or deployment tools.

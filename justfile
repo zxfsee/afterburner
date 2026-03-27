@@ -72,6 +72,9 @@ deploy-launch-bundle receipt:
 deploy-reconcile-launch-bundle receipt bundle:
     cargo run --locked --bin afterburner -- deploy reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
 
+deploy-record-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-launch-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation_history.json
+
 deploy-launch-handoff bundle:
     cargo run --locked --bin afterburner -- deploy stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 
