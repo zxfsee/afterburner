@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-evidence-handoff-history/v1",
+  "title": "Distributed Shard Lineage Evidence Handoff History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "handoff_path",
+          "bundle_path",
+          "shard_id",
+          "source",
+          "source_revision",
+          "checkpoint_group",
+          "evidence_count",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "handoff_path": { "type": "string", "minLength": 1 },
+          "bundle_path": { "type": "string", "minLength": 1 },
+          "shard_id": { "type": "string", "minLength": 1 },
+          "source": { "type": "string", "minLength": 1 },
+          "source_revision": { "type": "string", "minLength": 1 },
+          "checkpoint_group": { "type": "string", "minLength": 1 },
+          "evidence_count": { "type": "integer", "minimum": 0 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

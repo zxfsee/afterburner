@@ -27,6 +27,9 @@ Current stance: the repo now materializes this provenance layer through
 - Compact append-only history over lineage pointer changes can stay downstream
   and audit-focused as long as it remains derived from the explicit pointer
   artifact instead of controller or shell logs.
+- Compact append-only history over lineage handoff changes can also stay
+  downstream and audit-focused as long as it remains derived from the explicit
+  handoff artifact instead of controller or shell logs.
 - Future distributed provenance tooling can reuse one evidence-reference
   vocabulary instead of inventing ad hoc lineage source fields.
 - The repo records the provenance boundary now while keeping the current

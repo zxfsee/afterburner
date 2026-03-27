@@ -131,6 +131,9 @@ distributed-shard-lineage-evidence-bundle receipt:
 distributed-shard-lineage-handoff bundle:
     cargo run --locked --bin afterburner -- lineage handoff --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_handoff.json
 
+distributed-shard-lineage-record-handoff-history handoff event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- lineage record-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_history.json
+
 distributed-shard-lineage-point-transport-locator handoff:
     cargo run --locked --bin afterburner -- lineage point-transport-locator --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_transport_locator.json
 
