@@ -19,6 +19,10 @@ fn workflow_reference_is_split_from_frontpage() {
     );
 
     let workflows = repo_file("docs/workflows.md");
+    assert!(
+        workflows.contains("`justfile` is the executable source of truth"),
+        "workflow reference must keep justfile as the executable source of truth"
+    );
     for section in [
         "## Core repo workflows",
         "## Deployment",
