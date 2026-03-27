@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-stack-launch-locator-pointer/v1",
+  "title": "Deployment Stack Launch Locator Pointer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "locator_path",
+    "profile_name",
+    "deploy_hostname",
+    "rollout_entrypoint"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "locator_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "profile_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deploy_hostname": {
+      "type": "string",
+      "minLength": 1
+    },
+    "rollout_entrypoint": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

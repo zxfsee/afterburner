@@ -43,6 +43,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy point-launch-transport-locator` exports one stable
   `deployment_stack_launch_transport_locator.json` locator over the current
   launch handoff for transport-facing consumers.
+- `afterburner deploy point-launch-locator` exports one stable
+  `deployment_stack_launch_locator_pointer.json` current-pointer artifact over
+  the current launch transport locator.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
@@ -65,5 +68,7 @@ service or provider-specific deployment logic.
   without depending on the full bundle layout.
 - Transport-facing launch consumers can resolve one stable locator artifact
   without depending on the full handoff path convention.
+- Pointer-oriented launch consumers can also resolve one stable current-pointer
+  artifact without depending on the locator path convention itself.
 - Future deployment adapters can consume one checked stack artifact instead of
   rediscovering runtime layout from recipes or host-local conventions.

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch locator pointer adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Export one stable current-pointer artifact over the deployment stack launch transport locator so downstream deployment consumers can resolve the current stack-launch locator without depending on local locator path conventions.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-
 - Architecture reference ownership gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Keep `ARCHITECTURE.md` focused on system shape and invariants while `docs/reference.md` owns the faster-moving capability and fit catalog, so future doc cleanup does not drift back into duplicated architecture prose.
   - Kind: `gate`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- Deployment stack launch locator history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history record over deployment stack launch locator pointer changes so downstream deployment tooling can audit pointer updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
 
 ## [Trunk]
