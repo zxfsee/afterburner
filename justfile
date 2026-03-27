@@ -128,6 +128,9 @@ distributed-shard-lineage-point-transport-locator handoff:
 distributed-shard-lineage-point-locator locator:
     cargo run --locked --bin afterburner -- lineage point-locator --locator {{ locator }} --out artifacts/train/distributed_shard_lineage_locator_pointer.json
 
+distributed-shard-lineage-record-locator-history pointer event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- lineage record-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_locator_history.json
+
 pretraining-source-approval-receipt source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- source approval-receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }} --out artifacts/data/pretraining_source_approval_receipt.json
 

@@ -96,3 +96,4 @@ Operational workflow details live here so the README can stay focused on project
 - `just distributed-shard-lineage-handoff <bundle>` writes `distributed_shard_lineage_evidence_handoff.json`.
 - `just distributed-shard-lineage-point-transport-locator <handoff>` writes `distributed_shard_lineage_transport_locator.json`.
 - `just distributed-shard-lineage-point-locator <locator>` writes `distributed_shard_lineage_locator_pointer.json`.
+- `just distributed-shard-lineage-record-locator-history <pointer> <event> <recorded-at-unix-ms>` writes `distributed_shard_lineage_locator_history.json`.

@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "pointed",
+      "pointer_path": "artifacts/train/distributed_shard_lineage_locator_pointer.json",
+      "locator_path": "artifacts/train/distributed_shard_lineage_transport_locator.json",
+      "shard_id": "shard-0001",
+      "source": "fineweb-edu/slice",
+      "source_revision": "sample-2026-03-01",
+      "checkpoint_group": "group-a",
+      "recorded_at_unix_ms": 1735689800000
+    }
+  ]
+}
