@@ -8,6 +8,7 @@ mod cmd_deployment_stack_launch_bundle;
 mod cmd_deployment_stack_launch_handoff;
 mod cmd_deployment_stack_launch_plan;
 mod cmd_deployment_stack_launch_receipt;
+mod cmd_deployment_stack_launch_transport_locator;
 mod cmd_deployment_verification_bundle;
 mod cmd_deployment_verification_handoff;
 mod cmd_deployment_verification_receipt;
@@ -184,6 +185,9 @@ where
         "stack-launch-handoff" => cmd_deployment_stack_launch_handoff::run(args),
         "stack-launch-plan" => cmd_deployment_stack_launch_plan::run(args),
         "stack-launch-receipt" => cmd_deployment_stack_launch_receipt::run(args),
+        "point-launch-transport-locator" => {
+            cmd_deployment_stack_launch_transport_locator::run(args)
+        }
         "verification-receipt" => cmd_deployment_verification_receipt::run(args),
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "verification-handoff" => cmd_deployment_verification_handoff::run(args),

@@ -40,6 +40,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-launch-handoff` exports one compact
   `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
   current launch evidence bundle for downstream transport or deployment tools.
+- `afterburner deploy point-launch-transport-locator` exports one stable
+  `deployment_stack_launch_transport_locator.json` locator over the current
+  launch handoff for transport-facing consumers.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
@@ -60,5 +63,7 @@ service or provider-specific deployment logic.
   than chasing separate launch plan and launch receipt artifacts.
 - Downstream launch consumers can also resolve one smaller handoff artifact
   without depending on the full bundle layout.
+- Transport-facing launch consumers can resolve one stable locator artifact
+  without depending on the full handoff path convention.
 - Future deployment adapters can consume one checked stack artifact instead of
   rediscovering runtime layout from recipes or host-local conventions.

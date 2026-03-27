@@ -111,12 +111,4 @@ The stack is intentionally simple:
 - clear system boundaries
 - infrastructure that can be reasoned about end-to-end
 
-## Documentation
-
-- [Architecture overview](./ARCHITECTURE.md)
-- [Design decisions (ADRs)](./docs/adr/)
-- [Changelog](./CHANGELOG.md)
-
----
-
 License: MIT

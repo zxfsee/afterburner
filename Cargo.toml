@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch transport locator adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Export one stable transport-facing locator over the deployment stack launch evidence handoff so downstream deployment consumers can resolve the current stack-launch handoff without depending on local bundle or handoff path conventions.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-
 - Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
   - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
   - Kind: `gate`
@@ -33,6 +26,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `ops`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Deployment stack launch locator pointer adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Export one stable current-pointer artifact over the deployment stack launch transport locator so downstream deployment consumers can resolve the current stack-launch locator without depending on local locator path conventions.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
 
 - Architecture reference ownership gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Keep `ARCHITECTURE.md` focused on system shape and invariants while `docs/reference.md` owns the faster-moving capability and fit catalog, so future doc cleanup does not drift back into duplicated architecture prose.
