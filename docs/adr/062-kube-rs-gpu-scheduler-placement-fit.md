@@ -31,6 +31,9 @@ scheduler model.
 
 - The cluster path stays aligned with the existing scheduler/runtime boundary
   instead of inventing a second orchestration vocabulary.
+- Compact append-only history over kube-rs lease pointer changes can stay
+  downstream and audit-focused as long as it remains derived from the explicit
+  pointer artifact instead of controller or shell logs.
 - Placement and reconciliation logic can evolve without coupling training-state
   semantics into Kubernetes objects.
 - The repo keeps one scheduler model across local host and cluster substrates.
