@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage locator pointer adapter [Distributed Training, Data Infra]
-  - Goal: Export one stable current-pointer artifact over the distributed shard lineage transport locator so downstream distributed tooling can resolve the current lineage locator without depending on local locator path conventions.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
-
 - kube-rs GPU lease pointer adapter [Runtime Infra, Serving/Deployment Infra]
   - Goal: Export one stable current-pointer artifact over the kube-rs GPU lease reconciliation surface so the cluster-path scheduler can resolve the active lease state without depending on local reconciliation artifact paths.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- Distributed shard lineage handoff history adapter [Distributed Training, Data Infra]
+  - Goal: Append one compact history artifact over distributed shard lineage evidence handoff changes so downstream lineage tooling can audit handoff updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
 
 ## [Trunk]
