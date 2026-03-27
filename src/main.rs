@@ -18,6 +18,7 @@ mod cmd_deployment_stack_launch_receipt;
 mod cmd_deployment_stack_launch_transport_locator;
 mod cmd_deployment_stack_launch_transport_locator_history;
 mod cmd_deployment_stack_launch_transport_locator_reconcile;
+mod cmd_deployment_stack_launch_transport_locator_reconciliation_history;
 mod cmd_deployment_verification_bundle;
 mod cmd_deployment_verification_handoff;
 mod cmd_deployment_verification_receipt;
@@ -223,6 +224,9 @@ where
         }
         "record-launch-transport-locator-history" => {
             cmd_deployment_stack_launch_transport_locator_history::run(args)
+        }
+        "record-launch-transport-locator-reconciliation-history" => {
+            cmd_deployment_stack_launch_transport_locator_reconciliation_history::run(args)
         }
         "stack-launch-plan" => cmd_deployment_stack_launch_plan::run(args),
         "stack-launch-receipt" => cmd_deployment_stack_launch_receipt::run(args),

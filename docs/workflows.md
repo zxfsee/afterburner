@@ -42,6 +42,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deploy-point-launch-transport-locator` writes `deployment_stack_launch_transport_locator.json`.
 - `just deploy-record-launch-transport-locator-history` writes `deployment_stack_launch_transport_locator_history.json`.
 - `just deploy-reconcile-launch-transport-locator` writes `deployment_stack_launch_transport_locator_reconciliation.json`.
+- `just deploy-record-launch-transport-locator-reconciliation-history` writes `deployment_stack_launch_transport_locator_reconciliation_history.json`.
 - `just deploy-point-launch-locator` writes `deployment_stack_launch_locator_pointer.json`.
 - `just deploy-reconcile-launch-locator` writes `deployment_stack_launch_locator_reconciliation.json`.
 - `just deploy-record-launch-locator-history` writes `deployment_stack_launch_locator_history.json`.
