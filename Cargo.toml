@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch locator reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment stack launch locator pointer so downstream deployment consumers can compare desired versus current locator state without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
-
 - Deployment stack launch handoff history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment stack launch evidence handoff changes so downstream deployment tooling can audit handoff updates without reading shell or process logs.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment stack launch transport locator history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment stack launch transport locator changes so downstream deployment tooling can audit handoff-to-locator updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment stack launch transport locator reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment stack launch transport locator so downstream deployment consumers can compare desired handoff-resolved locator state against the current transport locator without depending on ad hoc shell checks.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

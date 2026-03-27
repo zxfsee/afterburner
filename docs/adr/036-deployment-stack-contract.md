@@ -46,6 +46,10 @@ Add an explicit deployment stack contract.
 - `afterburner deploy point-launch-locator` exports one stable
   `deployment_stack_launch_locator_pointer.json` current-pointer artifact over
   the current launch transport locator.
+- `afterburner deploy reconcile-launch-locator` exports one stable
+  `deployment_stack_launch_locator_reconciliation.json` artifact so downstream
+  deployment tooling can compare desired launch-locator state against the
+  current pointer without ad hoc shell checks.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.
