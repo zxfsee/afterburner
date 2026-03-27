@@ -20,16 +20,6 @@ Rules:
 
 ## Items
 
-- Cooperative checkpoint preemption fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define the scheduler-side contract for cooperative checkpoint/resume preemption so urgent jobs can interrupt lower-priority work only at safe runtime checkpoint boundaries instead of assuming transparent GPU task suspension.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`, `event`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by:
-    - GPU scheduler boundary and lifecycle gate.
-    - Burn distributed optimizer and checkpoint state contract.
-
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`

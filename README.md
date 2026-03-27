@@ -67,6 +67,8 @@ lifecycle semantics, and distributed/runtime stance live in
 Training runs through `afterburner train`. The repo currently supports the
 MNIST path plus a bounded text-pretraining path via `--task text`, and writes
 versioned artifacts under `artifacts/train/` and `artifacts/inference/`.
+Future distributed recovery should keep optimizer-state and restore boundaries
+anchored to an explicit `checkpoint_group`.
 
 ## Inference
 

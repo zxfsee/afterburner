@@ -299,6 +299,8 @@ auto-versioning, embedded serving) are intentionally absent.
   and `device-group` semantics.
 - Distributed checkpoint recovery remains explicit through the `checkpoint index`, anchored to
   `distributed_shard_metadata`.
+- Distributed optimizer-state recovery remains an in-job concern and stays anchored to an
+  explicit `checkpoint_group`.
 - Distributed shard lineage receipt remains explicit and anchors to `checkpoint_group`.
 - The distributed shard lineage evidence provenance contract remains explicit and anchors to the
   `distributed shard lineage receipt`.
@@ -383,6 +385,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
 - [ADR-060: JSON Over RON Fit](./docs/adr/060-json-over-ron-fit.md)
+- [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)

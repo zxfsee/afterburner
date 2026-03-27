@@ -138,6 +138,8 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
   - remote locator contract
   - separate post-training pipeline
   - distributed checkpoint index contract
+  - distributed optimizer-state recovery
+  - `checkpoint_group`
   - RL rollout metadata contract
   - `rl_rollout_metadata.schema.json`
   - vectorized-environment stance

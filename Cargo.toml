@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn distributed optimizer and checkpoint state gate [Distributed Training, Runtime Infra]
-  - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Deployment stack launch transport locator adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Export one stable transport-facing locator over the deployment stack launch evidence handoff so downstream deployment consumers can resolve the current stack-launch handoff without depending on local bundle or handoff path conventions.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `none`
   - Scope: `README.md`, `docs/workflows.md`, `docs/reference.md`, `ARCHITECTURE.md`, `tests/`
+
+- Cooperative checkpoint preemption fit gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define the scheduler-side contract for cooperative checkpoint/resume preemption so urgent jobs can interrupt lower-priority work only at safe runtime checkpoint boundaries instead of assuming transparent GPU task suspension.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `ops`, `event`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
 
 ## [Trunk]
 """
