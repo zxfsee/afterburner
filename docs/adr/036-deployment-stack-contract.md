@@ -53,6 +53,10 @@ Add an explicit deployment stack contract.
   `deployment_stack_launch_locator_reconciliation.json` artifact so downstream
   deployment tooling can compare desired launch-locator state against the
   current pointer without ad hoc shell checks.
+- `afterburner deploy record-launch-locator-reconciliation-history` appends one
+  compact `deployment_stack_launch_locator_reconciliation_history.json`
+  artifact over desired-versus-current locator updates for downstream
+  deployment audit tooling.
 - `just deploy-check` must validate both the deploy-rs baseline and the stack
   contract so deployment covers service surface, artifact roots, rollout
   entrypoint, and observability hooks together.

@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "reconciled",
+      "reconciliation_path": "artifacts/deploy/deployment_stack_launch_locator_reconciliation.json",
+      "plan_path": "artifacts/deploy/deployment_stack_launch_plan.json",
+      "pointer_path": "artifacts/deploy/deployment_stack_launch_locator_pointer.json",
+      "reconciliation_status": "aligned",
+      "desired": {
+        "profile_name": "staging-a",
+        "deploy_hostname": "staging.example.net",
+        "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current"
+      },
+      "current": {
+        "locator_path": "artifacts/deploy/deployment_stack_launch_transport_locator.json",
+        "profile_name": "staging-a",
+        "deploy_hostname": "staging.example.net",
+        "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current"
+      },
+      "recorded_at_unix_ms": 1735689800000
+    }
+  ]
+}

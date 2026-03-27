@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch locator reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment stack launch locator reconciliation changes so downstream deployment tooling can audit desired-versus-current locator updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - kube-rs GPU lease reconciliation history adapter [Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over kube-rs GPU lease reconciliation changes so cluster-path scheduler tooling can audit desired lease-state updates without reading controller or shell logs.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment stack launch transport locator reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment stack launch transport locator reconciliation changes so downstream deployment tooling can audit desired-versus-current transport locator updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 ## [Trunk]

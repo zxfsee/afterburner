@@ -39,6 +39,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deploy-point-launch-locator <locator>` writes `deployment_stack_launch_locator_pointer.json`.
 - `just deploy-reconcile-launch-locator <plan> <pointer>` writes `deployment_stack_launch_locator_reconciliation.json`.
 - `just deploy-record-launch-locator-history <pointer> <event> <recorded-at-unix-ms>` writes `deployment_stack_launch_locator_history.json`.
+- `just deploy-record-launch-locator-reconciliation-history <reconciliation> <event> <recorded-at-unix-ms>` writes `deployment_stack_launch_locator_reconciliation_history.json`.
 - `just kube-rs-lease-reconcile <lease> <namespace> <resource-name>` writes `kube_rs_gpu_lease_reconciliation.json`.
 - `just kube-rs-lease-point <reconciliation>` writes `kube_rs_gpu_lease_pointer.json`.
 - `just kube-rs-lease-record-history <pointer> <event> <recorded-at-unix-ms>` writes `kube_rs_gpu_lease_history.json`.
