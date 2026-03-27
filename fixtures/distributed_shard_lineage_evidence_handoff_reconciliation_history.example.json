@@ -1,0 +1,28 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "reconciled",
+      "reconciliation_path": "artifacts/train/distributed_shard_lineage_evidence_handoff_reconciliation.json",
+      "bundle_path": "artifacts/train/distributed_shard_lineage_evidence_bundle.json",
+      "handoff_path": "artifacts/train/distributed_shard_lineage_evidence_handoff.json",
+      "reconciliation_status": "aligned",
+      "desired": {
+        "shard_id": "train-shard-0003",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
+        "checkpoint_group": "ckpt-group-0007",
+        "evidence_count": 1
+      },
+      "current": {
+        "bundle_path": "artifacts/train/distributed_shard_lineage_evidence_bundle.json",
+        "shard_id": "train-shard-0003",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
+        "checkpoint_group": "ckpt-group-0007",
+        "evidence_count": 1
+      },
+      "recorded_at_unix_ms": 1735689800000
+    }
+  ]
+}

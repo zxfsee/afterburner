@@ -29,6 +29,7 @@ mod cmd_distributed_shard_lineage_evidence_bundle;
 mod cmd_distributed_shard_lineage_handoff;
 mod cmd_distributed_shard_lineage_handoff_history;
 mod cmd_distributed_shard_lineage_handoff_reconcile;
+mod cmd_distributed_shard_lineage_handoff_reconciliation_history;
 mod cmd_distributed_shard_lineage_locator_history;
 mod cmd_distributed_shard_lineage_locator_pointer;
 mod cmd_distributed_shard_lineage_receipt;
@@ -157,6 +158,9 @@ where
         "handoff" => cmd_distributed_shard_lineage_handoff::run(args),
         "record-handoff-history" => cmd_distributed_shard_lineage_handoff_history::run(args),
         "reconcile-handoff" => cmd_distributed_shard_lineage_handoff_reconcile::run(args),
+        "record-handoff-reconciliation-history" => {
+            cmd_distributed_shard_lineage_handoff_reconciliation_history::run(args)
+        }
         "record-locator-history" => cmd_distributed_shard_lineage_locator_history::run(args),
         "point-locator" => cmd_distributed_shard_lineage_locator_pointer::run(args),
         "point-transport-locator" => cmd_distributed_shard_lineage_transport_locator::run(args),

@@ -33,6 +33,9 @@ Current stance: the repo now materializes this provenance layer through
 - A reconciliation artifact over lineage handoff state is also acceptable as a
   downstream comparison surface as long as it remains derived from the explicit
   bundle and handoff artifacts instead of controller or shell checks.
+- Compact append-only history over lineage handoff reconciliation changes can
+  also stay downstream and audit-focused as long as it remains derived from the
+  explicit reconciliation artifact instead of controller or shell logs.
 - Future distributed provenance tooling can reuse one evidence-reference
   vocabulary instead of inventing ad hoc lineage source fields.
 - The repo records the provenance boundary now while keeping the current
