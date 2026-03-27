@@ -29,6 +29,8 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "dashboard:",
         "deploy-check:",
         "profile-infer:",
+        "changelog:",
+        "queue-snapshot-check:",
         "workspace-gate:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -57,7 +59,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "just eval-gate",
         "just backend-profile-gate",
         "just dashboard",
+        "just changelog",
         "just profile-infer",
+        "just queue-snapshot-check",
     ] {
         assert!(
             readme.contains(workflow),

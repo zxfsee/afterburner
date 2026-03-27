@@ -27,6 +27,8 @@ Operational workflow details live here so the README can stay focused on project
 ## Validation and hygiene
 
 - `just workspace-gate` validates the workspace/core dependency boundaries.
+- `just changelog` regenerates `CHANGELOG.md` and stamps the active queue snapshot.
+- `just queue-snapshot-check` validates that the stamped queue snapshot still matches the current active TODO block and parent commit.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment

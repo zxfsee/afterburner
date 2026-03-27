@@ -351,3 +351,7 @@ test-cargo:
 # regenerate CHANGELOG.md from git history
 changelog:
     git-cliff -o CHANGELOG.md
+    let parent = (git rev-parse --verify HEAD | str trim); cargo run --locked --bin afterburner_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+
+queue-snapshot-check:
+    let parent = (git rev-parse --verify HEAD | str trim); cargo run --locked --bin afterburner_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent

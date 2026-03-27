@@ -13,19 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment stack launch evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current bundle updates without reading shell or process logs.
+- Turn objective lock guard [Runtime Infra]
+  - Goal: Pin the current execution objective class and reject out-of-scope repo mutations before work proceeds so queue-only, backlog-only, docs-only, and execute-item turns cannot silently drift into each other.
   - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
-- Distributed shard lineage evidence bundle reconciliation history adapter [Distributed Training, Data Infra]
-  - Goal: Append one compact history artifact over distributed shard lineage evidence bundle reconciliation changes so downstream lineage tooling can audit desired-versus-current bundle updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+  - Boundary: `repo-workflow`
+  - Contracts: `ops`
+  - Scope: `src/bin/`, `tests/`, `justfile`, `NOTE.md`
 
 - Deployment verification evidence bundle reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment verification evidence bundle so downstream deployment consumers can compare desired receipt-resolved verification state against the current bundle without depending on ad hoc shell checks.
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current verification bundle updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification receipt reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment verification receipt so downstream deployment consumers can compare desired verification state against the current receipt without depending on ad hoc shell checks.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
