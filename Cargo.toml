@@ -13,20 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage evidence bundle handoff gate [Distributed Training, Data Infra]
-  - Goal: Define the minimum handoff contract for distributed shard lineage evidence bundles so downstream distributed tooling can resolve one stable bundle entrypoint without depending on surrounding checkpoint workspace layout.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
-- kube-rs GPU scheduler placement fit gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define a kube-rs-compatible control-plane contract for node inventory, topology-aware GPU placement, queue admission, and job lifecycle reconciliation so the later cluster path can reuse the same lease and state-boundary model as the single-node scheduler.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `ops`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-
 - Deployment stack launch locator pointer adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Export one stable current-pointer artifact over the deployment stack launch transport locator so downstream deployment consumers can resolve the current stack-launch locator without depending on local locator path conventions.
   - Kind: `mixed`
@@ -54,6 +40,20 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `ops`, `event`
   - Scope: `docs/adr/`, `README.md`, `tests/`
+
+- Distributed shard lineage transport locator adapter [Distributed Training, Data Infra]
+  - Goal: Export one stable transport-facing locator over the distributed shard lineage evidence handoff so downstream distributed tooling can resolve the current lineage handoff without depending on local handoff path conventions.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- kube-rs GPU lease reconciliation adapter [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize a kube-rs-oriented lease reconciliation surface that reuses the existing scheduler lease and lifecycle model so the cluster path can evolve through one adapter contract instead of ad hoc controller assumptions.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
 
 ## [Trunk]
 """

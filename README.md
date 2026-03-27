@@ -61,6 +61,9 @@ The runtime decides how one job uses GPUs; the scheduler decides who gets GPUs
 and when; the platform provides the execution substrate. Detailed boundaries,
 lifecycle semantics, and distributed/runtime stance live in
 [Architecture](./ARCHITECTURE.md) and the linked ADRs.
+The later cluster path stays `kube-rs-compatible` and reuses the same lease and
+lifecycle model as the single-node scheduler instead of inventing a second
+scheduler vocabulary.
 
 ## Training
 
