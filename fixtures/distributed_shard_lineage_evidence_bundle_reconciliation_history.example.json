@@ -1,0 +1,43 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "reconciled",
+      "reconciliation_path": "artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation.json",
+      "receipt_path": "artifacts/train/distributed_shard_lineage_receipt.json",
+      "bundle_path": "artifacts/train/distributed_shard_lineage_evidence_bundle.json",
+      "reconciliation_status": "aligned",
+      "desired": {
+        "receipt_path": "artifacts/train/distributed_shard_lineage_receipt.json",
+        "shard_id": "train-shard-0003",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
+        "checkpoint_group": "ckpt-group-0007",
+        "evidence_count": 1,
+        "evidence_sources": [
+          {
+            "metadata_path": "fixtures/distributed_shard_metadata.example.json",
+            "checkpoint_root": "artifacts/train/checkpoints/group-0007",
+            "observed_at_unix_ms": 1735689600000
+          }
+        ]
+      },
+      "current": {
+        "receipt_path": "artifacts/train/distributed_shard_lineage_receipt.json",
+        "shard_id": "train-shard-0003",
+        "source": "fineweb-edu/slice",
+        "source_revision": "2026-03-22-macbook-100m-tokens",
+        "checkpoint_group": "ckpt-group-0007",
+        "evidence_count": 1,
+        "evidence_sources": [
+          {
+            "metadata_path": "fixtures/distributed_shard_metadata.example.json",
+            "checkpoint_root": "artifacts/train/checkpoints/group-0007",
+            "observed_at_unix_ms": 1735689600000
+          }
+        ]
+      },
+      "recorded_at_unix_ms": 1735689800000
+    }
+  ]
+}

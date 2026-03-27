@@ -158,6 +158,9 @@ distributed-shard-lineage-evidence-bundle receipt:
 distributed-shard-lineage-reconcile-evidence-bundle receipt bundle:
     cargo run --locked --bin afterburner -- lineage reconcile-evidence-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation.json
 
+distributed-shard-lineage-record-evidence-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- lineage record-evidence-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation_history.json
+
 distributed-shard-lineage-handoff bundle:
     cargo run --locked --bin afterburner -- lineage handoff --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_handoff.json
 

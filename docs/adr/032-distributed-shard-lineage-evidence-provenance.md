@@ -50,5 +50,9 @@ Current stance: the repo now materializes this provenance layer through
   acceptable as a downstream comparison surface as long as it remains derived
   from the explicit receipt and bundle artifacts instead of controller or shell
   checks.
+- Compact append-only history over lineage evidence bundle reconciliation
+  changes can also stay downstream and audit-focused as long as it remains
+  derived from the explicit reconciliation artifact instead of controller or
+  shell logs.
 - The repo records the provenance boundary now while keeping the current
   lineage-receipt contract narrow.
