@@ -152,6 +152,9 @@ distributed-shard-lineage-receipt metadata shard_id source source_revision check
 distributed-shard-lineage-evidence-bundle receipt:
     cargo run --locked --bin afterburner -- lineage evidence-bundle --receipt {{ receipt }} --out artifacts/train/distributed_shard_lineage_evidence_bundle.json
 
+distributed-shard-lineage-reconcile-evidence-bundle receipt bundle:
+    cargo run --locked --bin afterburner -- lineage reconcile-evidence-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation.json
+
 distributed-shard-lineage-handoff bundle:
     cargo run --locked --bin afterburner -- lineage handoff --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_handoff.json
 

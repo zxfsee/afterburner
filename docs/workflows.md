@@ -106,6 +106,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just pretraining-source-provenance-evidence-bundle` writes `pretraining_source_provenance_evidence_bundle.json`.
 - `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.
 - `just distributed-shard-lineage-evidence-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.
+- `just distributed-shard-lineage-reconcile-evidence-bundle` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.
 - `just distributed-shard-lineage-handoff` writes `distributed_shard_lineage_evidence_handoff.json`.
 - `just distributed-shard-lineage-reconcile-handoff` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.
 - `just distributed-shard-lineage-record-handoff-history` writes `distributed_shard_lineage_evidence_handoff_history.json`.

@@ -93,6 +93,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `pretraining_source_provenance_evidence_bundle.json`
   - `distributed_shard_lineage_receipt.json`
   - `distributed_shard_lineage_evidence_bundle.json`
+  - `distributed_shard_lineage_evidence_bundle_reconciliation.json`
   - `distributed_shard_lineage_evidence_handoff.json`
   - `distributed_shard_lineage_evidence_handoff_reconciliation.json`
   - `distributed_shard_lineage_evidence_handoff_history.json`

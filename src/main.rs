@@ -27,6 +27,7 @@ mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
 mod cmd_distributed_runtime_profile;
 mod cmd_distributed_shard_lineage_evidence_bundle;
+mod cmd_distributed_shard_lineage_evidence_bundle_reconcile;
 mod cmd_distributed_shard_lineage_handoff;
 mod cmd_distributed_shard_lineage_handoff_history;
 mod cmd_distributed_shard_lineage_handoff_reconcile;
@@ -157,6 +158,9 @@ where
     };
     match subcommand.as_str() {
         "evidence-bundle" => cmd_distributed_shard_lineage_evidence_bundle::run(args),
+        "reconcile-evidence-bundle" => {
+            cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(args)
+        }
         "handoff" => cmd_distributed_shard_lineage_handoff::run(args),
         "record-handoff-history" => cmd_distributed_shard_lineage_handoff_history::run(args),
         "reconcile-handoff" => cmd_distributed_shard_lineage_handoff_reconcile::run(args),
