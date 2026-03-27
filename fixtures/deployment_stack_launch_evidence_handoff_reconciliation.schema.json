@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-stack-launch-evidence-handoff-reconciliation/v1",
+  "title": "Deployment Stack Launch Evidence Handoff Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_path",
+    "handoff_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "bundle_path": { "type": "string", "minLength": 1 },
+    "handoff_path": { "type": "string", "minLength": 1 },
+    "desired": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_name",
+        "deploy_hostname",
+        "deployable_unit",
+        "rollout_entrypoint",
+        "launched_at_unix_ms",
+        "evidence_count"
+      ],
+      "properties": {
+        "profile_name": { "type": "string", "minLength": 1 },
+        "deploy_hostname": { "type": "string", "minLength": 1 },
+        "deployable_unit": { "type": "string", "minLength": 1 },
+        "rollout_entrypoint": { "type": "string", "minLength": 1 },
+        "launched_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "evidence_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "current": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle_path",
+        "profile_name",
+        "deploy_hostname",
+        "deployable_unit",
+        "rollout_entrypoint",
+        "launched_at_unix_ms",
+        "evidence_count"
+      ],
+      "properties": {
+        "bundle_path": { "type": "string", "minLength": 1 },
+        "profile_name": { "type": "string", "minLength": 1 },
+        "deploy_hostname": { "type": "string", "minLength": 1 },
+        "deployable_unit": { "type": "string", "minLength": 1 },
+        "rollout_entrypoint": { "type": "string", "minLength": 1 },
+        "launched_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "evidence_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}

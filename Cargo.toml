@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch handoff reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment stack launch evidence handoff so downstream deployment consumers can compare desired bundle-resolved handoff state against the current handoff without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Distributed shard lineage handoff reconciliation adapter [Distributed Training, Data Infra]
   - Goal: Materialize one reconciliation artifact over the distributed shard lineage evidence handoff so downstream lineage consumers can compare desired bundle-resolved handoff state against the current handoff without depending on ad hoc shell checks.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Distributed shard lineage transport locator reconciliation adapter [Distributed Training, Data Infra]
   - Goal: Materialize one reconciliation artifact over the distributed shard lineage transport locator so downstream lineage consumers can compare desired handoff-resolved locator state against the current transport locator without depending on ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Distributed shard lineage transport locator reconciliation history adapter [Distributed Training, Data Infra]
+  - Goal: Append one compact history artifact over distributed shard lineage transport locator reconciliation changes so downstream lineage tooling can audit desired-versus-current transport locator updates without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`

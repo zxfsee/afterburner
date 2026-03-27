@@ -7,6 +7,7 @@ mod cmd_deployment_stack_check;
 mod cmd_deployment_stack_launch_bundle;
 mod cmd_deployment_stack_launch_handoff;
 mod cmd_deployment_stack_launch_handoff_history;
+mod cmd_deployment_stack_launch_handoff_reconcile;
 mod cmd_deployment_stack_launch_locator_history;
 mod cmd_deployment_stack_launch_locator_pointer;
 mod cmd_deployment_stack_launch_locator_reconcile;
@@ -209,6 +210,7 @@ where
         "stack-launch-bundle" => cmd_deployment_stack_launch_bundle::run(args),
         "stack-launch-handoff" => cmd_deployment_stack_launch_handoff::run(args),
         "record-launch-handoff-history" => cmd_deployment_stack_launch_handoff_history::run(args),
+        "reconcile-launch-handoff" => cmd_deployment_stack_launch_handoff_reconcile::run(args),
         "record-launch-locator-history" => cmd_deployment_stack_launch_locator_history::run(args),
         "record-launch-locator-reconciliation-history" => {
             cmd_deployment_stack_launch_locator_reconciliation_history::run(args)
