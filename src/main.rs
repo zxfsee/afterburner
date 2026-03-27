@@ -15,6 +15,7 @@ mod cmd_deployment_stack_launch_plan;
 mod cmd_deployment_stack_launch_receipt;
 mod cmd_deployment_stack_launch_transport_locator;
 mod cmd_deployment_stack_launch_transport_locator_history;
+mod cmd_deployment_stack_launch_transport_locator_reconcile;
 mod cmd_deployment_verification_bundle;
 mod cmd_deployment_verification_handoff;
 mod cmd_deployment_verification_receipt;
@@ -219,6 +220,9 @@ where
         "stack-launch-receipt" => cmd_deployment_stack_launch_receipt::run(args),
         "point-launch-locator" => cmd_deployment_stack_launch_locator_pointer::run(args),
         "reconcile-launch-locator" => cmd_deployment_stack_launch_locator_reconcile::run(args),
+        "reconcile-launch-transport-locator" => {
+            cmd_deployment_stack_launch_transport_locator_reconcile::run(args)
+        }
         "point-launch-transport-locator" => {
             cmd_deployment_stack_launch_transport_locator::run(args)
         }

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch transport locator reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment stack launch transport locator so downstream deployment consumers can compare desired handoff-resolved locator state against the current transport locator without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment stack launch handoff reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment stack launch evidence handoff so downstream deployment consumers can compare desired bundle-resolved handoff state against the current handoff without depending on ad hoc shell checks.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Distributed shard lineage transport locator reconciliation adapter [Distributed Training, Data Infra]
+  - Goal: Materialize one reconciliation artifact over the distributed shard lineage transport locator so downstream lineage consumers can compare desired handoff-resolved locator state against the current transport locator without depending on ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 ## [Trunk]

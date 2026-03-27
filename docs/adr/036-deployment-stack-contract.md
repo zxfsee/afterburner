@@ -49,6 +49,10 @@ Add an explicit deployment stack contract.
 - `afterburner deploy record-launch-transport-locator-history` appends one
   compact `deployment_stack_launch_transport_locator_history.json` artifact
   over transport-locator changes for downstream deployment audit tooling.
+- `afterburner deploy reconcile-launch-transport-locator` exports one stable
+  `deployment_stack_launch_transport_locator_reconciliation.json` artifact so
+  downstream deployment tooling can compare desired handoff-resolved locator
+  state against the current transport locator without ad hoc shell checks.
 - `afterburner deploy point-launch-locator` exports one stable
   `deployment_stack_launch_locator_pointer.json` current-pointer artifact over
   the current launch transport locator.
