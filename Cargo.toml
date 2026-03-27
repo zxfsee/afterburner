@@ -13,20 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Architecture reference ownership gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep `ARCHITECTURE.md` focused on system shape and invariants while `docs/reference.md` owns the faster-moving capability and fit catalog, so future doc cleanup does not drift back into duplicated architecture prose.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `ARCHITECTURE.md`, `docs/reference.md`, `tests/`
-
-- Docs ownership separation gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep `README.md`, `docs/workflows.md`, `docs/reference.md`, and `ARCHITECTURE.md` in distinct roles so frontpage, workflow, capability, and architecture content do not drift back into duplicated ownership.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `none`
-  - Scope: `README.md`, `docs/workflows.md`, `docs/reference.md`, `ARCHITECTURE.md`, `tests/`
-
 - Cooperative checkpoint preemption fit gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define the scheduler-side contract for cooperative checkpoint/resume preemption so urgent jobs can interrupt lower-priority work only at safe runtime checkpoint boundaries instead of assuming transparent GPU task suspension.
   - Kind: `gate`
@@ -53,6 +39,20 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- Distributed shard lineage locator pointer adapter [Distributed Training, Data Infra]
+  - Goal: Export one stable current-pointer artifact over the distributed shard lineage transport locator so downstream distributed tooling can resolve the current lineage locator without depending on local locator path conventions.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- kube-rs GPU lease pointer adapter [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Export one stable current-pointer artifact over the kube-rs GPU lease reconciliation surface so the cluster-path scheduler can resolve the active lease state without depending on local reconciliation artifact paths.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
 
 ## [Trunk]
