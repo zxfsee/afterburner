@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "lease_path": "artifacts/deploy/gpu_scheduler_lease.json",
+  "lease_id": "lease-job-0001",
+  "job_id": "job-0001",
+  "node_id": "node-a",
+  "gpu_ids": ["0"],
+  "checkpoint_mode": "cooperative",
+  "namespace": "afterburner-system",
+  "resource_name": "lease-job-0001",
+  "desired_state": "present"
+}

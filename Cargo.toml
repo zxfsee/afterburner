@@ -13,20 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard lineage transport locator adapter [Distributed Training, Data Infra]
-  - Goal: Export one stable transport-facing locator over the distributed shard lineage evidence handoff so downstream distributed tooling can resolve the current lineage handoff without depending on local handoff path conventions.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
-
-- kube-rs GPU lease reconciliation adapter [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize a kube-rs-oriented lease reconciliation surface that reuses the existing scheduler lease and lifecycle model so the cluster path can evolve through one adapter contract instead of ad hoc controller assumptions.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
-
 - Deployment stack launch locator history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history record over deployment stack launch locator pointer changes so downstream deployment tooling can audit pointer updates without reading shell or process logs.
   - Kind: `mixed`
@@ -53,6 +39,20 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- kube-rs GPU lease history adapter [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over kube-rs GPU lease pointer changes so cluster-path scheduler tooling can audit lease-state updates without reading controller or shell logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
+
+- Deployment stack launch locator reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment stack launch locator pointer so downstream deployment consumers can compare desired versus current locator state without depending on ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `ops`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `docs/adr/`
 
 ## [Trunk]

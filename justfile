@@ -87,6 +87,9 @@ rollout-check candidate_artifact candidate_manifest ownership provider destinati
 huggingface-publish request:
     cargo run --locked --bin afterburner -- deploy hf-publish --request {{ request }}
 
+kube-rs-lease-reconcile lease namespace resource_name:
+    cargo run --locked --bin afterburner -- deploy kube-rs-lease-reconcile --lease {{ lease }} --namespace {{ namespace }} --resource-name {{ resource_name }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation.json
+
 single-node-scheduler job inventory:
     cargo run --locked --bin afterburner -- deploy single-node-scheduler --job {{ job }} --inventory {{ inventory }} --out-lease artifacts/deploy/gpu_scheduler_lease.json --out-unit artifacts/deploy/afterburner-job.service
 

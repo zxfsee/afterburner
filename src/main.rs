@@ -35,6 +35,7 @@ mod cmd_drift_receipt;
 mod cmd_eval;
 mod cmd_hf_publish;
 mod cmd_infer;
+mod cmd_kube_rs_lease_reconcile;
 mod cmd_pretraining_source_approval_receipt;
 mod cmd_pretraining_source_provenance_evidence_bundle;
 mod cmd_pretraining_source_provenance_receipt;
@@ -182,6 +183,7 @@ where
     };
     match subcommand.as_str() {
         "hf-publish" => cmd_hf_publish::run(args),
+        "kube-rs-lease-reconcile" => cmd_kube_rs_lease_reconcile::run(args),
         "upload" => cmd_upload::run(args),
         "stack-check" => cmd_deployment_stack_check::run(args),
         "stack-launch-bundle" => cmd_deployment_stack_launch_bundle::run(args),
