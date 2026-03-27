@@ -164,6 +164,9 @@ distributed-shard-lineage-record-handoff-reconciliation-history reconciliation e
 distributed-shard-lineage-point-transport-locator handoff:
     cargo run --locked --bin afterburner -- lineage point-transport-locator --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_transport_locator.json
 
+distributed-shard-lineage-reconcile-transport-locator handoff locator:
+    cargo run --locked --bin afterburner -- lineage reconcile-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/train/distributed_shard_lineage_transport_locator_reconciliation.json
+
 distributed-shard-lineage-point-locator locator:
     cargo run --locked --bin afterburner -- lineage point-locator --locator {{ locator }} --out artifacts/train/distributed_shard_lineage_locator_pointer.json
 

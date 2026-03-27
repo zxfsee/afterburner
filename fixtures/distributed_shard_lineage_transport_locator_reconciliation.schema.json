@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-transport-locator-reconciliation/v1",
+  "title": "Distributed Shard Lineage Transport Locator Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "handoff_path",
+    "locator_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "handoff_path": { "type": "string", "minLength": 1 },
+    "locator_path": { "type": "string", "minLength": 1 },
+    "desired": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shard_id", "source", "source_revision", "checkpoint_group"],
+      "properties": {
+        "shard_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "source_revision": { "type": "string", "minLength": 1 },
+        "checkpoint_group": { "type": "string", "minLength": 1 }
+      }
+    },
+    "current": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "handoff_path",
+        "shard_id",
+        "source",
+        "source_revision",
+        "checkpoint_group"
+      ],
+      "properties": {
+        "handoff_path": { "type": "string", "minLength": 1 },
+        "shard_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "source_revision": { "type": "string", "minLength": 1 },
+        "checkpoint_group": { "type": "string", "minLength": 1 }
+      }
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}

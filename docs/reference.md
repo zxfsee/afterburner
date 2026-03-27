@@ -97,6 +97,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `distributed_shard_lineage_evidence_handoff_history.json`
   - `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`
   - `distributed_shard_lineage_transport_locator.json`
+  - `distributed_shard_lineage_transport_locator_reconciliation.json`
   - `distributed_shard_lineage_locator_pointer.json`
   - `distributed_shard_lineage_locator_history.json`
 
