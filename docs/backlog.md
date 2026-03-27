@@ -20,6 +20,13 @@ Rules:
 
 ## Items
 
+- `capnproto-rust` wire-format fit gate [Data Infra, Runtime Infra]
+  - Goal: Evaluate whether `capnproto-rust` is a useful later wire-format or structured artifact reference for high-volume runtime/data surfaces without replacing the current JSON/TOML contract layer prematurely.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
+
 - `lws` cluster workload fit gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Evaluate whether Kubernetes `lws` is a useful cluster-path workload-management reference or thin adapter target for Afterburner's kube-rs-compatible scheduler model without turning the repo into a subset-of-Kubernetes project.
   - Kind: `gate`
