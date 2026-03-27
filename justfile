@@ -146,6 +146,9 @@ distributed-shard-lineage-evidence-bundle receipt:
 distributed-shard-lineage-handoff bundle:
     cargo run --locked --bin afterburner -- lineage handoff --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_handoff.json
 
+distributed-shard-lineage-reconcile-handoff bundle handoff:
+    cargo run --locked --bin afterburner -- lineage reconcile-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_reconciliation.json
+
 distributed-shard-lineage-record-handoff-history handoff event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage record-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_history.json
 

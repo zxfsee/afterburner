@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-shard-lineage-evidence-handoff-reconciliation/v1",
+  "title": "Distributed Shard Lineage Evidence Handoff Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_path",
+    "handoff_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "bundle_path": { "type": "string", "minLength": 1 },
+    "handoff_path": { "type": "string", "minLength": 1 },
+    "desired": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shard_id",
+        "source",
+        "source_revision",
+        "checkpoint_group",
+        "evidence_count"
+      ],
+      "properties": {
+        "shard_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "source_revision": { "type": "string", "minLength": 1 },
+        "checkpoint_group": { "type": "string", "minLength": 1 },
+        "evidence_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "current": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle_path",
+        "shard_id",
+        "source",
+        "source_revision",
+        "checkpoint_group",
+        "evidence_count"
+      ],
+      "properties": {
+        "bundle_path": { "type": "string", "minLength": 1 },
+        "shard_id": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "source_revision": { "type": "string", "minLength": 1 },
+        "checkpoint_group": { "type": "string", "minLength": 1 },
+        "evidence_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}
