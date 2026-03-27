@@ -96,67 +96,10 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 
 ## Capability and stance summary
 
-- Distributed runtime stays workload-driven: DP first, explicit `world_size`/rank/`device_group` topology, and a separate `distributed_runtime_profile.json` surface for executed trials.
-- The workload-driven distributed-training subset stance stays explicit: pursue the minimum useful capability subset rather than framework parity.
-- The distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when.
-- The current capability surface is single-device execution today with DP as the first candidate expansion.
-- The local-only worker_parallelism stance remains explicit: `worker_parallelism` is only a local throughput knob and not a distributed topology surrogate.
-- The scheduler lifecycle boundary keeps lease-owned resources and rank assignments explicit.
-- The explicit topology stance keeps `world_size`, ranks, and `device_group` metadata direct.
-- The distributed layout feasibility stance rejects invalid DP/TP/PP and inventory combinations before runtime launch.
-- The distributed runtime layout feasibility artifact is the explicit feasibility artifact for DP/TP/PP and inventory planning.
-- The benchmark run artifact is `distributed_runtime_benchmark_run.json`.
-- Scheduler policy stays conservative: priority and queueing first, cooperative checkpoint/resume preemption only, and constrained GPU colocation for known low-saturation workloads.
-- The scheduler preemption stance is explicit: supported preemption is cooperative checkpoint/resume, with no transparent GPU suspension assumptions.
-- The scheduler preemption stance is cooperative checkpoint/resume, not transparent GPU suspension.
-- The explicit lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`.
-- Operator command families stay grouped:
-  - `afterburner deploy <subcommand>`
-  - `afterburner drift <subcommand>`
-  - `afterburner cleanup <subcommand>`
-  - `afterburner profile <subcommand>`
-- Backend/runtime evolution stays measured:
-  - `backend_performance_profile.json`
-  - `CubeCL`
-  - `CubeK`
-  - `cutile-rs`
-  - Burn 0.20.1
-  - `.mpk` to `.bpk`
-  - later NVIDIA-specific backend-extension candidate
-  - explicit Metal backend option
-  - `process-compose-flake`
-  - `BACKEND=cpu|wgpu|metal`
-  - local process-compose fit
-- Profiling remains local-first and adapter-only:
-  - current pointer
-  - `BACKEND`
-  - `xcrun xctrace version`
-  - full Xcode
-  - `XCTRACE=/usr/bin/xctrace`
-  - `DEVELOPER_DIR`
-  - `SDKROOT`
-  - OpenTelemetry fit stays parked
-  - `AFTERBURNER_TRACEPARENT`
-- Provenance stays explicit:
-  - deployment verification evidence provenance
-  - distributed shard lineage evidence provenance
-  - profiling environment provenance
-- Artifact lifecycle stays explicit:
-  - artifact retention envelope
-  - profiling retention policy
-  - profiling hotspot taxonomy
-  - `artifacts/profiling/`
-- Longer-horizon reference points remain explicit:
-  - remote locator contract
-  - separate post-training pipeline
-  - distributed checkpoint index contract
-  - distributed optimizer-state recovery
-  - `checkpoint_group`
-  - RL rollout metadata contract
-  - `rl_rollout_metadata.schema.json`
-  - vectorized-environment stance
-  - multibillion-scale target envelope
-  - shard metadata contract
-  - `distributed_shard_metadata.schema.json`
-  - `Parquet`
-  - `DataFusion`
+- Distributed runtime: workload-driven DP-first growth; explicit `world_size`/rank/`device_group` topology; `worker_parallelism` is only a local throughput knob; `distributed_runtime_profile.json`, `distributed_runtime_benchmark_run.json`, and the distributed runtime layout feasibility artifact stay explicit.
+- Scheduler/control plane: the distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when; the scheduler lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`; scheduler policy stays conservative with priority and queueing first, cooperative checkpoint/resume preemption, and constrained GPU colocation for known low-saturation workloads.
+- Operator surfaces stay grouped under `afterburner deploy <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>`.
+- Backend/runtime evolution stays measured: `backend_performance_profile.json`, `CubeCL`, `CubeK`, `cutile-rs`, Burn 0.20.1, `.mpk` to `.bpk`, later NVIDIA-specific backend-extension candidate, explicit Metal backend option, `BACKEND=cpu|wgpu|metal`, `process-compose-flake`, and local process-compose fit.
+- Profiling remains local-first and adapter-only: current pointer resolution, `BACKEND`, `xcrun xctrace version`, full Xcode, `XCTRACE=/usr/bin/xctrace`, `DEVELOPER_DIR`, `SDKROOT`, `AFTERBURNER_TRACEPARENT`, and parked OpenTelemetry fit.
+- Provenance and retention stay explicit: deployment verification evidence provenance, distributed shard lineage evidence provenance, profiling environment provenance, artifact retention envelope, profiling retention policy, profiling hotspot taxonomy, and `artifacts/profiling/`.
+- Longer-horizon reference points remain explicit: remote locator contract, separate post-training pipeline, distributed checkpoint index contract, distributed optimizer-state recovery, `checkpoint_group`, RL rollout metadata contract, `rl_rollout_metadata.schema.json`, vectorized-environment stance, multibillion-scale target envelope, shard metadata contract, `distributed_shard_metadata.schema.json`, `Parquet`, and `DataFusion`.
