@@ -34,6 +34,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deploy-launch-receipt <plan> <port> <launched-at-unix-ms>` writes `deployment_stack_launch_receipt.json`.
 - `just deploy-launch-bundle <receipt>` writes `deployment_stack_launch_evidence_bundle.json`.
 - `just deploy-launch-handoff <bundle>` writes `deployment_stack_launch_evidence_handoff.json`.
+- `just deploy-record-launch-handoff-history <handoff> <event> <recorded-at-unix-ms>` writes `deployment_stack_launch_evidence_handoff_history.json`.
 - `just deploy-point-launch-transport-locator <handoff>` writes `deployment_stack_launch_transport_locator.json`.
 - `just deploy-point-launch-locator <locator>` writes `deployment_stack_launch_locator_pointer.json`.
 - `just deploy-reconcile-launch-locator <plan> <pointer>` writes `deployment_stack_launch_locator_reconciliation.json`.

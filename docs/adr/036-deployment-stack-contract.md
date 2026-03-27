@@ -40,6 +40,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-launch-handoff` exports one compact
   `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
   current launch evidence bundle for downstream transport or deployment tools.
+- `afterburner deploy record-launch-handoff-history` appends one compact
+  `deployment_stack_launch_evidence_handoff_history.json` artifact over handoff
+  changes for downstream deployment audit tooling.
 - `afterburner deploy point-launch-transport-locator` exports one stable
   `deployment_stack_launch_transport_locator.json` locator over the current
   launch handoff for transport-facing consumers.

@@ -6,6 +6,7 @@ mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_stack_launch_bundle;
 mod cmd_deployment_stack_launch_handoff;
+mod cmd_deployment_stack_launch_handoff_history;
 mod cmd_deployment_stack_launch_locator_history;
 mod cmd_deployment_stack_launch_locator_pointer;
 mod cmd_deployment_stack_launch_locator_reconcile;
@@ -198,6 +199,7 @@ where
         "stack-check" => cmd_deployment_stack_check::run(args),
         "stack-launch-bundle" => cmd_deployment_stack_launch_bundle::run(args),
         "stack-launch-handoff" => cmd_deployment_stack_launch_handoff::run(args),
+        "record-launch-handoff-history" => cmd_deployment_stack_launch_handoff_history::run(args),
         "record-launch-locator-history" => cmd_deployment_stack_launch_locator_history::run(args),
         "stack-launch-plan" => cmd_deployment_stack_launch_plan::run(args),
         "stack-launch-receipt" => cmd_deployment_stack_launch_receipt::run(args),
