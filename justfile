@@ -69,6 +69,9 @@ deploy-launch-receipt plan port launched_at_unix_ms:
 deploy-launch-bundle receipt:
     cargo run --locked --bin afterburner -- deploy stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
 
+deploy-reconcile-launch-bundle receipt bundle:
+    cargo run --locked --bin afterburner -- deploy reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
+
 deploy-launch-handoff bundle:
     cargo run --locked --bin afterburner -- deploy stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 

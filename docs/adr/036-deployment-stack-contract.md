@@ -37,6 +37,10 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-launch-bundle` packages the launch plan plus launch
   receipt into one `deployment_stack_launch_evidence_bundle.json` artifact so
   downstream rollout tooling can consume a single stack launch entrypoint.
+- `afterburner deploy reconcile-launch-bundle` exports one stable
+  `deployment_stack_launch_evidence_bundle_reconciliation.json` artifact so
+  downstream deployment tooling can compare desired plan-and-receipt-resolved
+  bundle state against the current bundle without ad hoc shell checks.
 - `afterburner deploy stack-launch-handoff` exports one compact
   `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
   current launch evidence bundle for downstream transport or deployment tools.

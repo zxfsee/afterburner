@@ -5,6 +5,7 @@ mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_stack_launch_bundle;
+mod cmd_deployment_stack_launch_bundle_reconcile;
 mod cmd_deployment_stack_launch_handoff;
 mod cmd_deployment_stack_launch_handoff_history;
 mod cmd_deployment_stack_launch_handoff_reconcile;
@@ -220,6 +221,7 @@ where
         "upload" => cmd_upload::run(args),
         "stack-check" => cmd_deployment_stack_check::run(args),
         "stack-launch-bundle" => cmd_deployment_stack_launch_bundle::run(args),
+        "reconcile-launch-bundle" => cmd_deployment_stack_launch_bundle_reconcile::run(args),
         "stack-launch-handoff" => cmd_deployment_stack_launch_handoff::run(args),
         "record-launch-handoff-history" => cmd_deployment_stack_launch_handoff_history::run(args),
         "reconcile-launch-handoff" => cmd_deployment_stack_launch_handoff_reconcile::run(args),

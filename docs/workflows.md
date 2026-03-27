@@ -35,6 +35,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deploy-launch-plan` writes `deployment_stack_launch_plan.json`.
 - `just deploy-launch-receipt` writes `deployment_stack_launch_receipt.json`.
 - `just deploy-launch-bundle` writes `deployment_stack_launch_evidence_bundle.json`.
+- `just deploy-reconcile-launch-bundle` writes `deployment_stack_launch_evidence_bundle_reconciliation.json`.
 - `just deploy-launch-handoff` writes `deployment_stack_launch_evidence_handoff.json`.
 - `just deploy-reconcile-launch-handoff` writes `deployment_stack_launch_evidence_handoff_reconciliation.json`.
 - `just deploy-record-launch-handoff-history` writes `deployment_stack_launch_evidence_handoff_history.json`.
