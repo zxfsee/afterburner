@@ -13,27 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment stack launch transport locator reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment stack launch transport locator reconciliation changes so downstream deployment tooling can audit desired-versus-current transport locator updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
-- Deployment stack launch handoff reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment stack launch handoff reconciliation changes so downstream deployment tooling can audit desired-versus-current handoff updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
-- Distributed shard lineage transport locator reconciliation adapter [Distributed Training, Data Infra]
-  - Goal: Materialize one reconciliation artifact over the distributed shard lineage transport locator so downstream lineage consumers can compare desired handoff-resolved locator state against the current transport locator without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Distributed shard lineage transport locator reconciliation history adapter [Distributed Training, Data Infra]
   - Goal: Append one compact history artifact over distributed shard lineage transport locator reconciliation changes so downstream lineage tooling can audit desired-versus-current transport locator updates without reading shell or process logs.
   - Kind: `mixed`
@@ -41,18 +20,39 @@ header = """# Changelog
   - Contracts: `artifact`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
-- Deployment stack launch evidence bundle reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment stack launch evidence bundle so downstream deployment consumers can compare desired plan-and-receipt-resolved bundle state against the current bundle without depending on ad hoc shell checks.
+- Deployment stack launch evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment stack launch evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current bundle updates without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
-- Distributed shard lineage evidence bundle reconciliation adapter [Distributed Training, Data Infra]
-  - Goal: Materialize one reconciliation artifact over the distributed shard lineage evidence bundle so downstream lineage consumers can compare desired receipt-resolved bundle state against the current bundle without depending on ad hoc shell checks.
+- Distributed shard lineage evidence bundle reconciliation history adapter [Distributed Training, Data Infra]
+  - Goal: Append one compact history artifact over distributed shard lineage evidence bundle reconciliation changes so downstream lineage tooling can audit desired-versus-current bundle updates without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence bundle reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment verification evidence bundle so downstream deployment consumers can compare desired receipt-resolved verification state against the current bundle without depending on ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence handoff reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment verification evidence handoff so downstream deployment consumers can compare desired bundle-resolved verification state against the current handoff without depending on ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence handoff reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification evidence handoff reconciliation changes so downstream deployment tooling can audit desired-versus-current verification handoff updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 ## [Trunk]
