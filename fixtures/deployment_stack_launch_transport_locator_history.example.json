@@ -1,0 +1,14 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "pointed",
+      "locator_path": "artifacts/deploy/deployment_stack_launch_transport_locator.json",
+      "handoff_path": "artifacts/deploy/deployment_stack_launch_evidence_handoff.json",
+      "profile_name": "staging-a",
+      "deploy_hostname": "staging.example.net",
+      "rollout_entrypoint": "/srv/afterburner/artifacts/inference/current",
+      "recorded_at_unix_ms": 1735689800000
+    }
+  ]
+}

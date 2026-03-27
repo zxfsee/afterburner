@@ -78,6 +78,9 @@ deploy-record-launch-handoff-history handoff event recorded_at_unix_ms:
 deploy-point-launch-transport-locator handoff:
     cargo run --locked --bin afterburner -- deploy point-launch-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_transport_locator.json
 
+deploy-record-launch-transport-locator-history locator event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-launch-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_history.json
+
 deploy-point-launch-locator locator:
     cargo run --locked --bin afterburner -- deploy point-launch-locator --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_locator_pointer.json
 

@@ -42,6 +42,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `deployment_stack_launch_evidence_handoff.json`
   - `deployment_stack_launch_evidence_handoff_history.json`
   - `deployment_stack_launch_transport_locator.json`
+  - `deployment_stack_launch_transport_locator_history.json`
   - `deployment_stack_launch_locator_pointer.json`
   - `deployment_stack_launch_locator_reconciliation.json`
   - `deployment_stack_launch_locator_reconciliation_history.json`

@@ -46,6 +46,9 @@ Add an explicit deployment stack contract.
 - `afterburner deploy point-launch-transport-locator` exports one stable
   `deployment_stack_launch_transport_locator.json` locator over the current
   launch handoff for transport-facing consumers.
+- `afterburner deploy record-launch-transport-locator-history` appends one
+  compact `deployment_stack_launch_transport_locator_history.json` artifact
+  over transport-locator changes for downstream deployment audit tooling.
 - `afterburner deploy point-launch-locator` exports one stable
   `deployment_stack_launch_locator_pointer.json` current-pointer artifact over
   the current launch transport locator.
