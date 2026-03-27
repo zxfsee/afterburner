@@ -163,6 +163,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - explicit and versioned when needed,
   - validated at boundaries,
   - protected by compatibility tests (e.g. golden fixtures).
+- Structured artifact and event contracts stay on JSON by default, while the
+  inference manifest remains TOML. No broad JSON-to-RON migration should happen
+  without a new explicit decision.
 - Inference artifact precision is explicit in the manifest. The current runtime accepts only
   `f32` weights/activations with `quantization = none`; any reduced-precision artifact must
   declare itself explicitly and remain rejected until a dedicated runtime path is introduced.
@@ -379,6 +382,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
+- [ADR-060: JSON Over RON Fit](./docs/adr/060-json-over-ron-fit.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)

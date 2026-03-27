@@ -88,7 +88,8 @@ Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/ad
 Training exports versioned inference artifacts under
 `artifacts/inference/<version>/`. The active version is tracked by
 `artifacts/inference/current`, and the manifest carries checksum, signature,
-and precision metadata.
+and precision metadata. Structured artifacts and events stay on JSON; the
+inference manifest stays on TOML.
 
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- JSON to RON format fit investigation gate [Data Infra, Runtime Infra]
-  - Goal: Evaluate whether any current JSON-based artifact or event surfaces should migrate to RON, and whether the readability or ergonomics gains would justify the contract churn and tooling impact.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `event`
-  - Scope: `docs/adr/`, `ARCHITECTURE.md`, `README.md`, `tests/`
-
 - Burn distributed optimizer and checkpoint state gate [Distributed Training, Runtime Infra]
   - Goal: Define the minimum in-job optimizer-state and checkpoint-group contract needed for distributed recovery so future Burn-side multi-device training can resume consistently across shards and ranks without coupling cluster scheduling into checkpoint semantics.
   - Kind: `gate`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `none`
   - Scope: `ARCHITECTURE.md`, `docs/reference.md`, `tests/`
+
+- Docs ownership separation gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep `README.md`, `docs/workflows.md`, `docs/reference.md`, and `ARCHITECTURE.md` in distinct roles so frontpage, workflow, capability, and architecture content do not drift back into duplicated ownership.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `none`
+  - Scope: `README.md`, `docs/workflows.md`, `docs/reference.md`, `ARCHITECTURE.md`, `tests/`
 
 ## [Trunk]
 """
