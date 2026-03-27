@@ -45,6 +45,7 @@ mod cmd_infer;
 mod cmd_kube_rs_lease_history;
 mod cmd_kube_rs_lease_pointer;
 mod cmd_kube_rs_lease_reconcile;
+mod cmd_kube_rs_lease_reconciliation_history;
 mod cmd_pretraining_source_approval_receipt;
 mod cmd_pretraining_source_provenance_evidence_bundle;
 mod cmd_pretraining_source_provenance_receipt;
@@ -196,6 +197,9 @@ where
     match subcommand.as_str() {
         "hf-publish" => cmd_hf_publish::run(args),
         "record-kube-rs-lease-history" => cmd_kube_rs_lease_history::run(args),
+        "record-kube-rs-lease-reconciliation-history" => {
+            cmd_kube_rs_lease_reconciliation_history::run(args)
+        }
         "point-kube-rs-lease" => cmd_kube_rs_lease_pointer::run(args),
         "kube-rs-lease-reconcile" => cmd_kube_rs_lease_reconcile::run(args),
         "upload" => cmd_upload::run(args),

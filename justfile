@@ -108,6 +108,9 @@ kube-rs-lease-point reconciliation:
 kube-rs-lease-record-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_history.json
 
+kube-rs-lease-record-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation_history.json
+
 single-node-scheduler job inventory:
     cargo run --locked --bin afterburner -- deploy single-node-scheduler --job {{ job }} --inventory {{ inventory }} --out-lease artifacts/deploy/gpu_scheduler_lease.json --out-unit artifacts/deploy/afterburner-job.service
 

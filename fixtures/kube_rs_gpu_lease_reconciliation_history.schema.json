@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/kube-rs-gpu-lease-reconciliation-history/v1",
+  "title": "kube-rs GPU Lease Reconciliation History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "reconciliation_path",
+          "lease_path",
+          "lease_id",
+          "job_id",
+          "node_id",
+          "gpu_ids",
+          "checkpoint_mode",
+          "namespace",
+          "resource_name",
+          "desired_state",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "reconciliation_path": { "type": "string", "minLength": 1 },
+          "lease_path": { "type": "string", "minLength": 1 },
+          "lease_id": { "type": "string", "minLength": 1 },
+          "job_id": { "type": "string", "minLength": 1 },
+          "node_id": { "type": "string", "minLength": 1 },
+          "gpu_ids": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "checkpoint_mode": { "type": "string", "minLength": 1 },
+          "namespace": { "type": "string", "minLength": 1 },
+          "resource_name": { "type": "string", "minLength": 1 },
+          "desired_state": { "type": "string", "minLength": 1 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

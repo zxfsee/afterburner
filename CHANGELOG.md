@@ -2,13 +2,6 @@
 
 ## TODO
 
-- kube-rs GPU lease reconciliation history adapter [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over kube-rs GPU lease reconciliation changes so cluster-path scheduler tooling can audit desired lease-state updates without reading controller or shell logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment stack launch transport locator history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment stack launch transport locator changes so downstream deployment tooling can audit handoff-to-locator updates without reading shell or process logs.
   - Kind: `mixed`
@@ -42,6 +35,13 @@
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Distributed shard lineage handoff reconciliation history adapter [Distributed Training, Data Infra]
+  - Goal: Append one compact history artifact over distributed shard lineage handoff reconciliation changes so downstream lineage tooling can audit desired-versus-current handoff updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 ## [Trunk]
@@ -148,18 +148,19 @@
 - Cut over recipe to current pointer ([c2ceccf])
 - Add stack launch evidence bundle adapter ([5e9bc18])
 - Add stack launch evidence handoff adapter ([129e859])
-- Add stack launch transport locator ([681e00d])
-- Add stack launch locator pointer ([3b2b5cb])
-- Add transport locator adapter ([3b5c771])
-- Add kube-rs lease reconciliation adapter ([36ddc20])
-- Add launch locator history adapter ([501506a])
-- Add locator pointer adapter ([8e00e35])
-- Add kube-rs lease pointer adapter ([8ca7c62])
-- Add locator history adapter ([e505420])
-- Add kube-rs lease history adapter ([d3d2a89])
-- Add launch locator reconciliation adapter ([80f8b44])
-- Add launch handoff history adapter ([f17f510])
-- Add handoff history adapter ([8d9c960])
+- Add stack launch transport locator ([c932cb3])
+- Add stack launch locator pointer ([485fbe1])
+- Add transport locator adapter ([bfc546e])
+- Add kube-rs lease reconciliation adapter ([0e6a59a])
+- Add launch locator history adapter ([06fb9e4])
+- Add locator pointer adapter ([d8ce479])
+- Add kube-rs lease pointer adapter ([980f670])
+- Add locator history adapter ([be1ae26])
+- Add kube-rs lease history adapter ([344d77a])
+- Add launch locator reconciliation adapter ([e693670])
+- Add launch handoff history adapter ([c673585])
+- Add handoff history adapter ([ee4732b])
+- Add launch locator reconciliation history adapter ([60b6fdc])
 
 ### Changed
 
@@ -326,10 +327,12 @@
 - Reduce frontpage to core navigation ([87abf6a])
 - Section invariants by concern ([656e2bb])
 - Compress fit catalog summaries ([de3db83])
-- Complete workflow reference gate ([4e82de0])
-- Keep json over ron ([a9f5a7b])
-- Define optimizer checkpoint state gate ([a8c0ce6])
-- Define kube-rs placement fit ([17079ec])
+- Complete workflow reference gate ([1f06ca3])
+- Keep json over ron ([a1124a2])
+- Define optimizer checkpoint state gate ([71f73c7])
+- Define kube-rs placement fit ([7c85ef0])
+- Reduce recipe duplication ([3b41fab])
+- Compress stance catalog ([c361f52])
 
 ### Fixed
 
@@ -366,7 +369,7 @@
 - Add target profile example fixture ([a916ce8])
 - Pin train_start event fixture ([eefaeb3])
 - Pin artifact_exported event fixture ([a354b0b])
-- Lock architecture and docs ownership roles ([40e4242])
+- Lock architecture and docs ownership roles ([56c9109])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -653,22 +656,25 @@
 [87abf6a]: https://github.com/zxfsee/afterburner/commit/87abf6ae5d25aa7704e8d81b23fad398c2e222c4
 [656e2bb]: https://github.com/zxfsee/afterburner/commit/656e2bb3a869c78edc8d42624c2e7779eb315395
 [de3db83]: https://github.com/zxfsee/afterburner/commit/de3db8329e449677c73a6d769442b35453a4a819
-[4e82de0]: https://github.com/zxfsee/afterburner/commit/4e82de0cdd728904f5526aaa832e4e1ad167bf7d
-[a9f5a7b]: https://github.com/zxfsee/afterburner/commit/a9f5a7be0d9a4771b462bf947cd78bfd8104ef42
-[a8c0ce6]: https://github.com/zxfsee/afterburner/commit/a8c0ce6a998caaa1acf68cc062ec0be5f7d8038c
-[681e00d]: https://github.com/zxfsee/afterburner/commit/681e00d28e791d5863f0874ea428718cf5671b8c
-[17079ec]: https://github.com/zxfsee/afterburner/commit/17079ec9bebe7c25297904a07148825bc03d65fd
-[3b2b5cb]: https://github.com/zxfsee/afterburner/commit/3b2b5cb3021c7218d6ca33bdac4980f41d660b1d
-[40e4242]: https://github.com/zxfsee/afterburner/commit/40e42428ac0e619f648692dee3436cbc75faf340
-[3b5c771]: https://github.com/zxfsee/afterburner/commit/3b5c7711d9d35a39c3f67903681d78cb55d84faa
-[36ddc20]: https://github.com/zxfsee/afterburner/commit/36ddc2068c1a02596d9ccc39ee04b727a91e7c1a
-[501506a]: https://github.com/zxfsee/afterburner/commit/501506afbe13cbbec6229e3d97abbce01870037f
-[8e00e35]: https://github.com/zxfsee/afterburner/commit/8e00e35f18b7a064cfa1cf916bd0cee78fc00387
-[8ca7c62]: https://github.com/zxfsee/afterburner/commit/8ca7c62587cbae807e8fb1f2ced984e0bffc78bb
-[e505420]: https://github.com/zxfsee/afterburner/commit/e5054208b726a3a1bce1870fa5e8a16e5c1419e5
-[d3d2a89]: https://github.com/zxfsee/afterburner/commit/d3d2a89b03ea1e4c54e1b319ef1337c93c599fd4
-[80f8b44]: https://github.com/zxfsee/afterburner/commit/80f8b44d862d5fca18a930ff0685926f5879d3b0
-[f17f510]: https://github.com/zxfsee/afterburner/commit/f17f510429fcd86d93f090634fa7978541c5a7ff
-[8d9c960]: https://github.com/zxfsee/afterburner/commit/8d9c96055c53675a10341c0eb3eda002230e0b4b
+[1f06ca3]: https://github.com/zxfsee/afterburner/commit/1f06ca36f51d6c18a64999d7d00bd90f4598d79a
+[a1124a2]: https://github.com/zxfsee/afterburner/commit/a1124a22cafec59f7963fbb9aafeb8e991c4f0aa
+[71f73c7]: https://github.com/zxfsee/afterburner/commit/71f73c7082154a96f8c9f819a666b41e8a670f4f
+[c932cb3]: https://github.com/zxfsee/afterburner/commit/c932cb3fa6c912feea7a1a2a953e782db167735d
+[7c85ef0]: https://github.com/zxfsee/afterburner/commit/7c85ef0e780dd55d03e03d476a0daf63ff24b216
+[485fbe1]: https://github.com/zxfsee/afterburner/commit/485fbe1748d464a18c7efd2fc2e0718cf3bad8ec
+[56c9109]: https://github.com/zxfsee/afterburner/commit/56c9109a0c4fbaffde33ff99aea5a4fbaca395f7
+[bfc546e]: https://github.com/zxfsee/afterburner/commit/bfc546e7eeab8dec3f0d7c3c4a288df4982cd0d0
+[0e6a59a]: https://github.com/zxfsee/afterburner/commit/0e6a59a1a55e57397f125c62bc121f4d2852e6a4
+[06fb9e4]: https://github.com/zxfsee/afterburner/commit/06fb9e40e2c1daf8640a6c7a8055c7e6f29facc6
+[d8ce479]: https://github.com/zxfsee/afterburner/commit/d8ce479db4e9e71247f1b319c84ba561df39f837
+[980f670]: https://github.com/zxfsee/afterburner/commit/980f670588afe494aca0e6abceba578fdc005078
+[be1ae26]: https://github.com/zxfsee/afterburner/commit/be1ae269cb438c2c5395d813f0bdd82fcc9f9490
+[344d77a]: https://github.com/zxfsee/afterburner/commit/344d77a408d758625da481b08834dbd36e06bc8c
+[e693670]: https://github.com/zxfsee/afterburner/commit/e6936705c6cdb6dcbdcce690d1b450127481bf50
+[c673585]: https://github.com/zxfsee/afterburner/commit/c673585026efe178465ffaa03cd74e19ba8f5306
+[ee4732b]: https://github.com/zxfsee/afterburner/commit/ee4732bc2ecabeb076b1a09bacb7fb89fcd29538
+[60b6fdc]: https://github.com/zxfsee/afterburner/commit/60b6fdc0ad904e74d890a9e9408724b8b819940d
+[3b41fab]: https://github.com/zxfsee/afterburner/commit/3b41fab58f09c05414b6b154907823c5f571b556
+[c361f52]: https://github.com/zxfsee/afterburner/commit/c361f52b9aa3cff2296fafe17621de713fc0e390
 
 <!-- generated by git-cliff -->
