@@ -57,4 +57,17 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
         .arg("--parent-commit")
         .arg("def456");
     mismatch.assert().failure();
+
+    let mut tolerate_previous_parent = cargo_bin_cmd!("workflow_queue_snapshot");
+    tolerate_previous_parent
+        .arg("verify")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml)
+        .arg("--changelog")
+        .arg(&changelog)
+        .arg("--parent-commit")
+        .arg("def456")
+        .arg("--previous-parent-commit")
+        .arg("abc123");
+    tolerate_previous_parent.assert().success();
 }

@@ -49,6 +49,7 @@ enum Command {
         cargo_toml: PathBuf,
         changelog: PathBuf,
         parent_commit: String,
+        previous_parent_commit: Option<String>,
     },
 }
 
@@ -93,6 +94,7 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             changelog,
             parent_commit,
+            previous_parent_commit,
         } => {
             let cargo_text = fs::read_to_string(&cargo_toml)?;
             let todo_block = normalized_todo_block(&cargo_text)?;
@@ -105,10 +107,18 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
                     snapshot.todo_sha256
                 )));
             }
-            if snapshot.parent_commit != parent_commit {
+            let matches_current_parent = snapshot.parent_commit == parent_commit;
+            let matches_previous_parent = previous_parent_commit
+                .as_deref()
+                .is_some_and(|previous| snapshot.parent_commit == previous);
+            if !matches_current_parent && !matches_previous_parent {
+                let accepted = previous_parent_commit
+                    .as_ref()
+                    .map(|previous| format!("`{parent_commit}` or `{previous}`"))
+                    .unwrap_or_else(|| format!("`{parent_commit}`"));
                 return Err(QueueSnapshotError::Parse(format!(
-                    "queue snapshot parent mismatch: changelog has `{}`, current parent is `{parent_commit}`",
-                    snapshot.parent_commit
+                    "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}",
+                    snapshot.parent_commit,
                 )));
             }
             Ok(())
@@ -143,12 +153,16 @@ where
     let mut cargo_toml = PathBuf::from("Cargo.toml");
     let mut changelog = PathBuf::from("CHANGELOG.md");
     let mut parent_commit = None::<String>;
+    let mut previous_parent_commit = None::<String>;
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
             "--changelog" => changelog = PathBuf::from(parse_value(&mut args, "--changelog")?),
             "--parent-commit" => parent_commit = Some(parse_value(&mut args, "--parent-commit")?),
+            "--previous-parent-commit" => {
+                previous_parent_commit = Some(parse_value(&mut args, "--previous-parent-commit")?)
+            }
             _ if arg.starts_with("--cargo-toml=") => {
                 cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
             }
@@ -157,6 +171,12 @@ where
             }
             _ if arg.starts_with("--parent-commit=") => {
                 parent_commit = Some(arg.trim_start_matches("--parent-commit=").to_string())
+            }
+            _ if arg.starts_with("--previous-parent-commit=") => {
+                previous_parent_commit = Some(
+                    arg.trim_start_matches("--previous-parent-commit=")
+                        .to_string(),
+                )
             }
             _ => {
                 return Err(QueueSnapshotError::InvalidArg(format!(
@@ -182,6 +202,7 @@ where
             cargo_toml,
             changelog,
             parent_commit,
+            previous_parent_commit,
         }
     })
 }
@@ -297,7 +318,7 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_queue_snapshot <stamp|verify> [--cargo-toml PATH] [--changelog PATH] [--parent-commit ID]"
+    "usage: workflow_queue_snapshot <stamp|verify> [--cargo-toml PATH] [--changelog PATH] [--parent-commit ID] [--previous-parent-commit ID]"
 }
 
 #[cfg(test)]
