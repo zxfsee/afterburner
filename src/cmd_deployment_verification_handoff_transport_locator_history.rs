@@ -79,7 +79,7 @@ where
     let args = parse_args(args)?;
     let locator = load_json_object(
         args.locator.as_path(),
-        "deployment verification evidence handoff transport locator",
+        "deployment verification handoff transport locator",
     )?;
 
     let mut history = if args.out_path.exists() {
