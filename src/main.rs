@@ -22,6 +22,7 @@ mod cmd_deployment_stack_launch_transport_locator_history;
 mod cmd_deployment_stack_launch_transport_locator_reconcile;
 mod cmd_deployment_stack_launch_transport_locator_reconciliation_history;
 mod cmd_deployment_verification_bundle;
+mod cmd_deployment_verification_bundle_history;
 mod cmd_deployment_verification_bundle_reconcile;
 mod cmd_deployment_verification_bundle_reconciliation_history;
 mod cmd_deployment_verification_handoff;
@@ -283,6 +284,9 @@ where
             cmd_deployment_verification_receipt_reconciliation_history::run(args)
         }
         "verification-bundle" => cmd_deployment_verification_bundle::run(args),
+        "record-verification-bundle-history" => {
+            cmd_deployment_verification_bundle_history::run(args)
+        }
         "reconcile-verification-bundle" => cmd_deployment_verification_bundle_reconcile::run(args),
         "record-verification-bundle-reconciliation-history" => {
             cmd_deployment_verification_bundle_reconciliation_history::run(args)
