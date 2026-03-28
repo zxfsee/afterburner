@@ -32,6 +32,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just objective-lock-check-worktree <action>` validates the current worktree paths against the pinned objective before commits or phase switches.
 - `just objective-lock-clear` clears the transient `.git/afterburner/objective-lock.json` record before repinning a different objective.
 - `just queue-refresh` is the canonical queue-only refresh path: pin queue objective, regenerate `CHANGELOG.md`, verify the stamped queue snapshot, then clear the transient lock.
+- `just queue-execute-preflight` is the canonical execute-start path: verify queue freshness, pin the top active TODO scope, then validate the current worktree against the execute objective before implementation continues.
 - `just changelog` validates the queue-refresh objective against `CHANGELOG.md`, regenerates the changelog body, and stamps the active queue snapshot.
 - `just queue-snapshot-check` validates that the stamped queue snapshot still matches the current active TODO block and parent commit.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.

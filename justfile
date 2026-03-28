@@ -60,6 +60,11 @@ queue-refresh:
     just queue-snapshot-check
     just objective-lock-clear
 
+# start top-item execution through the canonical execute-side guarded path
+queue-execute-preflight:
+    just objective-lock-pin-execute-top-item
+    just objective-lock-check-worktree execute-top-item
+
 # format rust + toml + nix
 fmt:
     nix fmt
