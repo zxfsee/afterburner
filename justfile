@@ -403,3 +403,6 @@ changelog:
 
 queue-snapshot-check:
     let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+
+workflow-surface-check-deployment-verification:
+    cargo nextest run --locked --test deployment_verification_workflow_surface

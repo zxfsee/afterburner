@@ -1,10 +1,10 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+use afterburner::command_reconciliation::{
+    ReconciliationError, load_json_object, read_array, read_string, read_u64,
+    reconciliation_status, write_emitted_json,
 };
-use serde_json::{Map, Value, json};
+use serde_json::{Value, json};
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json";
@@ -34,13 +34,26 @@ impl From<std::io::Error> for DeploymentVerificationBundleReconcileError {
     }
 }
 
-impl From<JsonArtifactError> for DeploymentVerificationBundleReconcileError {
-    fn from(value: JsonArtifactError) -> Self {
+impl From<afterburner::command_artifacts::JsonArtifactError>
+    for DeploymentVerificationBundleReconcileError
+{
+    fn from(value: afterburner::command_artifacts::JsonArtifactError) -> Self {
         match value {
-            JsonArtifactError::Io(err) => Self::Io(err),
-            JsonArtifactError::Serialize(err) => Self::Parse(format!(
-                "serialize deployment verification evidence bundle reconciliation json: {err}"
-            )),
+            afterburner::command_artifacts::JsonArtifactError::Io(err) => Self::Io(err),
+            afterburner::command_artifacts::JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!(
+                    "serialize deployment verification evidence bundle reconciliation json: {err}"
+                ))
+            }
+        }
+    }
+}
+
+impl From<ReconciliationError> for DeploymentVerificationBundleReconcileError {
+    fn from(value: ReconciliationError) -> Self {
+        match value {
+            ReconciliationError::Io(err) => Self::Io(err),
+            ReconciliationError::Parse(msg) => Self::Parse(msg),
         }
     }
 }
@@ -87,15 +100,7 @@ where
         args.receipt.as_path(),
         "deployment verification receipt",
     )?;
-    let evidence_count = evidence_sources
-        .as_array()
-        .map(|entries| entries.len() as u64)
-        .ok_or_else(|| {
-            DeploymentVerificationBundleReconcileError::Parse(format!(
-                "deployment verification receipt `{}` field `evidence_sources` must be an array",
-                args.receipt.display()
-            ))
-        })?;
+    let evidence_count = evidence_sources.as_array().expect("array checked").len() as u64;
 
     let desired = json!({
         "receipt_path": args.receipt.display().to_string(),
@@ -113,11 +118,7 @@ where
         "evidence_count": read_u64(&bundle, "evidence_count", args.bundle.as_path(), "deployment verification evidence bundle")?,
         "evidence_sources": read_array(&bundle, "evidence_sources", args.bundle.as_path(), "deployment verification evidence bundle")?,
     });
-    let reconciliation_status = if desired == current {
-        "aligned"
-    } else {
-        "needs-update"
-    };
+    let reconciliation_status = reconciliation_status(&desired, &current);
 
     let reconciliation = json!({
         "schema_version": "1",
@@ -128,15 +129,14 @@ where
         "reconciliation_status": reconciliation_status,
     });
 
-    write_json_value(&args.out_path, &reconciliation)?;
-    emit_json_artifact_written(
+    write_emitted_json(
         "deploy_cli",
         "deployment_verification_evidence_bundle_reconciliation_written",
         "reconciliation_path",
         &args.out_path,
         "reconciliation",
         reconciliation,
-    );
+    )?;
     Ok(())
 }
 
@@ -224,78 +224,6 @@ where
             usage()
         ))
     })
-}
-
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<Map<String, Value>, DeploymentVerificationBundleReconcileError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationBundleReconcileError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentVerificationBundleReconcileError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<String, DeploymentVerificationBundleReconcileError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentVerificationBundleReconcileError::Parse(format!(
-                "{kind} `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<u64, DeploymentVerificationBundleReconcileError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        DeploymentVerificationBundleReconcileError::Parse(format!(
-            "{kind} `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
-
-fn read_array(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<Value, DeploymentVerificationBundleReconcileError> {
-    let value = object.get(key).cloned().ok_or_else(|| {
-        DeploymentVerificationBundleReconcileError::Parse(format!(
-            "{kind} `{}` missing field `{key}`",
-            path.display()
-        ))
-    })?;
-    if !value.is_array() {
-        return Err(DeploymentVerificationBundleReconcileError::Parse(format!(
-            "{kind} `{}` field `{key}` must be an array",
-            path.display()
-        )));
-    }
-    Ok(value)
 }
 
 fn usage() -> &'static str {

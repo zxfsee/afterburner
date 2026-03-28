@@ -41,19 +41,19 @@ header = """# Changelog
   - Contracts: `artifact`, `event`
   - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
 
-- Workflow surface consistency checker gate [Runtime Infra]
-  - Goal: Assert that new artifact-family workflows land with their CLI entrypoint, `just` recipe, schema fixture, example fixture, workflow reference, and reference-index mention together so contract surfaces stop drifting across the repo-managed harness.
+- `lws` cluster workload fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Evaluate whether Kubernetes `lws` is a useful cluster-path workload-management reference or thin adapter target for Afterburner's kube-rs-compatible scheduler model without turning the repo into a subset-of-Kubernetes project.
   - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `src/bin/`, `tests/`, `fixtures/`, `docs/workflows.md`, `docs/reference.md`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
 
-- Reconciliation helper layer [Runtime Infra]
-  - Goal: Extract a small shared helper for desired/current reconciliation artifacts so sibling bundle, handoff, and reconciliation-history adapters stop duplicating parse, compare, write, and event-emission plumbing while preserving explicit contract outputs.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `tests/`
+- Gateway API inference extension fit gate [Serving/Deployment Infra, Inference]
+  - Goal: Evaluate whether the Kubernetes Gateway API inference extension matters for a later Afterburner cluster-serving boundary so traffic-management integration can stay adapter-side and avoid distorting the current runtime/scheduler design prematurely.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
 
 ## [Trunk]
 """

@@ -35,6 +35,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just queue-execute-preflight` is the canonical execute-start path: verify queue freshness, pin the top active TODO scope, then validate the current worktree against the execute objective before implementation continues.
 - `just changelog` validates the queue-refresh objective against `CHANGELOG.md`, regenerates the changelog body, and stamps the active queue snapshot.
 - `just queue-snapshot-check` validates that the stamped queue snapshot still matches the current active TODO block and parent commit.
+- `just workflow-surface-check-deployment-verification` validates the deployment verification family stays surface-complete across CLI, `just`, fixtures, workflow docs, and the reference index.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment

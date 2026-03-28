@@ -1,10 +1,10 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+use afterburner::command_reconciliation::{
+    ReconciliationError, load_json_object, read_string, read_u64, reconciliation_status,
+    write_emitted_json,
 };
-use serde_json::{Map, Value, json};
+use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json";
@@ -34,13 +34,26 @@ impl From<std::io::Error> for DeploymentVerificationHandoffReconcileError {
     }
 }
 
-impl From<JsonArtifactError> for DeploymentVerificationHandoffReconcileError {
-    fn from(value: JsonArtifactError) -> Self {
+impl From<afterburner::command_artifacts::JsonArtifactError>
+    for DeploymentVerificationHandoffReconcileError
+{
+    fn from(value: afterburner::command_artifacts::JsonArtifactError) -> Self {
         match value {
-            JsonArtifactError::Io(err) => Self::Io(err),
-            JsonArtifactError::Serialize(err) => Self::Parse(format!(
-                "serialize deployment verification evidence handoff reconciliation json: {err}"
-            )),
+            afterburner::command_artifacts::JsonArtifactError::Io(err) => Self::Io(err),
+            afterburner::command_artifacts::JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!(
+                    "serialize deployment verification evidence handoff reconciliation json: {err}"
+                ))
+            }
+        }
+    }
+}
+
+impl From<ReconciliationError> for DeploymentVerificationHandoffReconcileError {
+    fn from(value: ReconciliationError) -> Self {
+        match value {
+            ReconciliationError::Io(err) => Self::Io(err),
+            ReconciliationError::Parse(msg) => Self::Parse(msg),
         }
     }
 }
@@ -98,15 +111,13 @@ where
         "verification_status": read_string(&handoff, "verification_status", args.handoff.as_path(), "deployment verification evidence handoff")?,
         "evidence_count": read_u64(&handoff, "evidence_count", args.handoff.as_path(), "deployment verification evidence handoff")?,
     });
-    let reconciliation_status = if desired["artifact_version"] == current["artifact_version"]
-        && desired["profile_name"] == current["profile_name"]
-        && desired["verification_status"] == current["verification_status"]
-        && desired["evidence_count"] == current["evidence_count"]
-    {
-        "aligned"
-    } else {
-        "needs-update"
-    };
+    let current_comparable = json!({
+        "artifact_version": current["artifact_version"].clone(),
+        "profile_name": current["profile_name"].clone(),
+        "verification_status": current["verification_status"].clone(),
+        "evidence_count": current["evidence_count"].clone(),
+    });
+    let reconciliation_status = reconciliation_status(&desired, &current_comparable);
 
     let reconciliation = json!({
         "schema_version": "1",
@@ -117,15 +128,14 @@ where
         "reconciliation_status": reconciliation_status,
     });
 
-    write_json_value(&args.out_path, &reconciliation)?;
-    emit_json_artifact_written(
+    write_emitted_json(
         "deploy_cli",
         "deployment_verification_evidence_handoff_reconciliation_written",
         "reconciliation_path",
         &args.out_path,
         "reconciliation",
         reconciliation,
-    );
+    )?;
     Ok(())
 }
 
@@ -211,57 +221,6 @@ where
         DeploymentVerificationHandoffReconcileError::InvalidArg(format!(
             "invalid value for {flag}\n{}",
             usage()
-        ))
-    })
-}
-
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<Map<String, Value>, DeploymentVerificationHandoffReconcileError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationHandoffReconcileError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentVerificationHandoffReconcileError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<String, DeploymentVerificationHandoffReconcileError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentVerificationHandoffReconcileError::Parse(format!(
-                "{kind} `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<u64, DeploymentVerificationHandoffReconcileError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        DeploymentVerificationHandoffReconcileError::Parse(format!(
-            "{kind} `{}` missing integer field `{key}`",
-            path.display()
         ))
     })
 }

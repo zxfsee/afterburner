@@ -1,10 +1,10 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+use afterburner::command_reconciliation::{
+    ReconciliationError, append_history_entry, load_json_object, load_or_init_history, read_object,
+    read_string, write_emitted_json,
 };
-use serde_json::{Value, json};
+use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation_history.json";
@@ -28,19 +28,26 @@ impl std::fmt::Display for DeploymentStackLaunchHandoffReconciliationHistoryErro
 
 impl std::error::Error for DeploymentStackLaunchHandoffReconciliationHistoryError {}
 
-impl From<std::io::Error> for DeploymentStackLaunchHandoffReconciliationHistoryError {
-    fn from(value: std::io::Error) -> Self {
-        Self::Io(value)
+impl From<afterburner::command_artifacts::JsonArtifactError>
+    for DeploymentStackLaunchHandoffReconciliationHistoryError
+{
+    fn from(value: afterburner::command_artifacts::JsonArtifactError) -> Self {
+        match value {
+            afterburner::command_artifacts::JsonArtifactError::Io(err) => Self::Io(err),
+            afterburner::command_artifacts::JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!(
+                    "serialize deployment stack launch handoff reconciliation history json: {err}"
+                ))
+            }
+        }
     }
 }
 
-impl From<JsonArtifactError> for DeploymentStackLaunchHandoffReconciliationHistoryError {
-    fn from(value: JsonArtifactError) -> Self {
+impl From<ReconciliationError> for DeploymentStackLaunchHandoffReconciliationHistoryError {
+    fn from(value: ReconciliationError) -> Self {
         match value {
-            JsonArtifactError::Io(err) => Self::Io(err),
-            JsonArtifactError::Serialize(err) => Self::Parse(format!(
-                "serialize deployment stack launch handoff reconciliation history json: {err}"
-            )),
+            ReconciliationError::Io(err) => Self::Io(err),
+            ReconciliationError::Parse(msg) => Self::Parse(msg),
         }
     }
 }
@@ -82,40 +89,27 @@ where
         "deployment stack launch evidence handoff reconciliation",
     )?;
 
-    let mut history = if args.out_path.exists() {
-        load_history(args.out_path.as_path())?
-    } else {
-        json!({
-            "schema_version": "1",
-            "entries": []
-        })
-    };
-
+    let mut history = load_or_init_history(args.out_path.as_path())?;
     let entry = json!({
         "event": args.event,
         "reconciliation_path": args.reconciliation.display().to_string(),
-        "bundle_path": read_string(&reconciliation, "bundle_path", args.reconciliation.as_path())?,
-        "handoff_path": read_string(&reconciliation, "handoff_path", args.reconciliation.as_path())?,
-        "reconciliation_status": read_string(&reconciliation, "reconciliation_status", args.reconciliation.as_path())?,
-        "desired": read_object(&reconciliation, "desired", args.reconciliation.as_path())?,
-        "current": read_object(&reconciliation, "current", args.reconciliation.as_path())?,
+        "bundle_path": read_string(&reconciliation, "bundle_path", args.reconciliation.as_path(), "deployment stack launch evidence handoff reconciliation")?,
+        "handoff_path": read_string(&reconciliation, "handoff_path", args.reconciliation.as_path(), "deployment stack launch evidence handoff reconciliation")?,
+        "reconciliation_status": read_string(&reconciliation, "reconciliation_status", args.reconciliation.as_path(), "deployment stack launch evidence handoff reconciliation")?,
+        "desired": read_object(&reconciliation, "desired", args.reconciliation.as_path(), "deployment stack launch evidence handoff reconciliation")?,
+        "current": read_object(&reconciliation, "current", args.reconciliation.as_path(), "deployment stack launch evidence handoff reconciliation")?,
         "recorded_at_unix_ms": args.recorded_at_unix_ms,
     });
-    history
-        .get_mut("entries")
-        .and_then(Value::as_array_mut)
-        .expect("history entries must be an array")
-        .push(entry);
+    append_history_entry(&mut history, entry);
 
-    write_json_value(&args.out_path, &history)?;
-    emit_json_artifact_written(
+    write_emitted_json(
         "deploy_cli",
         "deployment_stack_launch_evidence_handoff_reconciliation_history_written",
         "history_path",
         &args.out_path,
         "history",
         history,
-    );
+    )?;
     Ok(())
 }
 
@@ -216,78 +210,6 @@ where
         DeploymentStackLaunchHandoffReconciliationHistoryError::InvalidArg(format!(
             "invalid value for {flag}\n{}",
             usage()
-        ))
-    })
-}
-
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DeploymentStackLaunchHandoffReconciliationHistoryError>
-{
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn load_history(
-    path: &Path,
-) -> Result<Value, DeploymentStackLaunchHandoffReconciliationHistoryError> {
-    let text = fs::read_to_string(path)?;
-    let history: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-            "parse deployment stack launch handoff reconciliation history `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    history
-        .get("entries")
-        .and_then(Value::as_array)
-        .ok_or_else(|| {
-            DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-                "deployment stack launch handoff reconciliation history `{}` must contain an `entries` array",
-                path.display()
-            ))
-        })?;
-    Ok(history)
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DeploymentStackLaunchHandoffReconciliationHistoryError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-                "deployment stack launch evidence handoff reconciliation `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_object(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<Value, DeploymentStackLaunchHandoffReconciliationHistoryError> {
-    object.get(key).cloned().ok_or_else(|| {
-        DeploymentStackLaunchHandoffReconciliationHistoryError::Parse(format!(
-            "deployment stack launch evidence handoff reconciliation `{}` missing field `{key}`",
-            path.display()
         ))
     })
 }
