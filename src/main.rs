@@ -30,6 +30,7 @@ mod cmd_deployment_verification_handoff_history;
 mod cmd_deployment_verification_handoff_reconcile;
 mod cmd_deployment_verification_handoff_reconciliation_history;
 mod cmd_deployment_verification_handoff_transport_locator;
+mod cmd_deployment_verification_handoff_transport_locator_history;
 mod cmd_deployment_verification_handoff_transport_locator_reconcile;
 mod cmd_deployment_verification_receipt;
 mod cmd_deployment_verification_receipt_history;
@@ -299,6 +300,9 @@ where
         }
         "point-verification-handoff-transport-locator" => {
             cmd_deployment_verification_handoff_transport_locator::run(args)
+        }
+        "record-verification-handoff-transport-locator-history" => {
+            cmd_deployment_verification_handoff_transport_locator_history::run(args)
         }
         "reconcile-verification-handoff-transport-locator" => {
             cmd_deployment_verification_handoff_transport_locator_reconcile::run(args)

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification handoff transport locator history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification handoff transport locator changes so downstream deployment tooling can audit transport-facing locator updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence bundle transport locator adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one stable transport-facing locator over the deployment verification evidence bundle so downstream deployment consumers can resolve the current verification bundle without hardcoding artifact paths.
   - Kind: `mixed`
