@@ -221,9 +221,12 @@ fn upsert_snapshot_comment(
 ) -> Result<String, QueueSnapshotError> {
     let comment = snapshot_comment(snapshot);
     if changelog.contains(SNAPSHOT_PREFIX) {
-        let mut lines = Vec::new();
+        let mut lines: Vec<String> = Vec::new();
         for line in changelog.lines() {
             if line.trim_start().starts_with(SNAPSHOT_PREFIX) {
+                if matches!(lines.last(), Some(last) if !last.is_empty()) {
+                    lines.push(String::new());
+                }
                 lines.push(comment.clone());
             } else {
                 lines.push(line.to_string());
@@ -238,7 +241,10 @@ fn upsert_snapshot_comment(
     })?;
     let mut out = String::new();
     out.push_str(&changelog[..pos]);
-    if !out.ends_with('\n') {
+    if !out.ends_with("\n\n") {
+        if !out.ends_with('\n') {
+            out.push('\n');
+        }
         out.push('\n');
     }
     out.push_str(&comment);
@@ -291,7 +297,7 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner_queue_snapshot <stamp|verify> [--cargo-toml PATH] [--changelog PATH] [--parent-commit ID]"
+    "usage: workflow_queue_snapshot <stamp|verify> [--cargo-toml PATH] [--changelog PATH] [--parent-commit ID]"
 }
 
 #[cfg(test)]

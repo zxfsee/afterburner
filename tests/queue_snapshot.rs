@@ -15,7 +15,7 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
     fs::write(&changelog, "# Changelog\n\n## TODO\n\n- a\n\n## [Trunk]\n")
         .expect("write changelog");
 
-    let mut stamp = cargo_bin_cmd!("afterburner_queue_snapshot");
+    let mut stamp = cargo_bin_cmd!("workflow_queue_snapshot");
     stamp
         .arg("stamp")
         .arg("--cargo-toml")
@@ -31,8 +31,12 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
         stamped.contains("queue-snapshot:"),
         "snapshot comment must be written"
     );
+    assert!(
+        stamped.contains("\n\n<!-- queue-snapshot:"),
+        "snapshot comment must be separated from the TODO list by a blank line"
+    );
 
-    let mut verify = cargo_bin_cmd!("afterburner_queue_snapshot");
+    let mut verify = cargo_bin_cmd!("workflow_queue_snapshot");
     verify
         .arg("verify")
         .arg("--cargo-toml")
@@ -43,7 +47,7 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
         .arg("abc123");
     verify.assert().success();
 
-    let mut mismatch = cargo_bin_cmd!("afterburner_queue_snapshot");
+    let mut mismatch = cargo_bin_cmd!("workflow_queue_snapshot");
     mismatch
         .arg("verify")
         .arg("--cargo-toml")

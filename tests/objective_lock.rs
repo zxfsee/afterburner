@@ -11,26 +11,40 @@ fn write_sample_cargo_toml(path: &Path) {
     .expect("write Cargo.toml");
 }
 
-fn init_git_repo(root: &Path) {
-    run_git(root, &["init", "-q"]);
-    run_git(
+fn init_jj_repo(root: &Path) {
+    run_jj(
         root,
-        &["config", "user.email", "afterburner-tests@example.com"],
+        &[
+            "--config",
+            "user.name='Afterburner Tests'",
+            "--config",
+            "user.email='afterburner-tests@example.com'",
+            "git",
+            "init",
+            ".",
+        ],
     );
-    run_git(root, &["config", "user.name", "Afterburner Tests"]);
-    run_git(root, &["config", "commit.gpgsign", "false"]);
-    run_git(root, &["add", "."]);
-    run_git(root, &["commit", "-qm", "init"]);
+    run_jj(
+        root,
+        &[
+            "--config",
+            "user.name='Afterburner Tests'",
+            "--config",
+            "user.email='afterburner-tests@example.com'",
+            "commit",
+            "-m",
+            "init",
+        ],
+    );
 }
 
-fn run_git(root: &Path, args: &[&str]) {
-    let status = Command::new("git")
-        .arg("-C")
-        .arg(root)
+fn run_jj(root: &Path, args: &[&str]) {
+    let status = Command::new("jj")
+        .current_dir(root)
         .args(args)
         .status()
-        .unwrap_or_else(|err| panic!("git {}: {err}", args.join(" ")));
-    assert!(status.success(), "git {} must succeed", args.join(" "));
+        .unwrap_or_else(|err| panic!("jj {}: {err}", args.join(" ")));
+    assert!(status.success(), "jj {} must succeed", args.join(" "));
 }
 
 #[test]
@@ -45,7 +59,7 @@ fn objective_lock_worktree_rejects_queue_drift_and_allows_top_todo_scope() {
     fs::write(root.join("justfile"), "workflows:\n    just --list\n").expect("write justfile");
     fs::write(root.join("NOTE.md"), "# NOTE.md\n").expect("write NOTE.md");
     fs::write(root.join("docs/workflows.md"), "# Workflows\n").expect("write workflows doc");
-    init_git_repo(root);
+    init_jj_repo(root);
 
     fs::write(
         root.join("src/bin/objective_lock_guard.rs"),

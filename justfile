@@ -399,7 +399,7 @@ test-cargo:
 changelog:
     cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
-    let parent = (git rev-parse --verify HEAD | str trim); cargo run --locked --bin afterburner_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
 
 queue-snapshot-check:
-    let parent = (git rev-parse --verify HEAD | str trim); cargo run --locked --bin afterburner_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent

@@ -164,7 +164,7 @@ fn run(command: CommandSpec) -> Result<(), ObjectiveLockError> {
         } => {
             let lock = read_lock(&lock_file)?;
             validate_action(&lock, action.as_deref())?;
-            let changed_paths = git_changed_paths(&repo_root)?;
+            let changed_paths = jj_changed_paths(&repo_root)?;
             validate_paths(&lock, &changed_paths)
         }
         CommandSpec::Clear { lock_file } => {
@@ -663,26 +663,10 @@ fn extract_backtick_values(line: &str) -> Vec<String> {
     values
 }
 
-fn git_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError> {
-    let tracked = git_output_lines(
-        repo_root,
-        &["diff", "--name-only", "--relative", "HEAD", "--"],
-    )?;
-    let staged = git_output_lines(
-        repo_root,
-        &[
-            "diff",
-            "--name-only",
-            "--cached",
-            "--relative",
-            "HEAD",
-            "--",
-        ],
-    )?;
-    let untracked = git_output_lines(repo_root, &["ls-files", "--others", "--exclude-standard"])?;
-
+fn jj_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError> {
+    let changed = jj_output_lines(repo_root, &["diff", "--name-only"])?;
     let mut paths = BTreeSet::new();
-    for path in tracked.into_iter().chain(staged).chain(untracked) {
+    for path in changed {
         if !path.is_empty() {
             paths.insert(normalize_candidate_path(&path));
         }
@@ -691,21 +675,20 @@ fn git_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError
     Ok(paths.into_iter().collect())
 }
 
-fn git_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, ObjectiveLockError> {
-    let output = Command::new("git")
-        .arg("-C")
-        .arg(repo_root)
+fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, ObjectiveLockError> {
+    let output = Command::new("jj")
+        .current_dir(repo_root)
         .args(args)
         .output()?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
         return Err(ObjectiveLockError::Process(format!(
-            "git {} failed: {stderr}",
+            "jj {} failed: {stderr}",
             args.join(" ")
         )));
     }
     let stdout = String::from_utf8(output.stdout)
-        .map_err(|err| ObjectiveLockError::Parse(format!("git output is not utf8: {err}")))?;
+        .map_err(|err| ObjectiveLockError::Parse(format!("jj output is not utf8: {err}")))?;
     Ok(stdout.lines().map(ToString::to_string).collect())
 }
 
