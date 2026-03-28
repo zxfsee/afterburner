@@ -55,6 +55,10 @@ Do not include temporary heuristics that reflect a single session correction.
     - The verifier must not modify code.
     - The verifier reports only: pass/fail and concrete mismatches.
 - `CHANGELOG.md` is generated; treat it as derived output (edit `Cargo.toml` `[package.metadata.git-cliff.*]`, then regenerate).
+- Use the repo’s queue freshness and objective-lock guards as part of normal TODO execution.
+  - Before starting implementation of the top active TODO, run the queue freshness check and pin the execute objective through the canonical repo entrypoints.
+  - Before queue-only refreshes (for example active horizon updates in `Cargo.toml` / `CHANGELOG.md`), pin the queue-refresh objective through the canonical repo entrypoint.
+  - When changing objective class, clear or replace the prior objective lock before continuing.
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
     - a new gate (test/CI check), or
