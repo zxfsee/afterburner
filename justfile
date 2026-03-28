@@ -53,6 +53,13 @@ objective-lock-check-worktree action:
 objective-lock-clear:
     cargo run --locked --bin workflow_objective_lock -- clear
 
+# refresh the active queue through the canonical queue-only guarded path
+queue-refresh:
+    just objective-lock-pin-queue
+    just changelog
+    just queue-snapshot-check
+    just objective-lock-clear
+
 # format rust + toml + nix
 fmt:
     nix fmt

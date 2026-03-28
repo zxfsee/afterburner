@@ -20,6 +20,13 @@ Rules:
 
 ## Items
 
+- Gateway API inference extension fit gate [Serving/Deployment Infra, Inference]
+  - Goal: Evaluate whether the Kubernetes Gateway API inference extension matters for a later Afterburner cluster-serving boundary so traffic-management integration can stay adapter-side and avoid distorting the current runtime/scheduler design prematurely.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
+
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
