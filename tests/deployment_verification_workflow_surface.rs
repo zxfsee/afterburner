@@ -19,6 +19,7 @@ fn deployment_verification_family_stays_surface_complete() {
     for cli in [
         "verification-receipt",
         "point-verification-receipt-transport-locator",
+        "reconcile-verification-receipt-transport-locator",
         "record-verification-receipt-history",
         "reconcile-verification-receipt",
         "record-verification-receipt-reconciliation-history",
@@ -47,6 +48,7 @@ fn deployment_verification_family_stays_surface_complete() {
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
         "deployment-verification-point-receipt-transport-locator receipt:",
+        "deployment-verification-reconcile-receipt-transport-locator receipt locator:",
         "deployment-verification-record-receipt-history receipt event recorded_at_unix_ms:",
         "deployment-verification-reconcile-receipt receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
         "deployment-verification-record-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:",
@@ -74,6 +76,8 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_receipt.example.json",
         "deployment_verification_receipt_transport_locator.schema.json",
         "deployment_verification_receipt_transport_locator.example.json",
+        "deployment_verification_receipt_transport_locator_reconciliation.schema.json",
+        "deployment_verification_receipt_transport_locator_reconciliation.example.json",
         "deployment_verification_receipt_history.schema.json",
         "deployment_verification_receipt_history.example.json",
         "deployment_verification_receipt_reconciliation.schema.json",
@@ -116,6 +120,7 @@ fn deployment_verification_family_stays_surface_complete() {
     for needle in [
         "just deployment-verification-receipt",
         "just deployment-verification-point-receipt-transport-locator",
+        "just deployment-verification-reconcile-receipt-transport-locator",
         "just deployment-verification-record-receipt-history",
         "just deployment-verification-reconcile-receipt",
         "just deployment-verification-record-receipt-reconciliation-history",
@@ -136,6 +141,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "just workflow-surface-check-deployment-verification",
         "deployment_verification_receipt.json",
         "deployment_verification_receipt_transport_locator.json",
+        "deployment_verification_receipt_transport_locator_reconciliation.json",
         "deployment_verification_receipt_history.json",
         "deployment_verification_receipt_reconciliation.json",
         "deployment_verification_receipt_reconciliation_history.json",
@@ -164,6 +170,7 @@ fn deployment_verification_family_stays_surface_complete() {
     for needle in [
         "deployment_verification_receipt.json",
         "deployment_verification_receipt_transport_locator.json",
+        "deployment_verification_receipt_transport_locator_reconciliation.json",
         "deployment_verification_receipt_history.json",
         "deployment_verification_receipt_reconciliation.json",
         "deployment_verification_receipt_reconciliation_history.json",
