@@ -77,6 +77,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-record-receipt-reconciliation-history` writes `deployment_verification_receipt_reconciliation_history.json`.
 - `just deployment-verification-bundle` writes `deployment_verification_evidence_bundle.json`.
 - `just deployment-verification-record-bundle-history` writes `deployment_verification_evidence_bundle_history.json`.
+- `just deployment-verification-point-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator.json`.
 - `just deployment-verification-reconcile-bundle` writes `deployment_verification_evidence_bundle_reconciliation.json`.
 - `just deployment-verification-record-bundle-reconciliation-history` writes `deployment_verification_evidence_bundle_reconciliation_history.json`.
 - `just deployment-verification-handoff` writes `deployment_verification_evidence_handoff.json`.
