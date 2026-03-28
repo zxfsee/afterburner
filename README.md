@@ -94,7 +94,8 @@ Training exports versioned inference artifacts under
 `artifacts/inference/<version>/`. The active version is tracked by
 `artifacts/inference/current`, and the manifest carries checksum, signature,
 and precision metadata. Structured artifacts and events stay on JSON; the
-inference manifest stays on TOML.
+inference manifest stays on TOML. `capnproto-rust` remains a later optional
+wire-format reference only if measured high-volume pressure appears.
 
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).

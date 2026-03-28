@@ -166,6 +166,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - Structured artifact and event contracts stay on JSON by default, while the
   inference manifest remains TOML. No broad JSON-to-RON migration should happen
   without a new explicit decision.
+- `capnproto-rust` is not part of the current artifact or event contract stack.
+  Reconsider it only for a concrete later high-volume runtime or data surface if
+  measured pressure shows JSON/TOML framing is insufficient.
 - Inference artifact precision is explicit in the manifest. The current runtime accepts only
   `f32` weights/activations with `quantization = none`; any reduced-precision artifact must
   declare itself explicitly and remain rejected until a dedicated runtime path is introduced.
@@ -388,6 +391,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
 - [ADR-060: JSON Over RON Fit](./docs/adr/060-json-over-ron-fit.md)
+- [ADR-063: Capnproto-Rust Wire-Format Fit](./docs/adr/063-capnproto-wire-format-fit.md)
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-062: kube-rs GPU Scheduler Placement Fit](./docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
