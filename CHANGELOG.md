@@ -2,13 +2,6 @@
 
 ## TODO
 
-- Deployment verification evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current verification bundle updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification receipt reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment verification receipt so downstream deployment consumers can compare desired verification state against the current receipt without depending on ad hoc shell checks.
   - Kind: `mixed`
@@ -44,7 +37,14 @@
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
-<!-- queue-snapshot: todo_sha256=814e9e0892654d22e7fd491f338028b9745f2bb510adf817dbf1141a404d479d parent_commit=ddf242980176a65fbb791b4f3c2aa9272bd01f67 -->
+- Deployment verification evidence handoff history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification evidence handoff changes so downstream deployment tooling can audit verification handoff updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+<!-- queue-snapshot: todo_sha256=57c242d7ef682789790e7cba32ec062e6118f4b667ef91e5ef53ee9babffeb9f parent_commit=fbeb94f77431fc15296801bc9898fe3628897e57 -->
 
 ## [Trunk]
 
@@ -163,28 +163,29 @@
 - Add launch handoff history adapter ([c673585])
 - Add handoff history adapter ([ee4732b])
 - Add launch locator reconciliation history adapter ([60b6fdc])
-- Add kube-rs lease reconciliation history adapter ([32dc4f5])
-- Add launch transport locator history adapter ([723399e])
-- Add launch transport locator reconciliation adapter ([dbc08b3])
-- Add launch handoff reconciliation adapter ([58a14ec])
-- Add handoff reconciliation adapter ([4f9a88a])
-- Add launch handoff reconciliation history adapter ([57ab843])
-- Add launch transport locator reconciliation history adapter ([a5da1fd])
-- Add handoff reconciliation history adapter ([82b1961])
-- Add transport locator reconciliation adapter ([f9671a2])
-- Add launch evidence bundle reconciliation adapter ([b45415c])
-- Add evidence bundle reconciliation adapter ([3e10f3f])
-- Add transport locator reconciliation history adapter ([7ea2a34])
-- Add launch evidence bundle reconciliation history adapter ([9cc7e05])
-- Add evidence bundle reconciliation history adapter ([a0ce392])
-- Add queue snapshot invalidation guard ([07a87c1])
-- Add objective lock guard ([d9c50c1])
-- Add verification bundle reconciliation adapter ([3ac0559])
-- Add verification handoff reconciliation adapter ([da82abd])
-- Add canonical queue refresh helper ([5b4b0b4])
-- Add canonical queue execute preflight ([423a676])
-- Align helper tooling with workflow boundaries ([0433125])
-- Complete targeted harness hardening ([9a5d1df])
+- Add kube-rs lease reconciliation history adapter ([1bd69b3])
+- Add launch transport locator history adapter ([12f5f55])
+- Add launch transport locator reconciliation adapter ([4080a84])
+- Add launch handoff reconciliation adapter ([2f15119])
+- Add handoff reconciliation adapter ([3fec302])
+- Add launch handoff reconciliation history adapter ([abea151])
+- Add launch transport locator reconciliation history adapter ([5db0739])
+- Add handoff reconciliation history adapter ([4a29fa9])
+- Add transport locator reconciliation adapter ([c37819b])
+- Add launch evidence bundle reconciliation adapter ([8fee285])
+- Add evidence bundle reconciliation adapter ([9b3a4fa])
+- Add transport locator reconciliation history adapter ([e5dd680])
+- Add launch evidence bundle reconciliation history adapter ([26bb73c])
+- Add evidence bundle reconciliation history adapter ([8ad8913])
+- Add queue snapshot invalidation guard ([59dc9a5])
+- Add objective lock guard ([60b0aad])
+- Add verification bundle reconciliation adapter ([65ad9f1])
+- Add verification handoff reconciliation adapter ([4e148ff])
+- Add canonical queue refresh helper ([2343f36])
+- Add canonical queue execute preflight ([9850781])
+- Align helper tooling with workflow boundaries ([ed6b43f])
+- Complete targeted harness hardening ([0d15881])
+- Add verification handoff reconciliation history adapter ([fbeb94f])
 
 ### Changed
 
@@ -357,11 +358,11 @@
 - Define kube-rs placement fit ([7c85ef0])
 - Reduce recipe duplication ([3b41fab])
 - Compress stance catalog ([c361f52])
-- Park capnproto investigation ([b2b890a])
-- Refresh stale active horizon ([f2ab413])
-- Require queue freshness and objective locks ([6aecfc9])
-- Refresh queue snapshot after harness hardening ([b75a746])
-- Refresh queue snapshot after workflow fix ([ddf2429])
+- Park capnproto investigation ([863d786])
+- Refresh stale active horizon ([695cfc0])
+- Require queue freshness and objective locks ([5fa5db1])
+- Refresh queue snapshot after harness hardening ([d39df9d])
+- Refresh queue snapshot after workflow fix ([619cbab])
 
 ### Fixed
 
@@ -369,7 +370,7 @@
 - Enforce rollout budget schema gate ([e2c0b4c])
 - Enforce strict pretraining metadata shape ([f7b370f])
 - Align single infer success envelope ([1040623])
-- Tolerate queue-refresh commit in snapshot check ([cd68ff4])
+- Tolerate queue-refresh commit in snapshot check ([ddd9360])
 
 ### Other
 
@@ -706,33 +707,34 @@
 [60b6fdc]: https://github.com/zxfsee/afterburner/commit/60b6fdc0ad904e74d890a9e9408724b8b819940d
 [3b41fab]: https://github.com/zxfsee/afterburner/commit/3b41fab58f09c05414b6b154907823c5f571b556
 [c361f52]: https://github.com/zxfsee/afterburner/commit/c361f52b9aa3cff2296fafe17621de713fc0e390
-[32dc4f5]: https://github.com/zxfsee/afterburner/commit/32dc4f504e449fef33ba6e8f1bd6f32d6f1e7dc5
-[b2b890a]: https://github.com/zxfsee/afterburner/commit/b2b890ada760cb7cf1231791ee99c77c2ef0a653
-[723399e]: https://github.com/zxfsee/afterburner/commit/723399e42d9d97541bf080f94507524b44d3144e
-[dbc08b3]: https://github.com/zxfsee/afterburner/commit/dbc08b3dbe246182b600014e4bb33ca99ae14884
-[58a14ec]: https://github.com/zxfsee/afterburner/commit/58a14ec67831c1e68a374f6e40a9ec560a538787
-[4f9a88a]: https://github.com/zxfsee/afterburner/commit/4f9a88a95a997f170a39da1eb4b648da3914d984
-[57ab843]: https://github.com/zxfsee/afterburner/commit/57ab8437e9df0b3be016e8e76934367daa8bab26
-[a5da1fd]: https://github.com/zxfsee/afterburner/commit/a5da1fd36812dad7b21489140d6bd76c5bd01596
-[82b1961]: https://github.com/zxfsee/afterburner/commit/82b1961331b7f1da8e6dd7822ec9098bbdd70436
-[f9671a2]: https://github.com/zxfsee/afterburner/commit/f9671a2d8c7791d0d7f74731f55709f6549db7e6
-[b45415c]: https://github.com/zxfsee/afterburner/commit/b45415cedb6ac57aa030a3d735d9f4decc763291
-[3e10f3f]: https://github.com/zxfsee/afterburner/commit/3e10f3fe14c8a184c4890711892239be699c42db
-[f2ab413]: https://github.com/zxfsee/afterburner/commit/f2ab4136fa5c26f70fa8b0afff4734f0da9272a0
-[7ea2a34]: https://github.com/zxfsee/afterburner/commit/7ea2a344b176b9720c86025a7d26f654b47c2898
-[9cc7e05]: https://github.com/zxfsee/afterburner/commit/9cc7e052767d6eb6c0a2f8f8bd0555a6af5d823a
-[a0ce392]: https://github.com/zxfsee/afterburner/commit/a0ce39201348071c6e7d2847a76816425465422e
-[07a87c1]: https://github.com/zxfsee/afterburner/commit/07a87c1ead4087bfb591c92763493d2bac1cb326
-[d9c50c1]: https://github.com/zxfsee/afterburner/commit/d9c50c18953a1bcea5c67c88fdd04c98a3cc818f
-[3ac0559]: https://github.com/zxfsee/afterburner/commit/3ac055970a040583e1ce03d08301650dbb09348b
-[6aecfc9]: https://github.com/zxfsee/afterburner/commit/6aecfc94b2a88886a514027fe0f256eb918fd2d3
-[da82abd]: https://github.com/zxfsee/afterburner/commit/da82abd0cf52997506e802a77757b7e1b1387f83
-[5b4b0b4]: https://github.com/zxfsee/afterburner/commit/5b4b0b4fa71e9485fef05f931164012d3bc6f91c
-[423a676]: https://github.com/zxfsee/afterburner/commit/423a676ec7dfd47886c628432040f56827123f02
-[0433125]: https://github.com/zxfsee/afterburner/commit/04331252f6ef8c1e4cdd4c18fed0b8bb87f1e2c3
-[9a5d1df]: https://github.com/zxfsee/afterburner/commit/9a5d1dfb609e976a9902a54886f37c6103f4c31b
-[b75a746]: https://github.com/zxfsee/afterburner/commit/b75a7469bc0b6e213ad65b436457325870ce0908
-[cd68ff4]: https://github.com/zxfsee/afterburner/commit/cd68ff4d6d194fedc1cc3d8209058a271ce6ac5f
-[ddf2429]: https://github.com/zxfsee/afterburner/commit/ddf242980176a65fbb791b4f3c2aa9272bd01f67
+[1bd69b3]: https://github.com/zxfsee/afterburner/commit/1bd69b3a01dccd113be80b79848d2e2706913cbb
+[863d786]: https://github.com/zxfsee/afterburner/commit/863d7861ada7e696c1c3d28f7b6b10b5985cd370
+[12f5f55]: https://github.com/zxfsee/afterburner/commit/12f5f556ce33ad0577a6ec561e7254657cbd3151
+[4080a84]: https://github.com/zxfsee/afterburner/commit/4080a84a8b150fc0196c45e60e7e4c000c0e542f
+[2f15119]: https://github.com/zxfsee/afterburner/commit/2f15119a443c4792fb6178e1b1396e650430ebdd
+[3fec302]: https://github.com/zxfsee/afterburner/commit/3fec302754f69b292026425623b1c42573e11706
+[abea151]: https://github.com/zxfsee/afterburner/commit/abea151df3a57848f0bbad1cb658472405c83b5d
+[5db0739]: https://github.com/zxfsee/afterburner/commit/5db0739fca708504bc058b5f25a16368f2f0a5a7
+[4a29fa9]: https://github.com/zxfsee/afterburner/commit/4a29fa906ddda3471f0afff78990f33b6c05976f
+[c37819b]: https://github.com/zxfsee/afterburner/commit/c37819b1ac53ebfbd27bdafc21856422ac1ac3e6
+[8fee285]: https://github.com/zxfsee/afterburner/commit/8fee285de30597b400bd3adb7ecdcfbb6a161d3f
+[9b3a4fa]: https://github.com/zxfsee/afterburner/commit/9b3a4fa34a72ba72f831bc972c0d600f150889f0
+[695cfc0]: https://github.com/zxfsee/afterburner/commit/695cfc06ccbde952a1bf170d5563265ff3d55959
+[e5dd680]: https://github.com/zxfsee/afterburner/commit/e5dd68084b0fd795afbdf44c298f7d76948abe36
+[26bb73c]: https://github.com/zxfsee/afterburner/commit/26bb73cba538d13ff6d1609bae7072b9a22295c0
+[8ad8913]: https://github.com/zxfsee/afterburner/commit/8ad8913cf6b92bede72afa3f5106486d6fb94c77
+[59dc9a5]: https://github.com/zxfsee/afterburner/commit/59dc9a5bcc74332ac11356bebd8e5ddc0c943b76
+[60b0aad]: https://github.com/zxfsee/afterburner/commit/60b0aad3848b996ee777b704e29e59dd963a0883
+[65ad9f1]: https://github.com/zxfsee/afterburner/commit/65ad9f161fc1b93424f181f4da0c4c04cc11cb2f
+[5fa5db1]: https://github.com/zxfsee/afterburner/commit/5fa5db1e196c30342edd06116c8b51b6079c2650
+[4e148ff]: https://github.com/zxfsee/afterburner/commit/4e148ff655ca7cacf2d2c43297c9aef63b306429
+[2343f36]: https://github.com/zxfsee/afterburner/commit/2343f36a1d2a9995ba1fccc4c34428bca0e20ded
+[9850781]: https://github.com/zxfsee/afterburner/commit/98507819d5f0942b5f90ffe4a407e2a898616013
+[ed6b43f]: https://github.com/zxfsee/afterburner/commit/ed6b43ff970a2a5bf8127ba126975843adad506d
+[0d15881]: https://github.com/zxfsee/afterburner/commit/0d15881e338d94bb94ed745c0991d31b9e17f5c1
+[d39df9d]: https://github.com/zxfsee/afterburner/commit/d39df9dc12a5a322cf8bef62368f53fd9ba4d529
+[ddd9360]: https://github.com/zxfsee/afterburner/commit/ddd9360b6be8ad47a834005c35ff3997c08884fe
+[619cbab]: https://github.com/zxfsee/afterburner/commit/619cbabf2906d66312113c816c6be36f23eea724
+[fbeb94f]: https://github.com/zxfsee/afterburner/commit/fbeb94f77431fc15296801bc9898fe3628897e57
 
 <!-- generated by git-cliff -->

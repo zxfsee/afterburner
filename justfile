@@ -186,6 +186,9 @@ deployment-verification-bundle receipt:
 deployment-verification-reconcile-bundle receipt bundle:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
 
+deployment-verification-record-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation_history.json
+
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- deploy verification-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
