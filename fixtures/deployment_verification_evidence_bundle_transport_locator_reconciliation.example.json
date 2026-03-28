@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.json",
+  "locator_path": "artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.json",
+  "desired": {
+    "artifact_version": "0.2.0",
+    "profile_name": "staging-a",
+    "verification_status": "passed"
+  },
+  "current": {
+    "bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.json",
+    "artifact_version": "0.2.0",
+    "profile_name": "staging-a",
+    "verification_status": "passed"
+  },
+  "reconciliation_status": "aligned"
+}

@@ -189,6 +189,9 @@ deployment-verification-record-bundle-history bundle event recorded_at_unix_ms:
 deployment-verification-point-bundle-transport-locator bundle:
     cargo run --locked --bin afterburner -- deploy point-verification-bundle-transport-locator --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.json
 
+deployment-verification-reconcile-bundle-transport-locator bundle locator:
+    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-transport-locator --bundle {{ bundle }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_reconciliation.json
+
 deployment-verification-reconcile-bundle receipt bundle:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
 
