@@ -39,6 +39,7 @@ mod cmd_deployment_verification_receipt;
 mod cmd_deployment_verification_receipt_history;
 mod cmd_deployment_verification_receipt_reconcile;
 mod cmd_deployment_verification_receipt_reconciliation_history;
+mod cmd_deployment_verification_receipt_transport_locator;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
 mod cmd_distributed_runtime_profile;
@@ -280,6 +281,9 @@ where
             cmd_deployment_stack_launch_transport_locator::run(args)
         }
         "verification-receipt" => cmd_deployment_verification_receipt::run(args),
+        "point-verification-receipt-transport-locator" => {
+            cmd_deployment_verification_receipt_transport_locator::run(args)
+        }
         "record-verification-receipt-history" => {
             cmd_deployment_verification_receipt_history::run(args)
         }

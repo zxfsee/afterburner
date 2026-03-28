@@ -72,6 +72,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just rollout-verify` exercises infer and eval on the promoted artifact.
 - `just rollout-rollback` restores the previous current pointer.
 - `just deployment-verification-receipt` writes `deployment_verification_receipt.json`.
+- `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
 - `just deployment-verification-record-receipt-history` writes `deployment_verification_receipt_history.json`.
 - `just deployment-verification-reconcile-receipt` writes `deployment_verification_receipt_reconciliation.json`.
 - `just deployment-verification-record-receipt-reconciliation-history` writes `deployment_verification_receipt_reconciliation_history.json`.

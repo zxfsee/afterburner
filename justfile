@@ -226,6 +226,9 @@ deployment-verification-record-handoff-reconciliation-history reconciliation eve
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
     cargo run --locked --bin afterburner -- deploy verification-receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json
 
+deployment-verification-point-receipt-transport-locator receipt:
+    cargo run --locked --bin afterburner -- deploy point-verification-receipt-transport-locator --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_receipt_transport_locator.json
+
 deployment-verification-record-receipt-history receipt event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-history --receipt {{ receipt }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_history.json
 
