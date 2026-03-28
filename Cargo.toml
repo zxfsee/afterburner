@@ -13,26 +13,19 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence handoff reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification evidence handoff reconciliation changes so downstream deployment tooling can audit desired-versus-current verification handoff updates without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence bundle reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence bundle reconciliation changes so downstream deployment tooling can audit desired-versus-current verification bundle updates without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - Deployment verification receipt reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment verification receipt so downstream deployment consumers can compare desired verification state against the current receipt without depending on ad hoc shell checks.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - `capnproto-rust` wire-format fit gate [Data Infra, Runtime Infra]
   - Goal: Evaluate whether `capnproto-rust` is a useful later wire-format or structured artifact reference for high-volume runtime/data surfaces without replacing the current JSON/TOML contract layer prematurely.
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `adapter-deployment`
   - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
+
+- Deployment verification receipt reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification receipt reconciliation changes so downstream deployment tooling can audit desired-versus-current verification receipt updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 ## [Trunk]
 """

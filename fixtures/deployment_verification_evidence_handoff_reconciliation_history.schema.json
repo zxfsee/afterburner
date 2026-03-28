@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-handoff-reconciliation-history/v1",
+  "title": "Deployment Verification Evidence Handoff Reconciliation History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "reconciliation_path",
+          "bundle_path",
+          "handoff_path",
+          "reconciliation_status",
+          "desired",
+          "current",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "reconciliation_path": { "type": "string", "minLength": 1 },
+          "bundle_path": { "type": "string", "minLength": 1 },
+          "handoff_path": { "type": "string", "minLength": 1 },
+          "reconciliation_status": {
+            "type": "string",
+            "enum": ["aligned", "needs-update"]
+          },
+          "desired": { "type": "object" },
+          "current": { "type": "object" },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

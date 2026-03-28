@@ -22,6 +22,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "reconcile-verification-bundle",
         "verification-handoff",
         "reconcile-verification-handoff",
+        "record-verification-handoff-reconciliation-history",
     ] {
         assert!(
             main_rs.contains(&format!("\"{cli}\"")),
@@ -36,6 +37,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment-verification-reconcile-bundle receipt bundle:",
         "deployment-verification-handoff bundle:",
         "deployment-verification-reconcile-handoff bundle handoff:",
+        "deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -52,6 +54,8 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_evidence_handoff.example.json",
         "deployment_verification_evidence_handoff_reconciliation.schema.json",
         "deployment_verification_evidence_handoff_reconciliation.example.json",
+        "deployment_verification_evidence_handoff_reconciliation_history.schema.json",
+        "deployment_verification_evidence_handoff_reconciliation_history.example.json",
     ] {
         assert!(fixture_exists(fixture), "missing fixture `{fixture}`");
     }
@@ -63,12 +67,14 @@ fn deployment_verification_family_stays_surface_complete() {
         "just deployment-verification-reconcile-bundle",
         "just deployment-verification-handoff",
         "just deployment-verification-reconcile-handoff",
+        "just deployment-verification-record-handoff-reconciliation-history",
         "just workflow-surface-check-deployment-verification",
         "deployment_verification_receipt.json",
         "deployment_verification_evidence_bundle.json",
         "deployment_verification_evidence_bundle_reconciliation.json",
         "deployment_verification_evidence_handoff.json",
         "deployment_verification_evidence_handoff_reconciliation.json",
+        "deployment_verification_evidence_handoff_reconciliation_history.json",
     ] {
         assert!(
             workflows.contains(needle),
@@ -83,6 +89,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_evidence_bundle_reconciliation.json",
         "deployment_verification_evidence_handoff.json",
         "deployment_verification_evidence_handoff_reconciliation.json",
+        "deployment_verification_evidence_handoff_reconciliation_history.json",
     ] {
         assert!(
             reference.contains(needle),

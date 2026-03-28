@@ -25,6 +25,7 @@ mod cmd_deployment_verification_bundle;
 mod cmd_deployment_verification_bundle_reconcile;
 mod cmd_deployment_verification_handoff;
 mod cmd_deployment_verification_handoff_reconcile;
+mod cmd_deployment_verification_handoff_reconciliation_history;
 mod cmd_deployment_verification_receipt;
 mod cmd_distributed_load_profile;
 mod cmd_distributed_runtime_benchmark;
@@ -272,6 +273,9 @@ where
         "verification-handoff" => cmd_deployment_verification_handoff::run(args),
         "reconcile-verification-handoff" => {
             cmd_deployment_verification_handoff_reconcile::run(args)
+        }
+        "record-verification-handoff-reconciliation-history" => {
+            cmd_deployment_verification_handoff_reconciliation_history::run(args)
         }
         "load-profile" => cmd_distributed_load_profile::run(args),
         "single-node-scheduler" => cmd_single_node_scheduler::run(args),
