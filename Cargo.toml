@@ -55,6 +55,13 @@ header = """# Changelog
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
+- Deployment verification receipt transport locator history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification receipt transport locator changes so downstream deployment tooling can audit transport-facing locator updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
 ## [Trunk]
 """
 body = """
