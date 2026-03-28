@@ -29,6 +29,7 @@ mod cmd_deployment_verification_handoff_history;
 mod cmd_deployment_verification_handoff_reconcile;
 mod cmd_deployment_verification_handoff_reconciliation_history;
 mod cmd_deployment_verification_receipt;
+mod cmd_deployment_verification_receipt_history;
 mod cmd_deployment_verification_receipt_reconcile;
 mod cmd_deployment_verification_receipt_reconciliation_history;
 mod cmd_distributed_load_profile;
@@ -272,6 +273,9 @@ where
             cmd_deployment_stack_launch_transport_locator::run(args)
         }
         "verification-receipt" => cmd_deployment_verification_receipt::run(args),
+        "record-verification-receipt-history" => {
+            cmd_deployment_verification_receipt_history::run(args)
+        }
         "reconcile-verification-receipt" => {
             cmd_deployment_verification_receipt_reconcile::run(args)
         }
