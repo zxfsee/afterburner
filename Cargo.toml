@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence bundle reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment verification evidence bundle so downstream deployment consumers can compare desired receipt-resolved verification state against the current bundle without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence handoff reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over the deployment verification evidence handoff so downstream deployment consumers can compare desired bundle-resolved verification state against the current handoff without depending on ad hoc shell checks.
   - Kind: `mixed`
@@ -53,6 +46,13 @@ header = """# Changelog
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `event`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
+
+- `lws` cluster workload fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Evaluate whether Kubernetes `lws` is a useful cluster-path workload-management reference or thin adapter target for Afterburner's kube-rs-compatible scheduler model without turning the repo into a subset-of-Kubernetes project.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
   - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
 
 ## [Trunk]

@@ -171,6 +171,9 @@ distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_b
 deployment-verification-bundle receipt:
     cargo run --locked --bin afterburner -- deploy verification-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
 
+deployment-verification-reconcile-bundle receipt bundle:
+    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
+
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- deploy verification-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
