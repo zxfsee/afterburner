@@ -72,6 +72,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-bundle` writes `deployment_verification_evidence_bundle.json`.
 - `just deployment-verification-reconcile-bundle` writes `deployment_verification_evidence_bundle_reconciliation.json`.
 - `just deployment-verification-handoff` writes `deployment_verification_evidence_handoff.json`.
+- `just deployment-verification-reconcile-handoff` writes `deployment_verification_evidence_handoff_reconciliation.json`.
 
 ## Cleanup
 

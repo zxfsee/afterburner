@@ -177,6 +177,9 @@ deployment-verification-reconcile-bundle receipt bundle:
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- deploy verification-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
+deployment-verification-reconcile-handoff bundle handoff:
+    cargo run --locked --bin afterburner -- deploy reconcile-verification-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
+
 # write one deployment verification receipt with explicit evidence-source references
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
     cargo run --locked --bin afterburner -- deploy verification-receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence handoff reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one reconciliation artifact over the deployment verification evidence handoff so downstream deployment consumers can compare desired bundle-resolved verification state against the current handoff without depending on ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence handoff reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence handoff reconciliation changes so downstream deployment tooling can audit desired-versus-current verification handoff updates without reading shell or process logs.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - `lws` cluster workload fit gate [Serving/Deployment Infra, Runtime Infra]
   - Goal: Evaluate whether Kubernetes `lws` is a useful cluster-path workload-management reference or thin adapter target for Afterburner's kube-rs-compatible scheduler model without turning the repo into a subset-of-Kubernetes project.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
+
+- Gateway API inference extension fit gate [Serving/Deployment Infra, Inference]
+  - Goal: Evaluate whether the Kubernetes Gateway API inference extension matters for a later Afterburner cluster-serving boundary so traffic-management integration can stay adapter-side and avoid distorting the current runtime/scheduler design prematurely.
   - Kind: `gate`
   - Boundary: `adapter-deployment`
   - Contracts: `none`
