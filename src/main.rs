@@ -25,6 +25,7 @@ mod cmd_deployment_verification_bundle;
 mod cmd_deployment_verification_bundle_reconcile;
 mod cmd_deployment_verification_bundle_reconciliation_history;
 mod cmd_deployment_verification_handoff;
+mod cmd_deployment_verification_handoff_history;
 mod cmd_deployment_verification_handoff_reconcile;
 mod cmd_deployment_verification_handoff_reconciliation_history;
 mod cmd_deployment_verification_receipt;
@@ -283,6 +284,9 @@ where
             cmd_deployment_verification_bundle_reconciliation_history::run(args)
         }
         "verification-handoff" => cmd_deployment_verification_handoff::run(args),
+        "record-verification-handoff-history" => {
+            cmd_deployment_verification_handoff_history::run(args)
+        }
         "reconcile-verification-handoff" => {
             cmd_deployment_verification_handoff_reconcile::run(args)
         }

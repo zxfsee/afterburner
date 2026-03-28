@@ -192,6 +192,9 @@ deployment-verification-record-bundle-reconciliation-history reconciliation even
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- deploy verification-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
+deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_history.json
+
 deployment-verification-reconcile-handoff bundle handoff:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
 

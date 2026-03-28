@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-handoff-history/v1",
+  "title": "Deployment Verification Evidence Handoff History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "handoff_path",
+          "bundle_path",
+          "artifact_version",
+          "profile_name",
+          "verification_status",
+          "evidence_count",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "handoff_path": { "type": "string", "minLength": 1 },
+          "bundle_path": { "type": "string", "minLength": 1 },
+          "artifact_version": { "type": "string", "minLength": 1 },
+          "profile_name": { "type": "string", "minLength": 1 },
+          "verification_status": { "type": "string", "minLength": 1 },
+          "evidence_count": { "type": "integer", "minimum": 0 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
