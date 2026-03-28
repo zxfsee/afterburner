@@ -82,6 +82,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-handoff` writes `deployment_verification_evidence_handoff.json`.
 - `just deployment-verification-record-handoff-history` writes `deployment_verification_evidence_handoff_history.json`.
 - `just deployment-verification-point-handoff-transport-locator` writes `deployment_verification_evidence_handoff_transport_locator.json`.
+- `just deployment-verification-reconcile-handoff-transport-locator` writes `deployment_verification_evidence_handoff_transport_locator_reconciliation.json`.
 - `just deployment-verification-reconcile-handoff` writes `deployment_verification_evidence_handoff_reconciliation.json`.
 - `just deployment-verification-record-handoff-reconciliation-history` writes `deployment_verification_evidence_handoff_reconciliation_history.json`.
 

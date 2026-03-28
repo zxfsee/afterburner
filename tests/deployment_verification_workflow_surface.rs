@@ -28,6 +28,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "verification-handoff",
         "record-verification-handoff-history",
         "point-verification-handoff-transport-locator",
+        "reconcile-verification-handoff-transport-locator",
         "reconcile-verification-handoff",
         "record-verification-handoff-reconciliation-history",
     ] {
@@ -50,6 +51,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment-verification-handoff bundle:",
         "deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:",
         "deployment-verification-point-handoff-transport-locator handoff:",
+        "deployment-verification-reconcile-handoff-transport-locator handoff locator:",
         "deployment-verification-reconcile-handoff bundle handoff:",
         "deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
@@ -80,6 +82,8 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_evidence_handoff_history.example.json",
         "deployment_verification_evidence_handoff_transport_locator.schema.json",
         "deployment_verification_evidence_handoff_transport_locator.example.json",
+        "deployment_verification_evidence_handoff_transport_locator_reconciliation.schema.json",
+        "deployment_verification_evidence_handoff_transport_locator_reconciliation.example.json",
         "deployment_verification_evidence_handoff_reconciliation.schema.json",
         "deployment_verification_evidence_handoff_reconciliation.example.json",
         "deployment_verification_evidence_handoff_reconciliation_history.schema.json",
@@ -101,6 +105,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "just deployment-verification-handoff",
         "just deployment-verification-record-handoff-history",
         "just deployment-verification-point-handoff-transport-locator",
+        "just deployment-verification-reconcile-handoff-transport-locator",
         "just deployment-verification-reconcile-handoff",
         "just deployment-verification-record-handoff-reconciliation-history",
         "just workflow-surface-check-deployment-verification",
@@ -115,6 +120,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_evidence_handoff.json",
         "deployment_verification_evidence_handoff_history.json",
         "deployment_verification_evidence_handoff_transport_locator.json",
+        "deployment_verification_evidence_handoff_transport_locator_reconciliation.json",
         "deployment_verification_evidence_handoff_reconciliation.json",
         "deployment_verification_evidence_handoff_reconciliation_history.json",
     ] {
@@ -137,6 +143,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment_verification_evidence_handoff.json",
         "deployment_verification_evidence_handoff_history.json",
         "deployment_verification_evidence_handoff_transport_locator.json",
+        "deployment_verification_evidence_handoff_transport_locator_reconciliation.json",
         "deployment_verification_evidence_handoff_reconciliation.json",
         "deployment_verification_evidence_handoff_reconciliation_history.json",
     ] {
