@@ -189,6 +189,9 @@ auto-versioning, embedded serving) are intentionally absent.
 - The baseline deploy-rs adapter consumes the deployment target profile contract directly from the
   checked fixture/example and uses `activate.custom` against the packaged `afterburner` binary
   rather than inventing a NixOS system deployment surface.
+- The Gateway API inference extension is not part of the current deployment or
+  cluster-serving boundary; reconsider it only as a later traffic-management
+  reference or thin adapter target over the existing deployment stack.
 - Arrow/DataFusion/Ballista are not part of the current runtime or artifact contract. The present
   fit decision is: prefer Parquet later for offline tabular dataset/eval/export artifacts if a
   measured need appears; consider DataFusion only for a real in-process analytical layer; keep
@@ -398,6 +401,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-062: kube-rs GPU Scheduler Placement Fit](./docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md)
 - [ADR-064: LWS Cluster Workload Fit](./docs/adr/064-lws-cluster-workload-fit.md)
+- [ADR-065: Gateway API Inference Extension Fit](./docs/adr/065-gateway-api-inference-extension-fit.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)

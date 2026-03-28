@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Gateway API inference extension fit gate [Serving/Deployment Infra, Inference]
-  - Goal: Evaluate whether the Kubernetes Gateway API inference extension matters for a later Afterburner cluster-serving boundary so traffic-management integration can stay adapter-side and avoid distorting the current runtime/scheduler design prematurely.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
-
 - Deployment verification receipt reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification receipt reconciliation changes so downstream deployment tooling can audit desired-versus-current verification receipt updates without reading shell or process logs.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification handoff transport locator adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one stable transport-facing locator over the deployment verification handoff artifact so downstream deployment consumers can resolve the current verification handoff without hardcoding artifact paths.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification handoff transport locator reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one reconciliation artifact over the deployment verification handoff transport locator so downstream deployment consumers can compare desired transport-facing locator state against the current locator without ad hoc shell checks.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

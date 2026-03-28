@@ -64,7 +64,9 @@ lifecycle semantics, and distributed/runtime stance live in
 The later cluster path stays `kube-rs-compatible` and reuses the same lease and
 lifecycle model as the single-node scheduler instead of inventing a second
 scheduler vocabulary. `lws` remains a later optional adapter reference, not a
-current scheduler boundary.
+current scheduler boundary. The Gateway API inference extension also remains a
+later optional traffic-management reference, not a current cluster-serving
+boundary.
 
 ## Training
 
