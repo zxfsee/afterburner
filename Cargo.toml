@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- `lws` cluster workload fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Evaluate whether Kubernetes `lws` is a useful cluster-path workload-management reference or thin adapter target for Afterburner's kube-rs-compatible scheduler model without turning the repo into a subset-of-Kubernetes project.
-  - Kind: `gate`
-  - Boundary: `adapter-deployment`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `ARCHITECTURE.md`, `tests/`
-
 - Gateway API inference extension fit gate [Serving/Deployment Infra, Inference]
   - Goal: Evaluate whether the Kubernetes Gateway API inference extension matters for a later Afterburner cluster-serving boundary so traffic-management integration can stay adapter-side and avoid distorting the current runtime/scheduler design prematurely.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification evidence bundle history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence bundle changes so downstream deployment tooling can audit verification bundle updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification handoff transport locator adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one stable transport-facing locator over the deployment verification handoff artifact so downstream deployment consumers can resolve the current verification handoff without hardcoding artifact paths.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

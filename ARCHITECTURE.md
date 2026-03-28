@@ -223,6 +223,9 @@ auto-versioning, embedded serving) are intentionally absent.
   - The Kubernetes path should remain `kube-rs`-compatible and reuse the same
     node inventory, topology-aware placement, lease ownership, and job lifecycle reconciliation
     model as the single-node scheduler.
+  - `lws` is not part of the current scheduler contract; reconsider it only as a
+    later workload-management reference or thin adapter target over the same
+    kube-rs-compatible cluster path.
   - Scheduler/control-plane work is also a workload-driven capability subset,
     not a Slurm parity target.
   - Scheduler preemption is cooperative checkpoint/resume only; transparent GPU
@@ -394,6 +397,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-063: Capnproto-Rust Wire-Format Fit](./docs/adr/063-capnproto-wire-format-fit.md)
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-062: kube-rs GPU Scheduler Placement Fit](./docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md)
+- [ADR-064: LWS Cluster Workload Fit](./docs/adr/064-lws-cluster-workload-fit.md)
 - [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
