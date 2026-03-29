@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence bundle locator pointer rollback adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Materialize one rollback artifact over the deployment verification evidence bundle locator pointer so downstream deployment consumers can restore the previous current-pointer state without ad hoc shell checks.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification receipt locator pointer rollback adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one rollback artifact over the deployment verification receipt locator pointer so downstream deployment consumers can restore the previous current-pointer state without ad hoc shell checks.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification receipt rollback history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification receipt rollback changes so downstream deployment tooling can audit rollback-driven verification receipt updates without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence bundle rollback adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Materialize one rollback artifact over the deployment verification evidence bundle so downstream deployment consumers can restore the previous verification bundle state without ad hoc shell checks.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

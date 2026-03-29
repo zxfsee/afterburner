@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-bundle-locator-pointer-rollback/v1",
+  "title": "Deployment Verification Evidence Bundle Locator Pointer Rollback",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "current_pointer_path",
+    "restored_pointer_path",
+    "previous_locator_path",
+    "restored_locator_path",
+    "previous_bundle_path",
+    "restored_bundle_path",
+    "previous_artifact_version",
+    "restored_artifact_version",
+    "profile_name",
+    "rolled_back_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "current_pointer_path": { "type": "string", "minLength": 1 },
+    "restored_pointer_path": { "type": "string", "minLength": 1 },
+    "previous_locator_path": { "type": "string", "minLength": 1 },
+    "restored_locator_path": { "type": "string", "minLength": 1 },
+    "previous_bundle_path": { "type": "string", "minLength": 1 },
+    "restored_bundle_path": { "type": "string", "minLength": 1 },
+    "previous_artifact_version": { "type": "string", "minLength": 1 },
+    "restored_artifact_version": { "type": "string", "minLength": 1 },
+    "profile_name": { "type": "string", "minLength": 1 },
+    "rolled_back_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}

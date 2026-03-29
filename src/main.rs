@@ -27,6 +27,7 @@ mod cmd_deployment_verification_bundle_locator_history;
 mod cmd_deployment_verification_bundle_locator_pointer;
 mod cmd_deployment_verification_bundle_locator_reconcile;
 mod cmd_deployment_verification_bundle_locator_reconciliation_history;
+mod cmd_deployment_verification_bundle_locator_rollback;
 mod cmd_deployment_verification_bundle_reconcile;
 mod cmd_deployment_verification_bundle_reconciliation_history;
 mod cmd_deployment_verification_bundle_transport_locator;
@@ -338,6 +339,9 @@ where
         }
         "record-verification-bundle-locator-reconciliation-history" => {
             cmd_deployment_verification_bundle_locator_reconciliation_history::run(args)
+        }
+        "rollback-verification-bundle-locator" => {
+            cmd_deployment_verification_bundle_locator_rollback::run(args)
         }
         "record-verification-bundle-history" => {
             cmd_deployment_verification_bundle_history::run(args)

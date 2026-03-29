@@ -90,6 +90,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-record-bundle-locator-history` writes `deployment_verification_evidence_bundle_locator_pointer_history.json`.
 - `just deployment-verification-reconcile-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer_reconciliation.json`.
 - `just deployment-verification-record-bundle-locator-reconciliation-history` writes `deployment_verification_evidence_bundle_locator_pointer_reconciliation_history.json`.
+- `just deployment-verification-rollback-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer_rollback.json`.
 - `just deployment-verification-record-bundle-transport-locator-history` writes `deployment_verification_evidence_bundle_transport_locator_history.json`.
 - `just deployment-verification-reconcile-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation.json`.
 - `just deployment-verification-record-bundle-transport-locator-reconciliation-history` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation_history.json`.

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1",
+  "current_pointer_path": "artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json",
+  "restored_pointer_path": "artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.previous.json",
+  "previous_locator_path": "artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.json",
+  "restored_locator_path": "artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.previous.json",
+  "previous_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.json",
+  "restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.previous.json",
+  "previous_artifact_version": "0.2.0",
+  "restored_artifact_version": "0.1.0",
+  "profile_name": "staging-a",
+  "rolled_back_at_unix_ms": 1735689800000
+}
