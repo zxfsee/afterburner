@@ -73,6 +73,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just rollout-rollback` restores the previous current pointer.
 - `just deployment-verification-receipt` writes `deployment_verification_receipt.json`.
 - `just deployment-verification-point-receipt-locator` writes `deployment_verification_receipt_locator_pointer.json`.
+- `just deployment-verification-reconcile-receipt-locator` writes `deployment_verification_receipt_locator_pointer_reconciliation.json`.
 - `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
 - `just deployment-verification-record-receipt-transport-locator-history` writes `deployment_verification_receipt_transport_locator_history.json`.
 - `just deployment-verification-reconcile-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator_reconciliation.json`.

@@ -41,6 +41,7 @@ mod cmd_deployment_verification_handoff_transport_locator_reconcile;
 mod cmd_deployment_verification_receipt;
 mod cmd_deployment_verification_receipt_history;
 mod cmd_deployment_verification_receipt_locator_pointer;
+mod cmd_deployment_verification_receipt_locator_reconcile;
 mod cmd_deployment_verification_receipt_reconcile;
 mod cmd_deployment_verification_receipt_reconciliation_history;
 mod cmd_deployment_verification_receipt_transport_locator;
@@ -290,6 +291,9 @@ where
         "verification-receipt" => cmd_deployment_verification_receipt::run(args),
         "point-verification-receipt-locator" => {
             cmd_deployment_verification_receipt_locator_pointer::run(args)
+        }
+        "reconcile-verification-receipt-locator" => {
+            cmd_deployment_verification_receipt_locator_reconcile::run(args)
         }
         "point-verification-receipt-transport-locator" => {
             cmd_deployment_verification_receipt_transport_locator::run(args)
