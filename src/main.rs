@@ -38,6 +38,7 @@ mod cmd_deployment_verification_bundle_rollback_history;
 mod cmd_deployment_verification_bundle_rollback_reconcile;
 mod cmd_deployment_verification_bundle_rollback_reconciliation_history;
 mod cmd_deployment_verification_bundle_rollback_supersession;
+mod cmd_deployment_verification_bundle_rollback_supersession_history;
 mod cmd_deployment_verification_bundle_transport_locator;
 mod cmd_deployment_verification_bundle_transport_locator_history;
 mod cmd_deployment_verification_bundle_transport_locator_reconcile;
@@ -386,6 +387,9 @@ where
         }
         "supersede-verification-bundle-rollback" => {
             cmd_deployment_verification_bundle_rollback_supersession::run(args)
+        }
+        "record-verification-bundle-rollback-supersession-history" => {
+            cmd_deployment_verification_bundle_rollback_supersession_history::run(args)
         }
         "record-verification-bundle-history" => {
             cmd_deployment_verification_bundle_history::run(args)

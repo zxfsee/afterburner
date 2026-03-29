@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-bundle-rollback-supersession-history/v1",
+  "title": "Deployment Verification Evidence Bundle Rollback Supersession History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "supersession_path",
+          "previous_rollback_path",
+          "next_rollback_path",
+          "previous_restored_bundle_path",
+          "next_restored_bundle_path",
+          "previous_restored_artifact_version",
+          "next_restored_artifact_version",
+          "profile_name",
+          "superseded_at_unix_ms",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "supersession_path": { "type": "string", "minLength": 1 },
+          "previous_rollback_path": { "type": "string", "minLength": 1 },
+          "next_rollback_path": { "type": "string", "minLength": 1 },
+          "previous_restored_bundle_path": { "type": "string", "minLength": 1 },
+          "next_restored_bundle_path": { "type": "string", "minLength": 1 },
+          "previous_restored_artifact_version": { "type": "string", "minLength": 1 },
+          "next_restored_artifact_version": { "type": "string", "minLength": 1 },
+          "profile_name": { "type": "string", "minLength": 1 },
+          "superseded_at_unix_ms": { "type": "integer", "minimum": 0 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}

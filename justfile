@@ -222,6 +222,9 @@ deployment-verification-record-bundle-rollback-reconciliation-history reconcilia
 deployment-verification-supersede-bundle-rollback previous_rollback next_rollback superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy supersede-verification-bundle-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.json
 
+deployment-verification-record-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_history.json
+
 deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
 
