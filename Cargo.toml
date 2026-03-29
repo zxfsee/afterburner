@@ -13,6 +13,20 @@ header = """# Changelog
 
 ## TODO
 
+- Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
+  - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.
+  - Kind: `gate`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
+
+- Tokio adapter runtime fit gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Evaluate whether adapter-side concurrency, tracing, and deployment pressure justify adopting a Tokio-based runtime in adapters so the repo can grow into heavier async workflows without changing core/runtime boundaries prematurely.
+  - Kind: `gate`
+  - Boundary: `adapter-deployment`
+  - Contracts: `none`
+  - Scope: `docs/adr/`, `README.md`, `tests/`
+
 - Deployment verification receipt rollback supersession history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification receipt rollback supersession changes so downstream deployment tooling can audit current-rollback selection changes without reading shell or process logs.
   - Kind: `mixed`
@@ -36,13 +50,6 @@ header = """# Changelog
 
 - Deployment verification evidence bundle rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence bundle rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
-- Deployment verification receipt rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification receipt rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`

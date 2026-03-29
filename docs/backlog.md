@@ -20,31 +20,13 @@ Rules:
 
 ## Items
 
-- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
-  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
-
-- Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
-  - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by: Model optimization and packaging fit gate.
-
 - Optimized model packaging and export contract [Runtime Infra, Serving/Deployment Infra]
   - Goal: Define the artifact shape, metadata, export format, and packaging inputs for quantized or compressed models so optimized releases can be reproduced, audited, and handed off without overloading the base training checkpoint contract.
   - Kind: `gate`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `cli`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by:
-    - Model optimization and packaging fit gate.
-    - Quantized and compressed model capability surface gate.
+  - Blocked-by: Quantized and compressed model capability surface gate.
 
 - Optimized model eval and local-profile contract [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Materialize the quality, latency, memory, and size acceptance surface for optimized models on constrained hardware so quantization or compression choices are driven by measured tradeoffs instead of release pressure alone.
@@ -53,8 +35,8 @@ Rules:
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
   - Blocked-by:
-    - Quantized and compressed model capability surface gate.
     - Optimized model packaging and export contract.
+    - Quantized and compressed model capability surface gate.
 
 - Optimized model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Extend publishing workflows so approved optimized model artifacts and their packaging metadata can be released to downstream destinations such as Hugging Face without inventing a second artifact identity or approval path.
@@ -62,16 +44,19 @@ Rules:
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `cli`, `ops`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-  - Blocked-by:
-    - Optimized model packaging and export contract.
-    - Hugging Face model publish adapter.
+  - Blocked-by: Optimized model packaging and export contract.
 
-- Tokio adapter runtime fit gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Evaluate whether adapter-side concurrency, tracing, and deployment pressure justify adopting a Tokio-based runtime in adapters so the repo can grow into heavier async workflows without changing core/runtime boundaries prematurely.
-  - Kind: `gate`
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
+- Deployment verification receipt rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification receipt rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
+  - Kind: `mixed`
   - Boundary: `adapter-deployment`
-  - Contracts: `none`
-  - Scope: `docs/adr/`, `README.md`, `tests/`
-  - Blocked-by:
-    - Distributed tracing correlation contract.
-    - HTTP infer load profile contract.
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
