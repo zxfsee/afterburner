@@ -277,6 +277,9 @@ deployment-verification-rollback-receipt-locator current_pointer restored_pointe
 deployment-verification-record-receipt-locator-rollback-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback_history.json
 
+deployment-verification-reconcile-receipt-rollback rollback current_rollback:
+    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_receipt_rollback_reconciliation.json
+
 deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
 

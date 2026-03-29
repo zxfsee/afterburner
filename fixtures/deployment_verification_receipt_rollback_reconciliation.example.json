@@ -1,0 +1,31 @@
+{
+  "schema_version": "1",
+  "rollback_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback.json",
+  "current_rollback_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback.current.json",
+  "desired": {
+    "current_pointer_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer.json",
+    "restored_pointer_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer.previous.json",
+    "previous_locator_path": "artifacts/deploy/deployment_verification_receipt_transport_locator.json",
+    "restored_locator_path": "artifacts/deploy/deployment_verification_receipt_transport_locator.previous.json",
+    "previous_receipt_path": "artifacts/deploy/deployment_verification_receipt.json",
+    "restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+    "previous_artifact_version": "0.2.0",
+    "restored_artifact_version": "0.1.0",
+    "profile_name": "staging-a",
+    "rolled_back_at_unix_ms": 1735689800000
+  },
+  "current": {
+    "current_rollback_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback.current.json",
+    "current_pointer_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer.json",
+    "restored_pointer_path": "artifacts/deploy/deployment_verification_receipt_locator_pointer.previous.json",
+    "previous_locator_path": "artifacts/deploy/deployment_verification_receipt_transport_locator.json",
+    "restored_locator_path": "artifacts/deploy/deployment_verification_receipt_transport_locator.previous.json",
+    "previous_receipt_path": "artifacts/deploy/deployment_verification_receipt.json",
+    "restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+    "previous_artifact_version": "0.2.0",
+    "restored_artifact_version": "0.1.0",
+    "profile_name": "staging-a",
+    "rolled_back_at_unix_ms": 1735689800000
+  },
+  "reconciliation_status": "aligned"
+}

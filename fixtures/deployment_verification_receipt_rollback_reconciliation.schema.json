@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-receipt-rollback-reconciliation/v1",
+  "title": "Deployment Verification Receipt Rollback Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rollback_path",
+    "current_rollback_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "rollback_path": { "type": "string", "minLength": 1 },
+    "current_rollback_path": { "type": "string", "minLength": 1 },
+    "desired": { "type": "object" },
+    "current": { "type": "object" },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}
