@@ -207,6 +207,9 @@ deployment-verification-rollback-bundle-locator current_pointer restored_pointer
 deployment-verification-record-bundle-locator-rollback-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-bundle-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_rollback_history.json
 
+deployment-verification-rollback-bundle current_bundle restored_bundle rolled_back_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy rollback-verification-bundle --current-bundle {{ current_bundle }} --restored-bundle {{ restored_bundle }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-bundle artifacts/deploy/deployment_verification_evidence_bundle.json --out-record artifacts/deploy/deployment_verification_evidence_bundle_rollback.json
+
 deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
 
