@@ -77,6 +77,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-reconcile-receipt-locator` writes `deployment_verification_receipt_locator_pointer_reconciliation.json`.
 - `just deployment-verification-record-receipt-locator-reconciliation-history` writes `deployment_verification_receipt_locator_pointer_reconciliation_history.json`.
 - `just deployment-verification-rollback-receipt-locator` writes `deployment_verification_receipt_locator_pointer_rollback.json`.
+- `just deployment-verification-record-receipt-locator-rollback-history` writes `deployment_verification_receipt_locator_pointer_rollback_history.json`.
 - `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
 - `just deployment-verification-record-receipt-transport-locator-history` writes `deployment_verification_receipt_transport_locator_history.json`.
 - `just deployment-verification-reconcile-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator_reconciliation.json`.
