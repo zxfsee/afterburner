@@ -244,6 +244,9 @@ deployment-verification-point-receipt-transport-locator receipt:
 deployment-verification-point-receipt-locator locator:
     cargo run --locked --bin afterburner -- deploy point-verification-receipt-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
 
+deployment-verification-record-receipt-locator-history pointer event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-receipt-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_history.json
+
 deployment-verification-reconcile-receipt-locator locator pointer:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_reconciliation.json
 

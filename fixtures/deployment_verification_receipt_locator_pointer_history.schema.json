@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-receipt-locator-pointer-history/v1",
+  "title": "Deployment Verification Receipt Locator Pointer History",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "entries"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event",
+          "pointer_path",
+          "locator_path",
+          "receipt_path",
+          "artifact_version",
+          "profile_name",
+          "verification_status",
+          "recorded_at_unix_ms"
+        ],
+        "properties": {
+          "event": { "type": "string", "minLength": 1 },
+          "pointer_path": { "type": "string", "minLength": 1 },
+          "locator_path": { "type": "string", "minLength": 1 },
+          "receipt_path": { "type": "string", "minLength": 1 },
+          "artifact_version": { "type": "string", "minLength": 1 },
+          "profile_name": { "type": "string", "minLength": 1 },
+          "verification_status": { "type": "string", "minLength": 1 },
+          "recorded_at_unix_ms": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
