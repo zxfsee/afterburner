@@ -26,6 +26,13 @@ Inference adapters must fail fast when the manifest declares any other
 precision/quantization combination. For backward compatibility, manifests that
 omit `[precision]` are interpreted as the current `f32`/`none` contract.
 
+The repo also publishes `optimized_model_capability_surface.schema.json` to
+make the current optimized-model runtime capability surface explicit:
+
+- `weights_dtype = "f32"`
+- `activation_dtype = "f32"`
+- `quantization = "none"`
+
 ## Consequences
 
 - Reduced-precision artifacts are explicit instead of implicit.

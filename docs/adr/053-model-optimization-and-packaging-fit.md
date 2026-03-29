@@ -26,6 +26,10 @@ The minimum profile records:
 
 Current stance: this decision defines the fit and the planning profile only. It
 does not add optimization code or change the current runtime precision support.
+`optimized_model_capability_surface.schema.json` makes that split explicit:
+quantization, compression, export, and packaging are planning-only steps today,
+while reduced-precision and compressed optimized artifacts remain unsupported
+until dedicated contracts land.
 
 ## Consequences
 

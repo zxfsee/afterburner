@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/optimized-model-capability-surface/v1",
+  "title": "Optimized Model Capability Surface",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "supported_runtime_precision_contracts",
+    "planning_only_optimization_steps",
+    "unsupported_optimized_artifact_surfaces"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "supported_runtime_precision_contracts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["weights_dtype", "activation_dtype", "quantization"],
+        "properties": {
+          "weights_dtype": { "type": "string", "minLength": 1 },
+          "activation_dtype": { "type": "string", "minLength": 1 },
+          "quantization": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "planning_only_optimization_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["quantization", "compression", "export", "packaging"]
+      }
+    },
+    "unsupported_optimized_artifact_surfaces": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["surface", "status", "reason"],
+        "properties": {
+          "surface": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "const": "unsupported" },
+          "reason": { "type": "string", "minLength": 1 },
+          "blocked_by": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

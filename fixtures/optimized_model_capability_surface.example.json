@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "supported_runtime_precision_contracts": [
+    {
+      "weights_dtype": "f32",
+      "activation_dtype": "f32",
+      "quantization": "none"
+    }
+  ],
+  "planning_only_optimization_steps": [
+    "quantization",
+    "compression",
+    "export",
+    "packaging"
+  ],
+  "unsupported_optimized_artifact_surfaces": [
+    {
+      "surface": "reduced_precision_runtime_artifact",
+      "status": "unsupported",
+      "reason": "Inference adapters currently reject any manifest precision contract other than f32/f32/none."
+    },
+    {
+      "surface": "compressed_optimized_artifact_package",
+      "status": "unsupported",
+      "reason": "Compressed optimized artifacts remain planning-only until an explicit optimized packaging/export contract lands.",
+      "blocked_by": "Optimized model packaging and export contract"
+    }
+  ]
+}

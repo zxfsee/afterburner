@@ -100,6 +100,12 @@ and precision metadata. Structured artifacts and events stay on JSON; the
 inference manifest stays on TOML. `capnproto-rust` remains a later optional
 wire-format reference only if measured high-volume pressure appears.
 
+The optimized model capability surface is explicit. The only supported runtime
+precision contract today is `weights_dtype = "f32"`,
+`activation_dtype = "f32"`, and `quantization = "none"`. Quantization,
+compression, export, and packaging remain planning-only optimization steps
+until dedicated optimized-model contracts land.
+
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).
 
