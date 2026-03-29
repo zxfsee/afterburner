@@ -60,6 +60,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `deployment_verification_receipt_transport_locator.json`
   - `deployment_verification_receipt_transport_locator_history.json`
   - `deployment_verification_receipt_transport_locator_reconciliation.json`
+  - `deployment_verification_receipt_transport_locator_reconciliation_history.json`
   - `deployment_verification_receipt_history.json`
   - `deployment_verification_receipt_reconciliation.json`
   - `deployment_verification_receipt_reconciliation_history.json`

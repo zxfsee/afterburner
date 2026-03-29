@@ -75,6 +75,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
 - `just deployment-verification-record-receipt-transport-locator-history` writes `deployment_verification_receipt_transport_locator_history.json`.
 - `just deployment-verification-reconcile-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator_reconciliation.json`.
+- `just deployment-verification-record-receipt-transport-locator-reconciliation-history` writes `deployment_verification_receipt_transport_locator_reconciliation_history.json`.
 - `just deployment-verification-record-receipt-history` writes `deployment_verification_receipt_history.json`.
 - `just deployment-verification-reconcile-receipt` writes `deployment_verification_receipt_reconciliation.json`.
 - `just deployment-verification-record-receipt-reconciliation-history` writes `deployment_verification_receipt_reconciliation_history.json`.
