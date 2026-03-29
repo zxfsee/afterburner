@@ -216,6 +216,9 @@ deployment-verification-record-bundle-rollback-history rollback event recorded_a
 deployment-verification-reconcile-bundle-rollback rollback current_rollback:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation.json
 
+deployment-verification-record-bundle-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation_history.json
+
 deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
 

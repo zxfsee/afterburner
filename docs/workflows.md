@@ -98,6 +98,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-rollback-bundle` writes `deployment_verification_evidence_bundle_rollback.json`.
 - `just deployment-verification-record-bundle-rollback-history` writes `deployment_verification_evidence_bundle_rollback_history.json`.
 - `just deployment-verification-reconcile-bundle-rollback` writes `deployment_verification_evidence_bundle_rollback_reconciliation.json`.
+- `just deployment-verification-record-bundle-rollback-reconciliation-history` writes `deployment_verification_evidence_bundle_rollback_reconciliation_history.json`.
 - `just deployment-verification-record-bundle-transport-locator-history` writes `deployment_verification_evidence_bundle_transport_locator_history.json`.
 - `just deployment-verification-reconcile-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation.json`.
 - `just deployment-verification-record-bundle-transport-locator-reconciliation-history` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation_history.json`.
