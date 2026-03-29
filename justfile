@@ -198,6 +198,9 @@ deployment-verification-record-bundle-locator-history pointer event recorded_at_
 deployment-verification-reconcile-bundle-locator locator pointer:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation.json
 
+deployment-verification-record-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-bundle-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation_history.json
+
 deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
 
