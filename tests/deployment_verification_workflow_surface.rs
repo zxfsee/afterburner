@@ -18,6 +18,7 @@ fn deployment_verification_family_stays_surface_complete() {
     let main_rs = repo_file("src/main.rs");
     for cli in [
         "verification-receipt",
+        "point-verification-receipt-locator",
         "point-verification-receipt-transport-locator",
         "record-verification-receipt-transport-locator-history",
         "reconcile-verification-receipt-transport-locator",
@@ -51,6 +52,7 @@ fn deployment_verification_family_stays_surface_complete() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
+        "deployment-verification-point-receipt-locator locator:",
         "deployment-verification-point-receipt-transport-locator receipt:",
         "deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:",
         "deployment-verification-reconcile-receipt-transport-locator receipt locator:",
@@ -82,6 +84,8 @@ fn deployment_verification_family_stays_surface_complete() {
     for fixture in [
         "deployment_verification_receipt.schema.json",
         "deployment_verification_receipt.example.json",
+        "deployment_verification_receipt_locator_pointer.schema.json",
+        "deployment_verification_receipt_locator_pointer.example.json",
         "deployment_verification_receipt_transport_locator.schema.json",
         "deployment_verification_receipt_transport_locator.example.json",
         "deployment_verification_receipt_transport_locator_history.schema.json",
@@ -135,6 +139,7 @@ fn deployment_verification_family_stays_surface_complete() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "just deployment-verification-receipt",
+        "just deployment-verification-point-receipt-locator",
         "just deployment-verification-point-receipt-transport-locator",
         "just deployment-verification-record-receipt-transport-locator-history",
         "just deployment-verification-reconcile-receipt-transport-locator",
@@ -160,6 +165,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "just deployment-verification-record-handoff-reconciliation-history",
         "just workflow-surface-check-deployment-verification",
         "deployment_verification_receipt.json",
+        "deployment_verification_receipt_locator_pointer.json",
         "deployment_verification_receipt_transport_locator.json",
         "deployment_verification_receipt_transport_locator_history.json",
         "deployment_verification_receipt_transport_locator_reconciliation.json",
@@ -193,6 +199,7 @@ fn deployment_verification_family_stays_surface_complete() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "deployment_verification_receipt.json",
+        "deployment_verification_receipt_locator_pointer.json",
         "deployment_verification_receipt_transport_locator.json",
         "deployment_verification_receipt_transport_locator_history.json",
         "deployment_verification_receipt_transport_locator_reconciliation.json",

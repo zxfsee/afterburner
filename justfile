@@ -235,6 +235,9 @@ deployment-verification-receipt artifact_version profile_name verification_statu
 deployment-verification-point-receipt-transport-locator receipt:
     cargo run --locked --bin afterburner -- deploy point-verification-receipt-transport-locator --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_receipt_transport_locator.json
 
+deployment-verification-point-receipt-locator locator:
+    cargo run --locked --bin afterburner -- deploy point-verification-receipt-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
+
 deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
 

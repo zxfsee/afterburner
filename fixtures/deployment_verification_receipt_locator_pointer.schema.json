@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-receipt-locator-pointer/v1",
+  "title": "Deployment Verification Receipt Locator Pointer",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "locator_path",
+    "receipt_path",
+    "artifact_version",
+    "profile_name",
+    "verification_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "locator_path": { "type": "string", "minLength": 1 },
+    "receipt_path": { "type": "string", "minLength": 1 },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "profile_name": { "type": "string", "minLength": 1 },
+    "verification_status": { "type": "string", "minLength": 1 }
+  }
+}
