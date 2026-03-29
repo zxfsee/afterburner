@@ -18,7 +18,7 @@ fn repo_file(path: &str) -> String {
 
 #[test]
 fn deployment_verification_receipt_transport_locator_reconciliation_schema_and_workflow_are_explicit()
-{
+ {
     let schema_text = fs::read_to_string(fixture_path(
         "deployment_verification_receipt_transport_locator_reconciliation.schema.json",
     ))
@@ -175,7 +175,10 @@ fn deployment_verification_receipt_transport_locator_reconciliation_writes_artif
         .get_mut("fields")
         .and_then(Value::as_object_mut)
         .expect("event fields must be an object");
-    fields.insert("reconciliation_path".to_string(), Value::from("<reconciliation>"));
+    fields.insert(
+        "reconciliation_path".to_string(),
+        Value::from("<reconciliation>"),
+    );
     let reconciliation_obj = fields
         .get_mut("reconciliation")
         .and_then(Value::as_object_mut)

@@ -123,7 +123,9 @@ where
     Ok(())
 }
 
-fn parse_args<I>(args: I) -> Result<Args, DeploymentVerificationReceiptTransportLocatorReconcileError>
+fn parse_args<I>(
+    args: I,
+) -> Result<Args, DeploymentVerificationReceiptTransportLocatorReconcileError>
 where
     I: Iterator<Item = String>,
 {
@@ -161,12 +163,14 @@ where
                 out_path = PathBuf::from(arg.trim_start_matches("--out=").to_string())
             }
             _ => {
-                return Err(DeploymentVerificationReceiptTransportLocatorReconcileError::InvalidArg(
-                    format!(
-                        "unknown argument for deploy reconcile-verification-receipt-transport-locator: {arg}\n{}",
-                        usage()
+                return Err(
+                    DeploymentVerificationReceiptTransportLocatorReconcileError::InvalidArg(
+                        format!(
+                            "unknown argument for deploy reconcile-verification-receipt-transport-locator: {arg}\n{}",
+                            usage()
+                        ),
                     ),
-                ));
+                );
             }
         }
     }
@@ -213,8 +217,10 @@ where
 fn load_json_object(
     path: &Path,
     kind: &str,
-) -> Result<serde_json::Map<String, Value>, DeploymentVerificationReceiptTransportLocatorReconcileError>
-{
+) -> Result<
+    serde_json::Map<String, Value>,
+    DeploymentVerificationReceiptTransportLocatorReconcileError,
+> {
     let text = fs::read_to_string(path)?;
     let value: Value = serde_json::from_str(&text).map_err(|err| {
         DeploymentVerificationReceiptTransportLocatorReconcileError::Parse(format!(
