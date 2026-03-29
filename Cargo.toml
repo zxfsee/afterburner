@@ -13,11 +13,11 @@ header = """# Changelog
 
 ## TODO
 
-- Quantized and compressed model capability surface gate [Runtime Infra, Frameworks]
-  - Goal: Define the supported versus unsupported reduced-precision and compression modes for local-first optimized models so the repo extends the current explicit quantization contract deliberately instead of accepting ad hoc optimized artifacts.
+- Optimized model packaging and export contract [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Define the artifact shape, metadata, export format, and packaging inputs for quantized or compressed models so optimized releases can be reproduced, audited, and handed off without overloading the base training checkpoint contract.
   - Kind: `gate`
   - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
+  - Contracts: `artifact`, `cli`
   - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
 
 - Tokio adapter runtime fit gate [Serving/Deployment Infra, Runtime Infra]

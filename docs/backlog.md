@@ -20,23 +20,13 @@ Rules:
 
 ## Items
 
-- Optimized model packaging and export contract [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Define the artifact shape, metadata, export format, and packaging inputs for quantized or compressed models so optimized releases can be reproduced, audited, and handed off without overloading the base training checkpoint contract.
-  - Kind: `gate`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`
-  - Scope: `docs/adr/`, `README.md`, `tests/`, `fixtures/`
-  - Blocked-by: Quantized and compressed model capability surface gate.
-
 - Optimized model eval and local-profile contract [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Materialize the quality, latency, memory, and size acceptance surface for optimized models on constrained hardware so quantization or compression choices are driven by measured tradeoffs instead of release pressure alone.
   - Kind: `mixed`
   - Boundary: `adapter-cli`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by:
-    - Optimized model packaging and export contract.
-    - Quantized and compressed model capability surface gate.
+  - Blocked-by: Optimized model packaging and export contract.
 
 - Optimized model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Extend publishing workflows so approved optimized model artifacts and their packaging metadata can be released to downstream destinations such as Hugging Face without inventing a second artifact identity or approval path.
