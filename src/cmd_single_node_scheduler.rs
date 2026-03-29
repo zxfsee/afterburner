@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use afterburner::observability::emit_event;
 use serde_json::{Value, json};
@@ -95,7 +95,7 @@ where
     let unit = format!(
         "[Unit]\nDescription=Afterburner job {job_id}\nAfter=network.target\n\n[Service]\nType=simple\nWorkingDirectory={working_directory}\nEnvironment=AFTERBURNER_JOB_ID={job_id}\nEnvironment=AFTERBURNER_LEASE_ID={lease_id}\nEnvironment=AFTERBURNER_GPU_IDS={gpu_id}\nExecStart={exec_start}\nKillSignal=SIGTERM\nTimeoutStopSec=30\n\n[Install]\nWantedBy=default.target\n",
         job_id = job.job_id,
-        lease_id = format!("lease-{}", job.job_id),
+        lease_id = lease_id,
         gpu_id = free_gpu.gpu_id,
         working_directory = job.working_directory,
         exec_start = job.exec_start,
@@ -151,7 +151,7 @@ struct GpuEntry {
     state: String,
 }
 
-fn load_job(path: &PathBuf) -> Result<JobRequest, SingleNodeSchedulerError> {
+fn load_job(path: &Path) -> Result<JobRequest, SingleNodeSchedulerError> {
     let value = load_json(path)?;
     let object = value.as_object().ok_or_else(|| {
         SingleNodeSchedulerError::Parse("job request must be an object".to_string())
@@ -179,7 +179,7 @@ fn load_job(path: &PathBuf) -> Result<JobRequest, SingleNodeSchedulerError> {
     })
 }
 
-fn load_inventory(path: &PathBuf) -> Result<Inventory, SingleNodeSchedulerError> {
+fn load_inventory(path: &Path) -> Result<Inventory, SingleNodeSchedulerError> {
     let value = load_json(path)?;
     let object = value.as_object().ok_or_else(|| {
         SingleNodeSchedulerError::Parse("gpu inventory must be an object".to_string())
@@ -213,7 +213,7 @@ fn load_inventory(path: &PathBuf) -> Result<Inventory, SingleNodeSchedulerError>
     Ok(Inventory { node_id, gpus })
 }
 
-fn load_json(path: &PathBuf) -> Result<Value, SingleNodeSchedulerError> {
+fn load_json(path: &Path) -> Result<Value, SingleNodeSchedulerError> {
     let text = fs::read_to_string(path)?;
     serde_json::from_str(&text)
         .map_err(|err| SingleNodeSchedulerError::Parse(format!("parse {}: {err}", path.display())))
@@ -223,7 +223,7 @@ fn expect_const(
     object: &serde_json::Map<String, Value>,
     key: &str,
     expected: &str,
-    path: &PathBuf,
+    path: &Path,
 ) -> Result<(), SingleNodeSchedulerError> {
     let actual = read_string(object, key, path)?;
     if actual != expected {
@@ -238,7 +238,7 @@ fn expect_const(
 fn read_string(
     object: &serde_json::Map<String, Value>,
     key: &str,
-    path: &PathBuf,
+    path: &Path,
 ) -> Result<String, SingleNodeSchedulerError> {
     object
         .get(key)
@@ -256,7 +256,7 @@ fn read_string(
 fn read_u64(
     object: &serde_json::Map<String, Value>,
     key: &str,
-    path: &PathBuf,
+    path: &Path,
 ) -> Result<u64, SingleNodeSchedulerError> {
     object.get(key).and_then(Value::as_u64).ok_or_else(|| {
         SingleNodeSchedulerError::Parse(format!(

@@ -5,9 +5,8 @@ use serde_json::Value;
 
 fn profile_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("eval")
-        .join("backend_performance_profile.json")
+        .join("fixtures")
+        .join("backend_performance_profile.fixture.json")
 }
 
 #[test]

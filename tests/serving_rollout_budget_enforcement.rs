@@ -1,38 +1,17 @@
 #![cfg(unix)]
 
 use std::fs;
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use burn::{backend::ndarray::NdArray, prelude::*, record::CompactRecorder};
 use serde_json::Value;
 
-type CpuBackend = NdArray<f32>;
-
-fn build_runtime_model_artifact() -> (tempfile::TempDir, PathBuf) {
-    let artifact_dir = tempfile::tempdir().expect("create model artifact tempdir");
-    let weights_path = artifact_dir.path().join("model.mpk");
-
-    let device = <CpuBackend as Backend>::Device::default();
-    let model = afterburner::model::ModelConfig::new(10).init::<CpuBackend>(&device);
-    model
-        .save_file(&weights_path, &CompactRecorder::new())
-        .expect("write model artifact");
-
-    let checksum =
-        afterburner::manifest::compute_sha256_hex(&weights_path).expect("compute model checksum");
-    let manifest =
-        afterburner::manifest::ArtifactManifest::for_current("model.mpk", "0.1.0", checksum);
-    manifest
-        .write_to_dir(artifact_dir.path())
-        .expect("write model manifest");
-
-    (artifact_dir, weights_path)
-}
+#[path = "fixture_support.rs"]
+mod fixture_support;
 
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -45,11 +24,15 @@ fn fixture_json(name: &str) -> Value {
     serde_json::from_str(&text).expect("parse json fixture")
 }
 
-fn reserve_port() -> u16 {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("bind ephemeral port");
+fn reserve_port() -> Option<u16> {
+    let listener = match TcpListener::bind("127.0.0.1:0") {
+        Ok(listener) => listener,
+        Err(err) if err.kind() == ErrorKind::PermissionDenied => return None,
+        Err(err) => panic!("bind ephemeral port: {err}"),
+    };
     let port = listener.local_addr().expect("listener addr").port();
     drop(listener);
-    port
+    Some(port)
 }
 
 fn wait_for_healthz(port: u16, timeout: Duration) {
@@ -149,8 +132,10 @@ fn response_json_body(response: &str) -> Value {
 
 #[test]
 fn serving_rollout_budget_enforces_latency_error_admission_policy() {
-    let port = reserve_port();
-    let (_artifact_dir, weights_path) = build_runtime_model_artifact();
+    let Some(port) = reserve_port() else {
+        return;
+    };
+    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(weights_path)
         .env("BACKEND", "cpu")
@@ -194,7 +179,7 @@ fn serving_rollout_budget_enforces_latency_error_admission_policy() {
         "over-budget request must be denied: {denied}"
     );
     let denied_body = response_json_body(&denied);
-    let expected_denied = fixture_json("http_error_rollout_budget_exceeded.json");
+    let expected_denied = fixture_json("http_error_rollout_budget_exceeded.fixture.json");
     assert_eq!(
         denied_body, expected_denied,
         "denied rollout payload must match fixture contract"
@@ -229,7 +214,7 @@ fn serving_rollout_budget_enforces_latency_error_admission_policy() {
     );
 
     let required_fields =
-        fixture_json("serving_rollout_budget_admission_event_required_fields.json")
+        fixture_json("serving_rollout_budget_admission_event_required_fields.fixture.json")
             .get("required")
             .and_then(Value::as_array)
             .expect("required fields fixture must contain array")
@@ -350,8 +335,10 @@ fn serving_rollout_budget_enforces_latency_error_admission_policy() {
 
 #[test]
 fn serving_rollout_budget_schema_typed_metadata_enables_admission_policy() {
-    let port = reserve_port();
-    let (_artifact_dir, weights_path) = build_runtime_model_artifact();
+    let Some(port) = reserve_port() else {
+        return;
+    };
+    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(weights_path)
         .env("BACKEND", "cpu")

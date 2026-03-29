@@ -1,0 +1,63 @@
+{
+  "artifact_version": "0.1.0",
+  "backend": "wgpu",
+  "flamegraph_svg": "artifacts/profiling/infer_flamegraph.svg",
+  "profile_command": "env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o artifacts/profiling/infer_flamegraph.svg -- infer artifacts/inference/0.1.0/model.mpk",
+  "profile_kind": "infer",
+  "profiler": "cargo-flamegraph",
+  "schema_version": "1",
+  "top_hotspots": [
+    {
+      "percent": 89.95,
+      "samples": 170,
+      "symbol": "afterburner::cmd_infer::run"
+    },
+    {
+      "percent": 89.42,
+      "samples": 169,
+      "symbol": "afterburner::cmd_infer::run_inner"
+    },
+    {
+      "percent": 79.89,
+      "samples": 151,
+      "symbol": "afterburner::cmd_infer::run_infer"
+    },
+    {
+      "percent": 48.15,
+      "samples": 91,
+      "symbol": "afterburner::infer::logits_from_model"
+    },
+    {
+      "percent": 43.39,
+      "samples": 82,
+      "symbol": "afterburner::model::Model<B>::forward"
+    },
+    {
+      "percent": 24.34,
+      "samples": 46,
+      "symbol": "afterburner::infer::load_model"
+    },
+    {
+      "percent": 17.99,
+      "samples": 34,
+      "symbol": "burn_core::module::base::Module::load_file"
+    },
+    {
+      "percent": 14.29,
+      "samples": 27,
+      "symbol": "afterburner::model::ResidualBlock<B>::forward"
+    },
+    {
+      "percent": 13.23,
+      "samples": 25,
+      "symbol": "burn_core::record::recorder::Recorder::load"
+    },
+    {
+      "percent": 12.17,
+      "samples": 23,
+      "symbol": "<afterburner::model::ModelRecord<B> as burn_core::record::base::Record<B>>::from_item"
+    }
+  ],
+  "total_samples": 189,
+  "weights_artifact": "artifacts/inference/0.1.0/model.mpk"
+}

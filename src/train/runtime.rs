@@ -97,21 +97,21 @@ pub fn train<B: AutodiffBackend>(config: TrainingConfig, device: B::Device) {
     )
     .expect("write train start event");
 
-    if let Some(metadata_path) = distributed_shard_metadata_path_from_env() {
-        if let Err(err) = validate_distributed_shard_metadata_load_path(&metadata_path) {
-            write_train_distributed_shard_metadata_invalid_event(
-                &train_dir,
-                &backend,
-                &config.artifact_version,
-                &err,
-            )
-            .expect("write distributed shard metadata invalid event");
-            panic!(
-                "distributed shard metadata invalid at {}: {}",
-                err.metadata_path().to_string_lossy(),
-                err.detail()
-            );
-        }
+    if let Some(metadata_path) = distributed_shard_metadata_path_from_env()
+        && let Err(err) = validate_distributed_shard_metadata_load_path(&metadata_path)
+    {
+        write_train_distributed_shard_metadata_invalid_event(
+            &train_dir,
+            &backend,
+            &config.artifact_version,
+            &err,
+        )
+        .expect("write distributed shard metadata invalid event");
+        panic!(
+            "distributed shard metadata invalid at {}: {}",
+            err.metadata_path().to_string_lossy(),
+            err.detail()
+        );
     }
 
     let train_loader = train_loader::<B>(

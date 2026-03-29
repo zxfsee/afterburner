@@ -34,8 +34,8 @@ fn fixture_path(name: &str) -> PathBuf {
 }
 
 fn infer_stdout_success_fixture() -> Value {
-    let fixture =
-        fs::read_to_string(fixture_path("infer_stdout_success.json")).expect("read infer fixture");
+    let fixture = fs::read_to_string(fixture_path("infer_stdout_success.fixture.json"))
+        .expect("read infer fixture");
     serde_json::from_str(&fixture).expect("parse infer fixture")
 }
 

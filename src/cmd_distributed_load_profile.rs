@@ -10,7 +10,7 @@ use afterburner::observability::{attach_trace_fields, current_trace_context, emi
 use serde_json::json;
 
 const DISTRIBUTED_LOAD_PROFILE_PATH: &str = "artifacts/deploy/distributed_load_profile.json";
-const INFER_PAYLOAD: &str = include_str!("../fixtures/http_infer_single.json");
+const INFER_PAYLOAD: &str = include_str!("../fixtures/http_infer_single.fixture.json");
 
 #[derive(Debug)]
 enum DistributedLoadProfileError {

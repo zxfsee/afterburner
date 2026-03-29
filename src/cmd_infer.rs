@@ -111,10 +111,7 @@ where
         },
         None => None,
     };
-    if !runtime_supported_backends()
-        .iter()
-        .any(|candidate| *candidate == backend.as_str())
-    {
+    if !runtime_supported_backends().contains(&backend.as_str()) {
         return Err(CmdInferError::UnsupportedAdapterVersion {
             backend,
             artifact_version,

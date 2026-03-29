@@ -88,7 +88,7 @@ fn infer_fails_fast_on_unsupported_backend_artifact_version_pair() {
 
 #[test]
 fn infer_error_payload_matches_fixture_when_adapter_registry_metadata_is_malformed() {
-    let expected = event_fixture("infer_error_adapter_registry_invalid.json");
+    let expected = event_fixture("infer_error_adapter_registry_invalid.fixture.json");
     let emitted = normalize_adapter_registry_invalid_event(malformed_registry_metadata_detail());
     assert_eq!(
         emitted, expected,

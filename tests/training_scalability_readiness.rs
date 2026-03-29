@@ -20,7 +20,7 @@ fn fixture_json(name: &str) -> Value {
 
 #[test]
 fn training_scalability_contract_fixture_matches_written_artifact_and_event() {
-    let expected = fixture_json("training_scalability_contract.json");
+    let expected = fixture_json("training_scalability_contract.fixture.json");
     let contract = training_scalability_contract_value("cpu", "0.1.0", 64, 2, 10, 1_500);
     assert_eq!(
         contract, expected,

@@ -148,24 +148,22 @@ where
         let server = Arc::clone(&server);
         let shutdown = Arc::clone(&shutdown);
         let request_ids = Arc::clone(&request_ids);
-        let infer_limiter = Arc::clone(&infer_limiter);
-        let worker_backend = backend;
         let worker_weights = weights_path.clone();
-        let worker_artifact_version = artifact_version.clone();
-        let worker_precision = precision.clone();
-        let worker_envelope = envelope.clone();
+        let worker_config = HttpWorkerConfig {
+            backend,
+            envelope: envelope.clone(),
+            infer_limiter: Arc::clone(&infer_limiter),
+            artifact_version: artifact_version.clone(),
+            precision: precision.clone(),
+        };
         let worker_handle = thread::spawn(move || {
             run_worker_loop::<B>(
                 worker_idx,
                 server,
                 shutdown,
                 request_ids,
-                worker_backend,
-                worker_envelope,
-                infer_limiter,
                 worker_weights,
-                worker_artifact_version,
-                worker_precision,
+                worker_config,
             );
         });
         worker_handles.push(worker_handle);
@@ -190,7 +188,7 @@ fn ensure_model_loadable<B: Backend>(
     precision: &ManifestPrecision,
 ) {
     let device = B::Device::default();
-    match load_model::<B>(&weights_path.to_path_buf(), &device) {
+    match load_model::<B>(weights_path, &device) {
         Ok(_) => {
             emit_event(
                 "info",
@@ -274,6 +272,26 @@ impl RequestIdGenerator {
     }
 }
 
+#[derive(Clone)]
+struct HttpWorkerConfig {
+    backend: &'static str,
+    envelope: EnvelopeLimits,
+    infer_limiter: Arc<InferConcurrencyLimiter>,
+    artifact_version: String,
+    precision: ManifestPrecision,
+}
+
+struct HttpWorkerRuntime<B: Backend> {
+    model: afterburner::model::Model<B>,
+    device: B::Device,
+    config: HttpWorkerConfig,
+}
+
+struct RequestContext<'a> {
+    request_id: u64,
+    trace: &'a TraceContext,
+}
+
 fn install_signal_handler(shutdown: Arc<AtomicBool>, server: Arc<Server>, max_concurrency: usize) {
     ctrlc::set_handler(move || {
         shutdown.store(true, Ordering::SeqCst);
@@ -297,12 +315,8 @@ fn run_worker_loop<B>(
     server: Arc<Server>,
     shutdown: Arc<AtomicBool>,
     request_ids: Arc<RequestIdGenerator>,
-    backend: &str,
-    envelope: EnvelopeLimits,
-    infer_limiter: Arc<InferConcurrencyLimiter>,
     weights_path: std::path::PathBuf,
-    artifact_version: String,
-    precision: ManifestPrecision,
+    config: HttpWorkerConfig,
 ) where
     B: Backend + Send + 'static,
     B::Device: Send + 'static,
@@ -312,6 +326,11 @@ fn run_worker_loop<B>(
     let model = match load_model::<B>(&weights_path, &device) {
         Ok(model) => model,
         Err(err) => emit_error_and_exit(&err),
+    };
+    let runtime = HttpWorkerRuntime {
+        model,
+        device,
+        config,
     };
     emit_event(
         "info",
@@ -339,18 +358,7 @@ fn run_worker_loop<B>(
         };
 
         let request_id = request_ids.next_id();
-        let response = route_request(
-            request_id,
-            &mut request,
-            &model,
-            &device,
-            backend,
-            artifact_version.as_str(),
-            &precision,
-            &envelope,
-            &infer_limiter,
-            worker_idx,
-        );
+        let response = route_request(request_id, worker_idx, &mut request, &runtime);
         let _ = request.respond(response);
     }
 
@@ -364,20 +372,18 @@ fn run_worker_loop<B>(
 
 fn route_request<B: Backend>(
     request_id: u64,
-    request: &mut tiny_http::Request,
-    model: &afterburner::model::Model<B>,
-    device: &B::Device,
-    backend: &str,
-    artifact_version: &str,
-    precision: &ManifestPrecision,
-    envelope: &EnvelopeLimits,
-    infer_limiter: &InferConcurrencyLimiter,
     worker_idx: usize,
+    request: &mut tiny_http::Request,
+    runtime: &HttpWorkerRuntime<B>,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
     let trace = trace_context_from_optional_traceparent(
         header_value(request, TRACEPARENT_HEADER),
         "http_request",
     );
+    let request_context = RequestContext {
+        request_id,
+        trace: &trace,
+    };
     let mut request_fields = serde_json::Map::from_iter([
         (
             "method".to_string(),
@@ -400,18 +406,7 @@ fn route_request<B: Backend>(
 
     let response = match (request.method(), request.url()) {
         (&Method::Get, "/healthz") => ok_response("ok\n"),
-        (&Method::Post, "/infer") => handle_infer(
-            request_id,
-            &trace,
-            request,
-            model,
-            device,
-            backend,
-            artifact_version,
-            precision,
-            envelope,
-            infer_limiter,
-        ),
+        (&Method::Post, "/infer") => handle_infer(&request_context, request, runtime),
         _ => Response::from_string("not found\n").with_status_code(StatusCode(404)),
     };
     with_request_context(response, request_id, &trace)
@@ -840,54 +835,41 @@ impl Deadline {
 }
 
 fn handle_infer<B: Backend>(
-    request_id: u64,
-    trace: &TraceContext,
+    request_context: &RequestContext<'_>,
     request: &mut tiny_http::Request,
-    model: &afterburner::model::Model<B>,
-    device: &B::Device,
-    backend: &str,
-    artifact_version: &str,
-    precision: &ManifestPrecision,
-    envelope: &EnvelopeLimits,
-    infer_limiter: &InferConcurrencyLimiter,
+    runtime: &HttpWorkerRuntime<B>,
 ) -> Response<std::io::Cursor<Vec<u8>>> {
-    if let Err(err) = evaluate_rollout_budget_admission(request_id, trace, request, envelope) {
+    if let Err(err) = evaluate_rollout_budget_admission(
+        request_context.request_id,
+        request_context.trace,
+        request,
+        &runtime.config.envelope,
+    ) {
         return json_error(err.status, err.kind, &err.detail);
     }
 
-    let _permit = match infer_limiter.try_acquire() {
+    let _permit = match runtime.config.infer_limiter.try_acquire() {
         Some(permit) => permit,
         None => {
-            let err = infer_overload_failure(envelope.max_concurrency);
+            let err = infer_overload_failure(runtime.config.envelope.max_concurrency);
             return json_error(err.status, err.kind, &err.detail);
         }
     };
 
-    let deadline = Deadline::new(envelope.infer_timeout_ms);
+    let deadline = Deadline::new(runtime.config.envelope.infer_timeout_ms);
 
-    let response = handle_infer_inner(
-        request,
-        model,
-        device,
-        backend,
-        artifact_version,
-        precision,
-        envelope,
-        deadline,
-        request_id,
-        trace,
-    );
+    let response = handle_infer_inner(request_context, request, runtime, deadline);
     if let Err(err) = &response {
         let mut error_fields = serde_json::Map::from_iter([
             (
                 "request_id".to_string(),
-                Value::from(request_id.to_string()),
+                Value::from(request_context.request_id.to_string()),
             ),
             ("kind".to_string(), Value::from(err.kind)),
             ("status".to_string(), Value::from(err.status.0)),
             ("detail".to_string(), Value::from(err.detail.clone())),
         ]);
-        attach_trace_fields(&mut error_fields, trace);
+        attach_trace_fields(&mut error_fields, request_context.trace);
         emit_event(
             "error",
             "http_adapter",
@@ -1041,18 +1023,12 @@ fn header_value<'a>(request: &'a tiny_http::Request, header_name: &str) -> Optio
 }
 
 fn handle_infer_inner<B: Backend>(
+    request_context: &RequestContext<'_>,
     request: &mut tiny_http::Request,
-    model: &afterburner::model::Model<B>,
-    device: &B::Device,
-    backend: &str,
-    artifact_version: &str,
-    precision: &ManifestPrecision,
-    envelope: &EnvelopeLimits,
+    runtime: &HttpWorkerRuntime<B>,
     deadline: Deadline,
-    request_id: u64,
-    trace: &TraceContext,
 ) -> Result<String, HttpFailure> {
-    let body = read_body_limited(request, envelope.max_request_bytes)?;
+    let body = read_body_limited(request, runtime.config.envelope.max_request_bytes)?;
     deadline.check("request_read")?;
 
     let content_type = request
@@ -1070,13 +1046,13 @@ fn handle_infer_inner<B: Backend>(
             "empty input batch",
         ));
     }
-    if input_bytes.len() > envelope.max_batch_size {
+    if input_bytes.len() > runtime.config.envelope.max_batch_size {
         return Err(HttpFailure::payload_too_large(
             "batch_too_large",
             format!(
                 "batch size {} exceeds HTTP_MAX_BATCH_SIZE={}",
                 input_bytes.len(),
-                envelope.max_batch_size
+                runtime.config.envelope.max_batch_size
             ),
         ));
     }
@@ -1091,7 +1067,7 @@ fn handle_infer_inner<B: Backend>(
 
     deadline.check("preprocess")?;
 
-    let logits = logits_from_images(model, device, &images);
+    let logits = logits_from_images(&runtime.model, &runtime.device, &images);
     let rows = logits_to_rows(logits, images.len())?;
     deadline.check("inference")?;
 
@@ -1099,18 +1075,24 @@ fn handle_infer_inner<B: Backend>(
     let mut fields = serde_json::Map::from_iter([
         (
             "request_id".to_string(),
-            Value::from(request_id.to_string()),
+            Value::from(request_context.request_id.to_string()),
         ),
-        ("backend".to_string(), Value::from(backend.to_string())),
+        (
+            "backend".to_string(),
+            Value::from(runtime.config.backend.to_string()),
+        ),
         (
             "artifact_version".to_string(),
-            Value::from(artifact_version.to_string()),
+            Value::from(runtime.config.artifact_version.clone()),
         ),
-        ("precision".to_string(), precision_json(precision)),
+        (
+            "precision".to_string(),
+            precision_json(&runtime.config.precision),
+        ),
         ("duration_ms".to_string(), Value::from(duration_ms)),
         ("batch_size".to_string(), Value::from(images.len())),
     ]);
-    attach_trace_fields(&mut fields, trace);
+    attach_trace_fields(&mut fields, request_context.trace);
     emit_event("info", "http_adapter", "infer_done", Value::Object(fields));
 
     Ok(infer_success_payload(&rows))
@@ -1485,7 +1467,7 @@ mod tests {
     fn infer_single_response_matches_golden_fixture() {
         let rows = vec![vec![0.125f32, 0.25, 0.625]];
         let actual = infer_success_payload(&rows);
-        let expected = include_str!("../../fixtures/http_infer_single.json").trim();
+        let expected = include_str!("../../fixtures/http_infer_single.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 
@@ -1493,7 +1475,7 @@ mod tests {
     fn infer_batch_response_matches_golden_fixture() {
         let rows = vec![vec![0.125f32, 0.25, 0.625], vec![0.5f32, 0.25, 0.25]];
         let actual = infer_success_payload(&rows);
-        let expected = include_str!("../../fixtures/http_infer_batch.json").trim();
+        let expected = include_str!("../../fixtures/http_infer_batch.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 
@@ -1512,14 +1494,14 @@ mod tests {
         assert_eq!(err.kind, "server_overloaded");
 
         let actual = error_payload(err.kind, &err.detail);
-        let expected = include_str!("../../fixtures/http_error_overloaded.json").trim();
+        let expected = include_str!("../../fixtures/http_error_overloaded.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 
     #[test]
     fn invalid_input_error_payload_matches_fixture() {
         let actual = error_payload("invalid_input", "empty input batch");
-        let expected = include_str!("../../fixtures/http_error_invalid_input.json").trim();
+        let expected = include_str!("../../fixtures/http_error_invalid_input.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 
@@ -1529,7 +1511,8 @@ mod tests {
             "batch_too_large",
             "batch size 17 exceeds HTTP_MAX_BATCH_SIZE=16",
         );
-        let expected = include_str!("../../fixtures/http_error_batch_too_large.json").trim();
+        let expected =
+            include_str!("../../fixtures/http_error_batch_too_large.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 
@@ -1537,7 +1520,7 @@ mod tests {
     fn infer_timeout_error_payload_matches_fixture() {
         let timeout = super::HttpFailure::timeout("decode", 1_500);
         let actual = error_payload(timeout.kind, &timeout.detail);
-        let expected = include_str!("../../fixtures/http_error_infer_timeout.json").trim();
+        let expected = include_str!("../../fixtures/http_error_infer_timeout.fixture.json").trim();
         assert_eq!(actual, expected);
     }
 }

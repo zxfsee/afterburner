@@ -2,7 +2,7 @@
 
 use std::collections::BTreeSet;
 use std::fs;
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use std::net::TcpListener;
 use std::path::PathBuf;
 use std::thread;
@@ -22,11 +22,15 @@ fn repo_file(path: &str) -> String {
         .unwrap_or_else(|err| panic!("read {path}: {err}"))
 }
 
-fn reserve_port() -> u16 {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("bind ephemeral port");
+fn reserve_port() -> Option<u16> {
+    let listener = match TcpListener::bind("127.0.0.1:0") {
+        Ok(listener) => listener,
+        Err(err) if err.kind() == ErrorKind::PermissionDenied => return None,
+        Err(err) => panic!("bind ephemeral port: {err}"),
+    };
     let port = listener.local_addr().expect("listener addr").port();
     drop(listener);
-    port
+    Some(port)
 }
 
 fn start_stub_server(port: u16, expected_requests: usize) -> thread::JoinHandle<()> {
@@ -121,7 +125,9 @@ fn distributed_load_profile_schema_and_workflow_are_explicit() {
 
 #[test]
 fn distributed_load_profile_writes_profile_and_event() {
-    let port = reserve_port();
+    let Some(port) = reserve_port() else {
+        return;
+    };
     let _server = start_stub_server(port, 6);
     let out_dir = tempfile::tempdir().expect("tempdir");
     let out = out_dir.path().join("distributed_load_profile.json");

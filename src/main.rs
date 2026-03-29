@@ -1,3 +1,5 @@
+#![recursion_limit = "256"]
+
 mod cmd_cleanup_dry_run;
 mod cmd_cleanup_evidence_bundle;
 mod cmd_cleanup_execute;

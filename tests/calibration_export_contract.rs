@@ -66,7 +66,7 @@ fn export_copies_calibration_sidecar_and_emits_calibration_fields() {
             json!("artifacts/inference/0.1.0/calibration_artifact_metadata.json"),
         );
     let expected_text = fs::read_to_string(fixture_path(
-        "artifact_exported_event_with_calibration.json",
+        "artifact_exported_event_with_calibration.fixture.json",
     ))
     .expect("read calibration artifact_exported fixture");
     let expected: Value =

@@ -107,7 +107,19 @@
               let
                 rel = lib.removePrefix (toString ./. + "/") (toString path);
               in
-              craneLib.filterCargoSources path type || lib.hasPrefix "fixtures/" rel;
+              craneLib.filterCargoSources path type
+              # Tests intentionally read tracked fixtures and repo-owned docs/workflow files
+              # from CARGO_MANIFEST_DIR; generated artifacts stay out of the Nix source.
+              || lib.hasPrefix "fixtures/" rel
+              || lib.hasPrefix "docs/" rel
+              || builtins.elem rel [
+                "ARCHITECTURE.md"
+                "README.md"
+                "docs"
+                "flake.nix"
+                "fixtures"
+                "justfile"
+              ];
           };
 
           # Common arguments can be set here to avoid repeating them later
@@ -194,6 +206,11 @@
               commonArgs
               // {
                 inherit cargoArtifacts;
+                # Some integration tests intentionally shell out to repo workflow tools.
+                nativeBuildInputs = (commonArgs.nativeBuildInputs or [ ]) ++ [
+                  pkgs.jujutsu
+                  pkgs.just
+                ];
                 partitions = 1;
                 partitionType = "count";
                 cargoNextestPartitionsExtraArgs = "--no-tests=pass";

@@ -30,7 +30,7 @@ fn train_start_event_matches_fixture_contract() {
         inference_dir.as_path(),
     );
     let normalized = normalize_train_start_event_line(line.as_str());
-    let expected_text = fs::read_to_string(fixture_path("train_start_event.json"))
+    let expected_text = fs::read_to_string(fixture_path("train_start_event.fixture.json"))
         .expect("read train_start fixture");
     let expected: Value = serde_json::from_str(&expected_text).expect("parse train_start fixture");
     assert_eq!(
@@ -50,7 +50,7 @@ fn artifact_exported_event_matches_fixture_contract() {
         None,
     );
     let normalized = normalize_train_start_event_line(line.as_str());
-    let expected_text = fs::read_to_string(fixture_path("artifact_exported_event.json"))
+    let expected_text = fs::read_to_string(fixture_path("artifact_exported_event.fixture.json"))
         .expect("read artifact_exported fixture");
     let expected: Value =
         serde_json::from_str(&expected_text).expect("parse artifact_exported fixture");

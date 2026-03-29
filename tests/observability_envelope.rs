@@ -13,8 +13,10 @@ fn fixture_path(name: &str) -> PathBuf {
 
 #[test]
 fn event_line_matches_required_envelope_fixture_keys() {
-    let fixture = fs::read_to_string(fixture_path("observability_envelope_required_keys.json"))
-        .expect("read envelope fixture");
+    let fixture = fs::read_to_string(fixture_path(
+        "observability_envelope_required_keys.fixture.json",
+    ))
+    .expect("read envelope fixture");
     let fixture: serde_json::Value =
         serde_json::from_str(&fixture).expect("parse envelope fixture");
     let required = fixture

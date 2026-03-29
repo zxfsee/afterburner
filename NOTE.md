@@ -22,6 +22,8 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - If a subagent stops reporting after repeated waits, interrupt once, then inspect the assigned workspace state directly and recover from recorded commits/diffs instead of waiting indefinitely.
 - If `NOTE.md` changes during active work, keep it attached to that same change/commit stream rather than leaving it as an unrelated local edit.
 - In the main repo workspace, assume the shell already inherits required tooling; run `just`/tooling directly first, and only use `direnv exec` for isolated workspace contexts that actually lack deps.
+- In repo workflows with a canonical `just` surface, dogfood the `just` recipe by default. Drop to narrower underlying tool commands only for genuine special cases where the recipe scope is wrong for the verification or fix being performed.
+- Do not leave iterative work implicit. If a turn uncovers meaningful follow-up, unresolved cleanup, or context worth preserving, either complete it in the same turn or record the next step explicitly in the correct planning surface before stopping: top TODO queue when it is priority and runnable now, otherwise `docs/backlog.md`.
 - Prefer `cargo nextest` (or `just test` when it maps to nextest) over plain `cargo test` for verification unless a specific test flow requires `cargo test` semantics.
 - Keep strict active-queue order by default. After completing the top TODO, the next pre-existing queued item should become top unless there is a real blocker or the user explicitly approves reprioritization.
 - If a same-theme follow-on mixed item is worth tracking, prefer adding it below the already-queued next item or parking it in backlog; do not silently insert it at the top just to satisfy queue-balance preferences.

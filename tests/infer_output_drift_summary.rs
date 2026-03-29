@@ -4,19 +4,13 @@ use std::path::PathBuf;
 
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
+#[path = "fixture_support.rs"]
+mod fixture_support;
 
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
         .join(name)
-}
-
-fn repo_artifact() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
-        .join("model.mpk")
 }
 
 fn repo_file(path: &str) -> String {
@@ -77,11 +71,12 @@ fn infer_output_drift_summary_schema_is_explicit() {
 
 #[test]
 fn infer_writes_output_drift_summary_and_event() {
+    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.current_dir(tmp.path())
         .arg("infer")
-        .arg(repo_artifact())
+        .arg(&artifact)
         .env("BACKEND", "cpu");
     let assert = cmd.assert().success();
 

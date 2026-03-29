@@ -1,0 +1,43 @@
+{
+  "schema_version": "1",
+  "recommended_backend": "wgpu",
+  "native_backend_candidate": "metal",
+  "comparison_command": "afterburner eval --seed 42 --batch-size 128 --max-batches 8",
+  "profile_artifact": "artifacts/eval/mnist_eval_summary.json",
+  "comparison_baseline": {
+    "seed": 42,
+    "batch_size": 128,
+    "max_batches": 8,
+    "samples_per_profile": 1024
+  },
+  "refresh_when": [
+    "comparison_command changes or stops matching comparison_baseline",
+    "native_backend_candidate changes",
+    "recommended_backend changes",
+    "profile_artifact schema or path changes"
+  ],
+  "native_backend_adoption": {
+    "required_consecutive_regressions": 2,
+    "minimum_samples_per_profile": 1024,
+    "trigger_any": [
+      {
+        "metric": "wgpu_eval_duration_ms",
+        "operator": "gt",
+        "threshold_multiplier_vs_cpu": 1.25,
+        "reason": "Sustained eval latency regression means GPU dispatch overhead dominates."
+      },
+      {
+        "metric": "wgpu_startup_unavailable_ratio",
+        "operator": "gt",
+        "threshold": 0.05,
+        "reason": "Repeated adapter unavailability makes the default backend operationally brittle."
+      },
+      {
+        "metric": "wgpu_batch_scaling_gain",
+        "operator": "lt",
+        "threshold": 1.10,
+        "reason": "If larger batch sizes do not deliver meaningful throughput gains, a native backend is justified."
+      }
+    ]
+  }
+}

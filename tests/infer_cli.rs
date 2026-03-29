@@ -4,6 +4,9 @@ use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
 
+#[path = "fixture_support.rs"]
+mod fixture_support;
+
 #[test]
 fn infer_fails_fast_on_missing_artifact() {
     let mut cmd = cargo_bin_cmd!("afterburner");
@@ -18,11 +21,7 @@ fn infer_fails_fast_on_missing_artifact() {
 
 #[test]
 fn infer_done_event_matches_fixture_contract() {
-    let artifact = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
-        .join("model.mpk");
+    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("infer").arg(&artifact).env("BACKEND", "cpu");
@@ -44,7 +43,7 @@ fn infer_done_event_matches_fixture_contract() {
             .expect("infer_done fields must be an object"),
     );
     let normalized = normalize_infer_done_event(&infer_done);
-    let expected = fixture_json("infer_done_event.json");
+    let expected = fixture_json("infer_done_event.fixture.json");
     assert_eq!(
         normalized, expected,
         "infer_done event must match the fixture-backed contract"

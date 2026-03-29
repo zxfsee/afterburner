@@ -98,7 +98,7 @@ fn infer_emits_calibration_metadata_invalid_event_on_parse_failure() {
 
     let invalid = find_event(&events, "calibration_metadata_invalid");
     let normalized = normalize_calibration_metadata_invalid_event(invalid);
-    let expected = event_fixture("infer_calibration_metadata_invalid_event.json");
+    let expected = event_fixture("infer_calibration_metadata_invalid_event.fixture.json");
     assert_eq!(
         normalized, expected,
         "calibration_metadata_invalid event payload must match fixture"
@@ -137,7 +137,7 @@ fn infer_omits_calibration_when_metadata_targets_different_artifact_version() {
 
     let invalid = find_event(&events, "calibration_metadata_invalid");
     let normalized = normalize_calibration_metadata_invalid_event(invalid);
-    let expected = event_fixture("infer_calibration_version_mismatch_event.json");
+    let expected = event_fixture("infer_calibration_version_mismatch_event.fixture.json");
     assert_eq!(
         normalized, expected,
         "artifact-version mismatch event payload must match fixture"

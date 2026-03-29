@@ -4,18 +4,13 @@ use std::thread;
 
 use afterburner::manifest::compute_sha256_hex;
 
-fn artifact_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
-        .join("model.mpk")
-}
+#[path = "fixture_support.rs"]
+mod fixture_support;
 
-fn run_infer_once() {
+fn run_infer_once(artifact_path: PathBuf) {
     let status = Command::new(assert_cmd::cargo::cargo_bin!("afterburner"))
         .arg("infer")
-        .arg(artifact_path())
+        .arg(artifact_path)
         .env("BACKEND", "cpu")
         .status()
         .expect("spawn infer process");
@@ -24,11 +19,13 @@ fn run_infer_once() {
 
 #[test]
 fn concurrent_readers_do_not_mutate_pinned_artifact() {
-    let artifact = artifact_path();
+    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
     let before = compute_sha256_hex(&artifact).expect("compute pre-run checksum");
 
-    let worker_a = thread::spawn(run_infer_once);
-    let worker_b = thread::spawn(run_infer_once);
+    let worker_a_artifact = artifact.clone();
+    let worker_b_artifact = artifact.clone();
+    let worker_a = thread::spawn(move || run_infer_once(worker_a_artifact));
+    let worker_b = thread::spawn(move || run_infer_once(worker_b_artifact));
     worker_a.join().expect("join worker a");
     worker_b.join().expect("join worker b");
 

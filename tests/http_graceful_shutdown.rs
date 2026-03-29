@@ -1,6 +1,6 @@
 #![cfg(unix)]
 
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
@@ -10,19 +10,18 @@ use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
 
-fn fixture_model_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
-        .join("model.mpk")
-}
+#[path = "fixture_support.rs"]
+mod fixture_support;
 
-fn reserve_port() -> u16 {
-    let listener = TcpListener::bind("127.0.0.1:0").expect("bind ephemeral port");
+fn reserve_port() -> Option<u16> {
+    let listener = match TcpListener::bind("127.0.0.1:0") {
+        Ok(listener) => listener,
+        Err(err) if err.kind() == ErrorKind::PermissionDenied => return None,
+        Err(err) => panic!("bind ephemeral port: {err}"),
+    };
     let port = listener.local_addr().expect("listener addr").port();
     drop(listener);
-    port
+    Some(port)
 }
 
 fn wait_for_healthz(port: u16, timeout: Duration) {
@@ -97,7 +96,7 @@ fn infer_single_payload() -> String {
 fn infer_error_artifact_not_found_fixture() -> Value {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("fixtures")
-        .join("infer_error_artifact_not_found.json");
+        .join("infer_error_artifact_not_found.fixture.json");
     let text = std::fs::read_to_string(path).expect("read infer error fixture");
     serde_json::from_str(&text).expect("parse infer error fixture")
 }
@@ -268,9 +267,12 @@ fn assert_precision_fields(fields: &serde_json::Map<String, Value>) {
 
 #[test]
 fn in_flight_infer_completes_on_sigint() {
-    let port = reserve_port();
+    let Some(port) = reserve_port() else {
+        return;
+    };
+    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
-        .arg(fixture_model_path())
+        .arg(&weights_path)
         .env("BACKEND", "cpu")
         .env("PORT", port.to_string())
         .env("HTTP_MAX_CONCURRENCY", "1")
@@ -286,10 +288,8 @@ fn in_flight_infer_completes_on_sigint() {
     let logs_reader = Arc::clone(&logs);
     let stderr_thread = thread::spawn(move || {
         let reader = std::io::BufReader::new(stderr);
-        for line in std::io::BufRead::lines(reader) {
-            if let Ok(line) = line {
-                logs_reader.lock().expect("lock logs").push(line);
-            }
+        for line in std::io::BufRead::lines(reader).map_while(Result::ok) {
+            logs_reader.lock().expect("lock logs").push(line);
         }
     });
 
@@ -346,7 +346,7 @@ fn in_flight_infer_completes_on_sigint() {
         .map(|(_, body)| body)
         .expect("response must include headers and body");
     let payload: Value = serde_json::from_str(body).expect("response body must be json");
-    assert_success_payload_matches_fixture(&payload, "http_infer_success_envelope.json");
+    assert_success_payload_matches_fixture(&payload, "http_infer_success_envelope.fixture.json");
 
     wait_for_exit_ok(&mut child, Duration::from_secs(5));
     stderr_thread.join().expect("join stderr reader");
@@ -354,9 +354,12 @@ fn in_flight_infer_completes_on_sigint() {
 
 #[test]
 fn single_item_infer_response_matches_single_success_fixture() {
-    let port = reserve_port();
+    let Some(port) = reserve_port() else {
+        return;
+    };
+    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
-        .arg(fixture_model_path())
+        .arg(&weights_path)
         .env("BACKEND", "cpu")
         .env("PORT", port.to_string())
         .env("HTTP_MAX_CONCURRENCY", "1")
@@ -370,10 +373,8 @@ fn single_item_infer_response_matches_single_success_fixture() {
     let logs_reader = Arc::clone(&logs);
     let stderr_thread = thread::spawn(move || {
         let reader = std::io::BufReader::new(stderr);
-        for line in std::io::BufRead::lines(reader) {
-            if let Ok(line) = line {
-                logs_reader.lock().expect("lock logs").push(line);
-            }
+        for line in std::io::BufRead::lines(reader).map_while(Result::ok) {
+            logs_reader.lock().expect("lock logs").push(line);
         }
     });
 
@@ -413,7 +414,10 @@ fn single_item_infer_response_matches_single_success_fixture() {
         .map(|(_, body)| body)
         .expect("response must include headers and body");
     let payload: Value = serde_json::from_str(body).expect("response body must be json");
-    assert_success_payload_matches_fixture(&payload, "http_infer_single_success_envelope.json");
+    assert_success_payload_matches_fixture(
+        &payload,
+        "http_infer_single_success_envelope.fixture.json",
+    );
 
     let pid = child.id().to_string();
     let kill_status = Command::new("kill")
@@ -427,9 +431,12 @@ fn single_item_infer_response_matches_single_success_fixture() {
 
 #[test]
 fn single_item_http_infer_done_event_matches_fixture() {
-    let port = reserve_port();
+    let Some(port) = reserve_port() else {
+        return;
+    };
+    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
-        .arg(fixture_model_path())
+        .arg(&weights_path)
         .env("BACKEND", "cpu")
         .env("PORT", port.to_string())
         .env("HTTP_MAX_CONCURRENCY", "1")
@@ -443,10 +450,8 @@ fn single_item_http_infer_done_event_matches_fixture() {
     let logs_reader = Arc::clone(&logs);
     let stderr_thread = thread::spawn(move || {
         let reader = std::io::BufReader::new(stderr);
-        for line in std::io::BufRead::lines(reader) {
-            if let Ok(line) = line {
-                logs_reader.lock().expect("lock logs").push(line);
-            }
+        for line in std::io::BufRead::lines(reader).map_while(Result::ok) {
+            logs_reader.lock().expect("lock logs").push(line);
         }
     });
 
@@ -493,7 +498,7 @@ fn single_item_http_infer_done_event_matches_fixture() {
             .expect("http infer_done fields must be an object"),
     );
     let normalized = normalize_http_infer_done_event(&infer_done);
-    let expected = json_fixture("http_infer_done_event.json");
+    let expected = json_fixture("http_infer_done_event.fixture.json");
     assert_eq!(
         normalized, expected,
         "http infer_done event must match the fixture-backed contract"
@@ -511,10 +516,13 @@ fn single_item_http_infer_done_event_matches_fixture() {
 
 #[test]
 fn startup_missing_artifact_infer_error_matches_fixture() {
+    let Some(port) = reserve_port() else {
+        return;
+    };
     let output = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg("does-not-exist.mpk")
         .env("BACKEND", "cpu")
-        .env("PORT", reserve_port().to_string())
+        .env("PORT", port.to_string())
         .output()
         .expect("run afterburner-http with missing artifact");
 
@@ -536,6 +544,9 @@ fn startup_missing_artifact_infer_error_matches_fixture() {
 
 #[test]
 fn startup_quantized_manifest_fails_fast_with_manifest_invalid_field() {
+    let Some(port) = reserve_port() else {
+        return;
+    };
     let tmp = tempfile::tempdir().expect("tempdir");
     let dir = tmp.path();
     let weights = dir.join("model.mpk");
@@ -552,7 +563,7 @@ fn startup_quantized_manifest_fails_fast_with_manifest_invalid_field() {
     let output = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(&weights)
         .env("BACKEND", "cpu")
-        .env("PORT", reserve_port().to_string())
+        .env("PORT", port.to_string())
         .output()
         .expect("run afterburner-http with unsupported quantized artifact");
 

@@ -16,7 +16,7 @@ fn fixture_path(name: &str) -> PathBuf {
 
 #[test]
 fn profiling_hotspot_taxonomy_is_documented() {
-    let fixture_text = fs::read_to_string(fixture_path("profiling_hotspot_summary_fixture.json"))
+    let fixture_text = fs::read_to_string(fixture_path("profiling_hotspot_summary.fixture.json"))
         .expect("read profiling hotspot summary fixture");
     let fixture: Value =
         serde_json::from_str(&fixture_text).expect("parse profiling hotspot summary fixture");

@@ -15,13 +15,8 @@ use serde_json::Value;
 type CpuBackend = NdArray<f32>;
 type GpuBackend = Wgpu<f32, i32>;
 
-fn artifact_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("inference")
-        .join("0.1.0")
-        .join("model.mpk")
-}
+#[path = "fixture_support.rs"]
+mod fixture_support;
 
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -37,9 +32,8 @@ fn fixture_json(name: &str) -> Value {
 fn backend_profile_json() -> Value {
     let text = fs::read_to_string(
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("artifacts")
-            .join("eval")
-            .join("backend_performance_profile.json"),
+            .join("fixtures")
+            .join("backend_performance_profile.fixture.json"),
     )
     .expect("read backend performance profile");
     serde_json::from_str(&text).expect("parse backend performance profile")
@@ -49,8 +43,9 @@ fn assert_logits_shape_for_backend<B: Backend>(batch_size: usize)
 where
     B::Device: Default,
 {
+    let (_artifact_dir, artifact_path) = fixture_support::build_runtime_model_artifact();
     let device = B::Device::default();
-    let model = load_model::<B>(&artifact_path(), &device).expect("load model");
+    let model = load_model::<B>(&artifact_path, &device).expect("load model");
     let input = Tensor::<B, 4>::zeros([batch_size, 1, 28, 28], &device);
     let logits = model.forward(input);
     assert_eq!(
@@ -78,7 +73,7 @@ fn logits_shape_is_stable_on_wgpu_when_available() {
 
 #[test]
 fn kernel_adoption_threshold_fixture_matches_current_model_footprint() {
-    let expected = fixture_json("kernel_adoption_thresholds.json");
+    let expected = fixture_json("kernel_adoption_thresholds.fixture.json");
     let actual = kernel_adoption_threshold_contract_value("0.1.0");
     assert_eq!(
         actual, expected,

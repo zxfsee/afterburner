@@ -12,8 +12,7 @@ fn fixture_path(name: &str) -> PathBuf {
 
 fn artifact_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("artifacts")
-        .join("profiling")
+        .join("fixtures")
         .join(name)
 }
 
@@ -29,7 +28,7 @@ fn profiling_summary_cli_matches_fixture() {
         .expect("write fixture manifest");
 
     let output = tmp.path().join("profiling_summary.json");
-    let expected = fs::read_to_string(fixture_path("profiling_hotspot_summary_fixture.json"))
+    let expected = fs::read_to_string(fixture_path("profiling_hotspot_summary.fixture.json"))
         .expect("read profiling summary fixture");
 
     let mut cmd = assert_cmd::cargo::cargo_bin_cmd!("afterburner_profile_summary");
@@ -104,7 +103,7 @@ fn profiling_summary_schema_and_sample_are_explicit() {
         );
     }
 
-    let sample_text = fs::read_to_string(artifact_path("infer_hotspot_summary.json"))
+    let sample_text = fs::read_to_string(artifact_path("infer_hotspot_summary.fixture.json"))
         .expect("read profiling summary artifact");
     let sample: Value =
         serde_json::from_str(&sample_text).expect("parse profiling summary artifact");

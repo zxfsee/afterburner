@@ -18,7 +18,7 @@ fn dashboard_snapshot_matches_fixture() {
         .arg("--input")
         .arg(fixture_path("dashboard_events.jsonl"))
         .arg("--profiling-summary")
-        .arg(fixture_path("dashboard_profiling_summary.json"))
+        .arg(fixture_path("dashboard_profiling_summary.fixture.json"))
         .args(["--snapshot", "--width", "80", "--height", "18"])
         .assert()
         .success();
