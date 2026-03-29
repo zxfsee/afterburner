@@ -65,6 +65,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `deployment_verification_receipt_locator_pointer_rollback_history.json`
   - `deployment_verification_receipt_rollback_reconciliation.json`
   - `deployment_verification_receipt_rollback_reconciliation_history.json`
+  - `deployment_verification_receipt_rollback_supersession.json`
   - `deployment_verification_receipt_transport_locator.json`
   - `deployment_verification_receipt_transport_locator_history.json`
   - `deployment_verification_receipt_transport_locator_reconciliation.json`
