@@ -1,0 +1,22 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "rolled-back",
+      "rollback_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback.json",
+      "current_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.json",
+      "restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.previous.json",
+      "previous_receipt_path": "artifacts/deploy/deployment_verification_receipt.json",
+      "restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+      "previous_artifact_version": "0.2.0",
+      "restored_artifact_version": "0.1.0",
+      "profile_name": "staging-a",
+      "previous_verification_status": "passed",
+      "restored_verification_status": "passed",
+      "previous_evidence_count": 2,
+      "restored_evidence_count": 1,
+      "rolled_back_at_unix_ms": 1735689800000,
+      "recorded_at_unix_ms": 1735689900000
+    }
+  ]
+}
