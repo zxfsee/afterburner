@@ -44,7 +44,7 @@
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
-<!-- queue-snapshot: todo_sha256=394e14355e70cb1f5e6dc378ff5413f781c954a7e785bb28788f9eca4ef68dca parent_commit=4e671b4fa77db79f9c9099a6f9fba18b3a16374d -->
+<!-- queue-snapshot: todo_sha256=394e14355e70cb1f5e6dc378ff5413f781c954a7e785bb28788f9eca4ef68dca parent_commit=3194669be06e05e7ddafe09fc5e11ad4e2477fd3 -->
 
 ## [Trunk]
 
@@ -186,43 +186,44 @@
 - Align helper tooling with workflow boundaries ([ed6b43f])
 - Complete targeted harness hardening ([0d15881])
 - Add verification handoff reconciliation history adapter ([fbeb94f])
-- Add verification bundle reconciliation history adapter ([efc9836])
-- Add verification receipt reconciliation adapter ([ebcfd57])
-- Add verification receipt reconciliation history adapter ([325c5b3])
-- Add verification handoff history adapter ([54c55de])
-- Add verification receipt history adapter ([bccdb72])
-- Add verification bundle history adapter ([af8dc7b])
-- Add verification handoff transport locator adapter ([adb57d1])
-- Add verification handoff transport locator reconciliation adapter ([f6013f2])
-- Add verification handoff transport locator reconciliation adapter ([ebfb7db])
-- Add verification handoff transport locator history adapter ([7ab5053])
-- Add verification bundle transport locator adapter ([dfd3f27])
-- Add verification bundle transport locator reconciliation adapter ([e70da11])
-- Add verification bundle transport locator history adapter ([8122254])
-- Add verification receipt transport locator adapter ([b3d0580])
-- Add verification receipt transport locator reconciliation adapter ([c6dfe38])
-- Add receipt transport locator history ([c94393f])
-- Add bundle transport locator reconciliation history ([df8b003])
-- Add receipt transport locator reconciliation history ([432d542])
-- Add bundle locator pointer ([1718b4b])
-- Add receipt locator pointer ([df8e081])
-- Add bundle locator reconciliation ([5b74177])
-- Add receipt locator reconciliation ([e171496])
-- Add bundle locator history ([7715544])
-- Add receipt locator history ([243f63b])
-- Add bundle locator reconciliation history ([2e3de18])
-- Add receipt locator reconciliation history ([6e62302])
-- Add bundle locator rollback ([8af7409])
-- Add receipt locator rollback ([7a2673b])
-- Add bundle locator rollback history ([d6b4c32])
-- Add receipt locator rollback history ([ea8dc7f])
-- Add bundle rollback adapter ([e355d4d])
-- Add bundle rollback history ([6132e8a])
-- Add bundle rollback reconciliation ([2ca8d72])
-- Add receipt rollback reconciliation ([ef65477])
-- Add bundle rollback reconciliation history ([4389b4b])
-- Add receipt rollback reconciliation history ([3eea855])
-- Add bundle rollback supersession ([4e671b4])
+- Add verification bundle reconciliation history adapter ([bc4a279])
+- Add verification receipt reconciliation adapter ([50a60bb])
+- Add verification receipt reconciliation history adapter ([050cf2c])
+- Add verification handoff history adapter ([59f40cb])
+- Add verification receipt history adapter ([20f62ad])
+- Add verification bundle history adapter ([c04fd1a])
+- Add verification handoff transport locator adapter ([2401197])
+- Add verification handoff transport locator reconciliation adapter ([c04eb70])
+- Add verification handoff transport locator reconciliation adapter ([a5b4077])
+- Add verification handoff transport locator history adapter ([f928ace])
+- Add verification bundle transport locator adapter ([40e195b])
+- Add verification bundle transport locator reconciliation adapter ([9630cf3])
+- Add verification bundle transport locator history adapter ([d314992])
+- Add verification receipt transport locator adapter ([3697ef0])
+- Add verification receipt transport locator reconciliation adapter ([7171d6e])
+- Add receipt transport locator history ([9d52b39])
+- Add bundle transport locator reconciliation history ([98f8645])
+- Add receipt transport locator reconciliation history ([3a2c802])
+- Add bundle locator pointer ([bf3ef7a])
+- Add receipt locator pointer ([bfb22c4])
+- Add bundle locator reconciliation ([23e165c])
+- Add receipt locator reconciliation ([c7de99d])
+- Add bundle locator history ([f2cba27])
+- Add receipt locator history ([d6690bb])
+- Add bundle locator reconciliation history ([4eb3d60])
+- Add receipt locator reconciliation history ([29a1191])
+- Add bundle locator rollback ([2747d3f])
+- Add receipt locator rollback ([ceb3be4])
+- Add bundle locator rollback history ([2c0aec5])
+- Add receipt locator rollback history ([68ea9d9])
+- Add bundle rollback adapter ([1a2d92e])
+- Add bundle rollback history ([314da90])
+- Add bundle rollback reconciliation ([fca8951])
+- Add receipt rollback reconciliation ([d1f1d81])
+- Add bundle rollback reconciliation history ([89218b5])
+- Add receipt rollback reconciliation history ([569854e])
+- Add bundle rollback supersession ([1e98527])
+- Add receipt rollback supersession ([f7b9bd7])
 
 ### Changed
 
@@ -257,6 +258,7 @@
 - Move offline setting to Cargo.toml and remove --offline from justfile ([e3cf388])
 - Codify durable tooling guards ([03f664a])
 - Clarify profiling blocker ([046aab1])
+- Harden crane-backed verification ([83ec760])
 
 ### Documentation
 
@@ -400,22 +402,24 @@
 - Require queue freshness and objective locks ([5fa5db1])
 - Refresh queue snapshot after harness hardening ([d39df9d])
 - Refresh queue snapshot after workflow fix ([619cbab])
-- Record capnproto wire-format fit ([a68c1b7])
-- Record helper-surface consolidation heuristic ([8e913fe])
-- Refresh queue snapshot after docs updates ([13a1d09])
-- Record lws cluster workload fit ([7604617])
-- Record gateway api inference extension fit ([da8966d])
-- Refresh queue snapshot after bundle history ([aded06b])
-- Refresh queue snapshot after transport locator history ([835df07])
-- Refresh queue snapshot after bundle transport locator ([1b181f2])
-- Refresh queue snapshot after bundle transport locator ([0806afc])
-- Refresh queue snapshot after bundle transport locator reconciliation ([5c7eebc])
-- Refresh active queue after bundle transport locator history ([412e5d8])
-- Refresh queue snapshot after bundle transport locator history ([ed2db4a])
-- Refresh queue snapshot after receipt transport locator ([bf366c1])
-- Refine commit message heuristics ([b327d12])
-- Repair active queue after receipt reconciliation ([caa448e])
-- Repair rollback queue order ([b36b632])
+- Record capnproto wire-format fit ([6eac14b])
+- Record helper-surface consolidation heuristic ([6cdcb37])
+- Refresh queue snapshot after docs updates ([f9e57f7])
+- Record lws cluster workload fit ([5db5756])
+- Record gateway api inference extension fit ([c115fd4])
+- Refresh queue snapshot after bundle history ([ef07659])
+- Refresh queue snapshot after transport locator history ([d4d6948])
+- Refresh queue snapshot after bundle transport locator ([3eed571])
+- Refresh queue snapshot after bundle transport locator ([5023bd6])
+- Refresh queue snapshot after bundle transport locator reconciliation ([005d1a2])
+- Refresh active queue after bundle transport locator history ([19b5f40])
+- Refresh queue snapshot after bundle transport locator history ([42dc08d])
+- Refresh queue snapshot after receipt transport locator ([e4338cf])
+- Refine commit message heuristics ([189cac3])
+- Repair active queue after receipt reconciliation ([9f2826a])
+- Repair rollback queue order ([2c67074])
+- Record dependency refresh maintenance heuristic ([f756482])
+- Tighten commit subject heuristic ([3194669])
 
 ### Fixed
 
@@ -424,7 +428,7 @@
 - Enforce strict pretraining metadata shape ([f7b370f])
 - Align single infer success envelope ([1040623])
 - Tolerate queue-refresh commit in snapshot check ([ddd9360])
-- Correct handoff transport locator history context ([71d9918])
+- Correct handoff transport locator history context ([03127dd])
 
 ### Other
 
@@ -790,59 +794,63 @@
 [ddd9360]: https://github.com/zxfsee/afterburner/commit/ddd9360b6be8ad47a834005c35ff3997c08884fe
 [619cbab]: https://github.com/zxfsee/afterburner/commit/619cbabf2906d66312113c816c6be36f23eea724
 [fbeb94f]: https://github.com/zxfsee/afterburner/commit/fbeb94f77431fc15296801bc9898fe3628897e57
-[efc9836]: https://github.com/zxfsee/afterburner/commit/efc9836a3776f3955391ec1c426176328da3c100
-[ebcfd57]: https://github.com/zxfsee/afterburner/commit/ebcfd576a082d80b350456bcf0e758c8ac9b19ec
-[a68c1b7]: https://github.com/zxfsee/afterburner/commit/a68c1b7d594b0308be3e2be2c6018a589bddc75b
-[8e913fe]: https://github.com/zxfsee/afterburner/commit/8e913fe3fa92cfeab8e7419bde8abd650d79d311
-[13a1d09]: https://github.com/zxfsee/afterburner/commit/13a1d094376d90c4f17397dec1267f7f9731052f
-[7604617]: https://github.com/zxfsee/afterburner/commit/760461783f1fec5f4e3682d1870017ef0a3bd061
-[da8966d]: https://github.com/zxfsee/afterburner/commit/da8966ddacade802e4350fbbd2b48a897941ebe1
-[325c5b3]: https://github.com/zxfsee/afterburner/commit/325c5b3bfc60dc640359fac160afcc4e76c5b0d0
-[54c55de]: https://github.com/zxfsee/afterburner/commit/54c55deff0e0c556a6c7ccf7917bb347cb1da4a0
-[bccdb72]: https://github.com/zxfsee/afterburner/commit/bccdb7232ad9d2c68c2d7eb302f72b9f277f9b4b
-[af8dc7b]: https://github.com/zxfsee/afterburner/commit/af8dc7ba8a1d0cd42e3630174436fa84f0769183
-[aded06b]: https://github.com/zxfsee/afterburner/commit/aded06bf675a093661a8bf51e639a8ed791f31d0
-[adb57d1]: https://github.com/zxfsee/afterburner/commit/adb57d1a8c3cb715887fd7f48197b25dbe9bad15
-[f6013f2]: https://github.com/zxfsee/afterburner/commit/f6013f2eae2c216e2f4f23f530d3582f0524ed6b
-[ebfb7db]: https://github.com/zxfsee/afterburner/commit/ebfb7dbab64f2c051ab46f7eecb368f9d1fb6083
-[7ab5053]: https://github.com/zxfsee/afterburner/commit/7ab5053b28386069b7538afdea2a24ab598a9f3f
-[71d9918]: https://github.com/zxfsee/afterburner/commit/71d9918202974129112f44c7076243f5503dde83
-[835df07]: https://github.com/zxfsee/afterburner/commit/835df0736947ce516cfbcf90c2b386e0b6b3fb44
-[dfd3f27]: https://github.com/zxfsee/afterburner/commit/dfd3f275407f1fc84e286b48b135e7a12b1056f3
-[1b181f2]: https://github.com/zxfsee/afterburner/commit/1b181f2ba4afa2a88bb3cb4c95e139e6f149aec6
-[0806afc]: https://github.com/zxfsee/afterburner/commit/0806afc2fe08f5f02774f8bb7b51022764149ba0
-[e70da11]: https://github.com/zxfsee/afterburner/commit/e70da112f6863a1f7d9afe92713941daf02f1f45
-[5c7eebc]: https://github.com/zxfsee/afterburner/commit/5c7eebcd4e58fdb5e5d2d92281eb7d04aa6d7497
-[8122254]: https://github.com/zxfsee/afterburner/commit/8122254028643fe11d6c7d4ff364e4b54a0419fd
-[412e5d8]: https://github.com/zxfsee/afterburner/commit/412e5d886a8913035e61220001024a60f6e100f9
-[ed2db4a]: https://github.com/zxfsee/afterburner/commit/ed2db4a850d1b9f0a286722223506a33ef1ee033
-[b3d0580]: https://github.com/zxfsee/afterburner/commit/b3d0580df169a1b1ae70da97c3012b2231003891
-[bf366c1]: https://github.com/zxfsee/afterburner/commit/bf366c18288124d36c9c9cbd4a81294a111a27ed
-[c6dfe38]: https://github.com/zxfsee/afterburner/commit/c6dfe38516e91f54196ce1d9db5ff093d79b6539
-[b327d12]: https://github.com/zxfsee/afterburner/commit/b327d123ebfe78d0c85dcfaa062a99e7872d4131
-[caa448e]: https://github.com/zxfsee/afterburner/commit/caa448ee4c69b0c15c02caed01bd9fae9c00148f
-[c94393f]: https://github.com/zxfsee/afterburner/commit/c94393f78350f7acdee6f640fb4495ed0aa38d49
-[df8b003]: https://github.com/zxfsee/afterburner/commit/df8b003cab8c17d4038c75c0d30c63fdf9c1948d
-[432d542]: https://github.com/zxfsee/afterburner/commit/432d542a1c3bb5c9d543c2a66b56afad3f5c553f
-[1718b4b]: https://github.com/zxfsee/afterburner/commit/1718b4bb016e016bf966bace8549420a43d97717
-[df8e081]: https://github.com/zxfsee/afterburner/commit/df8e081bc6ef026be33dc695c5d75c2697e97543
-[5b74177]: https://github.com/zxfsee/afterburner/commit/5b74177a5182f1fe8917e01f4c7e758b58737d6c
-[e171496]: https://github.com/zxfsee/afterburner/commit/e17149675fab0eeef2bd2ebf00ed186168979810
-[7715544]: https://github.com/zxfsee/afterburner/commit/77155445eed5b92020eaa29da958ac98b2e74796
-[243f63b]: https://github.com/zxfsee/afterburner/commit/243f63bda5054d4aa8cb44b2d9bceec447a46595
-[2e3de18]: https://github.com/zxfsee/afterburner/commit/2e3de18d7cfc03a69544f34d6a5ef251dc5c4236
-[6e62302]: https://github.com/zxfsee/afterburner/commit/6e623025999c4f0e913b8785002797e14c85d52a
-[8af7409]: https://github.com/zxfsee/afterburner/commit/8af74099da12f756647fc538896aae2e97cd9a42
-[7a2673b]: https://github.com/zxfsee/afterburner/commit/7a2673be370a7b393645ed30a4314d055132a0a6
-[d6b4c32]: https://github.com/zxfsee/afterburner/commit/d6b4c32731d1576478824e48184cb954d34776ac
-[ea8dc7f]: https://github.com/zxfsee/afterburner/commit/ea8dc7f48973d75a9dbefa93c0d06d22dc2a6a6c
-[e355d4d]: https://github.com/zxfsee/afterburner/commit/e355d4d8e9396c7ac8b710919a0cad29ea130287
-[6132e8a]: https://github.com/zxfsee/afterburner/commit/6132e8ae76a35570295b0b211bb087eba543c2d1
-[b36b632]: https://github.com/zxfsee/afterburner/commit/b36b632747551b2c0a6ca0fcc891ec440fca833c
-[2ca8d72]: https://github.com/zxfsee/afterburner/commit/2ca8d7245a77215b68a2986934de9152b8b2af37
-[ef65477]: https://github.com/zxfsee/afterburner/commit/ef654775b531b4b62b3d0491aaeb922c2ffca4b1
-[4389b4b]: https://github.com/zxfsee/afterburner/commit/4389b4bf4eab81b1837e8fe5da1f99fbdc147971
-[3eea855]: https://github.com/zxfsee/afterburner/commit/3eea8553b7563f3ae69f5883aa940bbf00c6f36c
-[4e671b4]: https://github.com/zxfsee/afterburner/commit/4e671b4fa77db79f9c9099a6f9fba18b3a16374d
+[bc4a279]: https://github.com/zxfsee/afterburner/commit/bc4a279a7e5e3a5fab731060fa52bf75f36d0c37
+[50a60bb]: https://github.com/zxfsee/afterburner/commit/50a60bbc51051169114dc382d81d63e1048ad089
+[6eac14b]: https://github.com/zxfsee/afterburner/commit/6eac14b40a13103824f51571378d309f54c6444a
+[6cdcb37]: https://github.com/zxfsee/afterburner/commit/6cdcb377f2205b2c6cdb62aadb58e7bb6fb39605
+[f9e57f7]: https://github.com/zxfsee/afterburner/commit/f9e57f737c35242a2feaea9d6c07fcabd062e686
+[5db5756]: https://github.com/zxfsee/afterburner/commit/5db575622b7eb53b6472bbb6b07bd8131ad687ce
+[c115fd4]: https://github.com/zxfsee/afterburner/commit/c115fd45c509fabb1c7b9d81e3377846bb391de0
+[050cf2c]: https://github.com/zxfsee/afterburner/commit/050cf2c6f554dc2975f60ea3c4abd6456fce5d7e
+[59f40cb]: https://github.com/zxfsee/afterburner/commit/59f40cb992e9a0269b759d4585a07ae73109b99d
+[20f62ad]: https://github.com/zxfsee/afterburner/commit/20f62ad66884ec44821b044aebc4a8fd0ef534ad
+[c04fd1a]: https://github.com/zxfsee/afterburner/commit/c04fd1ab8cc1c6a21a50d8afc3cd26804e6bf726
+[ef07659]: https://github.com/zxfsee/afterburner/commit/ef076591c6834f4f672d83216652637be7337a8e
+[2401197]: https://github.com/zxfsee/afterburner/commit/2401197ab08130ae08a01d722ad50b19167fa973
+[c04eb70]: https://github.com/zxfsee/afterburner/commit/c04eb705c8cfbcc5ca0eff7b4ed4941ca7b90d4b
+[a5b4077]: https://github.com/zxfsee/afterburner/commit/a5b4077dc9e15a9e319433b8ca3891372e743a1f
+[f928ace]: https://github.com/zxfsee/afterburner/commit/f928ace788ac7907ac5c692e49e592e4c790ead7
+[03127dd]: https://github.com/zxfsee/afterburner/commit/03127dd4ba4cb4a552ddedc5326f231d7a1a67e0
+[d4d6948]: https://github.com/zxfsee/afterburner/commit/d4d694818915debdd71485a190668142fb104f2f
+[40e195b]: https://github.com/zxfsee/afterburner/commit/40e195be1b0073d3e914ee25c3decafa163f33c5
+[3eed571]: https://github.com/zxfsee/afterburner/commit/3eed571ba98d5b41f147a21afb53ab801c2b3742
+[5023bd6]: https://github.com/zxfsee/afterburner/commit/5023bd6b64de1d066ef8acac365c53f9cc5df44a
+[9630cf3]: https://github.com/zxfsee/afterburner/commit/9630cf32a7ab60b50a132e24b35ec1cf91848bd5
+[005d1a2]: https://github.com/zxfsee/afterburner/commit/005d1a27246700d2ad556304b4eb5efca75f1a8c
+[d314992]: https://github.com/zxfsee/afterburner/commit/d31499240df101d43278f47a3867e0b38609d4d6
+[19b5f40]: https://github.com/zxfsee/afterburner/commit/19b5f40a5f09a2ff30f8339164e8db87004a02f0
+[42dc08d]: https://github.com/zxfsee/afterburner/commit/42dc08d60251098e4f36010465512936bc6b0fb6
+[3697ef0]: https://github.com/zxfsee/afterburner/commit/3697ef0c2bc2c8932f95d0f279456a8671734926
+[e4338cf]: https://github.com/zxfsee/afterburner/commit/e4338cf08609abfdc6ef450280a7953cb3a4f3d9
+[7171d6e]: https://github.com/zxfsee/afterburner/commit/7171d6ef597ee89d73924cf6190b44b3b6ab7c93
+[189cac3]: https://github.com/zxfsee/afterburner/commit/189cac3a69861f4cd2422941a3de1f97220f1b41
+[9f2826a]: https://github.com/zxfsee/afterburner/commit/9f2826a5b464cff1a6e021a40d728ef9da9404b5
+[9d52b39]: https://github.com/zxfsee/afterburner/commit/9d52b39609d2a63e02765aa8037f16dae76c0386
+[98f8645]: https://github.com/zxfsee/afterburner/commit/98f8645af7f7ebae5dae1ae4801e260bfe41693d
+[3a2c802]: https://github.com/zxfsee/afterburner/commit/3a2c802d05c120599223c35b77bc499995a8dae2
+[bf3ef7a]: https://github.com/zxfsee/afterburner/commit/bf3ef7a6f3713b4fe4294e8ac74b33fa118af20c
+[bfb22c4]: https://github.com/zxfsee/afterburner/commit/bfb22c4059a753c8a5d899ab0ed373f8d71f8469
+[23e165c]: https://github.com/zxfsee/afterburner/commit/23e165cf0dc2e8fb72bdd72151e36a4fef190309
+[c7de99d]: https://github.com/zxfsee/afterburner/commit/c7de99d19cec5b41e09864375ed39b8aa907b922
+[f2cba27]: https://github.com/zxfsee/afterburner/commit/f2cba27648484aa9fd7f8bb9d6bf1ef7ed75c551
+[d6690bb]: https://github.com/zxfsee/afterburner/commit/d6690bb4587cd4c7d93b6e9bf45060e563096da1
+[4eb3d60]: https://github.com/zxfsee/afterburner/commit/4eb3d60d75761e250c5c113f847ec463e2869f08
+[29a1191]: https://github.com/zxfsee/afterburner/commit/29a1191630ca52d393383f6ff5e3f57ed1b9e3d1
+[2747d3f]: https://github.com/zxfsee/afterburner/commit/2747d3f6ee51666e6abd2efd61b0b7c15c43d71f
+[ceb3be4]: https://github.com/zxfsee/afterburner/commit/ceb3be4d785ab79865540aaf4980de225615c74f
+[2c0aec5]: https://github.com/zxfsee/afterburner/commit/2c0aec51853e34669d75ce6e825933ed0d96b46b
+[68ea9d9]: https://github.com/zxfsee/afterburner/commit/68ea9d93ac6a5133efb13f8534a214ca7f95693f
+[1a2d92e]: https://github.com/zxfsee/afterburner/commit/1a2d92e346f43c51ab38ab326911aa505f54366b
+[314da90]: https://github.com/zxfsee/afterburner/commit/314da90623414e9518cdc4986aa7d9d2fd73e9a8
+[2c67074]: https://github.com/zxfsee/afterburner/commit/2c6707471c114826ab25a9f8a483f46f397a7f01
+[fca8951]: https://github.com/zxfsee/afterburner/commit/fca8951cfb69176346e0eb5927434a41612a9f83
+[d1f1d81]: https://github.com/zxfsee/afterburner/commit/d1f1d81f452c3288a051e6fc298ccd9312b02d7c
+[89218b5]: https://github.com/zxfsee/afterburner/commit/89218b5d5f4256d494e7d40dfaee91571fdd87e8
+[569854e]: https://github.com/zxfsee/afterburner/commit/569854edfa8a5797e9d696fb300994d38c4e9ef2
+[1e98527]: https://github.com/zxfsee/afterburner/commit/1e985276c8eb1f367f203788462a6af663053349
+[f7b9bd7]: https://github.com/zxfsee/afterburner/commit/f7b9bd75671e52a59eebbcd1a7032cca178287b3
+[83ec760]: https://github.com/zxfsee/afterburner/commit/83ec7609c6e1f5057388122d0209cc2870561cf9
+[f756482]: https://github.com/zxfsee/afterburner/commit/f756482552519b8556ac0e03c75535f50f817272
+[3194669]: https://github.com/zxfsee/afterburner/commit/3194669be06e05e7ddafe09fc5e11ad4e2477fd3
 
 <!-- generated by git-cliff -->
