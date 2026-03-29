@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/deployment-verification-evidence-bundle-locator-pointer-reconciliation/v1",
+  "title": "Deployment Verification Evidence Bundle Locator Pointer Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "locator_path",
+    "pointer_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "locator_path": { "type": "string", "minLength": 1 },
+    "pointer_path": { "type": "string", "minLength": 1 },
+    "desired": { "type": "object" },
+    "current": { "type": "object" },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}
