@@ -16,6 +16,7 @@ artifact pipeline.
 Define one explicit planning artifact:
 
 - `model_optimization_profile.schema.json`
+- `optimized_model_package_contract.schema.json`
 
 The minimum profile records:
 
@@ -23,6 +24,13 @@ The minimum profile records:
 - `target_environment`
 - `optimization_steps`
 - `output_constraints`
+
+The package contract records:
+
+- `export_format`
+- `packaging_inputs`
+- `package_layout`
+- runtime precision compatibility for the emitted optimized artifact
 
 Current stance: this decision defines the fit and the planning profile only. It
 does not add optimization code or change the current runtime precision support.

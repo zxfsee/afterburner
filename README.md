@@ -106,6 +106,12 @@ precision contract today is `weights_dtype = "f32"`,
 compression, export, and packaging remain planning-only optimization steps
 until dedicated optimized-model contracts land.
 
+The optimized model package contract is explicit as well. The
+`optimized_model_package_contract.schema.json` surface records the chosen
+`export_format`, the reproducible `packaging_inputs`, and the emitted
+`package_layout` for an optimized artifact handoff without changing the base
+inference artifact contract.
+
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).
 

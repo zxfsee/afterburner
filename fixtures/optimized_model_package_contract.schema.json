@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/optimized-model-package-contract/v1",
+  "title": "Optimized Model Package Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "input_artifact_version",
+    "target_environment",
+    "optimization_steps",
+    "runtime_precision_contract",
+    "optimized_artifact_path",
+    "optimized_artifact_sha256",
+    "export_format",
+    "package_root",
+    "package_layout",
+    "packaging_inputs"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "input_artifact_version": { "type": "string", "minLength": 1 },
+    "target_environment": { "type": "string", "minLength": 1 },
+    "optimization_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["quantization", "compression", "export", "packaging"]
+      }
+    },
+    "runtime_precision_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weights_dtype", "activation_dtype", "quantization"],
+      "properties": {
+        "weights_dtype": { "type": "string", "minLength": 1 },
+        "activation_dtype": { "type": "string", "minLength": 1 },
+        "quantization": { "type": "string", "minLength": 1 }
+      }
+    },
+    "optimized_artifact_path": { "type": "string", "minLength": 1 },
+    "optimized_artifact_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "export_format": { "type": "string", "minLength": 1 },
+    "package_root": { "type": "string", "minLength": 1 },
+    "package_layout": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "path"],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["manifest", "weights", "optimization_profile", "package_contract"]
+          },
+          "path": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "packaging_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "base_manifest_path",
+        "base_weights_path",
+        "optimization_profile_path"
+      ],
+      "properties": {
+        "base_manifest_path": { "type": "string", "minLength": 1 },
+        "base_weights_path": { "type": "string", "minLength": 1 },
+        "optimization_profile_path": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
