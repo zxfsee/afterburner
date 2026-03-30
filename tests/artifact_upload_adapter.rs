@@ -197,6 +197,103 @@ fn upload_requires_upload_approval_scope() {
     );
 }
 
+#[test]
+fn upload_includes_optimized_package_metadata_support_files() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let package_root = tmp.path().join("optimized");
+    fs::create_dir_all(&package_root).expect("create package root");
+
+    let manifest_path = write_runtime_model_artifact(&package_root);
+    let renamed_weights = package_root.join("model.optimized.mpk");
+    fs::rename(package_root.join("model.mpk"), &renamed_weights).expect("rename weights");
+    let manifest_text = fs::read_to_string(&manifest_path).expect("read manifest");
+    fs::write(
+        &manifest_path,
+        manifest_text.replace("model.mpk", "model.optimized.mpk"),
+    )
+    .expect("rewrite manifest");
+
+    let optimization_profile_path = tmp.path().join("model_optimization_profile.json");
+    fs::copy(
+        fixture_path("model_optimization_profile.example.json"),
+        &optimization_profile_path,
+    )
+    .expect("copy optimization profile");
+
+    let package_contract_path = tmp.path().join("optimized_model_package_contract.json");
+    let mut package_contract: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(fixture_path(
+            "optimized_model_package_contract.example.json",
+        ))
+        .expect("read package contract fixture"),
+    )
+    .expect("parse package contract");
+    package_contract["optimized_artifact_path"] =
+        serde_json::json!(renamed_weights.display().to_string());
+    package_contract["package_root"] = serde_json::json!(package_root.display().to_string());
+    package_contract["packaging_inputs"]["base_manifest_path"] =
+        serde_json::json!(manifest_path.display().to_string());
+    package_contract["packaging_inputs"]["base_weights_path"] =
+        serde_json::json!(renamed_weights.display().to_string());
+    package_contract["packaging_inputs"]["optimization_profile_path"] =
+        serde_json::json!(optimization_profile_path.display().to_string());
+    fs::write(
+        &package_contract_path,
+        serde_json::to_string_pretty(&package_contract).expect("serialize package contract"),
+    )
+    .expect("write package contract");
+
+    let ownership_path = tmp.path().join("artifact_rollout_ownership.json");
+    fs::write(
+        &ownership_path,
+        r#"{"schema_version":"1","artifact_version":"0.1.0","artifact_manifest":"artifacts/inference/0.1.0/manifest.toml","provenance_source":"artifacts/train/train_done.jsonl","rollout_owner":"ml-release","approved_by":"ops-review","approved_operations":["upload","deploy"],"approval_ticket":"CHG-4242","approved_at_unix_ms":1735689600000}"#,
+    )
+    .expect("write ownership file");
+
+    let out_path = tmp.path().join("artifact_upload_request.json");
+    let mut cmd = cargo_bin_cmd!("afterburner");
+    cmd.arg("deploy")
+        .arg("upload")
+        .arg("--manifest")
+        .arg(&manifest_path)
+        .arg("--ownership")
+        .arg(&ownership_path)
+        .arg("--package-contract")
+        .arg(&package_contract_path)
+        .arg("--provider")
+        .arg("huggingface")
+        .arg("--destination")
+        .arg("afterburner/model")
+        .arg("--out")
+        .arg(&out_path);
+    cmd.assert().success().code(0);
+
+    let output = fs::read_to_string(&out_path).expect("read upload request");
+    let request: serde_json::Value =
+        serde_json::from_str(&output).expect("parse upload request json");
+    let support_files = request
+        .get("artifact_support_files")
+        .and_then(|value| value.as_array())
+        .expect("artifact_support_files must be present for optimized package uploads");
+    assert_eq!(support_files.len(), 2);
+    assert_eq!(
+        support_files[0],
+        serde_json::json!({
+            "role": "optimization_profile",
+            "local_path": optimization_profile_path.display().to_string(),
+            "path_in_artifact_directory": "model_optimization_profile.json"
+        })
+    );
+    assert_eq!(
+        support_files[1],
+        serde_json::json!({
+            "role": "package_contract",
+            "local_path": package_contract_path.display().to_string(),
+            "path_in_artifact_directory": "optimized_model_package_contract.json"
+        })
+    );
+}
+
 fn normalize_upload_request(value: &mut serde_json::Value) {
     let object = value
         .as_object_mut()

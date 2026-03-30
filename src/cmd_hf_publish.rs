@@ -88,7 +88,7 @@ where
     });
 
     let repo_id = request.destination.clone();
-    let uploads = vec![
+    let mut uploads = vec![
         UploadSpec {
             local_path: PathBuf::from(request.artifact_file.clone()),
             path_in_repo: format!("afterburner/{}/model.mpk", request.artifact_version),
@@ -105,6 +105,18 @@ where
             ),
         },
     ];
+    uploads.extend(
+        request
+            .artifact_support_files
+            .iter()
+            .map(|support| UploadSpec {
+                local_path: PathBuf::from(support.local_path.clone()),
+                path_in_repo: format!(
+                    "afterburner/{}/{}",
+                    request.artifact_version, support.path_in_artifact_directory
+                ),
+            }),
+    );
 
     for upload in &uploads {
         run_hf_upload(
@@ -200,6 +212,12 @@ struct UploadRequest {
     artifact_version: String,
     artifact_manifest: String,
     artifact_file: String,
+    artifact_support_files: Vec<SupportFile>,
+}
+
+struct SupportFile {
+    local_path: String,
+    path_in_artifact_directory: String,
 }
 
 fn load_request(path: &Path) -> Result<UploadRequest, HfPublishError> {
@@ -218,7 +236,33 @@ fn load_request(path: &Path) -> Result<UploadRequest, HfPublishError> {
         artifact_version: read_string(object, "artifact_version")?,
         artifact_manifest: read_string(object, "artifact_manifest")?,
         artifact_file: read_string(object, "artifact_file")?,
+        artifact_support_files: read_support_files(object)?,
     })
+}
+
+fn read_support_files(
+    object: &serde_json::Map<String, Value>,
+) -> Result<Vec<SupportFile>, HfPublishError> {
+    let Some(value) = object.get("artifact_support_files") else {
+        return Ok(Vec::new());
+    };
+    let array = value.as_array().ok_or_else(|| {
+        HfPublishError::Parse("field `artifact_support_files` must be an array".to_string())
+    })?;
+    array
+        .iter()
+        .map(|entry| {
+            let entry = entry.as_object().ok_or_else(|| {
+                HfPublishError::Parse(
+                    "artifact_support_files entries must be json objects".to_string(),
+                )
+            })?;
+            Ok(SupportFile {
+                local_path: read_string(entry, "local_path")?,
+                path_in_artifact_directory: read_string(entry, "path_in_artifact_directory")?,
+            })
+        })
+        .collect()
 }
 
 fn read_const_string(

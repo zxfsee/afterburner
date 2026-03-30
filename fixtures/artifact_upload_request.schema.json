@@ -61,6 +61,19 @@
       "type": "string",
       "minLength": 1
     },
+    "artifact_support_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "local_path", "path_in_artifact_directory"],
+        "properties": {
+          "role": { "type": "string", "minLength": 1 },
+          "local_path": { "type": "string", "minLength": 1 },
+          "path_in_artifact_directory": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
     "artifact_sha256": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"

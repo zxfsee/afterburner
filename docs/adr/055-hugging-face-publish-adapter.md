@@ -20,7 +20,8 @@ The command:
 
 - reads an existing `artifact_upload_request.json`,
 - requires `provider = huggingface`,
-- shells out to `hf upload` for the artifact file, manifest, and request artifact,
+- shells out to `hf upload` for the artifact file, manifest, request artifact,
+  and any provider-neutral optimized package metadata listed in the upload request,
 - and writes a `huggingface_publish_receipt.json` receipt.
 
 Current stance: this is a thin provider adapter. It does not replace the

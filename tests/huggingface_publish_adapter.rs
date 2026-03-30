@@ -244,3 +244,76 @@ fn hf_publish_rejects_non_huggingface_request_provider() {
         .arg(&fake_hf_path);
     cmd.assert().failure().code(2);
 }
+
+#[test]
+fn hf_publish_uploads_optimized_package_support_files() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let request_path = tmp.path().join("artifact_upload_request.json");
+    fs::write(
+        &request_path,
+        format!(
+            r#"{{
+  "schema_version":"1",
+  "operation":"upload",
+  "provider":"huggingface",
+  "destination":"afterburner/model",
+  "traceparent":"00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  "trace_id":"4bf92f3577b34da6a3ce929d0e0e4736",
+  "artifact_version":"0.1.0",
+  "artifact_manifest":"{0}",
+  "artifact_file":"{1}",
+  "artifact_directory":"{2}",
+  "artifact_sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "artifact_support_files":[
+    {{"role":"optimization_profile","local_path":"{3}","path_in_artifact_directory":"model_optimization_profile.json"}},
+    {{"role":"package_contract","local_path":"{4}","path_in_artifact_directory":"optimized_model_package_contract.json"}}
+  ],
+  "provenance_source":"artifacts/train/train_done.jsonl",
+  "rollout_owner":"ml-release",
+  "approved_by":"ops-review",
+  "approval_ticket":"CHG-4242",
+  "approved_at_unix_ms":1735689600000
+}}"#,
+            tmp.path().join("manifest.toml").display(),
+            tmp.path().join("model.optimized.mpk").display(),
+            tmp.path().display(),
+            tmp.path().join("model_optimization_profile.json").display(),
+            tmp.path().join("optimized_model_package_contract.json").display(),
+        ),
+    )
+    .expect("write request");
+    fs::write(tmp.path().join("manifest.toml"), "").expect("write manifest");
+    fs::write(tmp.path().join("model.optimized.mpk"), "").expect("write artifact");
+    fs::write(tmp.path().join("model_optimization_profile.json"), "").expect("write profile");
+    fs::write(tmp.path().join("optimized_model_package_contract.json"), "")
+        .expect("write package contract");
+
+    let fake_hf_path = tmp.path().join("hf");
+    let hf_log = tmp.path().join("hf.log");
+    write_fake_hf(fake_hf_path.as_path(), hf_log.as_path());
+
+    let receipt_path = tmp.path().join("huggingface_publish_receipt.json");
+    let mut publish_cmd = cargo_bin_cmd!("afterburner");
+    publish_cmd
+        .arg("deploy")
+        .arg("hf-publish")
+        .arg("--request")
+        .arg(&request_path)
+        .arg("--hf-bin")
+        .arg(&fake_hf_path)
+        .arg("--revision")
+        .arg("main")
+        .arg("--out")
+        .arg(&receipt_path);
+    publish_cmd.assert().success();
+
+    let log_text = fs::read_to_string(&hf_log).expect("read hf log");
+    let log_lines = log_text.lines().collect::<Vec<_>>();
+    assert_eq!(
+        log_lines.len(),
+        5,
+        "must upload artifact, manifest, request, and two support files"
+    );
+    assert!(log_lines[3].contains("afterburner/0.1.0/model_optimization_profile.json"));
+    assert!(log_lines[4].contains("afterburner/0.1.0/optimized_model_package_contract.json"));
+}

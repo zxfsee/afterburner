@@ -45,6 +45,7 @@ impl From<ManifestError> for UploadError {
 struct UploadArgs {
     manifest_path: PathBuf,
     ownership_path: PathBuf,
+    package_contract_path: Option<PathBuf>,
     provider: String,
     destination: String,
     out_path: Option<PathBuf>,
@@ -56,6 +57,13 @@ struct OwnershipRecord {
     approved_by: String,
     approval_ticket: String,
     approved_at_unix_ms: u64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SupportFile {
+    role: String,
+    local_path: String,
+    path_in_artifact_directory: String,
 }
 
 pub fn run<I>(args: I) -> i32
@@ -94,6 +102,11 @@ where
     manifest.validate_against_current(&artifact_path)?;
 
     let ownership = load_ownership_record(&args.ownership_path)?;
+    let support_files = if let Some(path) = args.package_contract_path.as_ref() {
+        load_support_files(path, &manifest.artifact_version, &artifact_path)?
+    } else {
+        Vec::new()
+    };
     let out_path = args.out_path.unwrap_or_else(|| {
         PathBuf::from("artifacts")
             .join("deploy")
@@ -119,6 +132,26 @@ where
         "approval_ticket": ownership.approval_ticket,
         "approved_at_unix_ms": ownership.approved_at_unix_ms
     });
+    if !support_files.is_empty() {
+        request
+            .as_object_mut()
+            .expect("upload request must be an object")
+            .insert(
+                "artifact_support_files".to_string(),
+                json!(
+                    support_files
+                        .iter()
+                        .map(|file| {
+                            json!({
+                                "role": file.role,
+                                "local_path": file.local_path,
+                                "path_in_artifact_directory": file.path_in_artifact_directory,
+                            })
+                        })
+                        .collect::<Vec<_>>()
+                ),
+            );
+    }
     attach_trace_fields(
         request
             .as_object_mut()
@@ -155,6 +188,7 @@ where
     let mut args = args.peekable();
     let mut manifest_path = None::<PathBuf>;
     let mut ownership_path = None::<PathBuf>;
+    let mut package_contract_path = None::<PathBuf>;
     let mut provider = None::<String>;
     let mut destination = None::<String>;
     let mut out_path = None::<PathBuf>;
@@ -166,6 +200,10 @@ where
             }
             "--ownership" => {
                 ownership_path = Some(PathBuf::from(parse_value(&mut args, "--ownership")?))
+            }
+            "--package-contract" => {
+                package_contract_path =
+                    Some(PathBuf::from(parse_value(&mut args, "--package-contract")?))
             }
             "--provider" => provider = Some(parse_value(&mut args, "--provider")?),
             "--destination" => destination = Some(parse_value(&mut args, "--destination")?),
@@ -180,6 +218,12 @@ where
                 ownership_path = Some(PathBuf::from(parse_inline_value(
                     arg.trim_start_matches("--ownership="),
                     "--ownership",
+                )?))
+            }
+            _ if arg.starts_with("--package-contract=") => {
+                package_contract_path = Some(PathBuf::from(parse_inline_value(
+                    arg.trim_start_matches("--package-contract="),
+                    "--package-contract",
                 )?))
             }
             _ if arg.starts_with("--provider=") => {
@@ -225,6 +269,7 @@ where
     Ok(UploadArgs {
         manifest_path,
         ownership_path,
+        package_contract_path,
         provider,
         destination,
         out_path,
@@ -314,8 +359,71 @@ fn read_u64(
         .ok_or_else(|| UploadError::Ownership(format!("{key} must be a non-negative integer")))
 }
 
+fn load_support_files(
+    package_contract_path: &Path,
+    artifact_version: &str,
+    artifact_path: &Path,
+) -> Result<Vec<SupportFile>, UploadError> {
+    let text = fs::read_to_string(package_contract_path)?;
+    let value: Value = serde_json::from_str(&text).map_err(|err| {
+        UploadError::Ownership(format!("failed to parse package contract json: {err}"))
+    })?;
+    let object = value.as_object().ok_or_else(|| {
+        UploadError::Ownership("package contract must contain a json object".to_string())
+    })?;
+
+    let package_version = read_string(object, "input_artifact_version")?;
+    if package_version != artifact_version {
+        return Err(UploadError::Ownership(format!(
+            "package contract input_artifact_version `{package_version}` must match manifest artifact_version `{artifact_version}`"
+        )));
+    }
+
+    let optimized_artifact_path = read_string(object, "optimized_artifact_path")?;
+    if PathBuf::from(&optimized_artifact_path) != artifact_path {
+        return Err(UploadError::Ownership(format!(
+            "package contract optimized_artifact_path `{optimized_artifact_path}` must match upload artifact `{}`",
+            artifact_path.display()
+        )));
+    }
+
+    let packaging_inputs = object
+        .get("packaging_inputs")
+        .and_then(Value::as_object)
+        .ok_or_else(|| UploadError::Ownership("packaging_inputs must be an object".to_string()))?;
+    let optimization_profile_path = read_string(packaging_inputs, "optimization_profile_path")?;
+    let layout = object
+        .get("package_layout")
+        .and_then(Value::as_array)
+        .ok_or_else(|| UploadError::Ownership("package_layout must be an array".to_string()))?;
+
+    let mut support_files = Vec::new();
+    for entry in layout {
+        let entry = entry.as_object().ok_or_else(|| {
+            UploadError::Ownership("package_layout entries must be objects".to_string())
+        })?;
+        let role = read_string(entry, "role")?;
+        let relative_path = read_string(entry, "path")?;
+        match role.as_str() {
+            "optimization_profile" => support_files.push(SupportFile {
+                role,
+                local_path: optimization_profile_path.clone(),
+                path_in_artifact_directory: relative_path,
+            }),
+            "package_contract" => support_files.push(SupportFile {
+                role,
+                local_path: package_contract_path.display().to_string(),
+                path_in_artifact_directory: relative_path,
+            }),
+            _ => {}
+        }
+    }
+
+    Ok(support_files)
+}
+
 fn usage() -> &'static str {
-    "usage: afterburner deploy upload --manifest PATH --ownership PATH --provider NAME --destination REF [--out PATH]"
+    "usage: afterburner deploy upload --manifest PATH --ownership PATH [--package-contract PATH] --provider NAME --destination REF [--out PATH]"
 }
 
 #[cfg(test)]
