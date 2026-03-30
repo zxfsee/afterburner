@@ -1,0 +1,37 @@
+{
+  "schema_version": "1",
+  "package_contract_path": "artifacts/inference/0.1.0/optimized/optimized_model_package_contract.json",
+  "optimization_profile_path": "artifacts/inference/0.1.0/model_optimization_profile.json",
+  "input_artifact_version": "0.1.0",
+  "target_environment": "macbook-local",
+  "optimization_steps": ["quantization", "compression", "packaging"],
+  "runtime_precision_contract": {
+    "weights_dtype": "f32",
+    "activation_dtype": "f32",
+    "quantization": "none"
+  },
+  "optimized_artifact_path": "artifacts/inference/0.1.0/model.optimized.mpk",
+  "export_format": "burn-mpk",
+  "quality": {
+    "metric": "accuracy",
+    "observed": 0.991,
+    "minimum_accepted": 0.98925781,
+    "passed": true
+  },
+  "latency": {
+    "observed_ms_p99": 210.0,
+    "budget_ms_p99": 250.0,
+    "passed": true
+  },
+  "memory": {
+    "observed_bytes": 3221225472,
+    "budget_bytes": 4294967296,
+    "passed": true
+  },
+  "package_size": {
+    "observed_bytes": 1610612736,
+    "budget_bytes": 2147483648,
+    "passed": true
+  },
+  "passed": true
+}

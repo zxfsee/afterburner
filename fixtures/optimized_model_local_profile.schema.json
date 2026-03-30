@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/optimized-model-local-profile/v1",
+  "title": "Optimized Model Local Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "package_contract_path",
+    "optimization_profile_path",
+    "input_artifact_version",
+    "target_environment",
+    "optimization_steps",
+    "runtime_precision_contract",
+    "optimized_artifact_path",
+    "export_format",
+    "quality",
+    "latency",
+    "memory",
+    "package_size",
+    "passed"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "package_contract_path": { "type": "string", "minLength": 1 },
+    "optimization_profile_path": { "type": "string", "minLength": 1 },
+    "input_artifact_version": { "type": "string", "minLength": 1 },
+    "target_environment": { "type": "string", "minLength": 1 },
+    "optimization_steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "enum": ["quantization", "compression", "export", "packaging"]
+      }
+    },
+    "runtime_precision_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["weights_dtype", "activation_dtype", "quantization"],
+      "properties": {
+        "weights_dtype": { "type": "string", "minLength": 1 },
+        "activation_dtype": { "type": "string", "minLength": 1 },
+        "quantization": { "type": "string", "minLength": 1 }
+      }
+    },
+    "optimized_artifact_path": { "type": "string", "minLength": 1 },
+    "export_format": { "type": "string", "minLength": 1 },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["metric", "observed", "minimum_accepted", "passed"],
+      "properties": {
+        "metric": { "type": "string", "minLength": 1 },
+        "observed": { "type": "number" },
+        "minimum_accepted": { "type": "number" },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "latency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_ms_p99", "budget_ms_p99", "passed"],
+      "properties": {
+        "observed_ms_p99": { "type": "number", "minimum": 0.0 },
+        "budget_ms_p99": { "type": "number", "minimum": 0.0 },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_bytes", "budget_bytes", "passed"],
+      "properties": {
+        "observed_bytes": { "type": "integer", "minimum": 0 },
+        "budget_bytes": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "package_size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["observed_bytes", "budget_bytes", "passed"],
+      "properties": {
+        "observed_bytes": { "type": "integer", "minimum": 0 },
+        "budget_bytes": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "boolean" }
+      }
+    },
+    "passed": { "type": "boolean" }
+  }
+}

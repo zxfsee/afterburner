@@ -112,6 +112,12 @@ The optimized model package contract is explicit as well. The
 `package_layout` for an optimized artifact handoff without changing the base
 inference artifact contract.
 
+The optimized model local profile is explicit too.
+`afterburner profile optimized-model-local-profile` writes
+`optimized_model_local_profile.json` from an optimized package contract plus
+observed local quality, latency, memory, and package-size measurements so
+optimized-model decisions stay evidence-driven.
+
 Detailed operational workflow reference lives in [docs/workflows.md](./docs/workflows.md).
 Deeper contract and capability detail now lives in [docs/reference.md](./docs/reference.md).
 

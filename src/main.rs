@@ -102,6 +102,7 @@ mod cmd_kube_rs_lease_history;
 mod cmd_kube_rs_lease_pointer;
 mod cmd_kube_rs_lease_reconcile;
 mod cmd_kube_rs_lease_reconciliation_history;
+mod cmd_optimized_model_local_profile;
 mod cmd_pretraining_source_approval_receipt;
 mod cmd_pretraining_source_provenance_evidence_bundle;
 mod cmd_pretraining_source_provenance_receipt;
@@ -182,6 +183,7 @@ where
         "environment-snapshot" => cmd_profiling_environment_snapshot::run(args),
         "distributed-runtime-benchmark" => cmd_distributed_runtime_benchmark::run(args),
         "distributed-runtime-profile" => cmd_distributed_runtime_profile::run(args),
+        "optimized-model-local-profile" => cmd_optimized_model_local_profile::run(args),
         "provenance-bundle" => cmd_profiling_provenance_bundle::run(args),
         "provenance-receipt" => cmd_profiling_provenance_receipt::run(args),
         "refresh-environment-snapshot" => cmd_profiling_environment_snapshot_refresh::run(args),
