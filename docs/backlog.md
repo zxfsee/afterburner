@@ -20,22 +20,6 @@ Rules:
 
 ## Items
 
-- Optimized model eval and local-profile contract [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Materialize the quality, latency, memory, and size acceptance surface for optimized models on constrained hardware so quantization or compression choices are driven by measured tradeoffs instead of release pressure alone.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-  - Blocked-by: Optimized model packaging and export contract.
-
-- Optimized model publish adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Extend publishing workflows so approved optimized model artifacts and their packaging metadata can be released to downstream destinations such as Hugging Face without inventing a second artifact identity or approval path.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `cli`, `ops`, `event`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`, `docs/adr/`
-  - Blocked-by: Optimized model packaging and export contract.
-
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
@@ -46,6 +30,13 @@ Rules:
 
 - Deployment verification receipt rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification receipt rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification evidence bundle rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification evidence bundle rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
