@@ -28,13 +28,6 @@ Rules:
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-- Deployment verification receipt rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification receipt rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence bundle rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Append one compact history artifact over deployment verification evidence bundle rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
   - Kind: `mixed`

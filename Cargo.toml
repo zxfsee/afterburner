@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Optimized model eval and local-profile contract [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Materialize the quality, latency, memory, and size acceptance surface for optimized models on constrained hardware so quantization or compression choices are driven by measured tradeoffs instead of release pressure alone.
-  - Kind: `mixed`
-  - Boundary: `adapter-cli`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `README.md`, `justfile`
-
 - Optimized model publish adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Extend publishing workflows so approved optimized model artifacts and their packaging metadata can be released to downstream destinations such as Hugging Face without inventing a second artifact identity or approval path.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Deployment verification receipt rollback supersession reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over deployment verification receipt rollback supersession state so downstream deployment consumers can compare desired current-rollback selection against the current supersession artifact without ad hoc shell checks.
+  - Kind: `mixed`
+  - Boundary: `adapter-deployment`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
+
+- Deployment verification receipt rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Append one compact history artifact over deployment verification receipt rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
   - Kind: `mixed`
   - Boundary: `adapter-deployment`
   - Contracts: `artifact`, `event`, `ops`
