@@ -7,6 +7,16 @@ through a synchronous `tiny_http` path and keeps core logic runtime-agnostic.
 Introducing Tokio would add a new runtime dependency, change adapter execution
 model assumptions, and expand the build and operational surface.
 
+Current adapter pressure is still narrow:
+
+- concurrency pressure is limited to the optional `afterburner-http` wrapper,
+  which remains a thin transport adapter over the existing inference path
+- tracing pressure is covered by explicit `traceparent` propagation via
+  `AFTERBURNER_TRACEPARENT`, without a Tokio runtime or heavier SDK
+- deployment pressure is still CLI- and artifact-driven (`deploy`, rollout,
+  verification, and profiling workflows), not a long-running async control
+  service that requires Tokio integration points
+
 ## Decision
 
 No async runtime is adopted at this stage.
@@ -16,10 +26,12 @@ The current adapter baseline remains:
 - synchronous HTTP serving via `tiny_http`
 - runtime-agnostic core logic
 - telemetry/exporter concerns isolated to adapters if they are introduced later
+- explicit adapter-side trace correlation through `AFTERBURNER_TRACEPARENT`
+- deployment and rollout workflows that remain command-oriented and artifact-first
 
-Tokio is deferred until profiling or deployment evidence shows that the current
-adapter model is insufficient for required concurrency, latency, or integration
-needs.
+Tokio is deferred until measured evidence shows that the current adapter model
+is insufficient for required adapter-side concurrency, tracing integration, or
+deployment/runtime coordination needs.
 
 ## Consequences
 

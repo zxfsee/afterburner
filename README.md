@@ -87,7 +87,10 @@ on success.
 `afterburner-http` is a thin transport adapter over the same inference path as
 the CLI. It exposes `GET /healthz` and `POST /infer`, with deterministic error
 payloads, bounded request limits, and graceful shutdown semantics. The CLI
-remains the canonical interface.
+remains the canonical interface. The adapter also remains synchronous `tiny_http`-based today;
+adapter-side tracing stays on explicit
+`AFTERBURNER_TRACEPARENT` propagation, and Tokio remains deferred until measured
+concurrency or deployment pressure justifies it.
 
 Rationale is documented in [ADR-001: Training vs Inference Separation](./docs/adr/001-training-vs-inference.md).
 
