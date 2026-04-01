@@ -44,7 +44,7 @@
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
-<!-- queue-snapshot: todo_sha256=2eca22cd8aa8aacd1738ce17041d3134ba60065a092e5d87f6a3c2c9212ddeb3 parent_commit=a4577af73b365635578ddf13566d56d2b421c685 -->
+<!-- queue-snapshot: todo_sha256=2eca22cd8aa8aacd1738ce17041d3134ba60065a092e5d87f6a3c2c9212ddeb3 parent_commit=55928083043d5c3f3a377ac7adcbf55d7094be5f -->
 
 ## [Trunk]
 
@@ -224,9 +224,9 @@
 - Add receipt rollback reconciliation history ([569854e])
 - Add bundle rollback supersession ([1e98527])
 - Add receipt rollback supersession ([f7b9bd7])
-- Record verification bundle rollback supersession history ([a049b0c])
-- Write optimized model local profiles ([051f6c3])
-- Publish optimized package metadata ([a4577af])
+- Record verification bundle rollback supersession history ([9b7d001])
+- Write optimized model local profiles ([8f3b5b9])
+- Publish optimized package metadata ([d7aa627])
 
 ### Changed
 
@@ -262,13 +262,15 @@
 - Codify durable tooling guards ([03f664a])
 - Clarify profiling blocker ([046aab1])
 - Harden crane-backed verification ([83ec760])
-- Refresh changelog snapshot ([3bd587b])
-- Advance deployment verification TODOs ([a9fb2d8])
-- Reorder TODOs by ROI ([976abe0])
-- Promote optimized packaging contract ([d74cfd4])
-- Promote optimized model follow-ons ([bc8b7ba])
-- Refresh changelog snapshot ([2371515])
-- Promote optimized publish adapter ([7e808e9])
+- Refresh changelog snapshot ([14cbc70])
+- Advance deployment verification TODOs ([c31c94b])
+- Reorder TODOs by ROI ([8450451])
+- Promote optimized packaging contract ([408ee10])
+- Promote optimized model follow-ons ([40ed6f7])
+- Refresh changelog snapshot ([df645fa])
+- Promote optimized publish adapter ([6ef2373])
+- Advance publish adapter follow-ons ([05de1f7])
+- Park deterministic simulation harness ([5592808])
 
 ### Documentation
 
@@ -430,7 +432,8 @@
 - Repair rollback queue order ([2c67074])
 - Record dependency refresh maintenance heuristic ([f756482])
 - Tighten commit subject heuristic ([3194669])
-- Tighten workflow-surface heuristics ([4559b92])
+- Tighten workflow-surface heuristics ([3e35510])
+- Clarify distributed reference roles ([a2831f5])
 
 ### Fixed
 
@@ -470,8 +473,8 @@
 - Pin train_start event fixture ([eefaeb3])
 - Pin artifact_exported event fixture ([a354b0b])
 - Lock architecture and docs ownership roles ([56c9109])
-- Gate optimized model capability surface ([f3e58dd])
-- Define optimized model packaging contract ([4a8b303])
+- Gate optimized model capability surface ([c4446a4])
+- Define optimized model packaging contract ([c9f30dc])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -865,18 +868,21 @@
 [83ec760]: https://github.com/zxfsee/afterburner/commit/83ec7609c6e1f5057388122d0209cc2870561cf9
 [f756482]: https://github.com/zxfsee/afterburner/commit/f756482552519b8556ac0e03c75535f50f817272
 [3194669]: https://github.com/zxfsee/afterburner/commit/3194669be06e05e7ddafe09fc5e11ad4e2477fd3
-[3bd587b]: https://github.com/zxfsee/afterburner/commit/3bd587bc22f74fea86b733932026aaf0e85d1128
-[a049b0c]: https://github.com/zxfsee/afterburner/commit/a049b0cde6cd2b7d19149b6798f04066e8136e16
-[a9fb2d8]: https://github.com/zxfsee/afterburner/commit/a9fb2d86eb2dda0d3a66a5e326daa9bb9fae8bde
-[976abe0]: https://github.com/zxfsee/afterburner/commit/976abe04d239b0fe6dafb1e1021121dbc0954024
-[f3e58dd]: https://github.com/zxfsee/afterburner/commit/f3e58dda6d038fa54689e63265c87d1d835ddc62
-[d74cfd4]: https://github.com/zxfsee/afterburner/commit/d74cfd4f83174a8686d5ea58fdc226c34f176230
-[4a8b303]: https://github.com/zxfsee/afterburner/commit/4a8b3034089f79e7429b9b078e4185946f78b93d
-[bc8b7ba]: https://github.com/zxfsee/afterburner/commit/bc8b7ba74cc10318cbe5b5bc51e3745f3ea1d695
-[4559b92]: https://github.com/zxfsee/afterburner/commit/4559b92cc7cba8652dd61c18416ce009b3d1e293
-[2371515]: https://github.com/zxfsee/afterburner/commit/2371515df8e8807131a0937e726a7884eb024790
-[051f6c3]: https://github.com/zxfsee/afterburner/commit/051f6c3a197ce66cb2d836f5e52c8d1c60aedf6f
-[7e808e9]: https://github.com/zxfsee/afterburner/commit/7e808e9dece0be7f32631c6acd2d1f02cfdd85c3
-[a4577af]: https://github.com/zxfsee/afterburner/commit/a4577af73b365635578ddf13566d56d2b421c685
+[14cbc70]: https://github.com/zxfsee/afterburner/commit/14cbc70e1da691a456f21f3b3a1b7fce0a4b3e55
+[9b7d001]: https://github.com/zxfsee/afterburner/commit/9b7d001f93f97603a0c0c63506dade6055f30b54
+[c31c94b]: https://github.com/zxfsee/afterburner/commit/c31c94b4e6004b04680f60360c6d6b75ccab326f
+[8450451]: https://github.com/zxfsee/afterburner/commit/845045183b22c0e9d0c6bc4ded043550a51f237b
+[c4446a4]: https://github.com/zxfsee/afterburner/commit/c4446a4ecbbb49c2c596f5daad6a4e529c6a989d
+[408ee10]: https://github.com/zxfsee/afterburner/commit/408ee10bd8f441bbe91ca7d3d10b8efd56ba67d8
+[c9f30dc]: https://github.com/zxfsee/afterburner/commit/c9f30dc86b6e67989ecb23d6f7df875f236b867a
+[40ed6f7]: https://github.com/zxfsee/afterburner/commit/40ed6f7c20195e3d1f8eff720f6d46c97f364e2a
+[3e35510]: https://github.com/zxfsee/afterburner/commit/3e35510ead2966d3ea18840e7569f51622a91fc2
+[df645fa]: https://github.com/zxfsee/afterburner/commit/df645faa785356988c732e3854ad7c49a5a230f7
+[8f3b5b9]: https://github.com/zxfsee/afterburner/commit/8f3b5b9dddd73d595046103da4b7daf813e8c6ff
+[6ef2373]: https://github.com/zxfsee/afterburner/commit/6ef237382893024efea35ab594896d9bf71ef6d1
+[d7aa627]: https://github.com/zxfsee/afterburner/commit/d7aa627c02adaa14194b5b8fb96dc3dcdf521f9d
+[05de1f7]: https://github.com/zxfsee/afterburner/commit/05de1f74d7b671cfd7aaace9ea1feac8475d02a0
+[a2831f5]: https://github.com/zxfsee/afterburner/commit/a2831f5f94c1fc225f67f0b69ad772e19de2c4e9
+[5592808]: https://github.com/zxfsee/afterburner/commit/55928083043d5c3f3a377ac7adcbf55d7094be5f
 
 <!-- generated by git-cliff -->
