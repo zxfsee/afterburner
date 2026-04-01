@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification receipt rollback supersession history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification receipt rollback supersession changes so downstream deployment tooling can audit current-rollback selection changes without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deployment verification evidence bundle rollback supersession reconciliation adapter [Serving/Deployment Infra, Runtime Infra]
   - Goal: Materialize one reconciliation artifact over deployment verification evidence bundle rollback supersession state so downstream deployment consumers can compare desired current-rollback selection against the current supersession artifact without ad hoc shell checks.
   - Kind: `mixed`
@@ -54,6 +47,14 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+
+- Scheduler heartbeat history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat changes so downstream control-plane tooling can audit worker and lease liveness transitions without reading shell logs or inventing a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat contract
 
 ## [Trunk]
 """
