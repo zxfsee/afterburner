@@ -65,6 +65,7 @@ mod cmd_deployment_verification_receipt_rollback_reconcile;
 mod cmd_deployment_verification_receipt_rollback_reconciliation_history;
 mod cmd_deployment_verification_receipt_rollback_supersession;
 mod cmd_deployment_verification_receipt_rollback_supersession_history;
+mod cmd_deployment_verification_receipt_rollback_supersession_reconcile;
 mod cmd_deployment_verification_receipt_transport_locator;
 mod cmd_deployment_verification_receipt_transport_locator_history;
 mod cmd_deployment_verification_receipt_transport_locator_reconcile;
@@ -338,6 +339,9 @@ where
         }
         "supersede-verification-receipt-rollback" => {
             cmd_deployment_verification_receipt_rollback_supersession::run(args)
+        }
+        "reconcile-verification-receipt-rollback-supersession" => {
+            cmd_deployment_verification_receipt_rollback_supersession_reconcile::run(args)
         }
         "record-verification-receipt-rollback-supersession-history" => {
             cmd_deployment_verification_receipt_rollback_supersession_history::run(args)
