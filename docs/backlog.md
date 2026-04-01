@@ -27,3 +27,10 @@ Rules:
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
+- Deterministic scheduler/runtime simulation harness [Distributed Training, Runtime Infra, Experimentation/Eval Infra]
+  - Goal: Add one deterministic event-driven simulation harness plus explicit artifacts/receipts for scheduler lifecycle, lease transitions, topology/layout feasibility, checkpoint/restart state transitions, and artifact emission so policy and state-machine bugs can be validated without pretending to simulate real GPU or NCCL timing.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `tests/`, `fixtures/`, `justfile`, `docs/reference.md`, `ARCHITECTURE.md`, `docs/adr/`
