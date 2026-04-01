@@ -301,6 +301,9 @@ deployment-verification-supersede-receipt-rollback previous_rollback next_rollba
 deployment-verification-reconcile-receipt-rollback-supersession supersession current_supersession:
     cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation.json
 
+deployment-verification-record-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation_history.json
+
 deployment-verification-record-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_history.json
 

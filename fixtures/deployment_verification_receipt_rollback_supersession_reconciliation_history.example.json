@@ -1,0 +1,34 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "reconciled",
+      "reconciliation_path": "artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation.json",
+      "supersession_path": "artifacts/deploy/deployment_verification_receipt_rollback_supersession.json",
+      "current_supersession_path": "artifacts/deploy/deployment_verification_receipt_rollback_supersession.current.json",
+      "reconciliation_status": "aligned",
+      "desired": {
+        "previous_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.json",
+        "next_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.next.json",
+        "previous_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+        "next_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.older.json",
+        "previous_restored_artifact_version": "0.1.0",
+        "next_restored_artifact_version": "0.0.9",
+        "profile_name": "staging-a",
+        "superseded_at_unix_ms": 1735689900000
+      },
+      "current": {
+        "current_supersession_path": "artifacts/deploy/deployment_verification_receipt_rollback_supersession.current.json",
+        "previous_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.json",
+        "next_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.next.json",
+        "previous_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+        "next_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.older.json",
+        "previous_restored_artifact_version": "0.1.0",
+        "next_restored_artifact_version": "0.0.9",
+        "profile_name": "staging-a",
+        "superseded_at_unix_ms": 1735689900000
+      },
+      "recorded_at_unix_ms": 1735689950000
+    }
+  ]
+}
