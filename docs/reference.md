@@ -56,6 +56,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `kube_rs_gpu_lease_reconciliation_history.json`
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
+  - `gpu_scheduler_heartbeat.json`
   - `deployment_verification_receipt.json`
   - `deployment_verification_receipt_locator_pointer_history.json`
   - `deployment_verification_receipt_locator_pointer.json`

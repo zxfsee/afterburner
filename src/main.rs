@@ -115,6 +115,7 @@ mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
 mod cmd_profiling_provenance_bundle;
 mod cmd_profiling_provenance_receipt;
+mod cmd_scheduler_heartbeat;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
@@ -455,6 +456,7 @@ where
         "record-verification-handoff-reconciliation-history" => {
             cmd_deployment_verification_handoff_reconciliation_history::run(args)
         }
+        "scheduler-heartbeat" => cmd_scheduler_heartbeat::run(args),
         "load-profile" => cmd_distributed_load_profile::run(args),
         "single-node-scheduler" => cmd_single_node_scheduler::run(args),
         _ => {

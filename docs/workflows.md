@@ -62,6 +62,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just kube-rs-lease-point` writes `kube_rs_gpu_lease_pointer.json`.
 - `just kube-rs-lease-record-history` writes `kube_rs_gpu_lease_history.json`.
 - `just kube-rs-lease-record-reconciliation-history` writes `kube_rs_gpu_lease_reconciliation_history.json`.
+- `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.
 - `just distributed-load-profile` writes `distributed_load_profile.json`.
 - `afterburner deploy hf-publish --request <path>` writes `huggingface_publish_receipt.json`.
 

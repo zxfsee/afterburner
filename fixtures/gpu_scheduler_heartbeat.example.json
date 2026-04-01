@@ -1,0 +1,9 @@
+{
+  "schema_version": "1",
+  "job_id": "job-0001",
+  "lease_id": "lease-job-0001",
+  "worker_id": "worker-0",
+  "state": "running",
+  "observed_at_unix_ms": 1735689900000,
+  "progress_marker": "checkpoint-group-0003/step-128"
+}
