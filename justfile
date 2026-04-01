@@ -179,6 +179,9 @@ single-node-scheduler job inventory:
 scheduler-heartbeat job_id lease_id worker_id state observed_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy scheduler-heartbeat --job-id {{ job_id }} --lease-id {{ lease_id }} --worker-id {{ worker_id }} --state {{ state }} --observed-at-unix-ms {{ observed_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat.json
 
+scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-scheduler-heartbeat-history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
+
 distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
     cargo run --locked --bin afterburner -- deploy load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
 

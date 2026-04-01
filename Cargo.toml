@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - Scheduler heartbeat reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat state so downstream control-plane tooling can compare desired lease and worker liveness state against the current heartbeat artifact without ad hoc shell checks or a persistent coordination store prematurely.

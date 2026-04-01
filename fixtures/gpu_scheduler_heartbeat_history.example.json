@@ -1,0 +1,16 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "observed",
+      "heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+      "job_id": "job-0001",
+      "lease_id": "lease-job-0001",
+      "worker_id": "worker-0",
+      "state": "running",
+      "observed_at_unix_ms": 1735689900000,
+      "progress_marker": "checkpoint-group-0003/step-128",
+      "recorded_at_unix_ms": 1735689950000
+    }
+  ]
+}
