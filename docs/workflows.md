@@ -106,6 +106,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-record-bundle-rollback-reconciliation-history` writes `deployment_verification_evidence_bundle_rollback_reconciliation_history.json`.
 - `just deployment-verification-supersede-bundle-rollback` writes `deployment_verification_evidence_bundle_rollback_supersession.json`.
 - `just deployment-verification-reconcile-bundle-rollback-supersession` writes `deployment_verification_evidence_bundle_rollback_supersession_reconciliation.json`.
+- `just deployment-verification-record-bundle-rollback-supersession-reconciliation-history` writes `deployment_verification_evidence_bundle_rollback_supersession_reconciliation_history.json`.
 - `just deployment-verification-record-bundle-rollback-supersession-history` writes `deployment_verification_evidence_bundle_rollback_supersession_history.json`.
 - `just deployment-verification-record-bundle-transport-locator-history` writes `deployment_verification_evidence_bundle_transport_locator_history.json`.
 - `just deployment-verification-reconcile-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation.json`.
