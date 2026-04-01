@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification evidence bundle rollback supersession reconciliation history adapter [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Append one compact history artifact over deployment verification evidence bundle rollback supersession reconciliation changes so downstream deployment tooling can audit desired-versus-current current-rollback selection changes without reading shell or process logs.
-  - Kind: `mixed`
-  - Boundary: `adapter-deployment`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat contract [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one minimal scheduler heartbeat artifact and event vocabulary so worker liveness, lease freshness, optional progress markers, and later retry/preemption decisions stay explicit without introducing consensus or persistent control-plane dependencies prematurely.
   - Kind: `mixed`
@@ -53,6 +46,14 @@ header = """# Changelog
 
 - Scheduler heartbeat reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat reconciliation changes so downstream control-plane tooling can audit desired-versus-current heartbeat state transitions without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat contract
+
+- Scheduler heartbeat supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one reconciliation artifact over scheduler heartbeat supersession state so downstream control-plane tooling can compare desired-versus-current heartbeat replacement state without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
