@@ -2,20 +2,12 @@
 
 ## TODO
 
-- Scheduler heartbeat contract [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize one minimal scheduler heartbeat artifact and event vocabulary so worker liveness, lease freshness, optional progress markers, and later retry/preemption decisions stay explicit without introducing consensus or persistent control-plane dependencies prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat changes so downstream control-plane tooling can audit worker and lease liveness transitions without reading shell logs or inventing a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat contract
 
 - Scheduler heartbeat reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat state so downstream control-plane tooling can compare desired lease and worker liveness state against the current heartbeat artifact without ad hoc shell checks or a persistent coordination store prematurely.
@@ -23,7 +15,6 @@
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat contract
 
 - Scheduler heartbeat supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat state so downstream control-plane tooling can compare prior versus replacement heartbeat snapshots without inventing shell-log audits or a persistent coordination store prematurely.
@@ -31,7 +22,6 @@
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat contract
 
 - Scheduler heartbeat reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat reconciliation changes so downstream control-plane tooling can audit desired-versus-current heartbeat state transitions without shell logs or a persistent coordination store prematurely.
@@ -39,7 +29,6 @@
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat contract
 
 - Scheduler heartbeat supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat supersession state so downstream control-plane tooling can compare desired-versus-current heartbeat replacement state without shell checks or a persistent coordination store prematurely.
@@ -47,9 +36,16 @@
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat contract
 
-<!-- queue-snapshot: todo_sha256=4f10765e4072e41c213ff876f785f962e2735ac64c257df4d6661e5f51c86fc6 parent_commit=97fb6cc1e20c1dd89895622f6387eed88aca1d8e -->
+- Scheduler heartbeat supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat supersession changes so downstream control-plane tooling can audit prior-versus-replacement heartbeat state transitions without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat supersession adapter
+
+<!-- queue-snapshot: todo_sha256=055202717fe44252e7ec20408306aa59f24b22fa13423970f7fa9910133b5270 parent_commit=aa53d61ec7c35624c5d83454487269115e068876 -->
 
 ## [Trunk]
 
@@ -237,6 +233,7 @@
 - Reconcile receipt rollback supersession ([988f13b])
 - Record receipt supersession reconciliation history ([87135d5])
 - Record bundle supersession reconciliation history ([eac8803])
+- Add scheduler heartbeat contract ([aa53d61])
 
 ### Changed
 
@@ -915,5 +912,6 @@
 [8bc09df]: https://github.com/zxfsee/afterburner/commit/8bc09df851ed126e054680962e385cebc0503947
 [eac8803]: https://github.com/zxfsee/afterburner/commit/eac8803399a4f71195672a3aac12959ff6bd8970
 [97fb6cc]: https://github.com/zxfsee/afterburner/commit/97fb6cc1e20c1dd89895622f6387eed88aca1d8e
+[aa53d61]: https://github.com/zxfsee/afterburner/commit/aa53d61ec7c35624c5d83454487269115e068876
 
 <!-- generated by git-cliff -->
