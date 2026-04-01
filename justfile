@@ -185,6 +185,9 @@ scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
 scheduler-heartbeat-reconcile heartbeat current_heartbeat:
     cargo run --locked --bin afterburner -- deploy scheduler-heartbeat-reconcile --heartbeat {{ heartbeat }} --current-heartbeat {{ current_heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation.json
 
+scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy scheduler-heartbeat-supersede --previous-heartbeat {{ previous_heartbeat }} --next-heartbeat {{ next_heartbeat }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession.json
+
 distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
     cargo run --locked --bin afterburner -- deploy load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
 

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-supersession/v1",
+  "title": "GPU Scheduler Heartbeat Supersession",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "previous_heartbeat_path",
+    "next_heartbeat_path",
+    "job_id",
+    "lease_id",
+    "worker_id",
+    "previous_state",
+    "next_state",
+    "previous_observed_at_unix_ms",
+    "next_observed_at_unix_ms",
+    "superseded_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "previous_heartbeat_path": { "type": "string", "minLength": 1 },
+    "next_heartbeat_path": { "type": "string", "minLength": 1 },
+    "job_id": { "type": "string", "minLength": 1 },
+    "lease_id": { "type": "string", "minLength": 1 },
+    "worker_id": { "type": "string", "minLength": 1 },
+    "previous_state": { "type": "string", "minLength": 1 },
+    "next_state": { "type": "string", "minLength": 1 },
+    "previous_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+    "next_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+    "previous_progress_marker": { "type": "string", "minLength": 1 },
+    "next_progress_marker": { "type": "string", "minLength": 1 },
+    "superseded_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}

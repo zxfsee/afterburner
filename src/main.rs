@@ -118,6 +118,7 @@ mod cmd_profiling_provenance_receipt;
 mod cmd_scheduler_heartbeat;
 mod cmd_scheduler_heartbeat_history;
 mod cmd_scheduler_heartbeat_reconcile;
+mod cmd_scheduler_heartbeat_supersession;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
@@ -461,6 +462,7 @@ where
         "scheduler-heartbeat" => cmd_scheduler_heartbeat::run(args),
         "record-scheduler-heartbeat-history" => cmd_scheduler_heartbeat_history::run(args),
         "scheduler-heartbeat-reconcile" => cmd_scheduler_heartbeat_reconcile::run(args),
+        "scheduler-heartbeat-supersede" => cmd_scheduler_heartbeat_supersession::run(args),
         "load-profile" => cmd_distributed_load_profile::run(args),
         "single-node-scheduler" => cmd_single_node_scheduler::run(args),
         _ => {
