@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+  "current_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.current.json",
+  "desired": {
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "state": "running",
+    "observed_at_unix_ms": 1735689900000,
+    "progress_marker": "checkpoint-group-0003/step-128"
+  },
+  "current": {
+    "current_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.current.json",
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "state": "running",
+    "observed_at_unix_ms": 1735689900000,
+    "progress_marker": "checkpoint-group-0003/step-128"
+  },
+  "reconciliation_status": "aligned"
+}
