@@ -81,6 +81,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just deployment-verification-reconcile-receipt-rollback` writes `deployment_verification_receipt_rollback_reconciliation.json`.
 - `just deployment-verification-record-receipt-rollback-reconciliation-history` writes `deployment_verification_receipt_rollback_reconciliation_history.json`.
 - `just deployment-verification-supersede-receipt-rollback` writes `deployment_verification_receipt_rollback_supersession.json`.
+- `just deployment-verification-record-receipt-rollback-supersession-history` writes `deployment_verification_receipt_rollback_supersession_history.json`.
 - `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
 - `just deployment-verification-record-receipt-transport-locator-history` writes `deployment_verification_receipt_transport_locator_history.json`.
 - `just deployment-verification-reconcile-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator_reconciliation.json`.

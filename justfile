@@ -295,6 +295,9 @@ deployment-verification-record-receipt-rollback-reconciliation-history reconcili
 deployment-verification-supersede-receipt-rollback previous_rollback next_rollback superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy supersede-verification-receipt-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession.json
 
+deployment-verification-record-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_history.json
+
 deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-verification-receipt-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
 

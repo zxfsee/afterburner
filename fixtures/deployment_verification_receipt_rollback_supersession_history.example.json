@@ -1,0 +1,18 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "superseded",
+      "supersession_path": "artifacts/deploy/deployment_verification_receipt_rollback_supersession.json",
+      "previous_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.json",
+      "next_rollback_path": "artifacts/deploy/deployment_verification_receipt_rollback.next.json",
+      "previous_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.previous.json",
+      "next_restored_receipt_path": "artifacts/deploy/deployment_verification_receipt.older.json",
+      "previous_restored_artifact_version": "0.1.0",
+      "next_restored_artifact_version": "0.0.9",
+      "profile_name": "staging-a",
+      "superseded_at_unix_ms": 1735689900000,
+      "recorded_at_unix_ms": 1735689950000
+    }
+  ]
+}
