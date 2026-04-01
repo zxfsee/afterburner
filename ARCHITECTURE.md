@@ -244,6 +244,14 @@ auto-versioning, embedded serving) are intentionally absent.
 - Distributed-training runtime work is capability-subset work, not framework-parity work.
   - Prioritize the smallest workload-driven subset in dependency order.
   - Treat DeepSpeed-class systems as sources of patterns, not parity targets.
+  - Treat external references such as Megatron-LM and DeepSpeed as pattern
+    sources, not as architecture templates for this repo.
+  - Combined implementations in other codebases do not change the layer
+    boundary here: scheduler/control-plane concerns stay separate from in-job
+    runtime semantics.
+  - Within the runtime layer, topology, layout feasibility, and
+    execution/state semantics should stay explicit contract surfaces rather
+    than collapsing into one framework-shaped abstraction.
   - Do not promise broad generic support across all DP/TP/PP/SP-CP/EP/ZeRO combinations
     unless a concrete workload and contract require it.
 
