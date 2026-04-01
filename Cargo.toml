@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat changes so downstream control-plane tooling can audit worker and lease liveness transitions without reading shell logs or inventing a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat state so downstream control-plane tooling can compare desired lease and worker liveness state against the current heartbeat artifact without ad hoc shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
@@ -55,6 +48,14 @@ header = """# Changelog
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat supersession adapter
+
+- Scheduler heartbeat supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat supersession reconciliation changes so downstream control-plane tooling can audit desired-versus-current heartbeat replacement state transitions without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat supersession reconciliation adapter
 
 ## [Trunk]
 """
