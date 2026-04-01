@@ -1,0 +1,27 @@
+{
+  "schema_version": "1",
+  "supersession_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.json",
+  "current_supersession_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.current.json",
+  "desired": {
+    "previous_rollback_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback.json",
+    "next_rollback_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback.next.json",
+    "previous_restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.previous.json",
+    "next_restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.older.json",
+    "previous_restored_artifact_version": "0.1.0",
+    "next_restored_artifact_version": "0.0.9",
+    "profile_name": "staging-a",
+    "superseded_at_unix_ms": 1735689900000
+  },
+  "current": {
+    "current_supersession_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.current.json",
+    "previous_rollback_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback.json",
+    "next_rollback_path": "artifacts/deploy/deployment_verification_evidence_bundle_rollback.next.json",
+    "previous_restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.previous.json",
+    "next_restored_bundle_path": "artifacts/deploy/deployment_verification_evidence_bundle.older.json",
+    "previous_restored_artifact_version": "0.1.0",
+    "next_restored_artifact_version": "0.0.9",
+    "profile_name": "staging-a",
+    "superseded_at_unix_ms": 1735689900000
+  },
+  "reconciliation_status": "aligned"
+}
