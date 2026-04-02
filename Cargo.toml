@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat pointer state so downstream control-plane tooling can compare prior versus replacement active-heartbeat selection without shell logs or a persistent coordination store prematurely.

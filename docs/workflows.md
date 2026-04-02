@@ -117,6 +117,7 @@ operator use case justifies promotion.
 - `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.
 - `just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.
 - `just scheduler-heartbeat-point-record-history` writes `gpu_scheduler_heartbeat_pointer_history.json`.
+- `just scheduler-heartbeat-point-reconcile` writes `gpu_scheduler_heartbeat_pointer_reconciliation.json`.
 - `just scheduler-heartbeat-record-history` writes `gpu_scheduler_heartbeat_history.json`.
 - `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.
 - `just scheduler-heartbeat-record-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.

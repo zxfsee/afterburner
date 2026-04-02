@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-pointer-reconciliation/v1",
+  "title": "GPU Scheduler Heartbeat Pointer Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "pointer_path",
+    "current_pointer_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1"
+    },
+    "pointer_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "current_pointer_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "desired": {
+      "$ref": "#/$defs/pointerPayload"
+    },
+    "current": {
+      "allOf": [
+        { "$ref": "#/$defs/pointerPayload" },
+        {
+          "type": "object",
+          "required": ["current_pointer_path"],
+          "properties": {
+            "current_pointer_path": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  },
+  "$defs": {
+    "pointerPayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "heartbeat_path",
+        "job_id",
+        "lease_id",
+        "worker_id",
+        "state",
+        "observed_at_unix_ms"
+      ],
+      "properties": {
+        "heartbeat_path": { "type": "string", "minLength": 1 },
+        "job_id": { "type": "string", "minLength": 1 },
+        "lease_id": { "type": "string", "minLength": 1 },
+        "worker_id": { "type": "string", "minLength": 1 },
+        "state": { "type": "string", "minLength": 1 },
+        "observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "progress_marker": { "type": "string", "minLength": 1 },
+        "current_pointer_path": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
