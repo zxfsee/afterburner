@@ -13,6 +13,12 @@ The relevant upstream state today is:
 - latest stable Burn line observed via `cargo info burn`: `0.20.1`
 - newer upstream pre-release observed via `cargo info burn`: `0.21.0-pre.1`
 
+Checked availability state for the active queue is explicit:
+
+- checked latest stable Burn release: `0.20.1`
+- newer stable Burn release beyond `0.20.1`: `no`
+- result: keep the `.bpk` migration blocked until this checked state changes
+
 ## Decision
 
 Do not refresh Burn yet.

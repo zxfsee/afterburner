@@ -136,6 +136,7 @@ operator use case justifies promotion.
 - `just scheduler-heartbeat-point-record-rollback-supersession-reconciliation-history` writes `gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json`.
 - `just scheduler-runtime-simulate` writes `scheduler_runtime_simulation_report.json`.
 - `just burn-bpk-migration-surface-report` writes `burn_bpk_migration_surface_inventory.json`.
+- `cargo nextest run --locked --test burn_stable_release_availability` enforces the checked stable Burn release availability state recorded in ADR-033 before the `.bpk` migration can advance.
 - `just scheduler-heartbeat-record-history` writes `gpu_scheduler_heartbeat_history.json`.
 - `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.
 - `just scheduler-heartbeat-record-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.
