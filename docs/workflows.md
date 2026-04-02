@@ -21,6 +21,19 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 - Low-level artifact writers, reconciliation builders, history appenders, and pointer mutations
   belong behind `just` or `afterburner debug ...`, not the main operator surface.
 
+## Public CLI admission rule
+
+- Expose only operator-intent commands on the public CLI.
+- A command that only writes one artifact variant, history record, reconciliation delta, or pointer
+  update does not qualify as a public operator command by default.
+- New public commands must map to a human action such as deploy, verify, rollback, inspect, or a
+  similarly clear operator task.
+- If a command mainly exists for fixture generation, transition bookkeeping, reconciliation, or
+  history capture, keep it behind `just` or `afterburner debug ...` unless operators need to run it
+  directly.
+- Explicit artifacts still matter underneath; tests, fixtures, reconciliation artifacts, and
+  history artifacts prove the lower layers without expanding the public command surface.
+
 ## Core repo workflows
 
 - `just build` runs the reproducible Nix build.
