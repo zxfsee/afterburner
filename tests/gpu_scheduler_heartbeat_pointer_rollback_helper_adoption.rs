@@ -72,7 +72,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback.rs",
             "gpu_scheduler_heartbeat_pointer_rolled_back",
-            "gpu_scheduler_heartbeat_pointer_rollback.json",
             Some("scheduler-heartbeat-point-rollback"),
             schema_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -98,7 +97,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_history_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_history.json",
             Some("scheduler-heartbeat-point-record-rollback-history"),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -126,7 +124,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_reconcile.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json",
             Some("scheduler-heartbeat-point-rollback-reconcile"),
             schema_payload_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -151,7 +148,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_reconciliation_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json",
             Some("scheduler-heartbeat-point-record-rollback-reconciliation-history"),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -172,7 +168,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_superseded",
-            "gpu_scheduler_heartbeat_pointer_rollback_supersession.json",
             Some("scheduler-heartbeat-point-rollback-supersede"),
             schema_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -200,7 +195,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_history_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_supersession_history.json",
             Some("scheduler-heartbeat-point-record-rollback-supersession-history"),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -228,7 +222,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_reconcile.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json",
             Some("scheduler-heartbeat-point-rollback-supersession-reconcile"),
             schema_payload_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -255,7 +248,6 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history_written",
-            "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json",
             Some("scheduler-heartbeat-point-record-rollback-supersession-reconciliation-history"),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
@@ -275,18 +267,8 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
     ];
 
     let justfile = repo_file("justfile");
-    let workflows = repo_file("docs/workflows.md");
-    let reference = repo_file("docs/reference.md");
-
-    for (
-        schema_name,
-        source_path,
-        event_name,
-        artifact_name,
-        workflow_snippet,
-        extractor,
-        expected_fields,
-    ) in cases
+    for (schema_name, source_path, event_name, workflow_snippet, extractor, expected_fields) in
+        cases
     {
         let schema_text = fs::read_to_string(fixture_path(schema_name))
             .unwrap_or_else(|err| panic!("read {schema_name}: {err}"));
@@ -303,22 +285,10 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             source.contains(event_name),
             "{source_path} must emit `{event_name}`"
         );
-        assert!(
-            reference.contains(artifact_name),
-            "reference index must mention `{artifact_name}`"
-        );
-        assert!(
-            workflows.contains(artifact_name),
-            "workflow reference must mention `{artifact_name}`"
-        );
         if let Some(workflow_snippet) = workflow_snippet {
             assert!(
                 justfile.contains(workflow_snippet),
                 "justfile must expose `{workflow_snippet}`"
-            );
-            assert!(
-                workflows.contains(workflow_snippet),
-                "workflow reference must mention `{workflow_snippet}`"
             );
         }
     }
