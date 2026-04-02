@@ -617,15 +617,15 @@ test-cargo:
 changelog:
     cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
-    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+    cargo run --locked --bin workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 changelog-top-scope-fix:
     cargo run --locked --bin workflow_objective_lock -- check-paths --action top-scope-fix --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
-    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+    cargo run --locked --bin workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 queue-snapshot-check:
-    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); let previous = (^jj log --ignore-working-copy -r @-- --no-graph -T 'commit_id' | complete); if $previous.exit_code == 0 { let previous_parent = ($previous.stdout | str trim); cargo run --locked --bin workflow_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent --previous-parent-commit $previous_parent } else { cargo run --locked --bin workflow_queue_snapshot -- verify --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent }
+    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 workflow-surface-check-deployment-verification:
     cargo nextest run --locked --test deployment_verification_workflow_surface

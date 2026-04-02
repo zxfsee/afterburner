@@ -1,5 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
+use std::process::Command as ProcessCommand;
 
 use sha2::{Digest, Sha256};
 
@@ -45,11 +46,21 @@ enum Command {
         changelog: PathBuf,
         parent_commit: String,
     },
+    StampCurrentParent {
+        cargo_toml: PathBuf,
+        changelog: PathBuf,
+        repo_root: PathBuf,
+    },
     Verify {
         cargo_toml: PathBuf,
         changelog: PathBuf,
         parent_commit: String,
         previous_parent_commit: Option<String>,
+    },
+    VerifyCurrentLineage {
+        cargo_toml: PathBuf,
+        changelog: PathBuf,
+        repo_root: PathBuf,
     },
 }
 
@@ -78,51 +89,140 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             changelog,
             parent_commit,
+        } => stamp_snapshot(cargo_toml, changelog, parent_commit),
+        Command::StampCurrentParent {
+            cargo_toml,
+            changelog,
+            repo_root,
         } => {
-            let cargo_text = fs::read_to_string(&cargo_toml)?;
-            let todo_block = normalized_todo_block(&cargo_text)?;
-            let snapshot = QueueSnapshot {
-                todo_sha256: sha256_hex(todo_block.as_bytes()),
-                parent_commit,
-            };
-            let changelog_text = fs::read_to_string(&changelog)?;
-            let updated = upsert_snapshot_comment(&changelog_text, &snapshot)?;
-            fs::write(&changelog, updated)?;
-            Ok(())
+            let parent_commit = jj_commit_id(&repo_root, "@-")?;
+            stamp_snapshot(cargo_toml, changelog, parent_commit)
         }
         Command::Verify {
             cargo_toml,
             changelog,
             parent_commit,
             previous_parent_commit,
+        } => verify_snapshot(cargo_toml, changelog, parent_commit, previous_parent_commit),
+        Command::VerifyCurrentLineage {
+            cargo_toml,
+            changelog,
+            repo_root,
         } => {
-            let cargo_text = fs::read_to_string(&cargo_toml)?;
-            let todo_block = normalized_todo_block(&cargo_text)?;
-            let expected_sha = sha256_hex(todo_block.as_bytes());
-            let changelog_text = fs::read_to_string(&changelog)?;
-            let snapshot = parse_snapshot_comment(&changelog_text)?;
-            if snapshot.todo_sha256 != expected_sha {
-                return Err(QueueSnapshotError::Parse(format!(
-                    "queue snapshot hash mismatch: changelog has `{}`, current todo block is `{expected_sha}`",
-                    snapshot.todo_sha256
-                )));
-            }
-            let matches_current_parent = snapshot.parent_commit == parent_commit;
-            let matches_previous_parent = previous_parent_commit
-                .as_deref()
-                .is_some_and(|previous| snapshot.parent_commit == previous);
-            if !matches_current_parent && !matches_previous_parent {
-                let accepted = previous_parent_commit
-                    .as_ref()
-                    .map(|previous| format!("`{parent_commit}` or `{previous}`"))
-                    .unwrap_or_else(|| format!("`{parent_commit}`"));
-                return Err(QueueSnapshotError::Parse(format!(
-                    "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}",
-                    snapshot.parent_commit,
-                )));
-            }
-            Ok(())
+            let parent_commit = jj_commit_id(&repo_root, "@-")?;
+            let previous_parent_commit = jj_optional_commit_id(&repo_root, "@--")?;
+            verify_snapshot(cargo_toml, changelog, parent_commit, previous_parent_commit)
         }
+    }
+}
+
+fn stamp_snapshot(
+    cargo_toml: PathBuf,
+    changelog: PathBuf,
+    parent_commit: String,
+) -> Result<(), QueueSnapshotError> {
+    let cargo_text = fs::read_to_string(&cargo_toml)?;
+    let todo_block = normalized_todo_block(&cargo_text)?;
+    let snapshot = QueueSnapshot {
+        todo_sha256: sha256_hex(todo_block.as_bytes()),
+        parent_commit,
+    };
+    let changelog_text = fs::read_to_string(&changelog)?;
+    let updated = upsert_snapshot_comment(&changelog_text, &snapshot)?;
+    fs::write(&changelog, updated)?;
+    Ok(())
+}
+
+fn verify_snapshot(
+    cargo_toml: PathBuf,
+    changelog: PathBuf,
+    parent_commit: String,
+    previous_parent_commit: Option<String>,
+) -> Result<(), QueueSnapshotError> {
+    let cargo_text = fs::read_to_string(&cargo_toml)?;
+    let todo_block = normalized_todo_block(&cargo_text)?;
+    let expected_sha = sha256_hex(todo_block.as_bytes());
+    let changelog_text = fs::read_to_string(&changelog)?;
+    let snapshot = parse_snapshot_comment(&changelog_text)?;
+    if snapshot.todo_sha256 != expected_sha {
+        return Err(QueueSnapshotError::Parse(format!(
+            "queue snapshot hash mismatch: changelog has `{}`, current todo block is `{expected_sha}`",
+            snapshot.todo_sha256
+        )));
+    }
+    let matches_current_parent = snapshot.parent_commit == parent_commit;
+    let matches_previous_parent = previous_parent_commit
+        .as_deref()
+        .is_some_and(|previous| snapshot.parent_commit == previous);
+    if !matches_current_parent && !matches_previous_parent {
+        let accepted = previous_parent_commit
+            .as_ref()
+            .map(|previous| format!("`{parent_commit}` or `{previous}`"))
+            .unwrap_or_else(|| format!("`{parent_commit}`"));
+        return Err(QueueSnapshotError::Parse(format!(
+            "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}",
+            snapshot.parent_commit,
+        )));
+    }
+    Ok(())
+}
+
+fn jj_commit_id(repo_root: &PathBuf, revset: &str) -> Result<String, QueueSnapshotError> {
+    let output = ProcessCommand::new("jj")
+        .current_dir(repo_root)
+        .args([
+            "log",
+            "--ignore-working-copy",
+            "-r",
+            revset,
+            "--no-graph",
+            "-T",
+            "commit_id",
+        ])
+        .output()?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+        return Err(QueueSnapshotError::Parse(format!(
+            "jj log for revset `{revset}` failed: {stderr}"
+        )));
+    }
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
+    let commit = stdout.trim().to_string();
+    if commit.is_empty() {
+        return Err(QueueSnapshotError::Parse(format!(
+            "jj log for revset `{revset}` returned no commit id"
+        )));
+    }
+    Ok(commit)
+}
+
+fn jj_optional_commit_id(
+    repo_root: &PathBuf,
+    revset: &str,
+) -> Result<Option<String>, QueueSnapshotError> {
+    let output = ProcessCommand::new("jj")
+        .current_dir(repo_root)
+        .args([
+            "log",
+            "--ignore-working-copy",
+            "-r",
+            revset,
+            "--no-graph",
+            "-T",
+            "commit_id",
+        ])
+        .output()?;
+    if !output.status.success() {
+        return Ok(None);
+    }
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
+    let commit = stdout.trim().to_string();
+    if commit.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(commit))
     }
 }
 
@@ -137,6 +237,8 @@ where
     match subcommand.as_str() {
         "stamp" => parse_command_args(args, true),
         "verify" => parse_command_args(args, false),
+        "stamp-current-parent" => parse_lineage_command_args(args, true),
+        "verify-current-lineage" => parse_lineage_command_args(args, false),
         "--help" | "-h" | "help" => Err(QueueSnapshotError::InvalidArg(usage().to_string())),
         _ => Err(QueueSnapshotError::InvalidArg(format!(
             "unknown queue-snapshot subcommand `{subcommand}`\n{}",
@@ -203,6 +305,53 @@ where
             changelog,
             parent_commit,
             previous_parent_commit,
+        }
+    })
+}
+
+fn parse_lineage_command_args<I>(args: I, stamp: bool) -> Result<Command, QueueSnapshotError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut cargo_toml = PathBuf::from("Cargo.toml");
+    let mut changelog = PathBuf::from("CHANGELOG.md");
+    let mut repo_root = PathBuf::from(".");
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            "--changelog" => changelog = PathBuf::from(parse_value(&mut args, "--changelog")?),
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
+            _ if arg.starts_with("--cargo-toml=") => {
+                cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
+            }
+            _ if arg.starts_with("--changelog=") => {
+                changelog = PathBuf::from(arg.trim_start_matches("--changelog=").to_string())
+            }
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
+            _ => {
+                return Err(QueueSnapshotError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(if stamp {
+        Command::StampCurrentParent {
+            cargo_toml,
+            changelog,
+            repo_root,
+        }
+    } else {
+        Command::VerifyCurrentLineage {
+            cargo_toml,
+            changelog,
+            repo_root,
         }
     })
 }
@@ -318,7 +467,11 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_queue_snapshot <stamp|verify> [--cargo-toml PATH] [--changelog PATH] [--parent-commit ID] [--previous-parent-commit ID]"
+    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage> [options]\n\
+stamp: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID\n\
+verify: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID [--previous-parent-commit ID]\n\
+stamp-current-parent: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
+verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]"
 }
 
 #[cfg(test)]
