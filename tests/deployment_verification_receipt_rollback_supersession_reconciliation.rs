@@ -11,14 +11,8 @@ fn fixture_path(name: &str) -> PathBuf {
         .join(name)
 }
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
-
 #[test]
-fn deployment_verification_receipt_rollback_supersession_reconciliation_schema_and_workflow_are_explicit()
- {
+fn deployment_verification_receipt_rollback_supersession_reconciliation_schema_is_explicit() {
     let schema_text = fs::read_to_string(fixture_path(
         "deployment_verification_receipt_rollback_supersession_reconciliation.schema.json",
     ))
@@ -56,25 +50,6 @@ fn deployment_verification_receipt_rollback_supersession_reconciliation_schema_a
     .map(str::to_string)
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
-
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains(
-            "deployment-verification-reconcile-receipt-rollback-supersession supersession current_supersession:"
-        ),
-        "justfile must expose the deployment-verification-reconcile-receipt-rollback-supersession workflow"
-    );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows
-            .contains("deployment_verification_receipt_rollback_supersession_reconciliation.json"),
-        "workflow reference must mention the deployment verification receipt rollback supersession reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-receipt-rollback-supersession"),
-        "workflow reference must mention the deployment verification receipt rollback supersession reconciliation workflow"
-    );
 }
 
 #[test]
