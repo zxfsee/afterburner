@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat supersession reconciliation changes so downstream control-plane tooling can audit desired-versus-current heartbeat replacement state transitions without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one pointer artifact over the current scheduler heartbeat so downstream control-plane tooling can resolve the active heartbeat record without shell conventions or a persistent coordination store prematurely.
   - Kind: `mixed`
@@ -53,6 +46,14 @@ header = """# Changelog
 
 - Scheduler heartbeat pointer supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer supersession changes so downstream control-plane tooling can audit prior-versus-replacement active-heartbeat selection transitions without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer supersession adapter
+
+- Scheduler heartbeat pointer supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer supersession state so downstream control-plane tooling can compare desired-versus-current active-heartbeat replacement selection without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
