@@ -13,21 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback helper adoption gate [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Add one focused regression gate that fails if the extracted rollback helper leaves any rollback variant with drifted field sets, event names, or artifact paths after rollout lands.
-  - Kind: `gate`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
-- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
-  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
-
 - README front-page tightening and quick-start consistency [Runtime Infra, Serving/Deployment Infra]
   - Goal: Tighten the GitHub landing page so it reads as a clear project-facing entrypoint, fix the `just eval` vs `just eval-gate` ambiguity, and keep detailed workflow/reference material pushed into the linked docs surfaces.
   - Kind: `mixed`
@@ -55,6 +40,21 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `README.md`, `docs/reference.md`, `docs/workflows.md`
+
+- GitHub repo metadata ownership note [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Record where the repo metadata source of truth lives and what stays manual so later GitHub settings polish does not sprawl into duplicate doc surfaces.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `README.md`, `docs/reference.md`, `docs/workflows.md`
+
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
 ## [Trunk]
 """
