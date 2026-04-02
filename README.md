@@ -48,12 +48,6 @@ should stay terse and intent-first; low-level artifact assembly stays behind
 - [ADRs](./docs/adr/): concrete architectural and contract decisions
 - [Changelog](./CHANGELOG.md): active TODO queue and recent landed work
 
-## GitHub metadata candidates
-
-- Description candidate: Rust-first ML systems repo for training Burn models, exporting deployable inference artifacts, and exercising contract-first deployment and observability workflows.
-- Topics candidate: `rust`, `machine-learning`, `mlops`, `burn`, `inference`, `training`, `nix`, `observability`, `deployment`, `artifacts`
-- Website candidate: none for now
-
 ## Current scope
 
 Afterburner separates training/runtime, control plane, and platform substrate.

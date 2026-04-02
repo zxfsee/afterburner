@@ -51,3 +51,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - In this repo, use a short commit body by default when a change touches public contracts, queue/changelog state, or architecture-adjacent behavior; subject-only commits are often too thin for later review.
 - When a user correction changes the real success criterion for a doc or queue item, stop queue advancement, move any stale test/assertion ownership to the correct surface, and revalidate against the corrected document purpose before continuing.
 - If the user states a queue prioritization rule, treat it as a live ordering constraint: reorder active and backlog items by ROI instead of preserving thematic or historical sequencing.
+- Do not turn tiny external settings polish tasks into README/reference/test contract surfaces; either apply the setting directly or track it as one small backlog/maintenance note outside the front page and reference index.

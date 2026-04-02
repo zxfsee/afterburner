@@ -19,3 +19,10 @@ Rules:
 - Promotion into active TODO queue must preserve priority order and dependency constraints.
 
 ## Items
+
+- GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `none`
+  - Scope: `unknown`
