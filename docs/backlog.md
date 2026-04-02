@@ -26,3 +26,18 @@ Rules:
   - Boundary: `repo-workflow`
   - Contracts: `none`
   - Scope: `unknown`
+
+- Doc-test admission snapshot burn-down [Runtime Infra]
+  - Goal: Shrink the transitional doc-test admission snapshot files in bounded cleanup batches so the allowlist and legacy exception sets do not ossify into permanent policy.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/`
+
+- Doc-test admission rule note [Runtime Infra]
+  - Goal: Add one short repo policy note for the doc-test admission guard only if future review or agent behavior shows the guard alone is too opaque to apply consistently.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/`
+  - Blocked-by: Evidence that the existing doc-test admission guard is insufficient on its own
