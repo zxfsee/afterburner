@@ -191,6 +191,9 @@ scheduler-heartbeat-point-reconcile pointer current_pointer:
 scheduler-heartbeat-point-supersede previous_pointer next_pointer superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat-point-supersede --previous-pointer {{ previous_pointer }} --next-pointer {{ next_pointer }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession.json
 
+scheduler-heartbeat-point-record-supersession-history supersession event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-pointer-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_history.json
+
 scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
 
