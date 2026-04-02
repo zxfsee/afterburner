@@ -61,6 +61,7 @@ unless they graduate into a clear operator intent.
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
   - `gpu_scheduler_heartbeat.json`
+  - `gpu_scheduler_heartbeat_pointer.json`
   - `gpu_scheduler_heartbeat_history.json`
   - `gpu_scheduler_heartbeat_reconciliation.json`
   - `gpu_scheduler_heartbeat_reconciliation_history.json`
