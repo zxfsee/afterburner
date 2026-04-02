@@ -12,6 +12,7 @@ const TODO_END: &str = "## [Trunk]";
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Objective {
     QueueOnly,
+    TopScopeFix,
     BacklogOnly,
     ExecuteTopItem,
     DocsOnly,
@@ -22,6 +23,7 @@ impl Objective {
     fn parse(raw: &str) -> Result<Self, ObjectiveLockError> {
         match raw {
             "queue-only" => Ok(Self::QueueOnly),
+            "top-scope-fix" => Ok(Self::TopScopeFix),
             "backlog-only" => Ok(Self::BacklogOnly),
             "execute-top-item" => Ok(Self::ExecuteTopItem),
             "docs-only" => Ok(Self::DocsOnly),
@@ -36,6 +38,7 @@ impl Objective {
     fn as_str(&self) -> &'static str {
         match self {
             Self::QueueOnly => "queue-only",
+            Self::TopScopeFix => "top-scope-fix",
             Self::BacklogOnly => "backlog-only",
             Self::ExecuteTopItem => "execute-top-item",
             Self::DocsOnly => "docs-only",
@@ -391,6 +394,19 @@ fn build_lock(
             ],
             source_title: None,
         },
+        Objective::TopScopeFix => ObjectiveLock {
+            objective: objective.clone(),
+            expected_action,
+            allowed_paths: vec!["Cargo.toml".to_string(), "CHANGELOG.md".to_string()],
+            forbidden_paths: vec![
+                "docs/backlog.md".to_string(),
+                "src/".to_string(),
+                "tests/".to_string(),
+                "fixtures/".to_string(),
+                "docs/workflows.md".to_string(),
+            ],
+            source_title: None,
+        },
         Objective::BacklogOnly => ObjectiveLock {
             objective: objective.clone(),
             expected_action,
@@ -559,13 +575,23 @@ fn validate_paths(lock: &ObjectiveLock, paths: &[String]) -> Result<(), Objectiv
         .as_ref()
         .map(|title| format!(" from top TODO `{title}`"))
         .unwrap_or_default();
-    Err(ObjectiveLockError::Parse(format!(
+    let mut message = format!(
         "objective `{}`{} forbids repo mutations outside {:?}; rejected paths: {:?}",
         lock.objective.as_str(),
         scope_source,
         lock.allowed_paths,
         rejected
-    )))
+    );
+    if lock.objective == Objective::ExecuteTopItem
+        && rejected
+            .iter()
+            .all(|path| path == "Cargo.toml" || path == "CHANGELOG.md")
+    {
+        message.push_str(
+            "\nif you are repairing stale top TODO scope metadata, run `just queue-fix-top-scope` first",
+        );
+    }
+    Err(ObjectiveLockError::Parse(message))
 }
 
 fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
@@ -694,7 +720,7 @@ fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, Objec
 
 fn usage() -> &'static str {
     "usage: workflow_objective_lock <pin|check-paths|check-worktree|clear> [options]\n\
-pin: --objective <queue-only|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--lock-file PATH] [--expected-action ACTION]\n\
+pin: --objective <queue-only|top-scope-fix|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--lock-file PATH] [--expected-action ACTION]\n\
 check-paths: [--lock-file PATH] [--action ACTION] --path PATH [--path PATH...]\n\
 check-worktree: [--lock-file PATH] [--repo-root PATH] [--action ACTION]\n\
 clear: [--lock-file PATH]"
@@ -749,5 +775,24 @@ mod tests {
             lock.source_title.as_deref(),
             Some("Turn objective lock guard [Runtime Infra]")
         );
+    }
+
+    #[test]
+    fn top_scope_fix_lock_only_allows_queue_metadata_files() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let cargo_toml = dir.path().join("Cargo.toml");
+        std::fs::write(
+            &cargo_toml,
+            "[package.metadata.git-cliff.changelog]\nheader = \"## TODO\n\n- Turn objective lock guard [Runtime Infra]\n  - Scope: `src/bin/`, `tests/`, `justfile`, `NOTE.md`\n\n## [Trunk]\"\n",
+        )
+        .expect("write Cargo.toml");
+        let lock = build_lock(
+            &Objective::TopScopeFix,
+            &PathBuf::from(&cargo_toml),
+            Some("top-scope-fix".into()),
+        )
+        .expect("lock");
+        assert_eq!(lock.allowed_paths, vec!["Cargo.toml", "CHANGELOG.md"]);
+        assert_eq!(lock.source_title, None);
     }
 }

@@ -58,12 +58,16 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 
 - `just workspace-gate` validates the workspace/core dependency boundaries.
 - `just objective-lock-pin-execute-top-item` verifies the queue snapshot, then pins the current top TODO scope into `.git/afterburner/objective-lock.json` before implementation work starts.
+- `just objective-lock-pin-top-scope-fix` pins the narrow metadata-repair objective that allows only `Cargo.toml` and `CHANGELOG.md`.
 - `just objective-lock-pin-queue`, `just objective-lock-pin-backlog`, `just objective-lock-pin-docs`, and `just objective-lock-pin-review` pin the non-execution objective classes before queue, backlog, docs, or review-only passes.
 - `just objective-lock-check-worktree <action>` validates the current worktree paths against the pinned objective before commits or phase switches.
 - `just objective-lock-clear` clears the transient `.git/afterburner/objective-lock.json` record before repinning a different objective.
 - `just queue-refresh` is the canonical queue-only refresh path: pin queue objective, regenerate `CHANGELOG.md`, verify the stamped queue snapshot, then clear the transient lock.
+- `just queue-fix-top-scope` is the explicit stale-top-scope repair path: pin the narrow metadata objective, validate that only `Cargo.toml` is in-flight, regenerate `CHANGELOG.md`, verify the stamped queue snapshot, then clear the transient lock.
 - `just queue-execute-preflight` is the canonical execute-start path: verify queue freshness, pin the top active TODO scope, then validate the current worktree against the execute objective before implementation continues.
+- If `just queue-execute-preflight` fails because `Cargo.toml` and `CHANGELOG.md` are the only rejected paths, treat that as stale top TODO scope metadata and run `just queue-fix-top-scope` before repinning execute.
 - `just changelog` validates the queue-refresh objective against `CHANGELOG.md`, regenerates the changelog body, and stamps the active queue snapshot.
+- `just changelog-top-scope-fix` is the same changelog regeneration path under the dedicated `top-scope-fix` objective.
 - `just queue-snapshot-check` validates that the stamped queue snapshot still matches the current active TODO block and either the current parent commit or the immediately previous parent commit, so a standalone queue-refresh commit stays valid under `jj`.
 - `just workflow-surface-check-deployment-verification` validates the deployment verification family stays surface-complete across CLI, `just`, fixtures, workflow docs, and the reference index.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.

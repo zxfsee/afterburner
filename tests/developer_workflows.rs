@@ -25,6 +25,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
     let justfile = repo_file("justfile");
     for recipe in [
         "objective-lock-pin-queue:",
+        "objective-lock-pin-top-scope-fix:",
         "objective-lock-pin-backlog:",
         "objective-lock-pin-docs:",
         "objective-lock-pin-review:",
@@ -32,7 +33,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "objective-lock-check-worktree action:",
         "objective-lock-clear:",
         "queue-refresh:",
+        "queue-fix-top-scope:",
         "queue-execute-preflight:",
+        "changelog-top-scope-fix:",
         "workflow-surface-check-deployment-verification:",
         "eval-gate:",
         "backend-profile-gate:",
@@ -67,11 +70,14 @@ fn developer_workflows_are_repo_managed_and_documented() {
     let readme = repo_file("docs/workflows.md");
     for workflow in [
         "just objective-lock-pin-execute-top-item",
+        "just objective-lock-pin-top-scope-fix",
         "just objective-lock-pin-queue",
         "just objective-lock-check-worktree <action>",
         "just objective-lock-clear",
         "just queue-refresh",
+        "just queue-fix-top-scope",
         "just queue-execute-preflight",
+        "just changelog-top-scope-fix",
         "just workflow-surface-check-deployment-verification",
         "just eval-gate",
         "just backend-profile-gate",

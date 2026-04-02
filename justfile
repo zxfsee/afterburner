@@ -36,6 +36,10 @@ burn-bpk-migration-surface-report:
 objective-lock-pin-queue:
     cargo run --locked --bin workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh
 
+# pin the top-scope-repair objective before fixing stale top TODO scope metadata
+objective-lock-pin-top-scope-fix:
+    cargo run --locked --bin workflow_objective_lock -- pin --objective top-scope-fix --expected-action top-scope-fix
+
 # pin the current backlog-maintenance objective before editing docs/backlog.md
 objective-lock-pin-backlog:
     cargo run --locked --bin workflow_objective_lock -- pin --objective backlog-only --expected-action backlog-edit
@@ -65,6 +69,14 @@ objective-lock-clear:
 queue-refresh:
     just objective-lock-pin-queue
     just changelog
+    just queue-snapshot-check
+    just objective-lock-clear
+
+# repair stale top TODO scope metadata through a dedicated queue-only path
+queue-fix-top-scope:
+    just objective-lock-pin-top-scope-fix
+    just objective-lock-check-worktree top-scope-fix
+    just changelog-top-scope-fix
     just queue-snapshot-check
     just objective-lock-clear
 
@@ -604,6 +616,11 @@ test-cargo:
 # regenerate CHANGELOG.md from git history
 changelog:
     cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
+    git-cliff -o CHANGELOG.md
+    let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
+
+changelog-top-scope-fix:
+    cargo run --locked --bin workflow_objective_lock -- check-paths --action top-scope-fix --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
     let parent = (jj log --ignore-working-copy -r @- --no-graph -T 'commit_id' | str trim); cargo run --locked --bin workflow_queue_snapshot -- stamp --cargo-toml Cargo.toml --changelog CHANGELOG.md --parent-commit $parent
 
