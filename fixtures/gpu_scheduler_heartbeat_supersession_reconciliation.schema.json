@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-supersession-reconciliation/v1",
+  "title": "GPU Scheduler Heartbeat Supersession Reconciliation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "supersession_path",
+    "current_supersession_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1" },
+    "supersession_path": { "type": "string", "minLength": 1 },
+    "current_supersession_path": { "type": "string", "minLength": 1 },
+    "desired": { "type": "object" },
+    "current": { "type": "object" },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  }
+}

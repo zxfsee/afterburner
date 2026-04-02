@@ -67,6 +67,7 @@ Operational workflow details live here so the README can stay focused on project
 - `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.
 - `just scheduler-heartbeat-record-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.
 - `just scheduler-heartbeat-supersede` writes `gpu_scheduler_heartbeat_supersession.json`.
+- `just scheduler-heartbeat-supersession-reconcile` writes `gpu_scheduler_heartbeat_supersession_reconciliation.json`.
 - `just distributed-load-profile` writes `distributed_load_profile.json`.
 - `afterburner deploy hf-publish --request <path>` writes `huggingface_publish_receipt.json`.
 

@@ -1,0 +1,31 @@
+{
+  "schema_version": "1",
+  "supersession_path": "artifacts/deploy/gpu_scheduler_heartbeat_supersession.json",
+  "current_supersession_path": "artifacts/deploy/gpu_scheduler_heartbeat_supersession.current.json",
+  "desired": {
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "previous_state": "running",
+    "next_state": "checkpointed",
+    "previous_observed_at_unix_ms": 1735689900000,
+    "next_observed_at_unix_ms": 1735689960000,
+    "previous_progress_marker": "checkpoint-group-0003/step-128",
+    "next_progress_marker": "checkpoint-group-0004/step-256",
+    "superseded_at_unix_ms": 1735689999000
+  },
+  "current": {
+    "current_supersession_path": "artifacts/deploy/gpu_scheduler_heartbeat_supersession.current.json",
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "previous_state": "running",
+    "next_state": "checkpointed",
+    "previous_observed_at_unix_ms": 1735689900000,
+    "next_observed_at_unix_ms": 1735689960000,
+    "previous_progress_marker": "checkpoint-group-0003/step-128",
+    "next_progress_marker": "checkpoint-group-0004/step-256",
+    "superseded_at_unix_ms": 1735689999000
+  },
+  "reconciliation_status": "aligned"
+}
