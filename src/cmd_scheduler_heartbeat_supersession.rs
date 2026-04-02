@@ -327,5 +327,5 @@ fn read_optional_string(object: &serde_json::Map<String, Value>, key: &str) -> O
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy scheduler-heartbeat-supersede --previous-heartbeat PATH --next-heartbeat PATH --superseded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat-supersede --previous-heartbeat PATH --next-heartbeat PATH --superseded-at-unix-ms MS [--out PATH]"
 }

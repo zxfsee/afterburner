@@ -107,7 +107,8 @@ fn gpu_scheduler_heartbeat_history_writes_history_and_event() {
     let out = tmp.path().join("gpu_scheduler_heartbeat_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-scheduler-heartbeat-history")
         .arg("--heartbeat")
         .arg(&heartbeat)

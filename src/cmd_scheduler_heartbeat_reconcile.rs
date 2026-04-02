@@ -233,5 +233,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy scheduler-heartbeat-reconcile --heartbeat PATH --current-heartbeat PATH [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat-reconcile --heartbeat PATH --current-heartbeat PATH [--out PATH]"
 }

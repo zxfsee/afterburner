@@ -240,5 +240,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-scheduler-heartbeat-supersession-history --supersession PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy record-scheduler-heartbeat-supersession-history --supersession PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

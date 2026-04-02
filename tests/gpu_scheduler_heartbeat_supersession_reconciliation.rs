@@ -131,7 +131,8 @@ fn gpu_scheduler_heartbeat_supersession_reconciliation_writes_artifact_and_event
         .join("gpu_scheduler_heartbeat_supersession_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("scheduler-heartbeat-supersession-reconcile")
         .arg("--supersession")
         .arg(&supersession)

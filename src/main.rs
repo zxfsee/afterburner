@@ -139,6 +139,7 @@ fn main() {
         "infer" => cmd_infer::run(args),
         "eval" => cmd_eval::run(args),
         "cleanup" => run_cleanup(args),
+        "debug" => run_debug(args),
         "deploy" => run_deploy(args),
         "lineage" => run_lineage(args),
         "profile" => run_profile(args),
@@ -157,6 +158,26 @@ fn main() {
 
     if code != 0 {
         std::process::exit(code);
+    }
+}
+
+fn run_debug<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(group) = args.next() else {
+        eprintln!("missing debug subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+
+    match group.as_str() {
+        "deploy" => run_debug_deploy(args),
+        _ => {
+            eprintln!("unknown debug subcommand: {group}");
+            eprintln!("{}", usage());
+            2
+        }
     }
 }
 
@@ -281,6 +302,49 @@ where
         eprintln!("{}", usage());
         return 2;
     };
+    if is_debug_only_deploy_subcommand(&subcommand) {
+        eprintln!(
+            "deploy subcommand `{subcommand}` is debug-only; use `afterburner debug deploy {subcommand} ...`"
+        );
+        return 2;
+    }
+    dispatch_deploy(subcommand, args)
+}
+
+fn run_debug_deploy<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing debug deploy subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if !is_debug_only_deploy_subcommand(&subcommand) {
+        eprintln!("unknown debug deploy subcommand: {subcommand}");
+        eprintln!("{}", usage());
+        return 2;
+    }
+    dispatch_deploy(subcommand, args)
+}
+
+fn is_debug_only_deploy_subcommand(subcommand: &str) -> bool {
+    matches!(
+        subcommand,
+        "record-scheduler-heartbeat-history"
+            | "scheduler-heartbeat-reconcile"
+            | "record-scheduler-heartbeat-reconciliation-history"
+            | "scheduler-heartbeat-supersede"
+            | "scheduler-heartbeat-supersession-reconcile"
+            | "record-scheduler-heartbeat-supersession-history"
+            | "record-scheduler-heartbeat-supersession-reconciliation-history"
+    )
+}
+
+fn dispatch_deploy<I>(subcommand: String, args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
     match subcommand.as_str() {
         "hf-publish" => cmd_hf_publish::run(args),
         "record-kube-rs-lease-history" => cmd_kube_rs_lease_history::run(args),
@@ -520,5 +584,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug deploy <...>> [args]"
 }

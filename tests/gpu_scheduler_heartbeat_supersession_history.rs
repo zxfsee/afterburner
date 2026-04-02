@@ -114,7 +114,8 @@ fn gpu_scheduler_heartbeat_supersession_history_writes_history_and_event() {
         .join("gpu_scheduler_heartbeat_supersession_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-scheduler-heartbeat-supersession-history")
         .arg("--supersession")
         .arg(&supersession)
