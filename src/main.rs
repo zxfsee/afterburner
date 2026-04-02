@@ -122,6 +122,7 @@ mod cmd_scheduler_heartbeat_reconciliation_history;
 mod cmd_scheduler_heartbeat_supersession;
 mod cmd_scheduler_heartbeat_supersession_history;
 mod cmd_scheduler_heartbeat_supersession_reconcile;
+mod cmd_scheduler_heartbeat_supersession_reconciliation_history;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
@@ -471,6 +472,9 @@ where
         "scheduler-heartbeat-supersede" => cmd_scheduler_heartbeat_supersession::run(args),
         "scheduler-heartbeat-supersession-reconcile" => {
             cmd_scheduler_heartbeat_supersession_reconcile::run(args)
+        }
+        "record-scheduler-heartbeat-supersession-reconciliation-history" => {
+            cmd_scheduler_heartbeat_supersession_reconciliation_history::run(args)
         }
         "record-scheduler-heartbeat-supersession-history" => {
             cmd_scheduler_heartbeat_supersession_history::run(args)

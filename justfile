@@ -194,6 +194,9 @@ scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_un
 scheduler-heartbeat-supersession-reconcile supersession current_supersession:
     cargo run --locked --bin afterburner -- deploy scheduler-heartbeat-supersession-reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation.json
 
+scheduler-heartbeat-record-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- deploy record-scheduler-heartbeat-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation_history.json
+
 scheduler-heartbeat-record-supersession-history supersession event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-scheduler-heartbeat-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_history.json
 

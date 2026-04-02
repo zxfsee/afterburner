@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one pointer artifact over the current scheduler heartbeat so downstream control-plane tooling can resolve the active heartbeat record without shell conventions or a persistent coordination store prematurely.
