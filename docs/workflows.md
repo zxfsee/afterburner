@@ -8,6 +8,19 @@ Operator workflows should prefer a small intent-first command set. If a step exi
 one internal artifact variant, append one history record, or materialize one reconciliation delta,
 prefer a `just` recipe or `afterburner debug ...` surface over a new public operator command.
 
+## Operator command model
+
+- Public top-level intents should stay small: `deploy`, `verify`, `rollback`, `inspect`, `debug`.
+- Public commands should use a resource/action shape, for example
+  `afterburner deploy scheduler-heartbeat ...` or `afterburner inspect scheduler-heartbeat ...`,
+  rather than flattening artifact taxonomy into one long command name.
+- Public orchestration commands may apply safe defaults from current pointers or profiles, but they
+  must report the assumptions they made.
+- Keep `--dry-run` and `--explain` on public orchestration commands when they automate multiple
+  internal steps or apply assumptions.
+- Low-level artifact writers, reconciliation builders, history appenders, and pointer mutations
+  belong behind `just` or `afterburner debug ...`, not the main operator surface.
+
 ## Core repo workflows
 
 - `just build` runs the reproducible Nix build.

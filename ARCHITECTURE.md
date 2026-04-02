@@ -218,6 +218,9 @@ auto-versioning, embedded serving) are intentionally absent.
   commands such as pointer writers, reconciliation builders, and history appenders belong behind
   repo-managed workflows or `afterburner debug ...` unless operators have a demonstrated need to
   invoke them directly.
+- The target operator grammar is a small set of top-level intents such as `deploy`, `verify`,
+  `rollback`, `inspect`, and `debug`, with resource/action subcommands underneath rather than
+  artifact-taxonomy command names.
 
 ### Runtime, scheduler, and platform
 
