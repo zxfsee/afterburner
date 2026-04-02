@@ -124,6 +124,7 @@ mod cmd_scheduler_heartbeat_pointer_reconcile;
 mod cmd_scheduler_heartbeat_pointer_supersession;
 mod cmd_scheduler_heartbeat_pointer_supersession_history;
 mod cmd_scheduler_heartbeat_pointer_supersession_reconcile;
+mod cmd_scheduler_heartbeat_pointer_supersession_reconciliation_history;
 mod cmd_scheduler_heartbeat_reconcile;
 mod cmd_scheduler_heartbeat_reconciliation_history;
 mod cmd_scheduler_heartbeat_supersession;
@@ -352,6 +353,7 @@ fn is_debug_only_deploy_subcommand(subcommand: &str) -> bool {
         "record-scheduler-heartbeat-history"
             | "record-scheduler-heartbeat-pointer-history"
             | "record-scheduler-heartbeat-pointer-supersession-history"
+            | "record-scheduler-heartbeat-pointer-supersession-reconciliation-history"
             | "reconcile-scheduler-heartbeat-pointer-supersession"
             | "scheduler-heartbeat-point-supersede"
             | "reconcile-scheduler-heartbeat-pointer"
@@ -612,6 +614,9 @@ where
         }
         "record-scheduler-heartbeat-pointer-supersession-history" => {
             cmd_scheduler_heartbeat_pointer_supersession_history::run(args)
+        }
+        "record-scheduler-heartbeat-pointer-supersession-reconciliation-history" => {
+            cmd_scheduler_heartbeat_pointer_supersession_reconciliation_history::run(args)
         }
         "reconcile-scheduler-heartbeat-pointer-supersession" => {
             cmd_scheduler_heartbeat_pointer_supersession_reconcile::run(args)

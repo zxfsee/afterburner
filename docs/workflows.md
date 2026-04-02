@@ -121,6 +121,7 @@ operator use case justifies promotion.
 - `just scheduler-heartbeat-point-supersede` writes `gpu_scheduler_heartbeat_pointer_supersession.json`.
 - `just scheduler-heartbeat-point-record-supersession-history` writes `gpu_scheduler_heartbeat_pointer_supersession_history.json`.
 - `just scheduler-heartbeat-point-supersession-reconcile` writes `gpu_scheduler_heartbeat_pointer_supersession_reconciliation.json`.
+- `just scheduler-heartbeat-point-record-supersession-reconciliation-history` writes `gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json`.
 - `just scheduler-runtime-simulate` writes `scheduler_runtime_simulation_report.json`.
 - `just burn-bpk-migration-surface-report` writes `burn_bpk_migration_surface_inventory.json`.
 - `just scheduler-heartbeat-record-history` writes `gpu_scheduler_heartbeat_history.json`.
