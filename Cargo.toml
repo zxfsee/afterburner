@@ -13,20 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback helper extraction [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Consolidate the pointer rollback payload/history/reconciliation/supersession helper logic before the remaining rollback variants multiply field/path drift across nearly identical debug deploy writers.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback helper rollout [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the extracted rollback helper layer across the remaining pointer rollback variants so the shared writer fields and emitted-event guarantees stay aligned after helper extraction lands.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer rollback helper extraction
 
 - Scheduler heartbeat pointer rollback helper adoption gate [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Add one focused regression gate that fails if the extracted rollback helper leaves any rollback variant with drifted field sets, event names, or artifact paths after rollout lands.
@@ -57,6 +49,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `README.md`, `docs/reference.md`
+
+- GitHub repo metadata application checklist [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Record the exact GitHub settings targets for the repo metadata polish step so description, topics, and website/no-website decisions can be applied later without reopening the wording discussion.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `README.md`, `docs/reference.md`, `docs/workflows.md`
 
 ## [Trunk]
 """
