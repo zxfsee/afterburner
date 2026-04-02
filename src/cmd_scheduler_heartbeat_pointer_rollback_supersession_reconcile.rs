@@ -1,8 +1,9 @@
 use std::path::PathBuf;
 
 use afterburner::command_reconciliation::{
-    ReconciliationError, load_json_object, read_string, read_u64, write_emitted_json,
+    ReconciliationError, load_json_object, reconciliation_status, write_emitted_json,
 };
+use afterburner::scheduler_heartbeat_pointer_rollback_helpers::SchedulerHeartbeatPointerRollbackSupersessionRecord;
 use serde_json::{Value, json};
 
 const DEFAULT_OUT_PATH: &str =
@@ -91,9 +92,17 @@ where
         "gpu scheduler heartbeat pointer rollback supersession",
     )?;
 
-    let desired = supersession_payload(&supersession, args.supersession.as_path())?;
-    let mut current =
-        supersession_payload(&current_supersession, args.current_supersession.as_path())?;
+    let desired = SchedulerHeartbeatPointerRollbackSupersessionRecord::from_object(
+        &supersession,
+        args.supersession.as_path(),
+    )?
+    .to_payload();
+    let current_payload = SchedulerHeartbeatPointerRollbackSupersessionRecord::from_object(
+        &current_supersession,
+        args.current_supersession.as_path(),
+    )?
+    .to_payload();
+    let mut current = current_payload.clone();
     current
         .as_object_mut()
         .expect("current supersession must be object")
@@ -102,45 +111,7 @@ where
             Value::from(args.current_supersession.display().to_string()),
         );
 
-    let reconciliation_status = if desired["previous_rollback_path"]
-        == current["previous_rollback_path"]
-        && desired["next_rollback_path"] == current["next_rollback_path"]
-        && desired["previous_restored_pointer_path"] == current["previous_restored_pointer_path"]
-        && desired["next_restored_pointer_path"] == current["next_restored_pointer_path"]
-        && desired["previous_restored_heartbeat_path"]
-            == current["previous_restored_heartbeat_path"]
-        && desired["next_restored_heartbeat_path"] == current["next_restored_heartbeat_path"]
-        && desired["job_id"] == current["job_id"]
-        && desired["lease_id"] == current["lease_id"]
-        && desired["worker_id"] == current["worker_id"]
-        && desired["previous_restored_state"] == current["previous_restored_state"]
-        && desired["next_restored_state"] == current["next_restored_state"]
-        && desired["previous_restored_observed_at_unix_ms"]
-            == current["previous_restored_observed_at_unix_ms"]
-        && desired["next_restored_observed_at_unix_ms"]
-            == current["next_restored_observed_at_unix_ms"]
-        && desired["superseded_at_unix_ms"] == current["superseded_at_unix_ms"]
-        && desired
-            .get("previous_restored_progress_marker")
-            .cloned()
-            .unwrap_or(Value::Null)
-            == current
-                .get("previous_restored_progress_marker")
-                .cloned()
-                .unwrap_or(Value::Null)
-        && desired
-            .get("next_restored_progress_marker")
-            .cloned()
-            .unwrap_or(Value::Null)
-            == current
-                .get("next_restored_progress_marker")
-                .cloned()
-                .unwrap_or(Value::Null)
-    {
-        "aligned"
-    } else {
-        "needs-update"
-    };
+    let reconciliation_status = reconciliation_status(&desired, &current_payload);
 
     let reconciliation = json!({
         "schema_version": "1",
@@ -160,53 +131,6 @@ where
         reconciliation,
     )?;
     Ok(())
-}
-
-fn supersession_payload(
-    supersession: &serde_json::Map<String, Value>,
-    path: &std::path::Path,
-) -> Result<Value, SchedulerHeartbeatPointerRollbackSupersessionReconcileError> {
-    let mut payload = json!({
-        "previous_rollback_path": read_string(supersession, "previous_rollback_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_rollback_path": read_string(supersession, "next_rollback_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_pointer_path": read_string(supersession, "previous_restored_pointer_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_pointer_path": read_string(supersession, "next_restored_pointer_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_heartbeat_path": read_string(supersession, "previous_restored_heartbeat_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_heartbeat_path": read_string(supersession, "next_restored_heartbeat_path", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "job_id": read_string(supersession, "job_id", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "lease_id": read_string(supersession, "lease_id", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "worker_id": read_string(supersession, "worker_id", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_state": read_string(supersession, "previous_restored_state", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_state": read_string(supersession, "next_restored_state", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_observed_at_unix_ms": read_u64(supersession, "previous_restored_observed_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_observed_at_unix_ms": read_u64(supersession, "next_restored_observed_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-        "superseded_at_unix_ms": read_u64(supersession, "superseded_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback supersession")?,
-    });
-    if let Some(previous_progress_marker) = supersession
-        .get("previous_restored_progress_marker")
-        .and_then(Value::as_str)
-    {
-        payload
-            .as_object_mut()
-            .expect("supersession payload must be object")
-            .insert(
-                "previous_restored_progress_marker".to_string(),
-                previous_progress_marker.into(),
-            );
-    }
-    if let Some(next_progress_marker) = supersession
-        .get("next_restored_progress_marker")
-        .and_then(Value::as_str)
-    {
-        payload
-            .as_object_mut()
-            .expect("supersession payload must be object")
-            .insert(
-                "next_restored_progress_marker".to_string(),
-                next_progress_marker.into(),
-            );
-    }
-    Ok(payload)
 }
 
 fn parse_args<I>(

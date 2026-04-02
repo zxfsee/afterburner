@@ -8,5 +8,6 @@ pub mod infer;
 pub mod manifest;
 pub mod model;
 pub mod observability;
+pub mod scheduler_heartbeat_pointer_rollback_helpers;
 pub mod text_pretrain;
 pub mod train;

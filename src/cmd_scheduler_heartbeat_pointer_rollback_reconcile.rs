@@ -1,8 +1,9 @@
 use std::path::PathBuf;
 
 use afterburner::command_reconciliation::{
-    ReconciliationError, load_json_object, read_string, read_u64, write_emitted_json,
+    ReconciliationError, load_json_object, reconciliation_status, write_emitted_json,
 };
+use afterburner::scheduler_heartbeat_pointer_rollback_helpers::SchedulerHeartbeatPointerRollbackRecord;
 use serde_json::{Value, json};
 
 const DEFAULT_OUT_PATH: &str =
@@ -91,8 +92,15 @@ where
         "gpu scheduler heartbeat pointer rollback",
     )?;
 
-    let desired = rollback_payload(&rollback, args.rollback.as_path())?;
-    let mut current = rollback_payload(&current_rollback, args.current_rollback.as_path())?;
+    let desired =
+        SchedulerHeartbeatPointerRollbackRecord::from_object(&rollback, args.rollback.as_path())?
+            .to_payload();
+    let current_payload = SchedulerHeartbeatPointerRollbackRecord::from_object(
+        &current_rollback,
+        args.current_rollback.as_path(),
+    )?
+    .to_payload();
+    let mut current = current_payload.clone();
     current
         .as_object_mut()
         .expect("current rollback must be object")
@@ -101,40 +109,7 @@ where
             Value::from(args.current_rollback.display().to_string()),
         );
 
-    let reconciliation_status = if desired["current_pointer_path"]
-        == current["current_pointer_path"]
-        && desired["restored_pointer_path"] == current["restored_pointer_path"]
-        && desired["previous_heartbeat_path"] == current["previous_heartbeat_path"]
-        && desired["restored_heartbeat_path"] == current["restored_heartbeat_path"]
-        && desired["job_id"] == current["job_id"]
-        && desired["lease_id"] == current["lease_id"]
-        && desired["worker_id"] == current["worker_id"]
-        && desired["previous_state"] == current["previous_state"]
-        && desired["restored_state"] == current["restored_state"]
-        && desired["previous_observed_at_unix_ms"] == current["previous_observed_at_unix_ms"]
-        && desired["restored_observed_at_unix_ms"] == current["restored_observed_at_unix_ms"]
-        && desired["rolled_back_at_unix_ms"] == current["rolled_back_at_unix_ms"]
-        && desired
-            .get("previous_progress_marker")
-            .cloned()
-            .unwrap_or(Value::Null)
-            == current
-                .get("previous_progress_marker")
-                .cloned()
-                .unwrap_or(Value::Null)
-        && desired
-            .get("restored_progress_marker")
-            .cloned()
-            .unwrap_or(Value::Null)
-            == current
-                .get("restored_progress_marker")
-                .cloned()
-                .unwrap_or(Value::Null)
-    {
-        "aligned"
-    } else {
-        "needs-update"
-    };
+    let reconciliation_status = reconciliation_status(&desired, &current_payload);
 
     let reconciliation = json!({
         "schema_version": "1",
@@ -154,51 +129,6 @@ where
         reconciliation,
     )?;
     Ok(())
-}
-
-fn rollback_payload(
-    rollback: &serde_json::Map<String, Value>,
-    path: &std::path::Path,
-) -> Result<Value, SchedulerHeartbeatPointerRollbackReconcileError> {
-    let mut payload = json!({
-        "current_pointer_path": read_string(rollback, "current_pointer_path", path, "gpu scheduler heartbeat pointer rollback")?,
-        "restored_pointer_path": read_string(rollback, "restored_pointer_path", path, "gpu scheduler heartbeat pointer rollback")?,
-        "previous_heartbeat_path": read_string(rollback, "previous_heartbeat_path", path, "gpu scheduler heartbeat pointer rollback")?,
-        "restored_heartbeat_path": read_string(rollback, "restored_heartbeat_path", path, "gpu scheduler heartbeat pointer rollback")?,
-        "job_id": read_string(rollback, "job_id", path, "gpu scheduler heartbeat pointer rollback")?,
-        "lease_id": read_string(rollback, "lease_id", path, "gpu scheduler heartbeat pointer rollback")?,
-        "worker_id": read_string(rollback, "worker_id", path, "gpu scheduler heartbeat pointer rollback")?,
-        "previous_state": read_string(rollback, "previous_state", path, "gpu scheduler heartbeat pointer rollback")?,
-        "restored_state": read_string(rollback, "restored_state", path, "gpu scheduler heartbeat pointer rollback")?,
-        "previous_observed_at_unix_ms": read_u64(rollback, "previous_observed_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback")?,
-        "restored_observed_at_unix_ms": read_u64(rollback, "restored_observed_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback")?,
-        "rolled_back_at_unix_ms": read_u64(rollback, "rolled_back_at_unix_ms", path, "gpu scheduler heartbeat pointer rollback")?,
-    });
-    if let Some(previous_progress_marker) = rollback
-        .get("previous_progress_marker")
-        .and_then(Value::as_str)
-    {
-        payload
-            .as_object_mut()
-            .expect("rollback payload must be object")
-            .insert(
-                "previous_progress_marker".to_string(),
-                previous_progress_marker.into(),
-            );
-    }
-    if let Some(restored_progress_marker) = rollback
-        .get("restored_progress_marker")
-        .and_then(Value::as_str)
-    {
-        payload
-            .as_object_mut()
-            .expect("rollback payload must be object")
-            .insert(
-                "restored_progress_marker".to_string(),
-                restored_progress_marker.into(),
-            );
-    }
-    Ok(payload)
 }
 
 fn parse_args<I>(args: I) -> Result<Args, SchedulerHeartbeatPointerRollbackReconcileError>
