@@ -1,0 +1,123 @@
+{
+  "schema_version": "1",
+  "scenario_name": "single-node-checkpoint-restart",
+  "scenario_path": "fixtures/scheduler_runtime_simulation_scenario.example.json",
+  "tick_count": 6,
+  "scheduler_lifecycle": {
+    "messages": [
+      { "step_index": 0, "direction": "scheduler_to_runtime", "kind": "START", "accepted": true },
+      { "step_index": 1, "direction": "runtime_to_scheduler", "kind": "READY", "accepted": true },
+      { "step_index": 2, "direction": "runtime_to_scheduler", "kind": "HEARTBEAT", "accepted": true },
+      { "step_index": 3, "direction": "runtime_to_scheduler", "kind": "CHECKPOINTED", "accepted": true },
+      { "step_index": 4, "direction": "scheduler_to_runtime", "kind": "START", "accepted": true },
+      { "step_index": 5, "direction": "runtime_to_scheduler", "kind": "READY", "accepted": true }
+    ],
+    "final_kind": "READY"
+  },
+  "lease_transitions": [
+    { "step_index": 0, "trigger_kind": "START", "from_state": "pending", "to_state": "leased" },
+    { "step_index": 1, "trigger_kind": "READY", "from_state": "leased", "to_state": "running" },
+    { "step_index": 2, "trigger_kind": "HEARTBEAT", "from_state": "running", "to_state": "running" },
+    { "step_index": 3, "trigger_kind": "CHECKPOINTED", "from_state": "running", "to_state": "checkpointed" },
+    { "step_index": 4, "trigger_kind": "START", "from_state": "checkpointed", "to_state": "leased" },
+    { "step_index": 5, "trigger_kind": "READY", "from_state": "leased", "to_state": "running" }
+  ],
+  "layout_feasibility": {
+    "schema_version": "1",
+    "node_count": 1,
+    "gpus_per_node": 4,
+    "world_size": 4,
+    "parallelism": {
+      "dp": 1,
+      "tp": 2,
+      "pp": 2,
+      "sp_cp": 1,
+      "ep": 1,
+      "gas": 4,
+      "microbatch_size": 2,
+      "zero_stage": 1
+    },
+    "feasible": true,
+    "checks": [
+      {
+        "name": "available_gpus_cover_world_size",
+        "passed": true,
+        "detail": "available_gpus=4 world_size=4"
+      },
+      {
+        "name": "world_size_matches_parallelism_product",
+        "passed": true,
+        "detail": "world_size=4 parallelism_product=4"
+      },
+      {
+        "name": "lease_gpu_count_covers_world_size",
+        "passed": true,
+        "detail": "lease_gpu_count=4 world_size=4"
+      },
+      {
+        "name": "lease_node_count_covers_inventory",
+        "passed": true,
+        "detail": "lease_node_count=1 inventory_node_count=1"
+      }
+    ]
+  },
+  "checkpoint_restart": {
+    "checkpoint_group": "ckpt-group-0007",
+    "checkpointed_observed": true,
+    "restart_permitted": true,
+    "restart_observed": true,
+    "expected_resume_kind": "READY",
+    "expected_resume_observed": true,
+    "checks": [
+      {
+        "name": "checkpointed_observed",
+        "passed": true,
+        "detail": "restart_after_kind=CHECKPOINTED"
+      },
+      {
+        "name": "restart_permitted",
+        "passed": true,
+        "detail": "checkpoint_mode=cooperative"
+      },
+      {
+        "name": "restart_observed",
+        "passed": true,
+        "detail": "observed a START after checkpoint"
+      },
+      {
+        "name": "expected_resume_observed",
+        "passed": true,
+        "detail": "expected_resume_kind=READY"
+      }
+    ]
+  },
+  "artifact_emission": {
+    "expected": [
+      {
+        "kind": "heartbeat",
+        "event": "gpu_scheduler_heartbeat_written",
+        "path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+        "after_kind": "HEARTBEAT",
+        "emitted": true,
+        "emitted_after_step": 2
+      },
+      {
+        "kind": "layout_feasibility",
+        "event": "distributed_runtime_layout_feasibility_written",
+        "path": "artifacts/train/distributed_runtime_layout_feasibility.json",
+        "after_kind": "START",
+        "emitted": true,
+        "emitted_after_step": 0
+      },
+      {
+        "kind": "checkpoint_restart",
+        "event": "distributed_checkpoint_restart_written",
+        "path": "artifacts/train/distributed_checkpoint_restart.json",
+        "after_kind": "CHECKPOINTED",
+        "emitted": true,
+        "emitted_after_step": 3
+      }
+    ],
+    "all_expected_emitted": true
+  }
+}

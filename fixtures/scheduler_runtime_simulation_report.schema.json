@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/scheduler-runtime-simulation-report/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scenario_name",
+    "scenario_path",
+    "tick_count",
+    "scheduler_lifecycle",
+    "lease_transitions",
+    "layout_feasibility",
+    "checkpoint_restart",
+    "artifact_emission"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "scenario_name": { "type": "string", "minLength": 1 },
+    "scenario_path": { "type": "string", "minLength": 1 },
+    "tick_count": { "type": "integer", "minimum": 1 },
+    "scheduler_lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["messages", "final_kind"],
+      "properties": {
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step_index", "direction", "kind", "accepted"],
+            "properties": {
+              "step_index": { "type": "integer", "minimum": 0 },
+              "direction": { "type": "string", "minLength": 1 },
+              "kind": { "type": "string", "minLength": 1 },
+              "accepted": { "type": "boolean" }
+            }
+          }
+        },
+        "final_kind": { "type": "string", "minLength": 1 }
+      }
+    },
+    "lease_transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step_index", "trigger_kind", "from_state", "to_state"],
+        "properties": {
+          "step_index": { "type": "integer", "minimum": 0 },
+          "trigger_kind": { "type": "string", "minLength": 1 },
+          "from_state": { "type": "string", "minLength": 1 },
+          "to_state": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "layout_feasibility": {
+      "$ref": "https://afterburner.local/schemas/distributed-runtime-layout-feasibility/v1"
+    },
+    "checkpoint_restart": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checkpoint_group",
+        "checkpointed_observed",
+        "restart_permitted",
+        "restart_observed",
+        "expected_resume_kind",
+        "expected_resume_observed",
+        "checks"
+      ],
+      "properties": {
+        "checkpoint_group": { "type": "string", "minLength": 1 },
+        "checkpointed_observed": { "type": "boolean" },
+        "restart_permitted": { "type": "boolean" },
+        "restart_observed": { "type": "boolean" },
+        "expected_resume_kind": { "type": "string", "minLength": 1 },
+        "expected_resume_observed": { "type": "boolean" },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "passed", "detail"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "passed": { "type": "boolean" },
+              "detail": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "artifact_emission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected", "all_expected_emitted"],
+      "properties": {
+        "expected": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "event", "path", "after_kind", "emitted", "emitted_after_step"],
+            "properties": {
+              "kind": { "type": "string", "minLength": 1 },
+              "event": { "type": "string", "minLength": 1 },
+              "path": { "type": "string", "minLength": 1 },
+              "after_kind": { "type": "string", "minLength": 1 },
+              "emitted": { "type": "boolean" },
+              "emitted_after_step": {
+                "anyOf": [
+                  { "type": "integer", "minimum": 0 },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        },
+        "all_expected_emitted": { "type": "boolean" }
+      }
+    }
+  }
+}

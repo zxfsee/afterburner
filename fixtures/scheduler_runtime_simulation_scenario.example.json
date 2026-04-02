@@ -1,0 +1,91 @@
+{
+  "schema_version": "1",
+  "scenario_name": "single-node-checkpoint-restart",
+  "inventory": {
+    "node_count": 1,
+    "gpus_per_node": 4
+  },
+  "lease": {
+    "job_id": "job-0001",
+    "lease_id": "lease-0001",
+    "node_ids": ["node-a"],
+    "gpu_ids": ["0", "1", "2", "3"],
+    "checkpoint_mode": "cooperative"
+  },
+  "layout": {
+    "world_size": 4,
+    "parallelism": {
+      "dp": 1,
+      "tp": 2,
+      "pp": 2,
+      "sp_cp": 1,
+      "ep": 1,
+      "gas": 4,
+      "microbatch_size": 2,
+      "zero_stage": 1
+    }
+  },
+  "lifecycle_messages": [
+    {
+      "direction": "scheduler_to_runtime",
+      "kind": "START",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    },
+    {
+      "direction": "runtime_to_scheduler",
+      "kind": "READY",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    },
+    {
+      "direction": "runtime_to_scheduler",
+      "kind": "HEARTBEAT",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    },
+    {
+      "direction": "runtime_to_scheduler",
+      "kind": "CHECKPOINTED",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    },
+    {
+      "direction": "scheduler_to_runtime",
+      "kind": "START",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    },
+    {
+      "direction": "runtime_to_scheduler",
+      "kind": "READY",
+      "job_id": "job-0001",
+      "lease_id": "lease-0001"
+    }
+  ],
+  "checkpoint_restart": {
+    "checkpoint_group": "ckpt-group-0007",
+    "restart_after_kind": "CHECKPOINTED",
+    "expected_resume_kind": "READY"
+  },
+  "artifact_plan": [
+    {
+      "kind": "heartbeat",
+      "event": "gpu_scheduler_heartbeat_written",
+      "path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+      "after_kind": "HEARTBEAT"
+    },
+    {
+      "kind": "layout_feasibility",
+      "event": "distributed_runtime_layout_feasibility_written",
+      "path": "artifacts/train/distributed_runtime_layout_feasibility.json",
+      "after_kind": "START"
+    },
+    {
+      "kind": "checkpoint_restart",
+      "event": "distributed_checkpoint_restart_written",
+      "path": "artifacts/train/distributed_checkpoint_restart.json",
+      "after_kind": "CHECKPOINTED"
+    }
+  ]
+}

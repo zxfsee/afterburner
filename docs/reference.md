@@ -73,6 +73,7 @@ unless they graduate into a clear operator intent.
   - `gpu_scheduler_heartbeat_supersession_reconciliation.json`
   - `gpu_scheduler_heartbeat_supersession_reconciliation_history.json`
   - `gpu_scheduler_heartbeat_supersession_history.json`
+  - `scheduler_runtime_simulation_report.json`
   - `deployment_verification_receipt.json`
   - `deployment_verification_receipt_locator_pointer_history.json`
   - `deployment_verification_receipt_locator_pointer.json`

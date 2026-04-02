@@ -24,6 +24,10 @@ dev:
 workflows:
     just --list
 
+# run the deterministic scheduler/runtime control-logic simulation harness
+scheduler-runtime-simulate scenario:
+    cargo run --locked --bin afterburner -- debug simulate-scheduler-runtime --scenario {{ scenario }} --out artifacts/simulation/scheduler_runtime_simulation_report.json
+
 # pin the current queue-maintenance objective before editing queue files
 objective-lock-pin-queue:
     cargo run --locked --bin workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh

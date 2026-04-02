@@ -240,6 +240,10 @@ auto-versioning, embedded serving) are intentionally absent.
     not a Slurm parity target.
   - Scheduler preemption is cooperative checkpoint/resume only; transparent GPU
     task suspension is not a supported assumption.
+  - The deterministic scheduler/runtime simulation harness is a control-logic simulation harness only:
+    lifecycle sequencing, lease transitions, layout
+    feasibility, checkpoint/restart behavior, and artifact emission. It is not
+    a GPU, NCCL, kernel, or timing simulator.
   - GPU colocation/sharing is a separate scheduling mode, not a synonym for
     preemption.
   - GPU colocation is only a fit for explicitly approved low-saturation

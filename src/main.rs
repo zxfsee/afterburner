@@ -128,6 +128,7 @@ mod cmd_scheduler_heartbeat_supersession;
 mod cmd_scheduler_heartbeat_supersession_history;
 mod cmd_scheduler_heartbeat_supersession_reconcile;
 mod cmd_scheduler_heartbeat_supersession_reconciliation_history;
+mod cmd_scheduler_runtime_simulation;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
@@ -180,6 +181,7 @@ where
 
     match group.as_str() {
         "deploy" => run_debug_deploy(args),
+        "simulate-scheduler-runtime" => cmd_scheduler_runtime_simulation::run(args),
         _ => {
             eprintln!("unknown debug subcommand: {group}");
             eprintln!("{}", usage());
@@ -668,5 +670,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug deploy <...>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug <deploy <...>|simulate-scheduler-runtime <...>>> [args]"
 }
