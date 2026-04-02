@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer rollback reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare desired-versus-current pointer restoration state without shell checks or a persistent coordination store prematurely.
