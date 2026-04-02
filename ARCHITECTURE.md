@@ -214,6 +214,10 @@ auto-versioning, embedded serving) are intentionally absent.
   deployment subsystem.
 - Deployment-oriented CLI entrypoints are grouped under one `deploy` command family so stack checks,
   upload planning, verification bundles, and load profiles share one operator-facing namespace.
+- Operator-facing CLI surfaces should stay intent-first and minimal. Low-level artifact mutation
+  commands such as pointer writers, reconciliation builders, and history appenders belong behind
+  repo-managed workflows or `afterburner debug ...` unless operators have a demonstrated need to
+  invoke them directly.
 
 ### Runtime, scheduler, and platform
 

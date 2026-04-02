@@ -2,6 +2,10 @@
 
 Contract and capability detail lives here so [README.md](../README.md) can stay a frontpage and navigation document.
 
+This index is broader than the public operator CLI. Many artifact families listed here are
+inspectable implementation surfaces that should remain behind `just` or `afterburner debug ...`
+unless they graduate into a clear operator intent.
+
 ## Training and inference contracts
 
 - Training-side artifacts and events:

@@ -20,7 +20,9 @@ just eval-gate
 Override with `--artifact <path>`, `--artifact=<path>`, or positional `[artifact_path]` for compatibility.
 The canonical workflow surface is `just`; use `just --list` or `just workflows`
 to discover repo-managed entrypoints. The `afterburner <...>` CLI remains the
-underlying contract surface behind those recipes.
+underlying contract surface behind those recipes. Operator-facing CLI commands
+should stay terse and intent-first; low-level artifact assembly stays behind
+`just` recipes or `afterburner debug ...`.
 
 ## At a glance
 

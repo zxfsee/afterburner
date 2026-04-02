@@ -4,6 +4,10 @@ Operational workflow details live here so the README can stay focused on project
 
 `justfile` is the executable source of truth for exact recipe parameters. This page is a grouped workflow map: which recipe family to use, what it does, and which artifact family it materializes.
 
+Operator workflows should prefer a small intent-first command set. If a step exists only to write
+one internal artifact variant, append one history record, or materialize one reconciliation delta,
+prefer a `just` recipe or `afterburner debug ...` surface over a new public operator command.
+
 ## Core repo workflows
 
 - `just build` runs the reproducible Nix build.
@@ -39,6 +43,10 @@ Operational workflow details live here so the README can stay focused on project
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment
+
+Operator-facing deployment entrypoints should stay narrow. Prefer `just` for proactive multi-step
+flows and reserve `afterburner debug deploy ...` for low-level artifact mutation and contract
+inspection steps that are useful for tests, fixture generation, or debugging.
 
 - `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
 - `just deploy-launch-plan` writes `deployment_stack_launch_plan.json`.
