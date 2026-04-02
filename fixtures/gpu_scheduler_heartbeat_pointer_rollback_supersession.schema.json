@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-pointer-rollback-supersession/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "previous_rollback_path",
+    "next_rollback_path",
+    "previous_restored_pointer_path",
+    "next_restored_pointer_path",
+    "previous_restored_heartbeat_path",
+    "next_restored_heartbeat_path",
+    "job_id",
+    "lease_id",
+    "worker_id",
+    "previous_restored_state",
+    "next_restored_state",
+    "previous_restored_observed_at_unix_ms",
+    "next_restored_observed_at_unix_ms",
+    "superseded_at_unix_ms"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "previous_rollback_path": { "type": "string", "minLength": 1 },
+    "next_rollback_path": { "type": "string", "minLength": 1 },
+    "previous_restored_pointer_path": { "type": "string", "minLength": 1 },
+    "next_restored_pointer_path": { "type": "string", "minLength": 1 },
+    "previous_restored_heartbeat_path": { "type": "string", "minLength": 1 },
+    "next_restored_heartbeat_path": { "type": "string", "minLength": 1 },
+    "job_id": { "type": "string", "minLength": 1 },
+    "lease_id": { "type": "string", "minLength": 1 },
+    "worker_id": { "type": "string", "minLength": 1 },
+    "previous_restored_state": { "type": "string", "minLength": 1 },
+    "next_restored_state": { "type": "string", "minLength": 1 },
+    "previous_restored_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+    "next_restored_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+    "previous_restored_progress_marker": { "type": "string", "minLength": 1 },
+    "next_restored_progress_marker": { "type": "string", "minLength": 1 },
+    "superseded_at_unix_ms": { "type": "integer", "minimum": 0 }
+  }
+}
