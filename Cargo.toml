@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback supersession changes so downstream control-plane tooling can audit prior-versus-replacement pointer restoration transitions without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer rollback supersession state so downstream control-plane tooling can compare desired-versus-current pointer restoration replacement state without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
@@ -57,6 +50,14 @@ header = """# Changelog
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback helper extraction
+
+- Scheduler heartbeat pointer rollback helper adoption gate [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Add one focused regression gate that fails if the extracted rollback helper leaves any rollback variant with drifted field sets, event names, or artifact paths after rollout lands.
+  - Kind: `gate`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer rollback helper rollout
 
 ## [Trunk]
 """
