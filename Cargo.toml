@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `core-contract`
   - Contracts: `artifact`, `cli`, `event`
-  - Scope: `src/`, `tests/`, `fixtures/`, `docs/reference.md`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `tests/`, `fixtures/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.

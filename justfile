@@ -28,6 +28,10 @@ workflows:
 scheduler-runtime-simulate scenario:
     cargo run --locked --bin afterburner -- debug simulate-scheduler-runtime --scenario {{ scenario }} --out artifacts/simulation/scheduler_runtime_simulation_report.json
 
+# inventory current `.mpk` and `.bpk` migration touchpoints across the repo
+burn-bpk-migration-surface-report:
+    cargo run --locked --bin afterburner -- debug inventory-burn-bpk-surface --repo-root . --out artifacts/report/burn_bpk_migration_surface_inventory.json
+
 # pin the current queue-maintenance objective before editing queue files
 objective-lock-pin-queue:
     cargo run --locked --bin workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh

@@ -1,5 +1,6 @@
 #![recursion_limit = "256"]
 
+mod cmd_burn_bpk_migration_surface_inventory;
 mod cmd_cleanup_dry_run;
 mod cmd_cleanup_evidence_bundle;
 mod cmd_cleanup_execute;
@@ -182,6 +183,7 @@ where
 
     match group.as_str() {
         "deploy" => run_debug_deploy(args),
+        "inventory-burn-bpk-surface" => cmd_burn_bpk_migration_surface_inventory::run(args),
         "simulate-scheduler-runtime" => cmd_scheduler_runtime_simulation::run(args),
         _ => {
             eprintln!("unknown debug subcommand: {group}");

@@ -29,6 +29,11 @@ Current stance: remain on the current stable pin, and treat the `.mpk` to
 `.bpk` cutover as a separate migration decision instead of smuggling it in under
 a dependency bump.
 
+The immediate runnable prerequisite is now explicit too:
+`burn_bpk_migration_surface_inventory.json` records the current `.mpk`
+touchpoints and cutover-sensitive surfaces so the later `.bpk` migration can
+land as one tracked contract change when a newer stable Burn release exists.
+
 ## Consequences
 
 - The repo stays current on the latest stable Burn line without adopting a

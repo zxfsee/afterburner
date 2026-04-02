@@ -307,6 +307,9 @@ auto-versioning, embedded serving) are intentionally absent.
   until evidence justifies preferring Metal more broadly.
 - Burn dependency refresh stays on the latest stable line, currently `0.20.1`, and `.mpk` to
   `.bpk` remains a separate contract decision.
+- The burn `.bpk` migration surface inventory report is the explicit prerequisite for that later
+  cutover: capture current `.mpk` touchpoints first, then change the contract in one pass when the
+  newer stable Burn line exists.
 - Model optimization and packaging remain a distinct post-training pipeline driven by explicit
   artifact profiles and constraints.
 

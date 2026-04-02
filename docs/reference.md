@@ -75,6 +75,7 @@ unless they graduate into a clear operator intent.
   - `gpu_scheduler_heartbeat_supersession_reconciliation_history.json`
   - `gpu_scheduler_heartbeat_supersession_history.json`
   - `scheduler_runtime_simulation_report.json`
+  - `burn_bpk_migration_surface_inventory.json`
   - `deployment_verification_receipt.json`
   - `deployment_verification_receipt_locator_pointer_history.json`
   - `deployment_verification_receipt_locator_pointer.json`
@@ -186,6 +187,7 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 - Scheduler/control plane: the distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when; the scheduler lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`; lease-owned resources and rank assignments stay explicit; supported preemption is cooperative checkpoint/resume; scheduler policy stays conservative with priority and queueing first, plus constrained GPU colocation for known low-saturation workloads.
 - Operator surfaces stay grouped under `afterburner deploy <subcommand>`, `afterburner verify <subcommand>`, `afterburner rollback <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>`.
 - Backend/runtime evolution stays measured: `backend_performance_profile.json`, `CubeCL`, `CubeK`, `cutile-rs`, Burn 0.20.1, `.mpk` to `.bpk`, later NVIDIA-specific backend-extension candidate, explicit Metal backend option, `BACKEND=cpu|wgpu|metal`, `process-compose-flake`, and local process-compose fit.
+- The `.mpk` to `.bpk` cutover now has one explicit inventory artifact, `burn_bpk_migration_surface_inventory.json`, so the migration can proceed as one tracked contract change when Burn ships a newer stable line.
 - Profiling remains local-first and adapter-only: current pointer resolution, `BACKEND`, `xcrun xctrace version`, full Xcode, `XCTRACE=/usr/bin/xctrace`, `DEVELOPER_DIR`, `SDKROOT`, `AFTERBURNER_TRACEPARENT`, and parked OpenTelemetry fit.
 - Provenance and retention stay explicit: deployment verification evidence provenance, distributed shard lineage evidence provenance, profiling environment provenance, artifact retention envelope, profiling retention policy, profiling hotspot taxonomy, and `artifacts/profiling/`.
 - Longer-horizon reference points remain explicit: remote locator contract, separate post-training pipeline, distributed checkpoint index contract, distributed optimizer-state recovery, `checkpoint_group`, RL rollout metadata contract, `rl_rollout_metadata.schema.json`, vectorized-environment stance, multibillion-scale target envelope, shard metadata contract, `distributed_shard_metadata.schema.json`, `Parquet`, and `DataFusion`.

@@ -117,6 +117,11 @@ The optimized model package contract is explicit as well. The
 `package_layout` for an optimized artifact handoff without changing the base
 inference artifact contract.
 
+Burn refresh and artifact-format migration planning are explicit too.
+`burn_bpk_migration_surface_inventory.json` records the current `.mpk` touchpoints
+and cutover-sensitive surfaces so a later `.bpk` migration can land as one
+tracked contract change instead of a scattered dependency refresh.
+
 The optimized model local profile is explicit too.
 `afterburner profile optimized-model-local-profile` writes
 `optimized_model_local_profile.json` from an optimized package contract plus

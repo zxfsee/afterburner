@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/burn-bpk-migration-surface-inventory/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "current_burn_version",
+    "observed_pre_release",
+    "scan_scope",
+    "touchpoints",
+    "summary"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "current_burn_version": { "type": "string", "minLength": 1 },
+    "observed_pre_release": { "type": "string", "minLength": 1 },
+    "scan_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "touchpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "tags"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "tags": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["touchpoint_count", "tag_counts"],
+      "properties": {
+        "touchpoint_count": { "type": "integer", "minimum": 0 },
+        "tag_counts": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  }
+}
