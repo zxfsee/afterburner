@@ -13,20 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize one pointer artifact over the current scheduler heartbeat so downstream control-plane tooling can resolve the active heartbeat record without shell conventions or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer changes so downstream control-plane tooling can audit active-heartbeat selection changes without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer adapter
 
 - Scheduler heartbeat pointer reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over the scheduler heartbeat pointer so downstream control-plane tooling can compare desired active-heartbeat selection against the current pointer artifact without shell checks or a persistent coordination store prematurely.
@@ -34,7 +26,6 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer adapter
 
 - Scheduler heartbeat pointer supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat pointer state so downstream control-plane tooling can compare prior versus replacement active-heartbeat selection without shell logs or a persistent coordination store prematurely.
@@ -42,7 +33,6 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer adapter
 
 - Scheduler heartbeat pointer supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer supersession changes so downstream control-plane tooling can audit prior-versus-replacement active-heartbeat selection transitions without shell logs or a persistent coordination store prematurely.
@@ -58,6 +48,14 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `tests/`, `fixtures/`, `justfile`, `docs/reference.md`, `ARCHITECTURE.md`, `docs/adr/`
+
+- Scheduler heartbeat pointer supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer supersession state so downstream control-plane tooling can compare desired-versus-current active-heartbeat replacement selection without shell checks or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer supersession adapter
 
 ## [Trunk]
 """
