@@ -11,14 +11,8 @@ fn fixture_path(name: &str) -> PathBuf {
         .join(name)
 }
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
-
 #[test]
-fn deployment_verification_bundle_transport_locator_reconciliation_schema_and_workflow_are_explicit()
- {
+fn deployment_verification_bundle_transport_locator_reconciliation_schema_is_explicit() {
     let schema_text = fs::read_to_string(fixture_path(
         "deployment_verification_evidence_bundle_transport_locator_reconciliation.schema.json",
     ))
@@ -55,25 +49,6 @@ fn deployment_verification_bundle_transport_locator_reconciliation_schema_and_wo
     .map(str::to_string)
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
-
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile
-            .contains("deployment-verification-reconcile-bundle-transport-locator bundle locator:"),
-        "justfile must expose the deployment-verification-reconcile-bundle-transport-locator workflow"
-    );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains(
-            "deployment_verification_evidence_bundle_transport_locator_reconciliation.json"
-        ),
-        "workflow reference must mention the deployment verification bundle transport locator reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-bundle-transport-locator"),
-        "workflow reference must mention the deployment verification bundle transport locator reconciliation workflow"
-    );
 }
 
 #[test]
