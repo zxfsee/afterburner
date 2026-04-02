@@ -74,6 +74,24 @@ Operator-facing deployment entrypoints should stay narrow. Prefer `just` for pro
 flows and reserve `afterburner debug deploy ...` for low-level artifact mutation and contract
 inspection steps that are useful for tests, fixture generation, or debugging.
 
+### Target operator command matrix
+
+This is the target shape for CLI cleanup work. It is a command-model target, not a claim that every
+row is fully implemented yet.
+
+| Intent | Public command shape | Safe defaults / assumptions | Underlying surfaces |
+| --- | --- | --- | --- |
+| Deploy | `afterburner deploy <resource> ...` | May resolve current pointers, target profiles, or stack profiles when one canonical choice exists; must report what it assumed. | Public command may drive multiple artifact writers underneath. |
+| Verify | `afterburner verify <resource> ...` | May resolve the current deployed or promoted artifact/profile by default; must report the evidence inputs it selected. | Public command may emit receipts, bundles, reconciliation artifacts, and history underneath. |
+| Rollback | `afterburner rollback <resource> ...` | May restore the current active pointer or previous rollout target by default; must report the source it restored from. | Public command may emit rollback records, pointer updates, supersession artifacts, and history underneath. |
+| Inspect | `afterburner inspect <resource> ...` | Should prefer read-only inspection over mutation and default to the current active resource when unambiguous. | Read-only operator surface over existing artifacts and pointers. |
+| Heartbeat | `afterburner deploy scheduler-heartbeat ...` | May default output location or current lease/job context only when the source is explicit and inspectable; must report assumptions. | Writes the primary heartbeat artifact while history/reconciliation/supersession helpers stay behind `just` or `debug`. |
+| Debug | `afterburner debug <domain> <action> ...` | No hidden orchestration by default; prefer explicit low-level inputs. | Low-level artifact writers, reconciliation builders, history appenders, pointer mutations, and fixture/debug helpers. |
+
+Use this matrix as the admission check for new public commands: if a candidate command does not fit
+one of these operator intents, it should default to `just` or `afterburner debug ...` until a real
+operator use case justifies promotion.
+
 - `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
 - `just deploy-launch-plan` writes `deployment_stack_launch_plan.json`.
 - `just deploy-launch-receipt` writes `deployment_stack_launch_receipt.json`.
