@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-pointer-supersession-reconciliation/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "supersession_path",
+    "current_supersession_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "supersession_path": { "type": "string", "minLength": 1 },
+    "current_supersession_path": { "type": "string", "minLength": 1 },
+    "desired": { "$ref": "#/$defs/payload" },
+    "current": {
+      "allOf": [
+        { "$ref": "#/$defs/payload" },
+        {
+          "type": "object",
+          "required": ["current_supersession_path"],
+          "properties": {
+            "current_supersession_path": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "reconciliation_status": {
+      "type": "string",
+      "enum": ["aligned", "needs-update"]
+    }
+  },
+  "$defs": {
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "previous_heartbeat_path",
+        "next_heartbeat_path",
+        "job_id",
+        "lease_id",
+        "worker_id",
+        "previous_state",
+        "next_state",
+        "previous_observed_at_unix_ms",
+        "next_observed_at_unix_ms",
+        "superseded_at_unix_ms"
+      ],
+      "properties": {
+        "previous_heartbeat_path": { "type": "string", "minLength": 1 },
+        "next_heartbeat_path": { "type": "string", "minLength": 1 },
+        "job_id": { "type": "string", "minLength": 1 },
+        "lease_id": { "type": "string", "minLength": 1 },
+        "worker_id": { "type": "string", "minLength": 1 },
+        "previous_state": { "type": "string", "minLength": 1 },
+        "next_state": { "type": "string", "minLength": 1 },
+        "previous_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "next_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "previous_progress_marker": { "type": "string", "minLength": 1 },
+        "next_progress_marker": { "type": "string", "minLength": 1 },
+        "superseded_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "current_supersession_path": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
