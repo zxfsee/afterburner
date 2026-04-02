@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer rollback supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare prior versus replacement pointer restoration records without shell logs or a persistent coordination store prematurely.

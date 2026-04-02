@@ -217,6 +217,9 @@ scheduler-heartbeat-point-record-rollback-history rollback event recorded_at_uni
 scheduler-heartbeat-point-rollback-reconcile rollback current_rollback:
     cargo run --locked --bin afterburner -- debug deploy reconcile-scheduler-heartbeat-pointer-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json
 
+scheduler-heartbeat-point-record-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-pointer-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json
+
 scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
 
