@@ -241,6 +241,9 @@ scheduler-heartbeat-point-record-rollback-supersession-history supersession even
 scheduler-heartbeat-point-rollback-supersession-reconcile supersession current_supersession:
     cargo run --locked --bin afterburner -- debug deploy reconcile-scheduler-heartbeat-pointer-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json
 
+scheduler-heartbeat-point-record-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json
+
 scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- debug deploy record-scheduler-heartbeat-history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
 
