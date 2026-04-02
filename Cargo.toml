@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback changes so downstream control-plane tooling can audit pointer restoration transitions without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare desired-versus-current pointer restoration state without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
@@ -57,6 +50,14 @@ header = """# Changelog
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession adapter
+
+- Scheduler heartbeat pointer rollback supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback supersession reconciliation changes so downstream control-plane tooling can audit desired-versus-current pointer restoration replacement updates without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer rollback supersession reconciliation adapter
 
 ## [Trunk]
 """
