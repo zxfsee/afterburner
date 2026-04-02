@@ -19,10 +19,3 @@ Rules:
 - Promotion into active TODO queue must preserve priority order and dependency constraints.
 
 ## Items
-
-- README front-page tightening and quick-start consistency [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Tighten the GitHub landing page so it reads as a clear project-facing entrypoint, fix the `just eval` vs `just eval-gate` ambiguity, and keep detailed workflow/reference material pushed into the linked docs surfaces.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `README.md`

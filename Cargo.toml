@@ -13,20 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer rollback supersession state so downstream control-plane tooling can compare desired-versus-current pointer restoration replacement state without shell checks or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback supersession reconciliation changes so downstream control-plane tooling can audit desired-versus-current pointer restoration replacement updates without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer rollback supersession reconciliation adapter
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
@@ -58,6 +50,13 @@ header = """# Changelog
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback helper rollout
+
+- README front-page tightening and quick-start consistency [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Tighten the GitHub landing page so it reads as a clear project-facing entrypoint, fix the `just eval` vs `just eval-gate` ambiguity, and keep detailed workflow/reference material pushed into the linked docs surfaces.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `README.md`
 
 ## [Trunk]
 """
