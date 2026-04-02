@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat pointer supersession changes so downstream control-plane tooling can audit prior-versus-replacement active-heartbeat selection transitions without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Deterministic scheduler/runtime simulation harness [Distributed Training, Runtime Infra, Experimentation/Eval Infra]
   - Goal: Add one deterministic event-driven simulation harness plus explicit artifacts/receipts for scheduler lifecycle, lease transitions, topology/layout feasibility, checkpoint/restart state transitions, and artifact emission so policy and state-machine bugs can be validated without pretending to simulate real GPU or NCCL timing.
   - Kind: `mixed`
@@ -56,6 +49,14 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+
+- Scheduler heartbeat pointer rollback history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback changes so downstream control-plane tooling can audit pointer restoration transitions without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer rollback adapter
 
 ## [Trunk]
 """
