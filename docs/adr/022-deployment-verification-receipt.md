@@ -26,7 +26,7 @@ The minimum receipt contract should include:
   verification outcome
 
 Current stance: the repo now materializes this receipt through
-`afterburner deploy verification-receipt`. It still keeps rollout orchestration
+`afterburner verify receipt`. It still keeps rollout orchestration
 separate from the receipt adapter.
 
 ## Consequences

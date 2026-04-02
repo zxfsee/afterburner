@@ -120,7 +120,8 @@ fn deployment_verification_receipt_rollback_supersession_writes_artifact_and_eve
 
     let out = tmp.path().join("supersession.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("supersede-verification-receipt-rollback")
         .arg("--previous-rollback")
         .arg(&previous)

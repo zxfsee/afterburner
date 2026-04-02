@@ -126,7 +126,8 @@ fn deployment_verification_receipt_rollback_reconciliation_history_writes_histor
         .join("deployment_verification_receipt_rollback_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-receipt-rollback-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)

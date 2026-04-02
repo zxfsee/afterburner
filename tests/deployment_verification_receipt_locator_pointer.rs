@@ -94,7 +94,8 @@ fn deployment_verification_receipt_locator_pointer_writes_pointer_and_event() {
         .path()
         .join("deployment_verification_receipt_locator_pointer.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("point-verification-receipt-locator")
         .arg("--locator")
         .arg(&locator)

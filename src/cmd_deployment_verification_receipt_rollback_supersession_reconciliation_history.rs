@@ -220,5 +220,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-verification-receipt-rollback-supersession-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy record-verification-receipt-rollback-supersession-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

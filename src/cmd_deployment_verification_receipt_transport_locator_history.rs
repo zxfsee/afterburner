@@ -279,5 +279,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-verification-receipt-transport-locator-history --locator PATH --event EVENT --recorded-at-unix-ms UNIX_MS [--out PATH]"
+    "usage: afterburner debug deploy record-verification-receipt-transport-locator-history --locator PATH --event EVENT --recorded-at-unix-ms UNIX_MS [--out PATH]"
 }

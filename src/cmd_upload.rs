@@ -450,6 +450,7 @@ mod tests {
             UploadArgs {
                 manifest_path: PathBuf::from("artifacts/inference/0.1.0/manifest.toml"),
                 ownership_path: PathBuf::from("artifacts/deploy/ownership.json"),
+                package_contract_path: None,
                 provider: "generic".to_string(),
                 destination: "uploads/afterburner".to_string(),
                 out_path: Some(PathBuf::from("artifacts/deploy/out.json")),

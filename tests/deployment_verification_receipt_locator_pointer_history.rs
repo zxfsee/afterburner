@@ -100,7 +100,8 @@ fn deployment_verification_receipt_locator_pointer_history_writes_history_and_ev
         .join("deployment_verification_receipt_locator_pointer_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-receipt-locator-history")
         .arg("--pointer")
         .arg(&pointer)

@@ -128,7 +128,8 @@ fn deployment_verification_receipt_rollback_supersession_reconciliation_history_
         .join("deployment_verification_receipt_rollback_supersession_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-receipt-rollback-supersession-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)

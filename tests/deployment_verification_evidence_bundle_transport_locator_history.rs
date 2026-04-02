@@ -99,7 +99,8 @@ fn deployment_verification_bundle_transport_locator_history_writes_history_and_e
         .join("deployment_verification_evidence_bundle_transport_locator_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-bundle-transport-locator-history")
         .arg("--locator")
         .arg(&locator)

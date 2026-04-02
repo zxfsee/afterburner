@@ -204,5 +204,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy point-verification-handoff-transport-locator --handoff PATH [--out PATH]"
+    "usage: afterburner debug deploy point-verification-handoff-transport-locator --handoff PATH [--out PATH]"
 }

@@ -255,5 +255,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-verification-receipt-transport-locator --receipt PATH --locator PATH [--out PATH]"
+    "usage: afterburner debug deploy reconcile-verification-receipt-transport-locator --receipt PATH --locator PATH [--out PATH]"
 }

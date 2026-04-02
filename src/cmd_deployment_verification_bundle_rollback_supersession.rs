@@ -294,5 +294,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy supersede-verification-bundle-rollback --previous-rollback PATH --next-rollback PATH --superseded-at-unix-ms N [--out PATH]"
+    "usage: afterburner debug deploy supersede-verification-bundle-rollback --previous-rollback PATH --next-rollback PATH --superseded-at-unix-ms N [--out PATH]"
 }

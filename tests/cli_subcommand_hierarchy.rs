@@ -36,6 +36,14 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         "usage must advertise the grouped deploy subcommand"
     );
     assert!(
+        usage.contains("verify <"),
+        "usage must advertise the grouped verify subcommand"
+    );
+    assert!(
+        usage.contains("rollback <"),
+        "usage must advertise the grouped rollback subcommand"
+    );
+    assert!(
         !usage.contains("drift-receipt"),
         "usage must not advertise the old flat drift subcommand names"
     );
@@ -49,6 +57,14 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         readme.contains("afterburner deploy <subcommand>"),
         "reference index must mention the grouped deploy command family"
     );
+    assert!(
+        readme.contains("afterburner verify <subcommand>"),
+        "reference index must mention the grouped verify command family"
+    );
+    assert!(
+        readme.contains("afterburner rollback <subcommand>"),
+        "reference index must mention the grouped rollback command family"
+    );
 
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
@@ -61,6 +77,8 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
 fn grouped_subcommands_dispatch_to_existing_tools() {
     let help_cases = [
         ("deploy", "upload"),
+        ("verify", "receipt"),
+        ("rollback", "verification-bundle"),
         ("drift", "receipt"),
         ("cleanup", "inventory"),
         ("profile", "environment-snapshot"),

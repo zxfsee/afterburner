@@ -116,7 +116,8 @@ fn deployment_verification_bundle_locator_pointer_reconciliation_history_writes_
     );
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-bundle-locator-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)

@@ -113,8 +113,8 @@ fn deployment_verification_receipt_locator_pointer_rollback_writes_pointer_and_r
     let out_pointer = tmp.path().join("pointer-out.json");
     let out_record = tmp.path().join("rollback.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("rollback-verification-receipt-locator")
+    cmd.arg("rollback")
+        .arg("verification-receipt-locator")
         .arg("--current-pointer")
         .arg(&current_pointer)
         .arg("--restored-pointer")

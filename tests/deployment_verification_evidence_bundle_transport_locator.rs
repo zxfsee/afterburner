@@ -98,7 +98,8 @@ fn deployment_verification_bundle_transport_locator_writes_locator_and_event() {
         .path()
         .join("deployment_verification_evidence_bundle_transport_locator.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("point-verification-bundle-transport-locator")
         .arg("--bundle")
         .arg(&bundle)

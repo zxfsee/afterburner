@@ -5,27 +5,36 @@
 The repo already groups several operator-heavy workflows under `drift`,
 `cleanup`, and `profile`, but deployment-side verbs still appear as unrelated
 top-level commands. That leaves the deployment surface inconsistent even though
-upload planning, stack checks, verification bundles, and load profiles all
-belong to the same operator-facing domain.
+upload planning, stack checks, launch actions, heartbeat emission, and other
+deploy-start operations belong to the same operator-facing domain. At the same
+time, verification and rollback actions read more clearly as operator intents
+than as deploy subcommands.
 
 ## Decision
 
-Group deployment-side commands under one `deploy` family.
+Keep deploy-start commands under one `deploy` family, and move verification and
+rollback actions to their own intent families.
 
 - `afterburner deploy upload`
 - `afterburner deploy stack-check`
-- `afterburner deploy verification-bundle`
+- `afterburner deploy scheduler-heartbeat`
 - `afterburner deploy load-profile`
+- `afterburner verify receipt`
+- `afterburner verify bundle`
+- `afterburner rollback verification-bundle`
 
 Keep `train`, `infer`, and `eval` top-level.
 
-Current stance: this is a cutover to the grouped deploy CLI surface. The old
-flat top-level deploy commands are not retained as the primary contract.
+Current stance: deploy remains the public family for deploy-start actions. The
+old deploy verification and rollback names are not retained as the primary
+operator contract; low-level artifact mutation stays behind `afterburner debug
+deploy ...`.
 
 ## Consequences
 
-- Deployment-oriented workflows now share one explicit CLI namespace instead of
-  a scattered set of top-level verbs.
-- Just recipes, docs, and tests can refer to one deployment command family.
-- The deploy surface matches the repo's grouped command style instead of
-  remaining a special case.
+- Deploy-start workflows now share one explicit CLI namespace instead of a
+  scattered set of top-level verbs.
+- Verification and rollback read as operator intents instead of artifact-taxonomy
+  deploy subcommands.
+- Just recipes, docs, and tests can distinguish public operator actions from
+  low-level debug surfaces.

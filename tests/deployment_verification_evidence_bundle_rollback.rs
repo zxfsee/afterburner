@@ -122,8 +122,8 @@ fn deployment_verification_bundle_rollback_writes_bundle_and_rollback_record() {
     let out_bundle = tmp.path().join("bundle-out.json");
     let out_record = tmp.path().join("rollback.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("rollback-verification-bundle")
+    cmd.arg("rollback")
+        .arg("verification-bundle")
         .arg("--current-bundle")
         .arg(&current_bundle)
         .arg("--restored-bundle")

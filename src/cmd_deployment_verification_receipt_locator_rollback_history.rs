@@ -298,5 +298,5 @@ fn read_u64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-verification-receipt-locator-rollback-history --rollback PATH --event EVENT --recorded-at-unix-ms UNIX_MS [--out PATH]"
+    "usage: afterburner debug deploy record-verification-receipt-locator-rollback-history --rollback PATH --event EVENT --recorded-at-unix-ms UNIX_MS [--out PATH]"
 }

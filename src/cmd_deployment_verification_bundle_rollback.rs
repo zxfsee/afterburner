@@ -317,5 +317,5 @@ fn write_json(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy rollback-verification-bundle --current-bundle PATH --restored-bundle PATH --rolled-back-at-unix-ms N [--out-bundle PATH] [--out-record PATH]"
+    "usage: afterburner rollback verification-bundle --current-bundle PATH --restored-bundle PATH --rolled-back-at-unix-ms N [--out-bundle PATH] [--out-record PATH]"
 }

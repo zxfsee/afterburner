@@ -18,7 +18,7 @@ verification receipts to make evidence provenance explicit through an
 - `observed_at_unix_ms`
 
 Current stance: the repo now materializes this provenance layer through
-`afterburner deploy verification-receipt`.
+`afterburner verify receipt`.
 
 ## Consequences
 

@@ -205,152 +205,152 @@ distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_b
 
 # package receipt-referenced deployment verification evidence into one bundle artifact
 deployment-verification-bundle receipt:
-    cargo run --locked --bin afterburner -- deploy verification-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
+    cargo run --locked --bin afterburner -- verify bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
 
 deployment-verification-record-bundle-history bundle event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-history --bundle {{ bundle }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-history --bundle {{ bundle }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_history.json
 
 deployment-verification-point-bundle-transport-locator bundle:
-    cargo run --locked --bin afterburner -- deploy point-verification-bundle-transport-locator --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.json
+    cargo run --locked --bin afterburner -- debug deploy point-verification-bundle-transport-locator --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator.json
 
 deployment-verification-point-bundle-locator locator:
-    cargo run --locked --bin afterburner -- deploy point-verification-bundle-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json
+    cargo run --locked --bin afterburner -- debug deploy point-verification-bundle-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json
 
 deployment-verification-record-bundle-locator-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_history.json
 
 deployment-verification-reconcile-bundle-locator locator pointer:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-bundle-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation.json
 
 deployment-verification-record-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_reconciliation_history.json
 
 deployment-verification-rollback-bundle-locator current_pointer restored_pointer rolled_back_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy rollback-verification-bundle-locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json --out-record artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_rollback.json
+    cargo run --locked --bin afterburner -- rollback verification-bundle-locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json --out-record artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_rollback.json
 
 deployment-verification-record-bundle-locator-rollback-history rollback event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_rollback_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer_rollback_history.json
 
 deployment-verification-rollback-bundle current_bundle restored_bundle rolled_back_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy rollback-verification-bundle --current-bundle {{ current_bundle }} --restored-bundle {{ restored_bundle }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-bundle artifacts/deploy/deployment_verification_evidence_bundle.json --out-record artifacts/deploy/deployment_verification_evidence_bundle_rollback.json
+    cargo run --locked --bin afterburner -- rollback verification-bundle --current-bundle {{ current_bundle }} --restored-bundle {{ restored_bundle }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-bundle artifacts/deploy/deployment_verification_evidence_bundle.json --out-record artifacts/deploy/deployment_verification_evidence_bundle_rollback.json
 
 deployment-verification-record-bundle-rollback-history rollback event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_history.json
 
 deployment-verification-reconcile-bundle-rollback rollback current_rollback:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-bundle-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation.json
 
 deployment-verification-record-bundle-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_reconciliation_history.json
 
 deployment-verification-supersede-bundle-rollback previous_rollback next_rollback superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy supersede-verification-bundle-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.json
+    cargo run --locked --bin afterburner -- debug deploy supersede-verification-bundle-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession.json
 
 deployment-verification-reconcile-bundle-rollback-supersession supersession current_supersession:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-bundle-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_reconciliation.json
 
 deployment-verification-record-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_reconciliation_history.json
 
 deployment-verification-record-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_rollback_supersession_history.json
 
 deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_history.json
 
 deployment-verification-reconcile-bundle-transport-locator bundle locator:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle-transport-locator --bundle {{ bundle }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-bundle-transport-locator --bundle {{ bundle }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_reconciliation.json
 
 deployment-verification-record-bundle-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_transport_locator_reconciliation_history.json
 
 deployment-verification-reconcile-bundle receipt bundle:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
 
 deployment-verification-record-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation_history.json
 
 deployment-verification-handoff bundle:
-    cargo run --locked --bin afterburner -- deploy verification-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
+    cargo run --locked --bin afterburner -- verify handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
 deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_history.json
 
 deployment-verification-point-handoff-transport-locator handoff:
-    cargo run --locked --bin afterburner -- deploy point-verification-handoff-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator.json
+    cargo run --locked --bin afterburner -- debug deploy point-verification-handoff-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator.json
 
 deployment-verification-record-handoff-transport-locator-history locator event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-handoff-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-handoff-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_history.json
 
 deployment-verification-reconcile-handoff-transport-locator handoff locator:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-handoff-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-handoff-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_reconciliation.json
 
 deployment-verification-reconcile-handoff bundle handoff:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
 
 deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation_history.json
 
 # write one deployment verification receipt with explicit evidence-source references
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
-    cargo run --locked --bin afterburner -- deploy verification-receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json
+    cargo run --locked --bin afterburner -- verify receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json
 
 deployment-verification-point-receipt-transport-locator receipt:
-    cargo run --locked --bin afterburner -- deploy point-verification-receipt-transport-locator --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_receipt_transport_locator.json
+    cargo run --locked --bin afterburner -- debug deploy point-verification-receipt-transport-locator --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_receipt_transport_locator.json
 
 deployment-verification-point-receipt-locator locator:
-    cargo run --locked --bin afterburner -- deploy point-verification-receipt-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
+    cargo run --locked --bin afterburner -- debug deploy point-verification-receipt-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
 
 deployment-verification-record-receipt-locator-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_history.json
 
 deployment-verification-reconcile-receipt-locator locator pointer:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-receipt-locator --locator {{ locator }} --pointer {{ pointer }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_reconciliation.json
 
 deployment-verification-record-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_reconciliation_history.json
 
 deployment-verification-rollback-receipt-locator current_pointer restored_pointer rolled_back_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy rollback-verification-receipt-locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/deployment_verification_receipt_locator_pointer.json --out-record artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback.json
+    cargo run --locked --bin afterburner -- rollback verification-receipt-locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/deployment_verification_receipt_locator_pointer.json --out-record artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback.json
 
 deployment-verification-record-receipt-locator-rollback-history rollback event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-locator-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer_rollback_history.json
 
 deployment-verification-reconcile-receipt-rollback rollback current_rollback:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_receipt_rollback_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-receipt-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_receipt_rollback_reconciliation.json
 
 deployment-verification-record-receipt-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_reconciliation_history.json
 
 deployment-verification-supersede-receipt-rollback previous_rollback next_rollback superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy supersede-verification-receipt-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession.json
+    cargo run --locked --bin afterburner -- debug deploy supersede-verification-receipt-rollback --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession.json
 
 deployment-verification-reconcile-receipt-rollback-supersession supersession current_supersession:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-receipt-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation.json
 
 deployment-verification-record-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_reconciliation_history.json
 
 deployment-verification-record-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_rollback_supersession_history.json
 
 deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
 
 deployment-verification-reconcile-receipt-transport-locator receipt locator:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt-transport-locator --receipt {{ receipt }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-receipt-transport-locator --receipt {{ receipt }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation.json
 
 deployment-verification-record-receipt-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation_history.json
 
 deployment-verification-record-receipt-history receipt event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-history --receipt {{ receipt }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-history --receipt {{ receipt }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_history.json
 
 deployment-verification-reconcile-receipt receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
-    cargo run --locked --bin afterburner -- deploy reconcile-verification-receipt --receipt {{ receipt }} --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt_reconciliation.json
+    cargo run --locked --bin afterburner -- debug deploy reconcile-verification-receipt --receipt {{ receipt }} --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt_reconciliation.json
 
 deployment-verification-record-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-verification-receipt-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_reconciliation_history.json
+    cargo run --locked --bin afterburner -- debug deploy record-verification-receipt-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_reconciliation_history.json
 
 distributed-shard-lineage-receipt metadata shard_id source source_revision checkpoint_group checkpoint_root checked_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage receipt --metadata {{ metadata }} --shard-id {{ shard_id }} --source {{ source }} --source-revision {{ source_revision }} --checkpoint-group {{ checkpoint_group }} --checkpoint-root {{ checkpoint_root }} --checked-at-unix-ms {{ checked_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_receipt.json

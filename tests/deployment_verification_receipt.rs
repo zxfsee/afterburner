@@ -78,8 +78,8 @@ fn deployment_verification_receipt_writes_receipt_and_event() {
     let out = tmp.path().join("deployment_verification_receipt.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("verification-receipt")
+    cmd.arg("verify")
+        .arg("receipt")
         .arg("--artifact-version")
         .arg("0.2.0")
         .arg("--profile-name")

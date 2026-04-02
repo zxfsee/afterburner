@@ -287,5 +287,5 @@ fn read_u64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-verification-receipt-rollback --rollback PATH --current-rollback PATH [--out PATH]"
+    "usage: afterburner debug deploy reconcile-verification-receipt-rollback --rollback PATH --current-rollback PATH [--out PATH]"
 }

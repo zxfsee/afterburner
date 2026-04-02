@@ -89,7 +89,8 @@ fn deployment_verification_receipt_reconciliation_writes_artifact_and_event() {
         .join("deployment_verification_receipt_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-receipt")
         .arg("--receipt")
         .arg(&receipt)

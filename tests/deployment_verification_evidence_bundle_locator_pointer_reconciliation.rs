@@ -112,7 +112,8 @@ fn deployment_verification_bundle_locator_pointer_reconciliation_writes_artifact
         .join("deployment_verification_evidence_bundle_locator_pointer_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-bundle-locator")
         .arg("--locator")
         .arg(&locator)

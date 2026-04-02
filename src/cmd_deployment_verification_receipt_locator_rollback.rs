@@ -306,5 +306,5 @@ fn write_json(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy rollback-verification-receipt-locator --current-pointer PATH --restored-pointer PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
+    "usage: afterburner rollback verification-receipt-locator --current-pointer PATH --restored-pointer PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
 }

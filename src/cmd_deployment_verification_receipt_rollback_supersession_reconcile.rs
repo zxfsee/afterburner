@@ -242,5 +242,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-verification-receipt-rollback-supersession --supersession PATH --current-supersession PATH [--out PATH]"
+    "usage: afterburner debug deploy reconcile-verification-receipt-rollback-supersession --supersession PATH --current-supersession PATH [--out PATH]"
 }

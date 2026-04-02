@@ -128,7 +128,8 @@ fn deployment_verification_evidence_bundle_rollback_supersession_reconciliation_
     );
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-bundle-rollback-supersession-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)

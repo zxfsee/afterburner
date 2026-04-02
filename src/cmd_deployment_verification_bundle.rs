@@ -234,5 +234,5 @@ fn read_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy verification-bundle --receipt PATH [--out PATH]"
+    "usage: afterburner verify bundle --receipt PATH [--out PATH]"
 }

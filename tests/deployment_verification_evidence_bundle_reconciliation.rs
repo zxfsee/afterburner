@@ -114,7 +114,8 @@ fn deployment_verification_evidence_bundle_reconciliation_writes_artifact_and_ev
         .join("deployment_verification_evidence_bundle_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-bundle")
         .arg("--receipt")
         .arg(&receipt)

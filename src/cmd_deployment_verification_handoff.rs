@@ -216,5 +216,5 @@ fn read_u64(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy verification-handoff --bundle PATH [--out PATH]"
+    "usage: afterburner verify handoff --bundle PATH [--out PATH]"
 }

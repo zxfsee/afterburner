@@ -98,8 +98,8 @@ fn deployment_verification_handoff_writes_handoff_and_event() {
         .path()
         .join("deployment_verification_evidence_handoff.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("verification-handoff")
+    cmd.arg("verify")
+        .arg("handoff")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--out")

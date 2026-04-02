@@ -106,7 +106,8 @@ fn deployment_verification_receipt_transport_locator_reconciliation_writes_artif
         .path()
         .join("deployment_verification_receipt_transport_locator_reconciliation.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-receipt-transport-locator")
         .arg("--receipt")
         .arg(&receipt)

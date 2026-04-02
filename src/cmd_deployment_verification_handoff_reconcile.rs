@@ -226,5 +226,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-verification-handoff --bundle PATH --handoff PATH [--out PATH]"
+    "usage: afterburner debug deploy reconcile-verification-handoff --bundle PATH --handoff PATH [--out PATH]"
 }

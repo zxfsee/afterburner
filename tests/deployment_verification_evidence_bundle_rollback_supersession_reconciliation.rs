@@ -117,7 +117,8 @@ fn deployment_verification_bundle_rollback_supersession_reconciliation_writes_ar
         .join("deployment_verification_evidence_bundle_rollback_supersession_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-bundle-rollback-supersession")
         .arg("--supersession")
         .arg(&supersession)

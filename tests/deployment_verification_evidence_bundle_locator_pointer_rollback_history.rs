@@ -113,7 +113,8 @@ fn deployment_verification_bundle_locator_pointer_rollback_history_writes_histor
         .join("deployment_verification_evidence_bundle_locator_pointer_rollback_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-bundle-locator-rollback-history")
         .arg("--rollback")
         .arg(&rollback)

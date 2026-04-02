@@ -120,7 +120,8 @@ fn deployment_verification_bundle_transport_locator_reconciliation_writes_artifa
         .path()
         .join("deployment_verification_evidence_bundle_transport_locator_reconciliation.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-bundle-transport-locator")
         .arg("--bundle")
         .arg(&bundle)

@@ -141,6 +141,8 @@ fn main() {
         "cleanup" => run_cleanup(args),
         "debug" => run_debug(args),
         "deploy" => run_deploy(args),
+        "verify" => run_verify(args),
+        "rollback" => run_rollback(args),
         "lineage" => run_lineage(args),
         "profile" => run_profile(args),
         "source" => run_source(args),
@@ -302,6 +304,12 @@ where
         eprintln!("{}", usage());
         return 2;
     };
+    if let Some(target) = deploy_redirect_target(&subcommand) {
+        eprintln!(
+            "deploy subcommand `{subcommand}` moved to `{target}`; use `afterburner {target} ...`"
+        );
+        return 2;
+    }
     if is_debug_only_deploy_subcommand(&subcommand) {
         eprintln!(
             "deploy subcommand `{subcommand}` is debug-only; use `afterburner debug deploy {subcommand} ...`"
@@ -338,7 +346,70 @@ fn is_debug_only_deploy_subcommand(subcommand: &str) -> bool {
             | "scheduler-heartbeat-supersession-reconcile"
             | "record-scheduler-heartbeat-supersession-history"
             | "record-scheduler-heartbeat-supersession-reconciliation-history"
-    )
+    ) || subcommand.starts_with("record-verification-")
+        || subcommand.starts_with("point-verification-")
+        || subcommand.starts_with("reconcile-verification-")
+        || subcommand.starts_with("supersede-verification-")
+}
+
+fn deploy_redirect_target(subcommand: &str) -> Option<&'static str> {
+    match subcommand {
+        "verification-receipt" => Some("verify receipt"),
+        "verification-bundle" => Some("verify bundle"),
+        "verification-handoff" => Some("verify handoff"),
+        "rollback-verification-receipt-locator" => Some("rollback verification-receipt-locator"),
+        "rollback-verification-bundle-locator" => Some("rollback verification-bundle-locator"),
+        "rollback-verification-bundle" => Some("rollback verification-bundle"),
+        _ => None,
+    }
+}
+
+fn run_verify<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing verify subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+
+    match subcommand.as_str() {
+        "receipt" => cmd_deployment_verification_receipt::run(args),
+        "bundle" => cmd_deployment_verification_bundle::run(args),
+        "handoff" => cmd_deployment_verification_handoff::run(args),
+        _ => {
+            eprintln!("unknown verify subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_rollback<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(subcommand) = args.next() else {
+        eprintln!("missing rollback subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+
+    match subcommand.as_str() {
+        "verification-receipt-locator" => {
+            cmd_deployment_verification_receipt_locator_rollback::run(args)
+        }
+        "verification-bundle-locator" => {
+            cmd_deployment_verification_bundle_locator_rollback::run(args)
+        }
+        "verification-bundle" => cmd_deployment_verification_bundle_rollback::run(args),
+        _ => {
+            eprintln!("unknown rollback subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
 }
 
 fn dispatch_deploy<I>(subcommand: String, args: I) -> i32
@@ -386,7 +457,6 @@ where
         "point-launch-transport-locator" => {
             cmd_deployment_stack_launch_transport_locator::run(args)
         }
-        "verification-receipt" => cmd_deployment_verification_receipt::run(args),
         "record-verification-receipt-locator-history" => {
             cmd_deployment_verification_receipt_locator_history::run(args)
         }
@@ -398,9 +468,6 @@ where
         }
         "record-verification-receipt-locator-reconciliation-history" => {
             cmd_deployment_verification_receipt_locator_reconciliation_history::run(args)
-        }
-        "rollback-verification-receipt-locator" => {
-            cmd_deployment_verification_receipt_locator_rollback::run(args)
         }
         "record-verification-receipt-locator-rollback-history" => {
             cmd_deployment_verification_receipt_locator_rollback_history::run(args)
@@ -446,7 +513,6 @@ where
         "record-verification-receipt-reconciliation-history" => {
             cmd_deployment_verification_receipt_reconciliation_history::run(args)
         }
-        "verification-bundle" => cmd_deployment_verification_bundle::run(args),
         "point-verification-bundle-locator" => {
             cmd_deployment_verification_bundle_locator_pointer::run(args)
         }
@@ -459,13 +525,9 @@ where
         "record-verification-bundle-locator-reconciliation-history" => {
             cmd_deployment_verification_bundle_locator_reconciliation_history::run(args)
         }
-        "rollback-verification-bundle-locator" => {
-            cmd_deployment_verification_bundle_locator_rollback::run(args)
-        }
         "record-verification-bundle-locator-rollback-history" => {
             cmd_deployment_verification_bundle_locator_rollback_history::run(args)
         }
-        "rollback-verification-bundle" => cmd_deployment_verification_bundle_rollback::run(args),
         "record-verification-bundle-rollback-history" => {
             cmd_deployment_verification_bundle_rollback_history::run(args)
         }
@@ -508,7 +570,6 @@ where
         "record-verification-bundle-reconciliation-history" => {
             cmd_deployment_verification_bundle_reconciliation_history::run(args)
         }
-        "verification-handoff" => cmd_deployment_verification_handoff::run(args),
         "record-verification-handoff-history" => {
             cmd_deployment_verification_handoff_history::run(args)
         }
@@ -584,5 +645,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug deploy <...>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug deploy <...>> [args]"
 }

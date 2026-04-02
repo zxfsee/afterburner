@@ -117,7 +117,8 @@ fn deployment_verification_handoff_transport_locator_reconciliation_writes_artif
         .path()
         .join("deployment_verification_evidence_handoff_transport_locator_reconciliation.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-handoff-transport-locator")
         .arg("--handoff")
         .arg(&handoff)

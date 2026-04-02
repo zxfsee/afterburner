@@ -327,5 +327,5 @@ fn require_non_empty(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-verification-receipt --receipt PATH --artifact-version VERSION --profile-name NAME --verification-status STATUS --verified-at-unix-ms MS --evidence TEXT --evidence-source ARTIFACT_PATH,EVENT_NAME,OBSERVED_AT_UNIX_MS [--evidence-source ...] [--out PATH]"
+    "usage: afterburner debug deploy reconcile-verification-receipt --receipt PATH --artifact-version VERSION --profile-name NAME --verification-status STATUS --verified-at-unix-ms MS --evidence TEXT --evidence-source ARTIFACT_PATH,EVENT_NAME,OBSERVED_AT_UNIX_MS [--evidence-source ...] [--out PATH]"
 }

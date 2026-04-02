@@ -114,7 +114,8 @@ fn deployment_verification_bundle_rollback_history_writes_history_and_event() {
         .join("deployment_verification_evidence_bundle_rollback_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-bundle-rollback-history")
         .arg("--rollback")
         .arg(&rollback)

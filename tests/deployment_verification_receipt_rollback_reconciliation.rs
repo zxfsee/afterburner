@@ -118,7 +118,8 @@ fn deployment_verification_receipt_rollback_reconciliation_writes_artifact_and_e
         .join("deployment_verification_receipt_rollback_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-receipt-rollback")
         .arg("--rollback")
         .arg(&rollback)

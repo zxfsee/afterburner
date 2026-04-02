@@ -110,7 +110,8 @@ fn deployment_verification_receipt_locator_pointer_reconciliation_writes_artifac
         .join("deployment_verification_receipt_locator_pointer_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("reconcile-verification-receipt-locator")
         .arg("--locator")
         .arg(&locator)

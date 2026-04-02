@@ -108,7 +108,8 @@ fn deployment_verification_receipt_rollback_supersession_history_writes_history_
         .join("deployment_verification_receipt_rollback_supersession_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
+    cmd.arg("debug")
+        .arg("deploy")
         .arg("record-verification-receipt-rollback-supersession-history")
         .arg("--supersession")
         .arg(&supersession)
