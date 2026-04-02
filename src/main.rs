@@ -118,6 +118,7 @@ mod cmd_profiling_provenance_receipt;
 mod cmd_scheduler_heartbeat;
 mod cmd_scheduler_heartbeat_history;
 mod cmd_scheduler_heartbeat_pointer;
+mod cmd_scheduler_heartbeat_pointer_history;
 mod cmd_scheduler_heartbeat_reconcile;
 mod cmd_scheduler_heartbeat_reconciliation_history;
 mod cmd_scheduler_heartbeat_supersession;
@@ -341,6 +342,7 @@ fn is_debug_only_deploy_subcommand(subcommand: &str) -> bool {
     matches!(
         subcommand,
         "record-scheduler-heartbeat-history"
+            | "record-scheduler-heartbeat-pointer-history"
             | "scheduler-heartbeat-reconcile"
             | "record-scheduler-heartbeat-reconciliation-history"
             | "point-scheduler-heartbeat"
@@ -593,6 +595,9 @@ where
         "scheduler-heartbeat" => cmd_scheduler_heartbeat::run(args),
         "record-scheduler-heartbeat-history" => cmd_scheduler_heartbeat_history::run(args),
         "point-scheduler-heartbeat" => cmd_scheduler_heartbeat_pointer::run(args),
+        "record-scheduler-heartbeat-pointer-history" => {
+            cmd_scheduler_heartbeat_pointer_history::run(args)
+        }
         "scheduler-heartbeat-reconcile" => cmd_scheduler_heartbeat_reconcile::run(args),
         "record-scheduler-heartbeat-reconciliation-history" => {
             cmd_scheduler_heartbeat_reconciliation_history::run(args)
