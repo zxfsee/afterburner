@@ -2,26 +2,19 @@
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback reconciliation changes so downstream control-plane tooling can audit desired-versus-current pointer restoration updates without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare prior versus replacement pointer restoration records without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer rollback supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback supersession changes so downstream control-plane tooling can audit prior-versus-replacement pointer restoration transitions without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession adapter
 
 - Scheduler heartbeat pointer rollback supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
@@ -29,7 +22,7 @@
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession adapter
 
 - Scheduler heartbeat pointer rollback supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
@@ -37,7 +30,7 @@
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession reconciliation adapter
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
@@ -48,7 +41,14 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-<!-- queue-snapshot: todo_sha256=f0badb5292346588941241ca03ea29099991ca69bcabbcf252950b71220bd17b parent_commit=c3d1bf0da7fa34896282a682def051be4fc8b937 -->
+- Scheduler heartbeat pointer rollback helper extraction [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Consolidate the pointer rollback payload/history/reconciliation/supersession helper logic before the remaining rollback variants multiply field/path drift across nearly identical debug deploy writers.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
+
+<!-- queue-snapshot: todo_sha256=7e6e5b2d03c59be2e7910d4bd5d280c32c59a12ac981b36dc5fe0c24dee5227d parent_commit=ed8667165906c7a7349953b7a6568534a9eb1e78 -->
 
 ## [Trunk]
 
@@ -256,6 +256,7 @@
 - Add scheduler heartbeat pointer rollback ([5723135])
 - Add scheduler heartbeat pointer rollback history ([0c8acc5])
 - Add scheduler heartbeat pointer rollback reconciliation ([47ceb9a])
+- Add scheduler heartbeat pointer rollback reconciliation history ([ed86671])
 
 ### Changed
 
@@ -1014,5 +1015,6 @@
 [4900263]: https://github.com/zxfsee/afterburner/commit/4900263afbe6d0fe178b8583af4578d8ada18480
 [47ceb9a]: https://github.com/zxfsee/afterburner/commit/47ceb9af3e00112f50912bb4fe0ebbf4fc5759b1
 [c3d1bf0]: https://github.com/zxfsee/afterburner/commit/c3d1bf0da7fa34896282a682def051be4fc8b937
+[ed86671]: https://github.com/zxfsee/afterburner/commit/ed8667165906c7a7349953b7a6568534a9eb1e78
 
 <!-- generated by git-cliff -->

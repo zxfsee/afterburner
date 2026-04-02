@@ -13,26 +13,19 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat pointer rollback reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback reconciliation changes so downstream control-plane tooling can audit desired-versus-current pointer restoration updates without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
-
 - Scheduler heartbeat pointer rollback supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one supersession artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare prior versus replacement pointer restoration records without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
 
 - Scheduler heartbeat pointer rollback supersession history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback supersession changes so downstream control-plane tooling can audit prior-versus-replacement pointer restoration transitions without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession adapter
 
 - Scheduler heartbeat pointer rollback supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
@@ -40,7 +33,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession adapter
 
 - Scheduler heartbeat pointer rollback supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
@@ -48,7 +41,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
   - Blocked-by: Scheduler heartbeat pointer rollback supersession reconciliation adapter
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
@@ -58,6 +51,13 @@ header = """# Changelog
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
+- Scheduler heartbeat pointer rollback helper extraction [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Consolidate the pointer rollback payload/history/reconciliation/supersession helper logic before the remaining rollback variants multiply field/path drift across nearly identical debug deploy writers.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `tests/`, `docs/reference.md`, `docs/workflows.md`, `docs/adr/`
 
 ## [Trunk]
 """
