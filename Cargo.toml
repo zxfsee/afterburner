@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler heartbeat reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
-  - Goal: Append one compact history artifact over scheduler heartbeat reconciliation changes so downstream control-plane tooling can audit desired-versus-current heartbeat state transitions without shell logs or a persistent coordination store prematurely.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`, `ops`
-  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `docs/adr/`
-
 - Scheduler heartbeat supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat supersession state so downstream control-plane tooling can compare desired-versus-current heartbeat replacement state without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
@@ -53,6 +46,14 @@ header = """# Changelog
 
 - Scheduler heartbeat pointer history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer changes so downstream control-plane tooling can audit active-heartbeat selection changes without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer adapter
+
+- Scheduler heartbeat pointer reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one reconciliation artifact over the scheduler heartbeat pointer so downstream control-plane tooling can compare desired active-heartbeat selection against the current pointer artifact without shell checks or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
