@@ -34,7 +34,6 @@ header = """# Changelog
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
-  - Blocked-by: Scheduler heartbeat pointer supersession reconciliation adapter
 
 - Scheduler heartbeat pointer rollback adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one rollback artifact over scheduler heartbeat pointer state so downstream control-plane tooling can restore a previous active-heartbeat pointer explicitly without shell conventions or a persistent coordination store prematurely.
@@ -53,6 +52,22 @@ header = """# Changelog
 
 - Scheduler heartbeat pointer rollback reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare desired-versus-current pointer restoration state without shell checks or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer rollback adapter
+
+- Scheduler heartbeat pointer rollback reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Append one compact history artifact over scheduler heartbeat pointer rollback reconciliation changes so downstream control-plane tooling can audit desired-versus-current pointer restoration updates without shell logs or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer rollback reconciliation adapter
+
+- Scheduler heartbeat pointer rollback supersession adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one supersession artifact over scheduler heartbeat pointer rollback state so downstream control-plane tooling can compare prior versus replacement pointer restoration records without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
