@@ -25,6 +25,113 @@ pub struct SchedulerHeartbeatPointerRollbackRecord {
 }
 
 impl SchedulerHeartbeatPointerRollbackRecord {
+    pub fn from_pointer_objects(
+        current_pointer: &Map<String, Value>,
+        current_path: &Path,
+        restored_pointer: &Map<String, Value>,
+        restored_path: &Path,
+        rolled_back_at_unix_ms: u64,
+    ) -> Result<Self, ReconciliationError> {
+        let current_job_id = read_string(
+            current_pointer,
+            "job_id",
+            current_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        let restored_job_id = read_string(
+            restored_pointer,
+            "job_id",
+            restored_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        if current_job_id != restored_job_id {
+            return Err(ReconciliationError::Parse(format!(
+                "current pointer job_id `{current_job_id}` does not match restored pointer job_id `{restored_job_id}`"
+            )));
+        }
+        let current_lease_id = read_string(
+            current_pointer,
+            "lease_id",
+            current_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        let restored_lease_id = read_string(
+            restored_pointer,
+            "lease_id",
+            restored_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        if current_lease_id != restored_lease_id {
+            return Err(ReconciliationError::Parse(format!(
+                "current pointer lease_id `{current_lease_id}` does not match restored pointer lease_id `{restored_lease_id}`"
+            )));
+        }
+        let current_worker_id = read_string(
+            current_pointer,
+            "worker_id",
+            current_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        let restored_worker_id = read_string(
+            restored_pointer,
+            "worker_id",
+            restored_path,
+            "gpu scheduler heartbeat pointer",
+        )?;
+        if current_worker_id != restored_worker_id {
+            return Err(ReconciliationError::Parse(format!(
+                "current pointer worker_id `{current_worker_id}` does not match restored pointer worker_id `{restored_worker_id}`"
+            )));
+        }
+
+        Ok(Self {
+            current_pointer_path: current_path.display().to_string(),
+            restored_pointer_path: restored_path.display().to_string(),
+            previous_heartbeat_path: read_string(
+                current_pointer,
+                "heartbeat_path",
+                current_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            restored_heartbeat_path: read_string(
+                restored_pointer,
+                "heartbeat_path",
+                restored_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            job_id: restored_job_id,
+            lease_id: restored_lease_id,
+            worker_id: restored_worker_id,
+            previous_state: read_string(
+                current_pointer,
+                "state",
+                current_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            restored_state: read_string(
+                restored_pointer,
+                "state",
+                restored_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            previous_observed_at_unix_ms: read_u64(
+                current_pointer,
+                "observed_at_unix_ms",
+                current_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            restored_observed_at_unix_ms: read_u64(
+                restored_pointer,
+                "observed_at_unix_ms",
+                restored_path,
+                "gpu scheduler heartbeat pointer",
+            )?,
+            previous_progress_marker: read_optional_string(current_pointer, "progress_marker"),
+            restored_progress_marker: read_optional_string(restored_pointer, "progress_marker"),
+            rolled_back_at_unix_ms,
+        })
+    }
+
     pub fn from_object(
         object: &Map<String, Value>,
         path: &Path,
@@ -135,6 +242,69 @@ pub struct SchedulerHeartbeatPointerRollbackSupersessionRecord {
 }
 
 impl SchedulerHeartbeatPointerRollbackSupersessionRecord {
+    pub fn from_rollback_objects(
+        previous: &Map<String, Value>,
+        previous_path: &Path,
+        next: &Map<String, Value>,
+        next_path: &Path,
+        superseded_at_unix_ms: u64,
+    ) -> Result<Self, ReconciliationError> {
+        let previous_record =
+            SchedulerHeartbeatPointerRollbackRecord::from_object(previous, previous_path)?;
+        let next_record = SchedulerHeartbeatPointerRollbackRecord::from_object(next, next_path)?;
+
+        if previous_record.job_id != next_record.job_id {
+            return Err(ReconciliationError::Parse(format!(
+                "rollback records must share one job_id, found `{}` and `{}`",
+                previous_record.job_id, next_record.job_id
+            )));
+        }
+        if previous_record.lease_id != next_record.lease_id {
+            return Err(ReconciliationError::Parse(format!(
+                "rollback records must share one lease_id, found `{}` and `{}`",
+                previous_record.lease_id, next_record.lease_id
+            )));
+        }
+        if previous_record.worker_id != next_record.worker_id {
+            return Err(ReconciliationError::Parse(format!(
+                "rollback records must share one worker_id, found `{}` and `{}`",
+                previous_record.worker_id, next_record.worker_id
+            )));
+        }
+        if previous_record.restored_pointer_path == next_record.restored_pointer_path
+            && previous_record.restored_heartbeat_path == next_record.restored_heartbeat_path
+            && previous_record.restored_state == next_record.restored_state
+            && previous_record.restored_observed_at_unix_ms
+                == next_record.restored_observed_at_unix_ms
+            && previous_record.restored_progress_marker == next_record.restored_progress_marker
+        {
+            return Err(ReconciliationError::Parse(format!(
+                "next rollback `{}` must differ from previous rollback `{}` in restored_pointer_path, restored_heartbeat_path, restored_state, restored_observed_at_unix_ms, or restored_progress_marker",
+                next_path.display(),
+                previous_path.display()
+            )));
+        }
+
+        Ok(Self {
+            previous_rollback_path: previous_path.display().to_string(),
+            next_rollback_path: next_path.display().to_string(),
+            previous_restored_pointer_path: previous_record.restored_pointer_path,
+            next_restored_pointer_path: next_record.restored_pointer_path,
+            previous_restored_heartbeat_path: previous_record.restored_heartbeat_path,
+            next_restored_heartbeat_path: next_record.restored_heartbeat_path,
+            job_id: next_record.job_id,
+            lease_id: next_record.lease_id,
+            worker_id: next_record.worker_id,
+            previous_restored_state: previous_record.restored_state,
+            next_restored_state: next_record.restored_state,
+            previous_restored_observed_at_unix_ms: previous_record.restored_observed_at_unix_ms,
+            next_restored_observed_at_unix_ms: next_record.restored_observed_at_unix_ms,
+            previous_restored_progress_marker: previous_record.restored_progress_marker,
+            next_restored_progress_marker: next_record.restored_progress_marker,
+            superseded_at_unix_ms,
+        })
+    }
+
     pub fn from_object(
         object: &Map<String, Value>,
         path: &Path,

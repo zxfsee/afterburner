@@ -1,7 +1,9 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
+use afterburner::command_artifacts::{JsonArtifactError, write_json_value};
+use afterburner::command_reconciliation::{ReconciliationError, load_json_object};
 use afterburner::observability::emit_event;
+use afterburner::scheduler_heartbeat_pointer_rollback_helpers::SchedulerHeartbeatPointerRollbackRecord;
 use serde_json::{Value, json};
 
 const POINTER_OUT_PATH: &str = "artifacts/deploy/gpu_scheduler_heartbeat_pointer.json";
@@ -29,6 +31,26 @@ impl std::error::Error for SchedulerHeartbeatPointerRollbackError {}
 impl From<std::io::Error> for SchedulerHeartbeatPointerRollbackError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for SchedulerHeartbeatPointerRollbackError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => {
+                Self::Parse(format!("serialize rollback json: {err}"))
+            }
+        }
+    }
+}
+
+impl From<ReconciliationError> for SchedulerHeartbeatPointerRollbackError {
+    fn from(value: ReconciliationError) -> Self {
+        match value {
+            ReconciliationError::Io(err) => Self::Io(err),
+            ReconciliationError::Parse(msg) => Self::Parse(msg),
+        }
     }
 }
 
@@ -74,87 +96,38 @@ where
         "gpu scheduler heartbeat pointer",
     )?;
 
-    let current_job_id = read_string(&current_pointer, "job_id", args.current_pointer.as_path())?;
-    let restored_job_id =
-        read_string(&restored_pointer, "job_id", args.restored_pointer.as_path())?;
-    if current_job_id != restored_job_id {
-        return Err(SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "current pointer job_id `{current_job_id}` does not match restored pointer job_id `{restored_job_id}`"
-        )));
-    }
-    let current_lease_id =
-        read_string(&current_pointer, "lease_id", args.current_pointer.as_path())?;
-    let restored_lease_id = read_string(
-        &restored_pointer,
-        "lease_id",
-        args.restored_pointer.as_path(),
-    )?;
-    if current_lease_id != restored_lease_id {
-        return Err(SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "current pointer lease_id `{current_lease_id}` does not match restored pointer lease_id `{restored_lease_id}`"
-        )));
-    }
-    let current_worker_id = read_string(
+    let rollback_record = SchedulerHeartbeatPointerRollbackRecord::from_pointer_objects(
         &current_pointer,
-        "worker_id",
         args.current_pointer.as_path(),
-    )?;
-    let restored_worker_id = read_string(
         &restored_pointer,
-        "worker_id",
         args.restored_pointer.as_path(),
-    )?;
-    if current_worker_id != restored_worker_id {
-        return Err(SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "current pointer worker_id `{current_worker_id}` does not match restored pointer worker_id `{restored_worker_id}`"
-        )));
-    }
+        args.rolled_back_at_unix_ms,
+    )
+    .map_err(SchedulerHeartbeatPointerRollbackError::from)?;
 
     let restored_pointer_value = Value::Object(restored_pointer.clone());
-    write_json(
-        args.out_pointer.as_path(),
-        &restored_pointer_value,
-        "restored pointer",
-    )?;
+    write_json_value(args.out_pointer.as_path(), &restored_pointer_value)
+        .map_err(SchedulerHeartbeatPointerRollbackError::from)?;
 
-    let mut rollback = json!({
+    let rollback = json!({
         "schema_version": "1",
-        "current_pointer_path": args.current_pointer.display().to_string(),
-        "restored_pointer_path": args.restored_pointer.display().to_string(),
-        "previous_heartbeat_path": read_string(&current_pointer, "heartbeat_path", args.current_pointer.as_path())?,
-        "restored_heartbeat_path": read_string(&restored_pointer, "heartbeat_path", args.restored_pointer.as_path())?,
-        "job_id": restored_job_id,
-        "lease_id": restored_lease_id,
-        "worker_id": restored_worker_id,
-        "previous_state": read_string(&current_pointer, "state", args.current_pointer.as_path())?,
-        "restored_state": read_string(&restored_pointer, "state", args.restored_pointer.as_path())?,
-        "previous_observed_at_unix_ms": read_u64(&current_pointer, "observed_at_unix_ms", args.current_pointer.as_path())?,
-        "restored_observed_at_unix_ms": read_u64(&restored_pointer, "observed_at_unix_ms", args.restored_pointer.as_path())?,
-        "rolled_back_at_unix_ms": args.rolled_back_at_unix_ms,
+        "current_pointer_path": rollback_record.current_pointer_path,
+        "restored_pointer_path": rollback_record.restored_pointer_path,
+        "previous_heartbeat_path": rollback_record.previous_heartbeat_path,
+        "restored_heartbeat_path": rollback_record.restored_heartbeat_path,
+        "job_id": rollback_record.job_id,
+        "lease_id": rollback_record.lease_id,
+        "worker_id": rollback_record.worker_id,
+        "previous_state": rollback_record.previous_state,
+        "restored_state": rollback_record.restored_state,
+        "previous_observed_at_unix_ms": rollback_record.previous_observed_at_unix_ms,
+        "restored_observed_at_unix_ms": rollback_record.restored_observed_at_unix_ms,
+        "previous_progress_marker": rollback_record.previous_progress_marker,
+        "restored_progress_marker": rollback_record.restored_progress_marker,
+        "rolled_back_at_unix_ms": rollback_record.rolled_back_at_unix_ms,
     });
-    if let Some(previous_progress_marker) =
-        read_optional_string(&current_pointer, "progress_marker")
-    {
-        rollback
-            .as_object_mut()
-            .expect("rollback must be object")
-            .insert(
-                "previous_progress_marker".to_string(),
-                previous_progress_marker.into(),
-            );
-    }
-    if let Some(restored_progress_marker) =
-        read_optional_string(&restored_pointer, "progress_marker")
-    {
-        rollback
-            .as_object_mut()
-            .expect("rollback must be object")
-            .insert(
-                "restored_progress_marker".to_string(),
-                restored_progress_marker.into(),
-            );
-    }
-    write_json(args.out_record.as_path(), &rollback, "rollback")?;
+    write_json_value(args.out_record.as_path(), &rollback)
+        .map_err(SchedulerHeartbeatPointerRollbackError::from)?;
 
     emit_event(
         "info",
@@ -282,77 +255,6 @@ where
             usage()
         ))
     })
-}
-
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, SchedulerHeartbeatPointerRollbackError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, SchedulerHeartbeatPointerRollbackError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            SchedulerHeartbeatPointerRollbackError::Parse(format!(
-                "gpu scheduler heartbeat pointer `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<u64, SchedulerHeartbeatPointerRollbackError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        SchedulerHeartbeatPointerRollbackError::Parse(format!(
-            "gpu scheduler heartbeat pointer `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
-
-fn read_optional_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-) -> Option<String> {
-    object.get(key).and_then(Value::as_str).map(str::to_string)
-}
-
-fn write_json(
-    path: &Path,
-    value: &Value,
-    kind: &str,
-) -> Result<(), SchedulerHeartbeatPointerRollbackError> {
-    if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(value).map_err(|err| {
-        SchedulerHeartbeatPointerRollbackError::Parse(format!("serialize {kind} json: {err}"))
-    })?;
-    fs::write(path, text)?;
-    Ok(())
 }
 
 fn usage() -> &'static str {

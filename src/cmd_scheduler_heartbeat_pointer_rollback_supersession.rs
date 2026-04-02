@@ -1,8 +1,10 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
+use afterburner::command_artifacts::{JsonArtifactError, write_json_value};
+use afterburner::command_reconciliation::{ReconciliationError, load_json_object};
 use afterburner::observability::emit_event;
-use serde_json::{Value, json};
+use afterburner::scheduler_heartbeat_pointer_rollback_helpers::SchedulerHeartbeatPointerRollbackSupersessionRecord;
+use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession.json";
@@ -29,6 +31,26 @@ impl std::error::Error for SchedulerHeartbeatPointerRollbackSupersessionError {}
 impl From<std::io::Error> for SchedulerHeartbeatPointerRollbackSupersessionError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<JsonArtifactError> for SchedulerHeartbeatPointerRollbackSupersessionError {
+    fn from(value: JsonArtifactError) -> Self {
+        match value {
+            JsonArtifactError::Io(err) => Self::Io(err),
+            JsonArtifactError::Serialize(err) => Self::Parse(format!(
+                "serialize scheduler heartbeat pointer rollback supersession json: {err}"
+            )),
+        }
+    }
+}
+
+impl From<ReconciliationError> for SchedulerHeartbeatPointerRollbackSupersessionError {
+    fn from(value: ReconciliationError) -> Self {
+        match value {
+            ReconciliationError::Io(err) => Self::Io(err),
+            ReconciliationError::Parse(msg) => Self::Parse(msg),
+        }
     }
 }
 
@@ -73,131 +95,36 @@ where
         "gpu scheduler heartbeat pointer rollback",
     )?;
 
-    let previous_job_id = read_string(&previous, "job_id", args.previous_rollback.as_path())?;
-    let next_job_id = read_string(&next, "job_id", args.next_rollback.as_path())?;
-    if previous_job_id != next_job_id {
-        return Err(SchedulerHeartbeatPointerRollbackSupersessionError::Parse(
-            format!(
-                "rollback records must share one job_id, found `{previous_job_id}` and `{next_job_id}`"
-            ),
-        ));
-    }
-    let previous_lease_id = read_string(&previous, "lease_id", args.previous_rollback.as_path())?;
-    let next_lease_id = read_string(&next, "lease_id", args.next_rollback.as_path())?;
-    if previous_lease_id != next_lease_id {
-        return Err(SchedulerHeartbeatPointerRollbackSupersessionError::Parse(
-            format!(
-                "rollback records must share one lease_id, found `{previous_lease_id}` and `{next_lease_id}`"
-            ),
-        ));
-    }
-    let previous_worker_id = read_string(&previous, "worker_id", args.previous_rollback.as_path())?;
-    let next_worker_id = read_string(&next, "worker_id", args.next_rollback.as_path())?;
-    if previous_worker_id != next_worker_id {
-        return Err(SchedulerHeartbeatPointerRollbackSupersessionError::Parse(
-            format!(
-                "rollback records must share one worker_id, found `{previous_worker_id}` and `{next_worker_id}`"
-            ),
-        ));
-    }
-
-    let previous_restored_pointer_path = read_string(
+    let record = SchedulerHeartbeatPointerRollbackSupersessionRecord::from_rollback_objects(
         &previous,
-        "restored_pointer_path",
         args.previous_rollback.as_path(),
-    )?;
-    let next_restored_pointer_path =
-        read_string(&next, "restored_pointer_path", args.next_rollback.as_path())?;
-    let previous_restored_heartbeat_path = read_string(
-        &previous,
-        "restored_heartbeat_path",
-        args.previous_rollback.as_path(),
-    )?;
-    let next_restored_heartbeat_path = read_string(
         &next,
-        "restored_heartbeat_path",
         args.next_rollback.as_path(),
-    )?;
-    let previous_restored_state = read_string(
-        &previous,
-        "restored_state",
-        args.previous_rollback.as_path(),
-    )?;
-    let next_restored_state = read_string(&next, "restored_state", args.next_rollback.as_path())?;
-    let previous_restored_observed_at_unix_ms = read_u64(
-        &previous,
-        "restored_observed_at_unix_ms",
-        args.previous_rollback.as_path(),
-    )?;
-    let next_restored_observed_at_unix_ms = read_u64(
-        &next,
-        "restored_observed_at_unix_ms",
-        args.next_rollback.as_path(),
-    )?;
-    let previous_restored_progress_marker =
-        read_optional_string(&previous, "restored_progress_marker");
-    let next_restored_progress_marker = read_optional_string(&next, "restored_progress_marker");
+        args.superseded_at_unix_ms,
+    )
+    .map_err(SchedulerHeartbeatPointerRollbackSupersessionError::from)?;
 
-    if previous_restored_pointer_path == next_restored_pointer_path
-        && previous_restored_heartbeat_path == next_restored_heartbeat_path
-        && previous_restored_state == next_restored_state
-        && previous_restored_observed_at_unix_ms == next_restored_observed_at_unix_ms
-        && previous_restored_progress_marker == next_restored_progress_marker
-    {
-        return Err(SchedulerHeartbeatPointerRollbackSupersessionError::Parse(
-            format!(
-                "next rollback `{}` must differ from previous rollback `{}` in restored_pointer_path, restored_heartbeat_path, restored_state, restored_observed_at_unix_ms, or restored_progress_marker",
-                args.next_rollback.display(),
-                args.previous_rollback.display()
-            ),
-        ));
-    }
-
-    let mut supersession = json!({
+    let supersession = json!({
         "schema_version": "1",
-        "previous_rollback_path": args.previous_rollback.display().to_string(),
-        "next_rollback_path": args.next_rollback.display().to_string(),
-        "previous_restored_pointer_path": previous_restored_pointer_path,
-        "next_restored_pointer_path": next_restored_pointer_path,
-        "previous_restored_heartbeat_path": previous_restored_heartbeat_path,
-        "next_restored_heartbeat_path": next_restored_heartbeat_path,
-        "job_id": next_job_id,
-        "lease_id": next_lease_id,
-        "worker_id": next_worker_id,
-        "previous_restored_state": previous_restored_state,
-        "next_restored_state": next_restored_state,
-        "previous_restored_observed_at_unix_ms": previous_restored_observed_at_unix_ms,
-        "next_restored_observed_at_unix_ms": next_restored_observed_at_unix_ms,
-        "superseded_at_unix_ms": args.superseded_at_unix_ms,
+        "previous_rollback_path": record.previous_rollback_path,
+        "next_rollback_path": record.next_rollback_path,
+        "previous_restored_pointer_path": record.previous_restored_pointer_path,
+        "next_restored_pointer_path": record.next_restored_pointer_path,
+        "previous_restored_heartbeat_path": record.previous_restored_heartbeat_path,
+        "next_restored_heartbeat_path": record.next_restored_heartbeat_path,
+        "job_id": record.job_id,
+        "lease_id": record.lease_id,
+        "worker_id": record.worker_id,
+        "previous_restored_state": record.previous_restored_state,
+        "next_restored_state": record.next_restored_state,
+        "previous_restored_observed_at_unix_ms": record.previous_restored_observed_at_unix_ms,
+        "next_restored_observed_at_unix_ms": record.next_restored_observed_at_unix_ms,
+        "previous_restored_progress_marker": record.previous_restored_progress_marker,
+        "next_restored_progress_marker": record.next_restored_progress_marker,
+        "superseded_at_unix_ms": record.superseded_at_unix_ms,
     });
-    if let Some(previous_progress_marker) = previous_restored_progress_marker {
-        supersession
-            .as_object_mut()
-            .expect("supersession must be object")
-            .insert(
-                "previous_restored_progress_marker".to_string(),
-                previous_progress_marker.into(),
-            );
-    }
-    if let Some(next_progress_marker) = next_restored_progress_marker {
-        supersession
-            .as_object_mut()
-            .expect("supersession must be object")
-            .insert(
-                "next_restored_progress_marker".to_string(),
-                next_progress_marker.into(),
-            );
-    }
-
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(&supersession).map_err(|err| {
-        SchedulerHeartbeatPointerRollbackSupersessionError::Parse(format!(
-            "serialize scheduler heartbeat pointer rollback supersession json: {err}"
-        ))
-    })?;
-    fs::write(&args.out_path, text)?;
+    write_json_value(args.out_path.as_path(), &supersession)
+        .map_err(SchedulerHeartbeatPointerRollbackSupersessionError::from)?;
 
     emit_event(
         "info",
@@ -318,62 +245,6 @@ where
             usage()
         ))
     })
-}
-
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, SchedulerHeartbeatPointerRollbackSupersessionError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        SchedulerHeartbeatPointerRollbackSupersessionError::Parse(format!(
-            "parse {kind} {}: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        SchedulerHeartbeatPointerRollbackSupersessionError::Parse(format!(
-            "{kind} {} must be a JSON object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &str,
-    path: &Path,
-) -> Result<String, SchedulerHeartbeatPointerRollbackSupersessionError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(ToOwned::to_owned)
-        .ok_or_else(|| {
-            SchedulerHeartbeatPointerRollbackSupersessionError::Parse(format!(
-                "gpu scheduler heartbeat pointer rollback {} is missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &serde_json::Map<String, Value>,
-    key: &str,
-    path: &Path,
-) -> Result<u64, SchedulerHeartbeatPointerRollbackSupersessionError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        SchedulerHeartbeatPointerRollbackSupersessionError::Parse(format!(
-            "gpu scheduler heartbeat pointer rollback {} is missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
-
-fn read_optional_string(object: &serde_json::Map<String, Value>, key: &str) -> Option<String> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(ToOwned::to_owned)
 }
 
 fn usage() -> &'static str {

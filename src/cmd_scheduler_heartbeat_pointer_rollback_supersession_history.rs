@@ -1,9 +1,10 @@
 use std::path::PathBuf;
 
 use afterburner::command_reconciliation::{
-    ReconciliationError, append_history_entry, load_json_object, load_or_init_history, read_string,
-    read_u64, write_emitted_json,
+    ReconciliationError, append_history_entry, load_json_object, load_or_init_history,
+    write_emitted_json,
 };
+use afterburner::scheduler_heartbeat_pointer_rollback_helpers::SchedulerHeartbeatPointerRollbackSupersessionRecord;
 use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str =
@@ -88,29 +89,30 @@ where
         args.supersession.as_path(),
         "gpu scheduler heartbeat pointer rollback supersession",
     )?;
+    let record = SchedulerHeartbeatPointerRollbackSupersessionRecord::from_object(
+        &supersession,
+        args.supersession.as_path(),
+    )?;
 
     let mut history = load_or_init_history(args.out_path.as_path())?;
     let mut entry = json!({
         "event": args.event,
         "supersession_path": args.supersession.display().to_string(),
-        "previous_restored_pointer_path": read_string(&supersession, "previous_restored_pointer_path", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_pointer_path": read_string(&supersession, "next_restored_pointer_path", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_heartbeat_path": read_string(&supersession, "previous_restored_heartbeat_path", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_heartbeat_path": read_string(&supersession, "next_restored_heartbeat_path", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "job_id": read_string(&supersession, "job_id", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "lease_id": read_string(&supersession, "lease_id", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "worker_id": read_string(&supersession, "worker_id", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_state": read_string(&supersession, "previous_restored_state", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_state": read_string(&supersession, "next_restored_state", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "previous_restored_observed_at_unix_ms": read_u64(&supersession, "previous_restored_observed_at_unix_ms", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "next_restored_observed_at_unix_ms": read_u64(&supersession, "next_restored_observed_at_unix_ms", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
-        "superseded_at_unix_ms": read_u64(&supersession, "superseded_at_unix_ms", args.supersession.as_path(), "gpu scheduler heartbeat pointer rollback supersession")?,
+        "previous_restored_pointer_path": record.previous_restored_pointer_path,
+        "next_restored_pointer_path": record.next_restored_pointer_path,
+        "previous_restored_heartbeat_path": record.previous_restored_heartbeat_path,
+        "next_restored_heartbeat_path": record.next_restored_heartbeat_path,
+        "job_id": record.job_id,
+        "lease_id": record.lease_id,
+        "worker_id": record.worker_id,
+        "previous_restored_state": record.previous_restored_state,
+        "next_restored_state": record.next_restored_state,
+        "previous_restored_observed_at_unix_ms": record.previous_restored_observed_at_unix_ms,
+        "next_restored_observed_at_unix_ms": record.next_restored_observed_at_unix_ms,
+        "superseded_at_unix_ms": record.superseded_at_unix_ms,
         "recorded_at_unix_ms": args.recorded_at_unix_ms,
     });
-    if let Some(previous_progress_marker) = supersession
-        .get("previous_restored_progress_marker")
-        .and_then(serde_json::Value::as_str)
-    {
+    if let Some(previous_progress_marker) = record.previous_restored_progress_marker {
         entry
             .as_object_mut()
             .expect("history entry must be object")
@@ -119,10 +121,7 @@ where
                 previous_progress_marker.into(),
             );
     }
-    if let Some(next_progress_marker) = supersession
-        .get("next_restored_progress_marker")
-        .and_then(serde_json::Value::as_str)
-    {
+    if let Some(next_progress_marker) = record.next_restored_progress_marker {
         entry
             .as_object_mut()
             .expect("history entry must be object")
