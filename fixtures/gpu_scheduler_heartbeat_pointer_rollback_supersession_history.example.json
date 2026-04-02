@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "entries": [
+    {
+      "event": "superseded",
+      "supersession_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession.json",
+      "previous_restored_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.previous.json",
+      "next_restored_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.older.json",
+      "previous_restored_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.previous.json",
+      "next_restored_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.older.json",
+      "job_id": "job-0001",
+      "lease_id": "lease-job-0001",
+      "worker_id": "worker-0",
+      "previous_restored_state": "checkpointed",
+      "next_restored_state": "rolled-back",
+      "previous_restored_observed_at_unix_ms": 1735689900000,
+      "next_restored_observed_at_unix_ms": 1735689840000,
+      "previous_restored_progress_marker": "checkpoint-group-0003/step-128",
+      "next_restored_progress_marker": "checkpoint-group-0002/step-64",
+      "superseded_at_unix_ms": 1735690200000,
+      "recorded_at_unix_ms": 1735690210000
+    }
+  ]
+}
