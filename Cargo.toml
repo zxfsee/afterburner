@@ -13,21 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Burn `.bpk` migration surface inventory report [Frameworks, Runtime Infra]
-  - Goal: Materialize one explicit report of current `.mpk` contract touchpoints and cutover-sensitive surfaces so the later `.bpk` migration can execute as one contract change when a newer stable Burn release exists.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `tests/`, `fixtures/`, `justfile`, `docs/workflows.md`, `docs/reference.md`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-
-- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
-  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
-  - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-  - Blocked-by: Burn `.bpk` migration surface inventory report; newer stable Burn release after `0.20.1`; see ADR-033.
-
 - Scheduler heartbeat pointer supersession reconciliation history adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
   - Goal: Append one compact history artifact over scheduler heartbeat pointer supersession reconciliation changes so downstream control-plane tooling can audit desired-versus-current active-heartbeat replacement selection updates without shell logs or a persistent coordination store prematurely.
   - Kind: `mixed`
