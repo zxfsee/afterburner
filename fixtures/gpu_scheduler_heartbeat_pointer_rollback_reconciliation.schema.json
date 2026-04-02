@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/gpu-scheduler-heartbeat-pointer-rollback-reconciliation/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "rollback_path",
+    "current_rollback_path",
+    "desired",
+    "current",
+    "reconciliation_status"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "rollback_path": { "type": "string", "minLength": 1 },
+    "current_rollback_path": { "type": "string", "minLength": 1 },
+    "desired": { "$ref": "#/$defs/payload" },
+    "current": {
+      "allOf": [
+        { "$ref": "#/$defs/payload" },
+        {
+          "type": "object",
+          "required": ["current_rollback_path"],
+          "properties": {
+            "current_rollback_path": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "reconciliation_status": { "type": "string", "enum": ["aligned", "needs-update"] }
+  },
+  "$defs": {
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "current_pointer_path",
+        "restored_pointer_path",
+        "previous_heartbeat_path",
+        "restored_heartbeat_path",
+        "job_id",
+        "lease_id",
+        "worker_id",
+        "previous_state",
+        "restored_state",
+        "previous_observed_at_unix_ms",
+        "restored_observed_at_unix_ms",
+        "rolled_back_at_unix_ms"
+      ],
+      "properties": {
+        "current_pointer_path": { "type": "string", "minLength": 1 },
+        "restored_pointer_path": { "type": "string", "minLength": 1 },
+        "previous_heartbeat_path": { "type": "string", "minLength": 1 },
+        "restored_heartbeat_path": { "type": "string", "minLength": 1 },
+        "job_id": { "type": "string", "minLength": 1 },
+        "lease_id": { "type": "string", "minLength": 1 },
+        "worker_id": { "type": "string", "minLength": 1 },
+        "previous_state": { "type": "string", "minLength": 1 },
+        "restored_state": { "type": "string", "minLength": 1 },
+        "previous_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "restored_observed_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "previous_progress_marker": { "type": "string", "minLength": 1 },
+        "restored_progress_marker": { "type": "string", "minLength": 1 },
+        "rolled_back_at_unix_ms": { "type": "integer", "minimum": 0 },
+        "current_rollback_path": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

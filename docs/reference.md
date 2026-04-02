@@ -70,6 +70,7 @@ unless they graduate into a clear operator intent.
   - `gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json`
   - `gpu_scheduler_heartbeat_pointer_rollback.json`
   - `gpu_scheduler_heartbeat_pointer_rollback_history.json`
+  - `gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json`
   - `gpu_scheduler_heartbeat_history.json`
   - `gpu_scheduler_heartbeat_reconciliation.json`
   - `gpu_scheduler_heartbeat_reconciliation_history.json`

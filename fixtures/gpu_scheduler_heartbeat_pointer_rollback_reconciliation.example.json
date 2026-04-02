@@ -1,0 +1,39 @@
+{
+  "schema_version": "1",
+  "rollback_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.json",
+  "current_rollback_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.current.json",
+  "desired": {
+    "current_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.json",
+    "restored_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.previous.json",
+    "previous_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+    "restored_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.previous.json",
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "previous_state": "running",
+    "restored_state": "checkpointed",
+    "previous_observed_at_unix_ms": 1735689960000,
+    "restored_observed_at_unix_ms": 1735689900000,
+    "previous_progress_marker": "checkpoint-group-0004/step-256",
+    "restored_progress_marker": "checkpoint-group-0003/step-128",
+    "rolled_back_at_unix_ms": 1735690100000
+  },
+  "current": {
+    "current_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.json",
+    "restored_pointer_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer.previous.json",
+    "previous_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.json",
+    "restored_heartbeat_path": "artifacts/deploy/gpu_scheduler_heartbeat.previous.json",
+    "job_id": "job-0001",
+    "lease_id": "lease-job-0001",
+    "worker_id": "worker-0",
+    "previous_state": "running",
+    "restored_state": "checkpointed",
+    "previous_observed_at_unix_ms": 1735689960000,
+    "restored_observed_at_unix_ms": 1735689900000,
+    "previous_progress_marker": "checkpoint-group-0004/step-256",
+    "restored_progress_marker": "checkpoint-group-0003/step-128",
+    "rolled_back_at_unix_ms": 1735690100000,
+    "current_rollback_path": "artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.current.json"
+  },
+  "reconciliation_status": "aligned"
+}
