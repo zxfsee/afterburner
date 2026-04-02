@@ -34,3 +34,11 @@ Rules:
   - Boundary: `runtime-scheduler`
   - Contracts: `artifact`, `event`, `ops`
   - Scope: `src/`, `tests/`, `fixtures/`, `justfile`, `docs/reference.md`, `ARCHITECTURE.md`, `docs/adr/`
+
+- Scheduler heartbeat pointer supersession reconciliation adapter [Distributed Training, Runtime Infra, Serving/Deployment Infra]
+  - Goal: Materialize one reconciliation artifact over scheduler heartbeat pointer supersession state so downstream control-plane tooling can compare desired-versus-current active-heartbeat replacement selection without shell checks or a persistent coordination store prematurely.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`, `ops`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/adr/`
+  - Blocked-by: Scheduler heartbeat pointer supersession adapter
