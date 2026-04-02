@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `README.md`, `docs/reference.md`
+  - Scope: `README.md`, `docs/reference.md`, `tests/`
 
 - GitHub repo metadata application checklist [Runtime Infra, Serving/Deployment Infra]
   - Goal: Record the exact GitHub settings targets for the repo metadata polish step so description, topics, and website/no-website decisions can be applied later without reopening the wording discussion.
