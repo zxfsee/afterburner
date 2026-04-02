@@ -62,6 +62,7 @@ Contract and capability detail lives here so [README.md](../README.md) can stay 
   - `gpu_scheduler_heartbeat_reconciliation_history.json`
   - `gpu_scheduler_heartbeat_supersession.json`
   - `gpu_scheduler_heartbeat_supersession_reconciliation.json`
+  - `gpu_scheduler_heartbeat_supersession_history.json`
   - `deployment_verification_receipt.json`
   - `deployment_verification_receipt_locator_pointer_history.json`
   - `deployment_verification_receipt_locator_pointer.json`
