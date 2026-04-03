@@ -13,8 +13,15 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification bundle grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the deployment-verification bundle noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring bundle artifact taxonomy directly.
+- Deployment verification bundle core grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the deployment-verification bundle, bundle-history, bundle-reconciliation, and bundle-transport-locator recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring bundle artifact taxonomy directly across the core bundle surface.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Deployment verification bundle locator and rollback grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the deployment-verification bundle locator, locator rollback, and rollback supersession recipe expansion into grouped `just` entrypoints backed by typed helpers so the remaining bundle-side mutation surface stops carrying a hand-expanded command registry.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`
