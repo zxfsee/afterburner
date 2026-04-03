@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
@@ -206,41 +205,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DistributedShardLineageEvidenceBundleError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DistributedShardLineageEvidenceBundleError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DistributedShardLineageEvidenceBundleError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DistributedShardLineageEvidenceBundleError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DistributedShardLineageEvidenceBundleError::Parse(format!(
-                "distributed shard lineage receipt `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
+afterburner::define_command_input_json_kind_helpers!(DistributedShardLineageEvidenceBundleError, "distributed shard lineage receipt");
 
 fn usage() -> &'static str {
     "usage: afterburner lineage evidence-bundle --receipt PATH [--out PATH]"

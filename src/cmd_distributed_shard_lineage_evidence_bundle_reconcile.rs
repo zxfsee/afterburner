@@ -1,10 +1,9 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
 };
-use serde_json::{Map, Value, json};
+use serde_json::{Value, json};
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation.json";
@@ -228,70 +227,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DistributedShardLineageEvidenceBundleReconcileError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DistributedShardLineageEvidenceBundleReconcileError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DistributedShardLineageEvidenceBundleReconcileError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<String, DistributedShardLineageEvidenceBundleReconcileError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DistributedShardLineageEvidenceBundleReconcileError::Parse(format!(
-                "{kind} `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<u64, DistributedShardLineageEvidenceBundleReconcileError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        DistributedShardLineageEvidenceBundleReconcileError::Parse(format!(
-            "{kind} `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
-
-fn read_object(
-    object: &Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<Value, DistributedShardLineageEvidenceBundleReconcileError> {
-    object.get(key).cloned().ok_or_else(|| {
-        DistributedShardLineageEvidenceBundleReconcileError::Parse(format!(
-            "{kind} `{}` missing field `{key}`",
-            path.display()
-        ))
-    })
-}
+afterburner::define_command_input_json_helpers!(DistributedShardLineageEvidenceBundleReconcileError);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage reconcile-evidence-bundle --receipt PATH --bundle PATH [--out PATH]"

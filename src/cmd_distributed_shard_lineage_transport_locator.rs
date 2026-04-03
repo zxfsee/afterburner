@@ -1,8 +1,8 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::observability::emit_event;
-use serde_json::{Value, json};
+use serde_json::json;
 
 const DISTRIBUTED_SHARD_LINEAGE_TRANSPORT_LOCATOR_PATH: &str =
     "artifacts/train/distributed_shard_lineage_transport_locator.json";
@@ -168,41 +168,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DistributedShardLineageTransportLocatorError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DistributedShardLineageTransportLocatorError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DistributedShardLineageTransportLocatorError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DistributedShardLineageTransportLocatorError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DistributedShardLineageTransportLocatorError::Parse(format!(
-                "distributed shard lineage evidence handoff `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
+afterburner::define_command_input_json_kind_helpers!(DistributedShardLineageTransportLocatorError, "distributed shard lineage evidence handoff");
 
 fn usage() -> &'static str {
     "usage: afterburner lineage point-transport-locator --handoff PATH [--out PATH]"

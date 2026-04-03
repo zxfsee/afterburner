@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
@@ -278,24 +277,7 @@ fn require_non_empty(
     Ok(value)
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DistributedShardLineageReceiptError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DistributedShardLineageReceiptError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DistributedShardLineageReceiptError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
+afterburner::define_command_input_json_helpers!(DistributedShardLineageReceiptError);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage receipt --metadata PATH --shard-id ID --source NAME --source-revision REV --checkpoint-group NAME --checkpoint-root PATH --checked-at-unix-ms N [--out PATH]"
