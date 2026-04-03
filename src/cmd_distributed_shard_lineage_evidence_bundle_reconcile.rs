@@ -227,7 +227,9 @@ where
     })
 }
 
-afterburner::define_command_input_json_helpers!(DistributedShardLineageEvidenceBundleReconcileError);
+afterburner::define_command_input_json_helpers!(
+    DistributedShardLineageEvidenceBundleReconcileError
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage reconcile-evidence-bundle --receipt PATH --bundle PATH [--out PATH]"

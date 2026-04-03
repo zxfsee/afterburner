@@ -12,8 +12,8 @@ fn fixture_path(name: &str) -> PathBuf {
 }
 
 #[test]
-fn gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history_schema_and_workflow_are_explicit(
-) {
+fn gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history_schema_and_workflow_are_explicit()
+ {
     let schema_text = fs::read_to_string(fixture_path(
         "gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.schema.json",
     ))

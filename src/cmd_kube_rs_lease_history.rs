@@ -204,7 +204,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(KubeRsLeaseHistoryError, "kube-rs gpu lease pointer", "kube-rs gpu lease history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    KubeRsLeaseHistoryError,
+    "kube-rs gpu lease pointer",
+    "kube-rs gpu lease history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-kube-rs-lease-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

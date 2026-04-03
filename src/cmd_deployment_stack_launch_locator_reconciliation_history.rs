@@ -219,7 +219,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DeploymentStackLaunchLocatorReconciliationHistoryError, "deployment stack launch locator reconciliation", "deployment stack launch locator reconciliation history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentStackLaunchLocatorReconciliationHistoryError,
+    "deployment stack launch locator reconciliation",
+    "deployment stack launch locator reconciliation history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-launch-locator-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

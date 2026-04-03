@@ -212,7 +212,9 @@ where
     })
 }
 
-afterburner::define_command_input_json_helpers!(DeploymentStackLaunchTransportLocatorReconcileError);
+afterburner::define_command_input_json_helpers!(
+    DeploymentStackLaunchTransportLocatorReconcileError
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy reconcile-launch-transport-locator --handoff PATH --locator PATH [--out PATH]"

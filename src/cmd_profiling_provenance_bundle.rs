@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
-    emit_json_artifact_written, write_json_value, JsonArtifactError,
+    JsonArtifactError, emit_json_artifact_written, write_json_value,
 };
 use serde_json::json;
 

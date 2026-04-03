@@ -223,7 +223,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DistributedShardLineageEvidenceBundleReconciliationHistoryError, "distributed shard lineage evidence bundle reconciliation", "distributed shard lineage evidence bundle reconciliation history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DistributedShardLineageEvidenceBundleReconciliationHistoryError,
+    "distributed shard lineage evidence bundle reconciliation",
+    "distributed shard lineage evidence bundle reconciliation history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage record-evidence-bundle-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

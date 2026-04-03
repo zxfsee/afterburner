@@ -218,7 +218,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(KubeRsLeaseReconciliationHistoryError, "kube-rs gpu lease reconciliation", "kube-rs gpu lease reconciliation history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    KubeRsLeaseReconciliationHistoryError,
+    "kube-rs gpu lease reconciliation",
+    "kube-rs gpu lease reconciliation history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-kube-rs-lease-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

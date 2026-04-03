@@ -167,7 +167,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DeploymentStackLaunchHandoffError, "deployment stack launch evidence bundle");
+afterburner::define_command_input_json_kind_helpers!(
+    DeploymentStackLaunchHandoffError,
+    "deployment stack launch evidence bundle"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy stack-launch-handoff --bundle PATH [--out PATH]"

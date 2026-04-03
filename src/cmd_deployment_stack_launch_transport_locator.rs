@@ -167,7 +167,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DeploymentStackLaunchTransportLocatorError, "deployment stack launch evidence handoff");
+afterburner::define_command_input_json_kind_helpers!(
+    DeploymentStackLaunchTransportLocatorError,
+    "deployment stack launch evidence handoff"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy point-launch-transport-locator --handoff PATH [--out PATH]"

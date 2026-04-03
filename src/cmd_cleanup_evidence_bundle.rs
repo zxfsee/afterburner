@@ -1,9 +1,9 @@
 use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
-    emit_json_artifact_written, write_json_value, JsonArtifactError,
+    JsonArtifactError, emit_json_artifact_written, write_json_value,
 };
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 const ARTIFACT_CLEANUP_EVIDENCE_BUNDLE_PATH: &str =
     "artifacts/deploy/artifact_cleanup_evidence_bundle.json";

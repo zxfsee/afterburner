@@ -219,7 +219,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DeploymentStackLaunchTransportLocatorHistoryError, "deployment stack launch transport locator", "deployment stack launch transport locator history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentStackLaunchTransportLocatorHistoryError,
+    "deployment stack launch transport locator",
+    "deployment stack launch transport locator history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-launch-transport-locator-history --locator PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

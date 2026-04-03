@@ -178,7 +178,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(KubeRsLeaseReconcileError, "gpu scheduler lease");
+afterburner::define_command_input_json_kind_helpers!(
+    KubeRsLeaseReconcileError,
+    "gpu scheduler lease"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy kube-rs-lease-reconcile --lease PATH --namespace NAME --resource-name NAME [--out PATH]"

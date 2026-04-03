@@ -215,7 +215,9 @@ where
     })
 }
 
-afterburner::define_command_input_json_helpers!(DistributedShardLineageTransportLocatorReconcileError);
+afterburner::define_command_input_json_helpers!(
+    DistributedShardLineageTransportLocatorReconcileError
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage reconcile-transport-locator --handoff PATH --locator PATH [--out PATH]"

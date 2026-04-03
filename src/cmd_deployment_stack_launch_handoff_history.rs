@@ -222,7 +222,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DeploymentStackLaunchHandoffHistoryError, "deployment stack launch evidence handoff", "deployment stack launch evidence handoff history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentStackLaunchHandoffHistoryError,
+    "deployment stack launch evidence handoff",
+    "deployment stack launch evidence handoff history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-launch-handoff-history --handoff PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

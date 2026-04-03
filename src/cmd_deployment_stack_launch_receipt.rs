@@ -226,7 +226,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DeploymentStackLaunchReceiptError, "deployment stack launch plan");
+afterburner::define_command_input_json_kind_helpers!(
+    DeploymentStackLaunchReceiptError,
+    "deployment stack launch plan"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy stack-launch-receipt --plan PATH --port PORT --launched-at-unix-ms N [--out PATH]"

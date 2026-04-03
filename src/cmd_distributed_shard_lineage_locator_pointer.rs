@@ -168,7 +168,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DistributedShardLineageLocatorPointerError, "distributed shard lineage transport locator");
+afterburner::define_command_input_json_kind_helpers!(
+    DistributedShardLineageLocatorPointerError,
+    "distributed shard lineage transport locator"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage point-locator --locator PATH [--out PATH]"

@@ -167,7 +167,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DeploymentStackLaunchLocatorPointerError, "deployment stack launch transport locator");
+afterburner::define_command_input_json_kind_helpers!(
+    DeploymentStackLaunchLocatorPointerError,
+    "deployment stack launch transport locator"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy point-launch-locator --locator PATH [--out PATH]"

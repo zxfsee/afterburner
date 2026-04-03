@@ -228,7 +228,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DistributedShardLineageTransportLocatorReconciliationHistoryError, "distributed shard lineage transport locator reconciliation", "distributed shard lineage transport locator reconciliation history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DistributedShardLineageTransportLocatorReconciliationHistoryError,
+    "distributed shard lineage transport locator reconciliation",
+    "distributed shard lineage transport locator reconciliation history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage record-transport-locator-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

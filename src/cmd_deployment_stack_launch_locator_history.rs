@@ -218,7 +218,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DeploymentStackLaunchLocatorHistoryError, "deployment stack launch locator pointer", "deployment stack launch locator history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentStackLaunchLocatorHistoryError,
+    "deployment stack launch locator pointer",
+    "deployment stack launch locator history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-launch-locator-history --pointer PATH --event NAME --recorded-at-unix-ms N [--out PATH]"

@@ -220,7 +220,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DistributedShardLineageLocatorHistoryError, "distributed shard lineage locator pointer", "distributed shard lineage locator history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DistributedShardLineageLocatorHistoryError,
+    "distributed shard lineage locator pointer",
+    "distributed shard lineage locator history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage record-locator-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

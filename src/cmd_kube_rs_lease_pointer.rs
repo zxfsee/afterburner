@@ -161,7 +161,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(KubeRsLeasePointerError, "kube-rs gpu lease reconciliation");
+afterburner::define_command_input_json_kind_helpers!(
+    KubeRsLeasePointerError,
+    "kube-rs gpu lease reconciliation"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy point-kube-rs-lease --reconciliation PATH [--out PATH]"

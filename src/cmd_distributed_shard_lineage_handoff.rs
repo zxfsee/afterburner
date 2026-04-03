@@ -166,7 +166,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DistributedShardLineageHandoffError, "distributed shard lineage evidence bundle");
+afterburner::define_command_input_json_kind_helpers!(
+    DistributedShardLineageHandoffError,
+    "distributed shard lineage evidence bundle"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage handoff --bundle PATH [--out PATH]"

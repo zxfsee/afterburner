@@ -168,7 +168,10 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_helpers!(DistributedShardLineageTransportLocatorError, "distributed shard lineage evidence handoff");
+afterburner::define_command_input_json_kind_helpers!(
+    DistributedShardLineageTransportLocatorError,
+    "distributed shard lineage evidence handoff"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner lineage point-transport-locator --handoff PATH [--out PATH]"

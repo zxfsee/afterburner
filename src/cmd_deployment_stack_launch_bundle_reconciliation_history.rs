@@ -219,7 +219,11 @@ where
     })
 }
 
-afterburner::define_command_input_json_kind_history_helpers!(DeploymentStackLaunchBundleReconciliationHistoryError, "deployment stack launch evidence bundle reconciliation", "deployment stack launch evidence bundle reconciliation history");
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentStackLaunchBundleReconciliationHistoryError,
+    "deployment stack launch evidence bundle reconciliation",
+    "deployment stack launch evidence bundle reconciliation history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner deploy record-launch-bundle-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
