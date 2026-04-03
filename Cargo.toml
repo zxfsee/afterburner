@@ -13,6 +13,13 @@ header = """# Changelog
 
 ## TODO
 
+- Queue resume and completion-boundary hardening [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Add a first-class repair-and-resume path for stale queue snapshot lineage, add a distinct completion-boundary guard for completed TODOs left active, and enforce the new workflow-hardening preemption rule before normal queue advancement resumes.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
+  - Scope: `AGENTS.md`, `justfile`, `src/bin/`, `tests/`, `docs/workflows.md`
+
 - Profile infer native helper extraction [Runtime Infra, Inference]
   - Goal: Move `profile-infer` artifact resolution, backend derivation, and environment snapshot semantics out of recipe-local shell logic and behind one typed native helper while keeping the `just` entrypoint stable.
   - Kind: `mixed`
