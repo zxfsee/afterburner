@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Command-input helper rollout for deployment stack launch [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the deployment-stack launch family so those artifact-heavy variants stop carrying local JSON object loader, string/u64 reader, and history helper logic.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
-
 - Command-input helper rollout for lineage and kube lease [Runtime Infra, Serving/Deployment Infra]
   - Goal: Extend the shared command-input helper surface through the distributed shard-lineage and kube lease families after the deployment-stack launch slice lands.
   - Kind: `mixed`
