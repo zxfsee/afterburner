@@ -1,10 +1,9 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+    emit_json_artifact_written, write_json_value, JsonArtifactError,
 };
-use serde_json::{Value, json};
+use serde_json::json;
 
 const PROFILING_PROVENANCE_EVIDENCE_BUNDLE_PATH: &str =
     "artifacts/profiling/profiling_provenance_evidence_bundle.json";
@@ -85,10 +84,10 @@ where
         "snapshot_path": args.snapshot.display().to_string(),
         "summary_path": args.summary.display().to_string(),
         "captured_at_unix_ms": args.captured_at_unix_ms,
-        "artifact_version": read_string(&summary, "artifact_version", args.summary.as_path())?,
-        "profile_kind": read_string(&summary, "profile_kind", args.summary.as_path())?,
-        "profiler": read_string(&snapshot, "profiler", args.snapshot.as_path())?,
-        "backend": read_string(&summary, "backend", args.summary.as_path())?,
+        "artifact_version": read_string(&summary, "artifact_version", args.summary.as_path(), "profiling hotspot summary")?,
+        "profile_kind": read_string(&summary, "profile_kind", args.summary.as_path(), "profiling hotspot summary")?,
+        "profiler": read_string(&snapshot, "profiler", args.snapshot.as_path(), "profiling environment snapshot")?,
+        "backend": read_string(&summary, "backend", args.summary.as_path(), "profiling hotspot summary")?,
         "evidence_count": 2,
         "evidence_sources": [
             {
@@ -213,39 +212,8 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, ProfilingProvenanceBundleError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        ProfilingProvenanceBundleError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        ProfilingProvenanceBundleError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, ProfilingProvenanceBundleError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            ProfilingProvenanceBundleError::Parse(format!(
-                "profiling artifact `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
 fn usage() -> &'static str {
     "usage: afterburner profile provenance-bundle --snapshot PATH --summary PATH --captured-at-unix-ms N [--out PATH]"
 }
+
+afterburner::define_command_input_json_helpers!(ProfilingProvenanceBundleError);

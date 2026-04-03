@@ -1,10 +1,9 @@
-use std::fs;
 use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+    emit_json_artifact_written, write_json_value, JsonArtifactError,
 };
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 const ARTIFACT_CLEANUP_DRY_RUN_RECEIPT_PATH: &str =
     "artifacts/deploy/artifact_cleanup_dry_run_receipt.json";
@@ -77,8 +76,8 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
-    let inventory = load_json_object(&args.inventory_path)?;
-    let policy = load_json_object(&args.policy_path)?;
+    let inventory = load_json_object(args.inventory_path.as_path(), "cleanup inventory")?;
+    let policy = load_json_object(args.policy_path.as_path(), "cleanup policy")?;
 
     let prune_candidates = inventory
         .get("prune_candidates")
@@ -145,16 +144,6 @@ where
         receipt,
     );
     Ok(())
-}
-
-fn load_json_object(path: &PathBuf) -> Result<serde_json::Map<String, Value>, CleanupDryRunError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        CleanupDryRunError::Parse(format!("parse json at {}: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        CleanupDryRunError::Parse(format!("json at {} must be an object", path.display()))
-    })
 }
 
 fn parse_args<I>(args: I) -> Result<Args, CleanupDryRunError>
@@ -251,3 +240,5 @@ where
 fn usage() -> &'static str {
     "usage: afterburner cleanup dry-run --inventory PATH --policy PATH --generated-at-unix-ms N [--out PATH]"
 }
+
+afterburner::define_command_input_json_helpers!(CleanupDryRunError);

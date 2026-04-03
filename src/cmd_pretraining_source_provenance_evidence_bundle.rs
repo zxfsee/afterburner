@@ -1,10 +1,9 @@
-use std::fs;
 use std::path::{Path, PathBuf};
 
 use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+    emit_json_artifact_written, write_json_value, JsonArtifactError,
 };
-use serde_json::{Value, json};
+use serde_json::json;
 
 const PRETRAINING_SOURCE_PROVENANCE_EVIDENCE_BUNDLE_PATH: &str =
     "artifacts/data/pretraining_source_provenance_evidence_bundle.json";
@@ -83,6 +82,7 @@ where
         &provenance_receipt,
         "approval_receipt_path",
         args.provenance_receipt.as_path(),
+        "pretraining source provenance receipt",
     )?;
     let approval_receipt = load_json_object(
         Path::new(approval_receipt_path.as_str()),
@@ -93,15 +93,15 @@ where
         "schema_version": "1",
         "approval_receipt_path": approval_receipt_path,
         "provenance_receipt_path": args.provenance_receipt.display().to_string(),
-        "source": read_string(&approval_receipt, "source", Path::new(approval_receipt_path.as_str()))?,
-        "source_revision": read_string(&approval_receipt, "source_revision", Path::new(approval_receipt_path.as_str()))?,
-        "approval_status": read_string(&approval_receipt, "approval_status", Path::new(approval_receipt_path.as_str()))?,
+        "source": read_string(&approval_receipt, "source", Path::new(approval_receipt_path.as_str()), "pretraining source approval receipt")?,
+        "source_revision": read_string(&approval_receipt, "source_revision", Path::new(approval_receipt_path.as_str()), "pretraining source approval receipt")?,
+        "approval_status": read_string(&approval_receipt, "approval_status", Path::new(approval_receipt_path.as_str()), "pretraining source approval receipt")?,
         "evidence_count": 1,
         "evidence_sources": [
             {
-                "registry_entry_path": read_string(&provenance_receipt, "registry_entry_path", args.provenance_receipt.as_path())?,
-                "upstream_locator": read_string(&provenance_receipt, "upstream_locator", args.provenance_receipt.as_path())?,
-                "reviewed_metadata_sha256": read_string(&provenance_receipt, "reviewed_metadata_sha256", args.provenance_receipt.as_path())?
+                "registry_entry_path": read_string(&provenance_receipt, "registry_entry_path", args.provenance_receipt.as_path(), "pretraining source provenance receipt")?,
+                "upstream_locator": read_string(&provenance_receipt, "upstream_locator", args.provenance_receipt.as_path(), "pretraining source provenance receipt")?,
+                "reviewed_metadata_sha256": read_string(&provenance_receipt, "reviewed_metadata_sha256", args.provenance_receipt.as_path(), "pretraining source provenance receipt")?
             }
         ]
     });
@@ -188,42 +188,8 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, PretrainingSourceProvenanceEvidenceBundleError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        PretrainingSourceProvenanceEvidenceBundleError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        PretrainingSourceProvenanceEvidenceBundleError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, PretrainingSourceProvenanceEvidenceBundleError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            PretrainingSourceProvenanceEvidenceBundleError::Parse(format!(
-                "pretraining source artifact `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
 fn usage() -> &'static str {
     "usage: afterburner source provenance-evidence-bundle --provenance-receipt PATH [--out PATH]"
 }
+
+afterburner::define_command_input_json_helpers!(PretrainingSourceProvenanceEvidenceBundleError);

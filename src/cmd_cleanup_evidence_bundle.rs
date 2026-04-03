@@ -1,10 +1,9 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
-    JsonArtifactError, emit_json_artifact_written, write_json_value,
+    emit_json_artifact_written, write_json_value, JsonArtifactError,
 };
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 const ARTIFACT_CLEANUP_EVIDENCE_BUNDLE_PATH: &str =
     "artifacts/deploy/artifact_cleanup_evidence_bundle.json";
@@ -116,13 +115,32 @@ where
         }
     }
 
+    let removed_count = read_array(&receipt, "removed_paths", args.execution_receipt.as_path())?
+        .as_array()
+        .map(Vec::len)
+        .ok_or_else(|| {
+            CleanupEvidenceBundleError::Parse(format!(
+                "cleanup execution receipt `{}` missing array field `removed_paths`",
+                args.execution_receipt.display()
+            ))
+        })?;
+    let skipped_count = read_array(&receipt, "skipped_paths", args.execution_receipt.as_path())?
+        .as_array()
+        .map(Vec::len)
+        .ok_or_else(|| {
+            CleanupEvidenceBundleError::Parse(format!(
+                "cleanup execution receipt `{}` missing array field `skipped_paths`",
+                args.execution_receipt.display()
+            ))
+        })?;
+
     let bundle = json!({
         "schema_version": "1",
         "dry_run_receipt_path": read_string(&receipt, "dry_run_receipt_path", args.execution_receipt.as_path())?,
         "execution_receipt_path": args.execution_receipt.display().to_string(),
         "policy_profile": read_string(&receipt, "policy_profile", args.execution_receipt.as_path())?,
-        "removed_count": read_array(&receipt, "removed_paths", args.execution_receipt.as_path())?.len(),
-        "skipped_count": read_array(&receipt, "skipped_paths", args.execution_receipt.as_path())?.len(),
+        "removed_count": removed_count,
+        "skipped_count": skipped_count,
         "evidence_count": evidence_sources.len(),
         "evidence_sources": evidence_sources,
     });
@@ -198,49 +216,11 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, CleanupEvidenceBundleError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        CleanupEvidenceBundleError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        CleanupEvidenceBundleError::Parse(format!("{kind} `{}` must be an object", path.display()))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, CleanupEvidenceBundleError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            CleanupEvidenceBundleError::Parse(format!(
-                "cleanup execution receipt `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_array<'a>(
-    object: &'a serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<&'a Vec<Value>, CleanupEvidenceBundleError> {
-    object.get(key).and_then(Value::as_array).ok_or_else(|| {
-        CleanupEvidenceBundleError::Parse(format!(
-            "cleanup execution receipt `{}` missing array field `{key}`",
-            path.display()
-        ))
-    })
-}
-
 fn usage() -> &'static str {
     "usage: afterburner cleanup evidence-bundle --execution-receipt PATH [--out PATH]"
 }
+
+afterburner::define_command_input_json_kind_helpers!(
+    CleanupEvidenceBundleError,
+    "cleanup execution receipt"
+);
