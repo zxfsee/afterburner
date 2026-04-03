@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Routing and orchestration semantic decomposition [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Prevent routing and orchestration surfaces from becoming the permanent home of domain semantics by extracting grouped dispatch/orchestration helpers out of `src/main.rs`, `justfile`, and similar workflow chokepoints.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `src/bin/`, `justfile`, `tests/`
-
 - Reference and workflow surface consolidation [Runtime Infra]
   - Goal: Shrink `docs/reference.md` and `docs/workflows.md` from long artifact registries into grouped operator/index surfaces that stay useful without carrying every variant explicitly.
   - Kind: `mixed`
@@ -40,6 +33,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `artifact`, `event`
   - Scope: `src/`, `tests/`
+
+- Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, or artifact-family semantics after the decomposition work lands.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/main.rs`, `src/cli_dispatch/`, `justfile`, `tests/`
 
 - GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
