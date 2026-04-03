@@ -11,11 +11,6 @@ fn fixture_path(name: &str) -> PathBuf {
         .join(name)
 }
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
-
 #[test]
 fn gpu_scheduler_heartbeat_pointer_reconciliation_schema_and_workflow_are_explicit() {
     let schema_text = fs::read_to_string(fixture_path(
@@ -53,28 +48,6 @@ fn gpu_scheduler_heartbeat_pointer_reconciliation_schema_and_workflow_are_explic
     .map(str::to_string)
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
-
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("scheduler-heartbeat-point-reconcile pointer current_pointer:"),
-        "justfile must expose the scheduler-heartbeat-point-reconcile workflow"
-    );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("gpu_scheduler_heartbeat_pointer_reconciliation.json"),
-        "workflow reference must mention the scheduler heartbeat pointer reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just scheduler-heartbeat-point-reconcile"),
-        "workflow reference must mention the scheduler heartbeat pointer reconciliation workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("gpu_scheduler_heartbeat_pointer_reconciliation.json"),
-        "reference index must mention the scheduler heartbeat pointer reconciliation artifact"
-    );
 }
 
 #[test]

@@ -205,68 +205,8 @@ scheduler-heartbeat job_id lease_id worker_id state observed_at_unix_ms:
 scheduler-heartbeat-point heartbeat:
     cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point --heartbeat {{ heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer.json
 
-scheduler-heartbeat-point-record-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_history.json
-
-scheduler-heartbeat-point-reconcile pointer current_pointer:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-reconcile --pointer {{ pointer }} --current-pointer {{ current_pointer }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_reconciliation.json
-
-scheduler-heartbeat-point-supersede previous_pointer next_pointer superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-supersede --previous-pointer {{ previous_pointer }} --next-pointer {{ next_pointer }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession.json
-
-scheduler-heartbeat-point-record-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_history.json
-
-scheduler-heartbeat-point-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-reconcile-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation.json
-
-scheduler-heartbeat-point-record-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json
-
-scheduler-heartbeat-point-rollback current_pointer restored_pointer rolled_back_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-rollback --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/gpu_scheduler_heartbeat_pointer.json --out-record artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.json
-
-scheduler-heartbeat-point-record-rollback-history rollback event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-rollback-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_history.json
-
-scheduler-heartbeat-point-rollback-reconcile rollback current_rollback:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-reconcile-rollback --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json
-
-scheduler-heartbeat-point-record-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-rollback-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json
-
-scheduler-heartbeat-point-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-rollback-supersede --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession.json
-
-scheduler-heartbeat-point-record-rollback-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-rollback-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_history.json
-
-scheduler-heartbeat-point-rollback-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-reconcile-rollback-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json
-
-scheduler-heartbeat-point-record-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point-record-rollback-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json
-
-scheduler-heartbeat-record-history heartbeat event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat record-history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
-
-scheduler-heartbeat-reconcile heartbeat current_heartbeat:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat reconcile --heartbeat {{ heartbeat }} --current-heartbeat {{ current_heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation.json
-
-scheduler-heartbeat-record-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat record-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation_history.json
-
-scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat supersede --previous-heartbeat {{ previous_heartbeat }} --next-heartbeat {{ next_heartbeat }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession.json
-
-scheduler-heartbeat-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat reconcile-supersession --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation.json
-
-scheduler-heartbeat-record-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat record-supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation_history.json
-
-scheduler-heartbeat-record-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat record-supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_history.json
+scheduler-heartbeat-manage action +args:
+    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat {{ action }} {{ args }}
 
 distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
     cargo run --locked --bin afterburner -- deploy load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
@@ -638,3 +578,6 @@ queue-snapshot-check:
 
 workflow-surface-check-deployment-verification:
     cargo nextest run --locked --test deployment_verification_workflow_surface
+
+workflow-surface-check-scheduler-heartbeat:
+    cargo nextest run --locked --test scheduler_heartbeat_workflow_surface

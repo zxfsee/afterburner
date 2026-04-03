@@ -60,29 +60,11 @@ unless they graduate into a clear operator intent.
   - `kube_rs_gpu_lease_reconciliation_history.json`
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
-  - `gpu_scheduler_heartbeat.json`
-  - `gpu_scheduler_heartbeat_pointer.json`
-  - `gpu_scheduler_heartbeat_pointer_history.json`
-  - `gpu_scheduler_heartbeat_pointer_reconciliation.json`
-  - `gpu_scheduler_heartbeat_pointer_supersession.json`
-  - `gpu_scheduler_heartbeat_pointer_supersession_history.json`
-  - `gpu_scheduler_heartbeat_pointer_supersession_reconciliation.json`
-  - `gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_history.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_supersession.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_supersession_history.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json`
-  - `gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json`
-  - `gpu_scheduler_heartbeat_history.json`
-  - `gpu_scheduler_heartbeat_reconciliation.json`
-  - `gpu_scheduler_heartbeat_reconciliation_history.json`
-  - `gpu_scheduler_heartbeat_supersession.json`
-  - `gpu_scheduler_heartbeat_supersession_reconciliation.json`
-  - `gpu_scheduler_heartbeat_supersession_reconciliation_history.json`
-  - `gpu_scheduler_heartbeat_supersession_history.json`
+  - Scheduler heartbeat family groups:
+  - `gpu_scheduler_heartbeat*.json`
+  - `gpu_scheduler_heartbeat_pointer*.json`
+  - `gpu_scheduler_heartbeat_pointer_rollback*.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped recipe map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.
   - `scheduler_runtime_simulation_report.json`
   - `burn_bpk_migration_surface_inventory.json`
   - Deployment verification family groups:
