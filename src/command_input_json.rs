@@ -118,6 +118,20 @@ pub fn read_array(
         })
 }
 
+pub fn read_object(
+    object: &Map<String, Value>,
+    key: &str,
+    path: &Path,
+    kind: &str,
+) -> Result<Value, CommandInputJsonError> {
+    object.get(key).cloned().ok_or_else(|| {
+        CommandInputJsonError::Parse(format!(
+            "{kind} `{}` missing field `{key}`",
+            path.display()
+        ))
+    })
+}
+
 pub fn load_history(path: &Path, kind: &str) -> Result<Value, CommandInputJsonError> {
     let text = fs::read_to_string(path)?;
     let history: Value = serde_json::from_str(&text).map_err(|err| {
@@ -239,6 +253,25 @@ macro_rules! define_command_input_json_helpers {
         }
 
         #[allow(dead_code)]
+        fn read_object(
+            object: &serde_json::Map<String, serde_json::Value>,
+            key: &str,
+            path: &std::path::Path,
+            kind: &str,
+        ) -> Result<serde_json::Value, $error_type> {
+            afterburner::command_input_json::read_object(object, key, path, kind).map_err(
+                |err| match err {
+                    afterburner::command_input_json::CommandInputJsonError::Io(err) => {
+                        $error_type::Io(err)
+                    }
+                    afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
+                        $error_type::Parse(msg)
+                    }
+                },
+            )
+        }
+
+        #[allow(dead_code)]
         fn read_optional_string(
             object: &serde_json::Map<String, serde_json::Value>,
             key: &str,
@@ -334,6 +367,24 @@ macro_rules! define_command_input_json_kind_helpers {
                     }
                 }
             })
+        }
+
+        #[allow(dead_code)]
+        fn read_object(
+            object: &serde_json::Map<String, serde_json::Value>,
+            key: &str,
+            path: &std::path::Path,
+        ) -> Result<serde_json::Value, $error_type> {
+            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(
+                |err| match err {
+                    afterburner::command_input_json::CommandInputJsonError::Io(err) => {
+                        $error_type::Io(err)
+                    }
+                    afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
+                        $error_type::Parse(msg)
+                    }
+                },
+            )
         }
 
         #[allow(dead_code)]
@@ -511,6 +562,24 @@ macro_rules! define_command_input_json_non_empty_kind_helpers {
                     }
                 }
             })
+        }
+
+        #[allow(dead_code)]
+        fn read_object(
+            object: &serde_json::Map<String, serde_json::Value>,
+            key: &str,
+            path: &std::path::Path,
+        ) -> Result<serde_json::Value, $error_type> {
+            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(
+                |err| match err {
+                    afterburner::command_input_json::CommandInputJsonError::Io(err) => {
+                        $error_type::Io(err)
+                    }
+                    afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
+                        $error_type::Parse(msg)
+                    }
+                },
+            )
         }
 
         #[allow(dead_code)]
