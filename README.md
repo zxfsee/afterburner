@@ -64,6 +64,9 @@ MNIST path plus a bounded text-pretraining path via `--task text`, and writes
 versioned artifacts under `artifacts/train/` and `artifacts/inference/`.
 Inference runs through `afterburner infer`, consumes only the inference
 artifact, and returns deterministic JSON on success.
+Distributed optimizer-state recovery remains an in-job runtime concern and
+stays anchored to an explicit `checkpoint_group` instead of scheduler-local
+placement state.
 
 ## HTTP wrapper (optional)
 
