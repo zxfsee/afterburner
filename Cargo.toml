@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Doc-test admission snapshot burn-down [Runtime Infra]
-  - Goal: Shrink the transitional doc-test admission snapshot files in bounded cleanup batches so the allowlist and legacy exception sets do not ossify into permanent policy.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/`
-
 - Command-input helper rollout beyond scheduler and verification [Runtime Infra, Serving/Deployment Infra]
   - Goal: Extend the shared command-input helper surface into the remaining artifact-heavy command families so deployment-stack, distributed-lineage, drift, and cleanup variants stop carrying their own JSON object loader and field-reader logic.
   - Kind: `mixed`
@@ -40,6 +33,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `cli`
   - Scope: `src/cli_dispatch/`, `justfile`, `tests/`
+
+- Grouped distributed-lineage docs surface consolidation [Runtime Infra]
+  - Goal: Collapse the distributed shard-lineage sections in docs/reference.md and docs/workflows.md from per-artifact registries into grouped family maps while leaving exhaustive mechanical coverage in the existing family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 - GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
