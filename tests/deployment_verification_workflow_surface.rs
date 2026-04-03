@@ -86,12 +86,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment-verification-bundle-locator-manage action +args:",
         "deployment-verification-bundle-rollback-manage action +args:",
         "deployment-verification-handoff bundle:",
-        "deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:",
-        "deployment-verification-point-handoff-transport-locator handoff:",
-        "deployment-verification-record-handoff-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-handoff-transport-locator handoff locator:",
-        "deployment-verification-reconcile-handoff bundle handoff:",
-        "deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff-manage action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -206,7 +201,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "Deployment verification stays grouped under three family maps",
         "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
         "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
-        "Handoff family: `just deployment-verification-handoff`",
+        "Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.",
         "`just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked",
     ] {
         assert!(

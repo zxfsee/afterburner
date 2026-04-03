@@ -230,23 +230,8 @@ deployment-verification-bundle-rollback-manage action +args:
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- verify handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
-deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff record-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_history.json
-
-deployment-verification-point-handoff-transport-locator handoff:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff point-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator.json
-
-deployment-verification-record-handoff-transport-locator-history locator event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff record-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_history.json
-
-deployment-verification-reconcile-handoff-transport-locator handoff locator:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff reconcile-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_handoff_transport_locator_reconciliation.json
-
-deployment-verification-reconcile-handoff bundle handoff:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff reconcile --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
-
-deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff record-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation_history.json
+deployment-verification-handoff-manage action +args:
+    cargo run --locked --bin afterburner -- debug deploy verification-handoff {{ action }} {{ args }}
 
 # write one deployment verification receipt with explicit evidence-source references
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:

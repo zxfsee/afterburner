@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification handoff grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the deployment-verification handoff noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops carrying a hand-expanded handoff command registry.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Profile infer native helper extraction [Runtime Infra, Inference]
   - Goal: Move `profile-infer` artifact resolution, backend derivation, and environment snapshot semantics out of recipe-local shell logic and behind one typed native helper while keeping the `just` entrypoint stable.
   - Kind: `mixed`

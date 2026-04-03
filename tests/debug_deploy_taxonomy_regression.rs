@@ -14,7 +14,7 @@ fn debug_deploy_surface_stays_family_first() {
     for required in [
         "deployment-verification-bundle-rollback-manage action +args:",
         "-- debug deploy verification-receipt point-locator",
-        "-- debug deploy verification-handoff reconcile",
+        "deployment-verification-handoff-manage action +args:",
         "scheduler-heartbeat-manage action +args:",
         "fn regrouped_debug_deploy_subcommand(",
         "\"verification-bundle\"",
