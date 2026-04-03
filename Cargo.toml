@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `none`
   - Contracts: `cli`
-  - Scope: `src/main.rs`, `src/bin/`, `justfile`, `tests/`
+  - Scope: `Cargo.toml`, `CHANGELOG.md`, `src/`, `src/bin/`, `justfile`, `tests/`
 
 - Reference and workflow surface consolidation [Runtime Infra]
   - Goal: Shrink `docs/reference.md` and `docs/workflows.md` from long artifact registries into grouped operator/index surfaces that stay useful without carrying every variant explicitly.
