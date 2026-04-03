@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification bundle locator and rollback grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the deployment-verification bundle locator, locator rollback, and rollback supersession recipe expansion into grouped `just` entrypoints backed by typed helpers so the remaining bundle-side mutation surface stops carrying a hand-expanded command registry.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Deployment verification handoff grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the deployment-verification handoff noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops carrying a hand-expanded handoff command registry.
   - Kind: `mixed`
