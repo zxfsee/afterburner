@@ -160,8 +160,8 @@ fn verify_snapshot(
             .map(|previous| format!("`{parent_commit}` or `{previous}`"))
             .unwrap_or_else(|| format!("`{parent_commit}`"));
         return Err(QueueSnapshotError::Parse(format!(
-            "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}",
-            snapshot.parent_commit,
+            "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}\nrun `just queue-refresh` first if queue work resumed after backlog-only or maintenance commits",
+            snapshot.parent_commit
         )));
     }
     Ok(())

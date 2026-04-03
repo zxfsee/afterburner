@@ -67,6 +67,7 @@ objective-lock-clear:
 
 # refresh the active queue through the canonical queue-only guarded path
 queue-refresh:
+    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-queue
     just changelog
     just queue-snapshot-check
@@ -74,6 +75,7 @@ queue-refresh:
 
 # repair stale top TODO scope metadata through a dedicated queue-only path
 queue-fix-top-scope:
+    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-top-scope-fix
     just objective-lock-check-worktree top-scope-fix
     just changelog-top-scope-fix
@@ -82,6 +84,7 @@ queue-fix-top-scope:
 
 # start top-item execution through the canonical execute-side guarded path
 queue-execute-preflight:
+    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-execute-top-item
     just objective-lock-check-worktree execute-top-item
 

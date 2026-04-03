@@ -294,3 +294,27 @@ fn objective_lock_checks_action_and_explicit_paths() {
         .arg("README.md");
     action_mismatch.assert().failure();
 }
+
+#[test]
+fn objective_lock_check_repo_locks_fails_on_stale_index_lock() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let root = tmp.path();
+    fs::create_dir_all(root.join(".git")).expect("create .git");
+    fs::write(root.join(".git/index.lock"), "").expect("write stale index lock");
+
+    let assert = cargo_bin_cmd!("workflow_objective_lock")
+        .arg("check-repo-locks")
+        .arg("--repo-root")
+        .arg(root)
+        .assert()
+        .failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains(".git/index.lock"),
+        "repo-lock check must point to the stale index lock path: {stderr}"
+    );
+    assert!(
+        stderr.contains("remove it and retry"),
+        "repo-lock check must explain the minimal recovery action: {stderr}"
+    );
+}

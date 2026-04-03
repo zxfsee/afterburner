@@ -109,6 +109,9 @@ enum CommandSpec {
         repo_root: PathBuf,
         action: Option<String>,
     },
+    CheckRepoLocks {
+        repo_root: PathBuf,
+    },
     Clear {
         lock_file: PathBuf,
     },
@@ -170,6 +173,7 @@ fn run(command: CommandSpec) -> Result<(), ObjectiveLockError> {
             let changed_paths = jj_changed_paths(&repo_root)?;
             validate_paths(&lock, &changed_paths)
         }
+        CommandSpec::CheckRepoLocks { repo_root } => check_repo_locks(&repo_root),
         CommandSpec::Clear { lock_file } => {
             if lock_file.exists() {
                 fs::remove_file(lock_file)?;
@@ -192,6 +196,7 @@ where
         "pin" => parse_pin_args(args),
         "check-paths" => parse_check_paths_args(args),
         "check-worktree" => parse_check_worktree_args(args),
+        "check-repo-locks" => parse_check_repo_locks_args(args),
         "clear" => parse_clear_args(args),
         "--help" | "-h" | "help" => Err(ObjectiveLockError::InvalidArg(usage().to_string())),
         _ => Err(ObjectiveLockError::InvalidArg(format!(
@@ -361,6 +366,31 @@ where
     }
 
     Ok(CommandSpec::Clear { lock_file })
+}
+
+fn parse_check_repo_locks_args<I>(args: I) -> Result<CommandSpec, ObjectiveLockError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut repo_root = PathBuf::from(".");
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
+            _ => {
+                return Err(ObjectiveLockError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(CommandSpec::CheckRepoLocks { repo_root })
 }
 
 fn parse_value<I>(args: &mut I, flag: &str) -> Result<String, ObjectiveLockError>
@@ -701,6 +731,23 @@ fn jj_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError>
     Ok(paths.into_iter().collect())
 }
 
+fn check_repo_locks(repo_root: &Path) -> Result<(), ObjectiveLockError> {
+    let index_lock = repo_root.join(".git/index.lock");
+    if index_lock.exists() {
+        let metadata = fs::metadata(&index_lock)?;
+        let size_note = if metadata.len() == 0 {
+            " (empty lockfile; likely stale)"
+        } else {
+            ""
+        };
+        return Err(ObjectiveLockError::Parse(format!(
+            "repo metadata lock detected at `{}`{size_note}\nif no Git or jj process is still running, remove it and retry",
+            index_lock.display()
+        )));
+    }
+    Ok(())
+}
+
 fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, ObjectiveLockError> {
     let output = Command::new("jj")
         .current_dir(repo_root)
@@ -719,10 +766,11 @@ fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, Objec
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_objective_lock <pin|check-paths|check-worktree|clear> [options]\n\
+    "usage: workflow_objective_lock <pin|check-paths|check-worktree|check-repo-locks|clear> [options]\n\
 pin: --objective <queue-only|top-scope-fix|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--lock-file PATH] [--expected-action ACTION]\n\
 check-paths: [--lock-file PATH] [--action ACTION] --path PATH [--path PATH...]\n\
 check-worktree: [--lock-file PATH] [--repo-root PATH] [--action ACTION]\n\
+check-repo-locks: [--repo-root PATH]\n\
 clear: [--lock-file PATH]"
 }
 

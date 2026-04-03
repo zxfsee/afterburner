@@ -94,7 +94,12 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
         .arg(&changelog)
         .arg("--parent-commit")
         .arg("def456");
-    mismatch.assert().failure();
+    let assert = mismatch.assert().failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("run `just queue-refresh` first"),
+        "queue snapshot parent mismatch must point resumptions at queue-refresh: {stderr}"
+    );
 
     let mut tolerate_previous_parent = cargo_bin_cmd!("workflow_queue_snapshot");
     tolerate_previous_parent
