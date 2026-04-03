@@ -20,6 +20,14 @@ Rules:
 
 ## Items
 
+- Routing and orchestration semantic guard [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, or artifact-family semantics after the decomposition work lands.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/main.rs`, `src/bin/`, `justfile`, `tests/`
+  - Blocked-by: Routing and orchestration semantic decomposition
+
 - Doc-test admission rule note [Runtime Infra]
   - Goal: Add one short repo policy note for the doc-test admission guard only if future review or agent behavior shows the guard alone is too opaque to apply consistently.
   - Kind: `mixed`
