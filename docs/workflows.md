@@ -138,7 +138,9 @@ operator use case justifies promotion.
 - `just rollout-verify` exercises infer and eval on the promoted artifact.
 - `just rollout-rollback` restores the previous current pointer.
 - Deployment verification stays grouped under three family maps:
-- Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`, plus the receipt locator, transport locator, reconciliation, rollback, and supersession variants.
+- Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.
+- Core receipt sidecars: `just deployment-verification-receipt-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the receipt history, reconciliation, and transport-locator artifacts.
+- Receipt locator and rollback variants remain explicit until the dedicated locator-and-rollback grouping lands.
 - Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`, plus the bundle locator, transport locator, reconciliation, rollback, and supersession variants.
 - Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`, plus the handoff transport locator and reconciliation variants.
 - `just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked so this page can stay grouped instead of listing every artifact variant explicitly.

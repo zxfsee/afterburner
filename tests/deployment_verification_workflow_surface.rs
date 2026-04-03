@@ -76,6 +76,7 @@ fn deployment_verification_family_stays_surface_complete() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
+        "deployment-verification-receipt-manage action +args:",
         "deployment-verification-record-receipt-locator-history pointer event recorded_at_unix_ms:",
         "deployment-verification-point-receipt-locator locator:",
         "deployment-verification-reconcile-receipt-locator locator pointer:",
@@ -88,13 +89,6 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment-verification-reconcile-receipt-rollback-supersession supersession current_supersession:",
         "deployment-verification-record-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-record-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:",
-        "deployment-verification-point-receipt-transport-locator receipt:",
-        "deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt-transport-locator receipt locator:",
-        "deployment-verification-record-receipt-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-record-receipt-history receipt event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
-        "deployment-verification-record-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-bundle receipt:",
         "deployment-verification-record-bundle-history bundle event recorded_at_unix_ms:",
         "deployment-verification-point-bundle-transport-locator bundle:",
@@ -236,7 +230,7 @@ fn deployment_verification_family_stays_surface_complete() {
     for needle in [
         "just workflow-surface-check-deployment-verification",
         "Deployment verification stays grouped under three family maps",
-        "Receipt family: `just deployment-verification-receipt`",
+        "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
         "Bundle family: `just deployment-verification-bundle`",
         "Handoff family: `just deployment-verification-handoff`",
         "`just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked",
