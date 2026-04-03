@@ -209,35 +209,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DriftBaselineBundleError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DriftBaselineBundleError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DriftBaselineBundleError::Parse(format!("{kind} `{}` must be an object", path.display()))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DriftBaselineBundleError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DriftBaselineBundleError::Parse(format!(
-                "json object `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
+afterburner::define_command_input_json_kind_helpers!(DriftBaselineBundleError, "pointer");
 
 fn usage() -> &'static str {
     "usage: afterburner drift export-baseline-bundle --pointer PATH --history PATH [--out PATH]"

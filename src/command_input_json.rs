@@ -125,10 +125,7 @@ pub fn read_object(
     kind: &str,
 ) -> Result<Value, CommandInputJsonError> {
     object.get(key).cloned().ok_or_else(|| {
-        CommandInputJsonError::Parse(format!(
-            "{kind} `{}` missing field `{key}`",
-            path.display()
-        ))
+        CommandInputJsonError::Parse(format!("{kind} `{}` missing field `{key}`", path.display()))
     })
 }
 
@@ -286,16 +283,16 @@ macro_rules! define_command_input_json_helpers {
             path: &std::path::Path,
             kind: &str,
         ) -> Result<serde_json::Value, $error_type> {
-            afterburner::command_input_json::read_object(object, key, path, kind).map_err(
-                |err| match err {
+            afterburner::command_input_json::read_object(object, key, path, kind).map_err(|err| {
+                match err {
                     afterburner::command_input_json::CommandInputJsonError::Io(err) => {
                         $error_type::Io(err)
                     }
                     afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
                         $error_type::Parse(msg)
                     }
-                },
-            )
+                }
+            })
         }
 
         #[allow(dead_code)]
@@ -421,16 +418,16 @@ macro_rules! define_command_input_json_kind_helpers {
             key: &str,
             path: &std::path::Path,
         ) -> Result<serde_json::Value, $error_type> {
-            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(
-                |err| match err {
+            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(|err| {
+                match err {
                     afterburner::command_input_json::CommandInputJsonError::Io(err) => {
                         $error_type::Io(err)
                     }
                     afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
                         $error_type::Parse(msg)
                     }
-                },
-            )
+                }
+            })
         }
 
         #[allow(dead_code)]
@@ -634,16 +631,16 @@ macro_rules! define_command_input_json_non_empty_kind_helpers {
             key: &str,
             path: &std::path::Path,
         ) -> Result<serde_json::Value, $error_type> {
-            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(
-                |err| match err {
+            afterburner::command_input_json::read_object(object, key, path, $kind).map_err(|err| {
+                match err {
                     afterburner::command_input_json::CommandInputJsonError::Io(err) => {
                         $error_type::Io(err)
                     }
                     afterburner::command_input_json::CommandInputJsonError::Parse(msg) => {
                         $error_type::Parse(msg)
                     }
-                },
-            )
+                }
+            })
         }
 
         #[allow(dead_code)]

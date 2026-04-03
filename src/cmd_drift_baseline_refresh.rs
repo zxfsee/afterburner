@@ -92,8 +92,12 @@ where
         )));
     }
 
-    let candidate_summary_path =
-        read_string(&receipt, "candidate_summary_path", args.receipt.as_path())?;
+    let candidate_summary_path = read_string(
+        &receipt,
+        "candidate_summary_path",
+        args.receipt.as_path(),
+        "infer output drift receipt",
+    )?;
     if Path::new(candidate_summary_path.as_str()) != args.summary.as_path() {
         return Err(DriftBaselineRefreshError::Parse(format!(
             "receipt candidate_summary_path `{candidate_summary_path}` does not match requested summary `{}`",
@@ -110,16 +114,16 @@ where
         "schema_version": "1",
         "summary_path": args.summary.display().to_string(),
         "receipt_path": args.receipt.display().to_string(),
-        "policy_path": read_string(&receipt, "policy_path", args.receipt.as_path())?,
-        "policy_profile": read_string(&receipt, "policy_profile", args.receipt.as_path())?,
-        "artifact": read_string(&summary, "artifact", args.summary.as_path())?,
-        "artifact_version": read_string(&summary, "artifact_version", args.summary.as_path())?,
-        "backend": read_string(&summary, "backend", args.summary.as_path())?,
-        "predicted_class": read_u64(&summary, "predicted_class", args.summary.as_path())?,
+        "policy_path": read_string(&receipt, "policy_path", args.receipt.as_path(), "infer output drift receipt")?,
+        "policy_profile": read_string(&receipt, "policy_profile", args.receipt.as_path(), "infer output drift receipt")?,
+        "artifact": read_string(&summary, "artifact", args.summary.as_path(), "infer output drift summary")?,
+        "artifact_version": read_string(&summary, "artifact_version", args.summary.as_path(), "infer output drift summary")?,
+        "backend": read_string(&summary, "backend", args.summary.as_path(), "infer output drift summary")?,
+        "predicted_class": read_u64(&summary, "predicted_class", args.summary.as_path(), "infer output drift summary")?,
         "top_probability": read_f64(&summary, "top_probability", args.summary.as_path())?,
         "margin_to_second": read_f64(&summary, "margin_to_second", args.summary.as_path())?,
-        "logits_sha256": read_string(&summary, "logits_sha256", args.summary.as_path())?,
-        "probabilities_sha256": read_string(&summary, "probabilities_sha256", args.summary.as_path())?,
+        "logits_sha256": read_string(&summary, "logits_sha256", args.summary.as_path(), "infer output drift summary")?,
+        "probabilities_sha256": read_string(&summary, "probabilities_sha256", args.summary.as_path(), "infer output drift summary")?,
     });
 
     if let Some(parent) = args.out_path.parent() {
@@ -137,9 +141,9 @@ where
         "refreshed_baseline_path": args.out_path.display().to_string(),
         "summary_path": args.summary.display().to_string(),
         "receipt_path": args.receipt.display().to_string(),
-        "previous_artifact_version": read_string(&current_baseline, "artifact_version", args.current_baseline.as_path())?,
-        "next_artifact_version": read_string(&summary, "artifact_version", args.summary.as_path())?,
-        "policy_profile": read_string(&receipt, "policy_profile", args.receipt.as_path())?,
+        "previous_artifact_version": read_string(&current_baseline, "artifact_version", args.current_baseline.as_path(), "infer output drift baseline")?,
+        "next_artifact_version": read_string(&summary, "artifact_version", args.summary.as_path(), "infer output drift summary")?,
+        "policy_profile": read_string(&receipt, "policy_profile", args.receipt.as_path(), "infer output drift receipt")?,
     });
 
     if let Some(parent) = args.refresh_receipt_path.parent() {
@@ -272,48 +276,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DriftBaselineRefreshError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DriftBaselineRefreshError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DriftBaselineRefreshError::Parse(format!("{kind} `{}` must be an object", path.display()))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DriftBaselineRefreshError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DriftBaselineRefreshError::Parse(format!(
-                "json object `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<u64, DriftBaselineRefreshError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        DriftBaselineRefreshError::Parse(format!(
-            "json object `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
+afterburner::define_command_input_json_helpers!(DriftBaselineRefreshError);
 
 fn read_f64(
     object: &serde_json::Map<String, Value>,
