@@ -13,11 +13,11 @@ header = """# Changelog
 
 ## TODO
 
-- Just orchestration semantic extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extract deploy, profile, and rollout family semantics out of `justfile` into typed Rust helpers and grouped entrypoints so `just` returns to being a thin orchestration surface instead of a protocol registry and workflow-policy layer.
+- Deploy family grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse deploy, verification, heartbeat, and lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring internal artifact taxonomy directly.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `cli`, `artifact`, `event`
+  - Contracts: `cli`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Profile infer native helper extraction [Runtime Infra, Inference]
@@ -33,6 +33,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `artifact`, `event`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, artifact-family semantics, or recipe-body `just` CLI re-entry after the extraction work lands.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/main.rs`, `src/cli_dispatch/`, `justfile`, `tests/`
 
 - Grouped distributed-lineage docs surface consolidation [Runtime Infra]
   - Goal: Collapse the distributed shard-lineage sections in docs/reference.md and docs/workflows.md from per-artifact registries into grouped family maps while leaving exhaustive mechanical coverage in the existing family-level tests.
