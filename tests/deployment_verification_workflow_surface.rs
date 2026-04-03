@@ -15,7 +15,7 @@ fn fixture_exists(path: &str) -> bool {
 
 #[test]
 fn deployment_verification_family_stays_surface_complete() {
-    let main_rs = repo_file("src/main.rs");
+    let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
     for cli in [
         "verification-receipt",
         "record-verification-receipt-locator-history",
@@ -68,8 +68,8 @@ fn deployment_verification_family_stays_surface_complete() {
         "record-verification-handoff-reconciliation-history",
     ] {
         assert!(
-            main_rs.contains(&format!("\"{cli}\"")),
-            "src/main.rs must expose deploy subcommand `{cli}`"
+            deploy_dispatch.contains(&format!("\"{cli}\"")),
+            "src/cli_dispatch/deploy.rs must expose deploy subcommand `{cli}`"
         );
     }
 
