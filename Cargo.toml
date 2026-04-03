@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed optimizer checkpoint README recovery anchor repair [Distributed Training, Runtime Infra]
-  - Goal: Restore a green repo-level verification baseline by re-adding the explicit `checkpoint_group` recovery anchor expected by the distributed optimizer/checkpoint documentation gate.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `README.md`, `tests/`
-
 - Routing and orchestration semantic decomposition [Runtime Infra, Serving/Deployment Infra]
   - Goal: Prevent routing and orchestration surfaces from becoming the permanent home of domain semantics by extracting grouped dispatch/orchestration helpers out of `src/main.rs`, `justfile`, and similar workflow chokepoints.
   - Kind: `mixed`
