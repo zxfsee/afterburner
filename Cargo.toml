@@ -13,8 +13,15 @@ header = """# Changelog
 
 ## TODO
 
-- Deploy verification and heartbeat grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse deployment-verification and scheduler-heartbeat noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring internal artifact taxonomy directly across the deploy-side family surface.
+- Scheduler heartbeat grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the scheduler-heartbeat noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops carrying a hand-expanded heartbeat command registry.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Deployment verification grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse the deployment-verification noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring verification artifact taxonomy directly.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`
