@@ -20,6 +20,13 @@ header = """# Changelog
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
+- Debug deploy command taxonomy regrouping [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Regroup the low-level debug deploy command tree around clearer action/object boundaries so long internal artifact noun chains stop leaking directly into the CLI path even on internal surfaces.
+  - Kind: `mixed`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/cli_dispatch/`, `src/main.rs`, `justfile`, `tests/`, `docs/reference.md`, `docs/workflows.md`
+
 - Doc-test admission snapshot burn-down [Runtime Infra]
   - Goal: Shrink the transitional doc-test admission snapshot files in bounded cleanup batches so the allowlist and legacy exception sets do not ossify into permanent policy.
   - Kind: `mixed`
