@@ -12,7 +12,7 @@ fn debug_deploy_surface_stays_family_first() {
     let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "-- debug deploy verification-bundle record-rollback-history",
+        "deployment-verification-bundle-rollback-manage action +args:",
         "-- debug deploy verification-receipt point-locator",
         "-- debug deploy verification-handoff reconcile",
         "scheduler-heartbeat-manage action +args:",

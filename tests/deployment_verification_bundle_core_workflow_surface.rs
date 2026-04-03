@@ -36,7 +36,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     for needle in [
         "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
         "Core bundle sidecars: `just deployment-verification-bundle-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the bundle history, reconciliation, and transport-locator artifacts.",
-        "Bundle locator and rollback variants remain explicit until the dedicated locator-and-rollback grouping lands.",
+        "Bundle locator and rollback sidecars stay grouped under three entrypoints:",
     ] {
         assert!(
             workflows.contains(needle),
@@ -47,7 +47,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_evidence_bundle*.json`",
-        "Bundle core history, reconciliation, and transport-locator flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md); bundle locator and rollback variants remain explicit until their follow-on grouping lands.",
+        "Bundle core history, reconciliation, and transport-locator flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

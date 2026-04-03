@@ -38,6 +38,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "deployment_verification_receipt_core_workflow_surface.rs"
             | "deployment_verification_receipt_locator_rollback_workflow_surface.rs"
             | "deployment_verification_bundle_core_workflow_surface.rs"
+            | "deployment_verification_bundle_locator_rollback_workflow_surface.rs"
             | "scheduler_heartbeat_workflow_surface.rs"
             | "doc_test_admission.rs"
     )

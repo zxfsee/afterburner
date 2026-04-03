@@ -11,11 +11,6 @@ fn fixture_path(name: &str) -> PathBuf {
         .join(name)
 }
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
-
 #[test]
 fn deployment_verification_bundle_rollback_schema_and_workflow_are_explicit() {
     let schema_text = fs::read_to_string(fixture_path(
@@ -62,14 +57,6 @@ fn deployment_verification_bundle_rollback_schema_and_workflow_are_explicit() {
     .map(str::to_string)
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
-
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains(
-            "deployment-verification-rollback-bundle current_bundle restored_bundle rolled_back_at_unix_ms:"
-        ),
-        "justfile must expose the deployment-verification-rollback-bundle workflow"
-    );
 }
 
 #[test]
