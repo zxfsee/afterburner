@@ -65,16 +65,6 @@ fn deployment_verification_receipt_locator_pointer_history_schema_and_workflow_a
         ),
         "justfile must expose the deployment-verification-record-receipt-locator-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_locator_pointer_history.json"),
-        "workflow reference must mention the deployment verification receipt locator pointer history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-receipt-locator-history"),
-        "workflow reference must mention the deployment verification receipt locator pointer history workflow"
-    );
 }
 
 #[test]

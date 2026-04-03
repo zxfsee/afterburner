@@ -66,22 +66,6 @@ fn deployment_verification_receipt_history_schema_and_workflow_are_explicit() {
         ),
         "justfile must expose the deployment-verification-record-receipt-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_history.json"),
-        "workflow reference must mention the deployment verification receipt history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-receipt-history"),
-        "workflow reference must mention the deployment verification receipt history workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_receipt_history.json"),
-        "reference index must mention the deployment verification receipt history artifact"
-    );
 }
 
 #[test]

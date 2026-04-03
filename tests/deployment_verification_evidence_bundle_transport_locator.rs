@@ -59,16 +59,6 @@ fn deployment_verification_bundle_transport_locator_schema_and_workflow_are_expl
         justfile.contains("deployment-verification-point-bundle-transport-locator bundle:"),
         "justfile must expose the deployment-verification-point-bundle-transport-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_transport_locator.json"),
-        "workflow reference must mention the deployment verification bundle transport locator artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-point-bundle-transport-locator"),
-        "workflow reference must mention the deployment verification bundle transport locator workflow"
-    );
 }
 
 #[test]

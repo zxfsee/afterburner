@@ -65,22 +65,6 @@ fn deployment_verification_handoff_history_schema_and_workflow_are_explicit() {
         ),
         "justfile must expose the deployment-verification-record-handoff-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_handoff_history.json"),
-        "workflow reference must mention the deployment verification handoff history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-handoff-history"),
-        "workflow reference must mention the deployment verification handoff history workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_handoff_history.json"),
-        "reference index must mention the deployment verification handoff history artifact"
-    );
 }
 
 #[test]

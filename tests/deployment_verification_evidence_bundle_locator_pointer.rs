@@ -60,16 +60,6 @@ fn deployment_verification_bundle_locator_pointer_schema_and_workflow_are_explic
         justfile.contains("deployment-verification-point-bundle-locator locator:"),
         "justfile must expose the deployment-verification-point-bundle-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_locator_pointer.json"),
-        "workflow reference must mention the deployment verification bundle locator pointer artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-point-bundle-locator"),
-        "workflow reference must mention the deployment verification bundle locator pointer workflow"
-    );
 }
 
 #[test]

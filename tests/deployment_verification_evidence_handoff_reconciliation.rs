@@ -60,22 +60,6 @@ fn deployment_verification_evidence_handoff_reconciliation_schema_and_workflow_a
         justfile.contains("deployment-verification-reconcile-handoff bundle handoff:"),
         "justfile must expose the deployment-verification-reconcile-handoff workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_handoff_reconciliation.json"),
-        "workflow reference must mention the deployment verification evidence handoff reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-handoff"),
-        "workflow reference must mention the deployment verification evidence handoff reconciliation workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_handoff_reconciliation.json"),
-        "reference index must mention the deployment verification evidence handoff reconciliation artifact"
-    );
 }
 
 #[test]

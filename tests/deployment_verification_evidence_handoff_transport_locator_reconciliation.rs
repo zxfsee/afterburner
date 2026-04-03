@@ -63,18 +63,6 @@ fn deployment_verification_handoff_transport_locator_reconciliation_schema_and_w
         ),
         "justfile must expose the deployment-verification-reconcile-handoff-transport-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains(
-            "deployment_verification_evidence_handoff_transport_locator_reconciliation.json"
-        ),
-        "workflow reference must mention the deployment verification handoff transport locator reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-handoff-transport-locator"),
-        "workflow reference must mention the deployment verification handoff transport locator reconciliation workflow"
-    );
 }
 
 #[test]

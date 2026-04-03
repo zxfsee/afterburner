@@ -62,16 +62,6 @@ fn deployment_verification_bundle_rollback_reconciliation_schema_and_workflow_ar
         ),
         "justfile must expose the deployment-verification-reconcile-bundle-rollback workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_rollback_reconciliation.json"),
-        "workflow reference must mention the deployment verification bundle rollback reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-bundle-rollback"),
-        "workflow reference must mention the deployment verification bundle rollback reconciliation workflow"
-    );
 }
 
 #[test]

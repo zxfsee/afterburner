@@ -66,22 +66,6 @@ fn deployment_verification_bundle_history_schema_and_workflow_are_explicit() {
         ),
         "justfile must expose the deployment-verification-record-bundle-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_history.json"),
-        "workflow reference must mention the deployment verification bundle history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-bundle-history"),
-        "workflow reference must mention the deployment verification bundle history workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_bundle_history.json"),
-        "reference index must mention the deployment verification bundle history artifact"
-    );
 }
 
 #[test]

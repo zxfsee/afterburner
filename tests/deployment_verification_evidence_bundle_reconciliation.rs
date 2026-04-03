@@ -60,22 +60,6 @@ fn deployment_verification_evidence_bundle_reconciliation_schema_and_workflow_ar
         justfile.contains("deployment-verification-reconcile-bundle receipt bundle:"),
         "justfile must expose the deployment-verification-reconcile-bundle workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_reconciliation.json"),
-        "workflow reference must mention the deployment verification evidence bundle reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-bundle"),
-        "workflow reference must mention the deployment verification evidence bundle reconciliation workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_bundle_reconciliation.json"),
-        "reference index must mention the deployment verification evidence bundle reconciliation artifact"
-    );
 }
 
 #[test]

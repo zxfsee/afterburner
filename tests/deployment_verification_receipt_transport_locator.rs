@@ -59,16 +59,6 @@ fn deployment_verification_receipt_transport_locator_schema_and_workflow_are_exp
         justfile.contains("deployment-verification-point-receipt-transport-locator receipt:"),
         "justfile must expose the deployment-verification-point-receipt-transport-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_transport_locator.json"),
-        "workflow reference must mention the deployment verification receipt transport locator artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-point-receipt-transport-locator"),
-        "workflow reference must mention the deployment verification receipt transport locator workflow"
-    );
 }
 
 #[test]

@@ -153,55 +153,11 @@ operator use case justifies promotion.
 - `just rollout-promote` advances the current inference pointer.
 - `just rollout-verify` exercises infer and eval on the promoted artifact.
 - `just rollout-rollback` restores the previous current pointer.
-- `just deployment-verification-receipt` writes `deployment_verification_receipt.json`.
-- `just deployment-verification-record-receipt-locator-history` writes `deployment_verification_receipt_locator_pointer_history.json`.
-- `just deployment-verification-point-receipt-locator` writes `deployment_verification_receipt_locator_pointer.json`.
-- `just deployment-verification-reconcile-receipt-locator` writes `deployment_verification_receipt_locator_pointer_reconciliation.json`.
-- `just deployment-verification-record-receipt-locator-reconciliation-history` writes `deployment_verification_receipt_locator_pointer_reconciliation_history.json`.
-- `just deployment-verification-rollback-receipt-locator` writes `deployment_verification_receipt_locator_pointer_rollback.json`.
-- `just deployment-verification-record-receipt-locator-rollback-history` writes `deployment_verification_receipt_locator_pointer_rollback_history.json`.
-- `just deployment-verification-reconcile-receipt-rollback` writes `deployment_verification_receipt_rollback_reconciliation.json`.
-- `just deployment-verification-record-receipt-rollback-reconciliation-history` writes `deployment_verification_receipt_rollback_reconciliation_history.json`.
-- `just deployment-verification-supersede-receipt-rollback` writes `deployment_verification_receipt_rollback_supersession.json`.
-- `just deployment-verification-reconcile-receipt-rollback-supersession` writes `deployment_verification_receipt_rollback_supersession_reconciliation.json`.
-- `just deployment-verification-record-receipt-rollback-supersession-reconciliation-history` writes `deployment_verification_receipt_rollback_supersession_reconciliation_history.json`.
-- `just deployment-verification-record-receipt-rollback-supersession-history` writes `deployment_verification_receipt_rollback_supersession_history.json`.
-- `just deployment-verification-point-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator.json`.
-- `just deployment-verification-record-receipt-transport-locator-history` writes `deployment_verification_receipt_transport_locator_history.json`.
-- `just deployment-verification-reconcile-receipt-transport-locator` writes `deployment_verification_receipt_transport_locator_reconciliation.json`.
-- `just deployment-verification-record-receipt-transport-locator-reconciliation-history` writes `deployment_verification_receipt_transport_locator_reconciliation_history.json`.
-- `just deployment-verification-record-receipt-history` writes `deployment_verification_receipt_history.json`.
-- `just deployment-verification-reconcile-receipt` writes `deployment_verification_receipt_reconciliation.json`.
-- `just deployment-verification-record-receipt-reconciliation-history` writes `deployment_verification_receipt_reconciliation_history.json`.
-- `just deployment-verification-bundle` writes `deployment_verification_evidence_bundle.json`.
-- `just deployment-verification-record-bundle-history` writes `deployment_verification_evidence_bundle_history.json`.
-- `just deployment-verification-point-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator.json`.
-- `just deployment-verification-point-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer.json`.
-- `just deployment-verification-record-bundle-locator-history` writes `deployment_verification_evidence_bundle_locator_pointer_history.json`.
-- `just deployment-verification-reconcile-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer_reconciliation.json`.
-- `just deployment-verification-record-bundle-locator-reconciliation-history` writes `deployment_verification_evidence_bundle_locator_pointer_reconciliation_history.json`.
-- `just deployment-verification-rollback-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer_rollback.json`.
-- `just deployment-verification-record-bundle-locator-rollback-history` writes `deployment_verification_evidence_bundle_locator_pointer_rollback_history.json`.
-- `just deployment-verification-rollback-bundle` writes `deployment_verification_evidence_bundle_rollback.json`.
-- `just deployment-verification-record-bundle-rollback-history` writes `deployment_verification_evidence_bundle_rollback_history.json`.
-- `just deployment-verification-reconcile-bundle-rollback` writes `deployment_verification_evidence_bundle_rollback_reconciliation.json`.
-- `just deployment-verification-record-bundle-rollback-reconciliation-history` writes `deployment_verification_evidence_bundle_rollback_reconciliation_history.json`.
-- `just deployment-verification-supersede-bundle-rollback` writes `deployment_verification_evidence_bundle_rollback_supersession.json`.
-- `just deployment-verification-reconcile-bundle-rollback-supersession` writes `deployment_verification_evidence_bundle_rollback_supersession_reconciliation.json`.
-- `just deployment-verification-record-bundle-rollback-supersession-reconciliation-history` writes `deployment_verification_evidence_bundle_rollback_supersession_reconciliation_history.json`.
-- `just deployment-verification-record-bundle-rollback-supersession-history` writes `deployment_verification_evidence_bundle_rollback_supersession_history.json`.
-- `just deployment-verification-record-bundle-transport-locator-history` writes `deployment_verification_evidence_bundle_transport_locator_history.json`.
-- `just deployment-verification-reconcile-bundle-transport-locator` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation.json`.
-- `just deployment-verification-record-bundle-transport-locator-reconciliation-history` writes `deployment_verification_evidence_bundle_transport_locator_reconciliation_history.json`.
-- `just deployment-verification-reconcile-bundle` writes `deployment_verification_evidence_bundle_reconciliation.json`.
-- `just deployment-verification-record-bundle-reconciliation-history` writes `deployment_verification_evidence_bundle_reconciliation_history.json`.
-- `just deployment-verification-handoff` writes `deployment_verification_evidence_handoff.json`.
-- `just deployment-verification-record-handoff-history` writes `deployment_verification_evidence_handoff_history.json`.
-- `just deployment-verification-point-handoff-transport-locator` writes `deployment_verification_evidence_handoff_transport_locator.json`.
-- `just deployment-verification-record-handoff-transport-locator-history` writes `deployment_verification_evidence_handoff_transport_locator_history.json`.
-- `just deployment-verification-reconcile-handoff-transport-locator` writes `deployment_verification_evidence_handoff_transport_locator_reconciliation.json`.
-- `just deployment-verification-reconcile-handoff` writes `deployment_verification_evidence_handoff_reconciliation.json`.
-- `just deployment-verification-record-handoff-reconciliation-history` writes `deployment_verification_evidence_handoff_reconciliation_history.json`.
+- Deployment verification stays grouped under three family maps:
+- Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`, plus the receipt locator, transport locator, reconciliation, rollback, and supersession variants.
+- Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`, plus the bundle locator, transport locator, reconciliation, rollback, and supersession variants.
+- Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`, plus the handoff transport locator and reconciliation variants.
+- `just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked so this page can stay grouped instead of listing every artifact variant explicitly.
 
 ## Cleanup
 

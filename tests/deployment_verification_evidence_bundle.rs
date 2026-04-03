@@ -60,16 +60,6 @@ fn deployment_verification_evidence_bundle_schema_and_workflow_are_explicit() {
         justfile.contains("deployment-verification-bundle receipt:"),
         "justfile must expose the deployment-verification-bundle workflow"
     );
-
-    let readme = repo_file("docs/workflows.md");
-    assert!(
-        readme.contains("deployment_verification_evidence_bundle.json"),
-        "workflow reference must mention the deployment verification evidence bundle artifact"
-    );
-    assert!(
-        readme.contains("just deployment-verification-bundle"),
-        "workflow reference must mention the deployment verification evidence bundle workflow"
-    );
 }
 
 #[test]

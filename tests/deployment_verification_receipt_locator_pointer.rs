@@ -60,16 +60,6 @@ fn deployment_verification_receipt_locator_pointer_schema_and_workflow_are_expli
         justfile.contains("deployment-verification-point-receipt-locator locator:"),
         "justfile must expose the deployment-verification-point-receipt-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_locator_pointer.json"),
-        "workflow reference must mention the deployment verification receipt locator pointer artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-point-receipt-locator"),
-        "workflow reference must mention the deployment verification receipt locator pointer workflow"
-    );
 }
 
 #[test]

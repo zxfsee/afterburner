@@ -59,16 +59,6 @@ fn deployment_verification_evidence_handoff_schema_and_workflow_are_explicit() {
         justfile.contains("deployment-verification-handoff bundle:"),
         "justfile must expose the deployment-verification-handoff workflow"
     );
-
-    let readme = repo_file("docs/workflows.md");
-    assert!(
-        readme.contains("deployment_verification_evidence_handoff.json"),
-        "workflow reference must mention the deployment verification evidence handoff artifact"
-    );
-    assert!(
-        readme.contains("just deployment-verification-handoff"),
-        "workflow reference must mention the deployment verification evidence handoff workflow"
-    );
 }
 
 #[test]

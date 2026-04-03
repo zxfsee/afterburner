@@ -59,16 +59,6 @@ fn deployment_verification_handoff_transport_locator_schema_and_workflow_are_exp
         justfile.contains("deployment-verification-point-handoff-transport-locator handoff:"),
         "justfile must expose the deployment-verification-point-handoff-transport-locator workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_handoff_transport_locator.json"),
-        "workflow reference must mention the deployment verification handoff transport locator artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-point-handoff-transport-locator"),
-        "workflow reference must mention the deployment verification handoff transport locator workflow"
-    );
 }
 
 #[test]

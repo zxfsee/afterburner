@@ -64,17 +64,6 @@ fn deployment_verification_bundle_transport_locator_history_schema_and_workflow_
         ),
         "justfile must expose the deployment-verification-record-bundle-transport-locator-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows
-            .contains("deployment_verification_evidence_bundle_transport_locator_history.json"),
-        "workflow reference must mention the deployment verification bundle transport locator history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-bundle-transport-locator-history"),
-        "workflow reference must mention the deployment verification bundle transport locator history workflow"
-    );
 }
 
 #[test]

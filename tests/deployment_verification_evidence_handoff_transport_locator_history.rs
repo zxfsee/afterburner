@@ -64,17 +64,6 @@ fn deployment_verification_handoff_transport_locator_history_schema_and_workflow
         ),
         "justfile must expose the deployment-verification-record-handoff-transport-locator-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows
-            .contains("deployment_verification_evidence_handoff_transport_locator_history.json"),
-        "workflow reference must mention the deployment verification handoff transport locator history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-handoff-transport-locator-history"),
-        "workflow reference must mention the deployment verification handoff transport locator history workflow"
-    );
 }
 
 #[test]

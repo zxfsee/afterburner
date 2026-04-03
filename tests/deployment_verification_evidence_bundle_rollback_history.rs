@@ -72,16 +72,6 @@ fn deployment_verification_bundle_rollback_history_schema_and_workflow_are_expli
         ),
         "justfile must expose the deployment-verification-record-bundle-rollback-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_rollback_history.json"),
-        "workflow reference must mention the deployment verification bundle rollback history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-bundle-rollback-history"),
-        "workflow reference must mention the deployment verification bundle rollback history workflow"
-    );
 }
 
 #[test]

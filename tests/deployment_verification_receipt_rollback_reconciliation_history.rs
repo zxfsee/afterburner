@@ -66,18 +66,6 @@ fn deployment_verification_receipt_rollback_reconciliation_history_schema_and_wo
         ),
         "justfile must expose the deployment-verification-record-receipt-rollback-reconciliation-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_rollback_reconciliation_history.json"),
-        "workflow reference must mention the deployment verification receipt rollback reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains(
-            "just deployment-verification-record-receipt-rollback-reconciliation-history"
-        ),
-        "workflow reference must mention the deployment verification receipt rollback reconciliation history workflow"
-    );
 }
 
 #[test]

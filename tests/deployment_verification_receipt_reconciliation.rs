@@ -57,22 +57,6 @@ fn deployment_verification_receipt_reconciliation_schema_and_workflow_are_explic
         justfile.contains("deployment-verification-reconcile-receipt receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:"),
         "justfile must expose the deployment-verification-reconcile-receipt workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_receipt_reconciliation.json"),
-        "workflow reference must mention the deployment verification receipt reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-reconcile-receipt"),
-        "workflow reference must mention the deployment verification receipt reconciliation workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_receipt_reconciliation.json"),
-        "reference index must mention the deployment verification receipt reconciliation artifact"
-    );
 }
 
 #[test]

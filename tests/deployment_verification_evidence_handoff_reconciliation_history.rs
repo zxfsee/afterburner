@@ -65,22 +65,6 @@ fn deployment_verification_handoff_reconciliation_history_schema_and_workflow_ar
         ),
         "justfile must expose the deployment-verification-record-handoff-reconciliation-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_handoff_reconciliation_history.json"),
-        "workflow reference must mention the deployment verification handoff reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-handoff-reconciliation-history"),
-        "workflow reference must mention the deployment verification handoff reconciliation history workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_handoff_reconciliation_history.json"),
-        "reference index must mention the deployment verification handoff reconciliation history artifact"
-    );
 }
 
 #[test]

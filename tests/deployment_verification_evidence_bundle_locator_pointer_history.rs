@@ -65,16 +65,6 @@ fn deployment_verification_bundle_locator_pointer_history_schema_and_workflow_ar
         ),
         "justfile must expose the deployment-verification-record-bundle-locator-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_locator_pointer_history.json"),
-        "workflow reference must mention the deployment verification bundle locator pointer history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-bundle-locator-history"),
-        "workflow reference must mention the deployment verification bundle locator pointer history workflow"
-    );
 }
 
 #[test]

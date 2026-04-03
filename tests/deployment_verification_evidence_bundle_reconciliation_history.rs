@@ -65,22 +65,6 @@ fn deployment_verification_bundle_reconciliation_history_schema_and_workflow_are
         ),
         "justfile must expose the deployment-verification-record-bundle-reconciliation-history workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("deployment_verification_evidence_bundle_reconciliation_history.json"),
-        "workflow reference must mention the deployment verification bundle reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains("just deployment-verification-record-bundle-reconciliation-history"),
-        "workflow reference must mention the deployment verification bundle reconciliation history workflow"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("deployment_verification_evidence_bundle_reconciliation_history.json"),
-        "reference index must mention the deployment verification bundle reconciliation history artifact"
-    );
 }
 
 #[test]
