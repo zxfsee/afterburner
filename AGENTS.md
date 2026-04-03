@@ -66,6 +66,11 @@ Do not include temporary heuristics that reflect a single session correction.
     - promote it to the top active TODO with an explicit rationale and blocking relationship.
   - Do not treat such hardening as implied follow-on work, and do not let “keep the TODO queue spinning” override queue-correctness or workflow-safety issues.
   - If the same class of queue/workflow weakness appears a second time in one session or across adjacent landings, treat it as a blocking top-priority hardening item.
+  - Status updates during queue work must explicitly classify the current state as one of:
+    - resuming queue work,
+    - blocked by workflow hardening,
+    - performing queue-only repair,
+    - intentionally reprioritizing.
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
     - a new gate (test/CI check), or
