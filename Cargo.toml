@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Reference and workflow surface consolidation [Runtime Infra]
-  - Goal: Shrink `docs/reference.md` and `docs/workflows.md` from long artifact registries into grouped operator/index surfaces that stay useful without carrying every variant explicitly.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - Debug deploy command taxonomy regrouping [Serving/Deployment Infra, Runtime Infra]
   - Goal: Regroup the low-level debug deploy command tree around clearer action/object boundaries so long internal artifact noun chains stop leaking directly into the CLI path even on internal surfaces.
   - Kind: `mixed`
