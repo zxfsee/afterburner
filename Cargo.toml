@@ -13,8 +13,15 @@ header = """# Changelog
 
 ## TODO
 
-- Command-input helper rollout for cleanup and provenance [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Finish the remaining shared command-input helper rollout through cleanup, source-provenance, profiling-provenance, and the remaining specialized contract parsers after the drift baseline slice lands.
+- Command-input helper rollout for cleanup [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Extend the shared command-input helper surface through the cleanup family so those artifact-heavy variants stop carrying local JSON object loader, string, and write helper logic.
+  - Kind: `mixed`
+  - Boundary: `none`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `tests/`
+
+- Command-input helper rollout for provenance [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Extend the shared command-input helper surface through the source-provenance and profiling-provenance families plus the remaining specialized contract parsers after the cleanup slice lands.
   - Kind: `mixed`
   - Boundary: `none`
   - Contracts: `artifact`, `event`
