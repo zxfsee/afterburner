@@ -2,33 +2,26 @@
 
 ## TODO
 
-- Command-input helper rollout for cleanup [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the cleanup family so those artifact-heavy variants stop carrying local JSON object loader, string, and write helper logic.
+- Just orchestration semantic extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Extract deploy, profile, and rollout family semantics out of `justfile` into typed Rust helpers and grouped entrypoints so `just` returns to being a thin orchestration surface instead of a protocol registry and workflow-policy layer.
   - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
-- Command-input helper rollout for provenance [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the source-provenance and profiling-provenance families plus the remaining specialized contract parsers after the cleanup slice lands.
+- Profile infer native helper extraction [Runtime Infra, Inference]
+  - Goal: Move `profile-infer` artifact resolution, backend derivation, and environment snapshot semantics out of recipe-local shell logic and behind one typed native helper while keeping the `just` entrypoint stable.
   - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`
 
-- Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, or artifact-family semantics after the decomposition work lands.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `src/main.rs`, `src/cli_dispatch/`, `justfile`, `tests/`
-
-- Debug deploy taxonomy regression gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Add one focused mechanical guard so the regrouped debug deploy family-first command tree does not regress back to flat artifact-taxonomy command names in the CLI surface, recipe bodies, or redirect tests.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `src/cli_dispatch/`, `justfile`, `tests/`
+- Rollout pointer mutation typed helper extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Push rollout pointer and state mutation flows behind typed commands so recipes stop directly encoding canonical state-file mutation and family-specific rollout behavior.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Grouped distributed-lineage docs surface consolidation [Runtime Infra]
   - Goal: Collapse the distributed shard-lineage sections in docs/reference.md and docs/workflows.md from per-artifact registries into grouped family maps while leaving exhaustive mechanical coverage in the existing family-level tests.
@@ -52,7 +45,7 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-<!-- queue-snapshot: todo_sha256=9eb68538ea672d8183f538914c0d3df362d2e68b5df66a78865211c8cd78cca6 parent_commit=a2a2d75f31dae1a6806349dd4a3cbbc052b974b1 -->
+<!-- queue-snapshot: todo_sha256=f94caf0f37c16cf03de1c490bda31da004a1dc7abf9ca0d94916b2f53064110b parent_commit=c8379955ba7dbcdd9d98c3a4a70019f60129511d -->
 
 ## [Trunk]
 
@@ -286,6 +279,7 @@
 - Roll out launch command input helpers ([24a56d2])
 - Roll out lineage command input helpers ([bc6bae6])
 - Roll out drift command input helpers ([0bcc595])
+- Finish durability hardening ([c837995])
 
 ### Chore
 
@@ -388,6 +382,7 @@
 - Advance lineage helper rollout ([bfb331e])
 - Split drift helper rollout ([9bbe01b])
 - Advance drift helper rollout ([a2a2d75])
+- Split cleanup provenance rollout ([44cc117])
 
 ### Documentation
 
@@ -570,6 +565,7 @@
 - Tolerate queue-refresh commit in snapshot check ([ddd9360])
 - Correct handoff transport locator history context ([03127dd])
 - Add explicit top-scope repair path ([e5f4a44])
+- Harden queue preflight against stale state ([00afacc])
 
 ### Other
 
@@ -1154,5 +1150,8 @@
 [9bbe01b]: https://github.com/zxfsee/afterburner/commit/9bbe01b2b33245b06c9d0c740ec61c633bcca633
 [0bcc595]: https://github.com/zxfsee/afterburner/commit/0bcc5958e2f76302edb852aa8d00dd6f440e8cd3
 [a2a2d75]: https://github.com/zxfsee/afterburner/commit/a2a2d75f31dae1a6806349dd4a3cbbc052b974b1
+[44cc117]: https://github.com/zxfsee/afterburner/commit/44cc117815af9b9599c95f7e13b061eda0d51f92
+[00afacc]: https://github.com/zxfsee/afterburner/commit/00afacc3a23520d71a5da5b472758b17cfddc09b
+[c837995]: https://github.com/zxfsee/afterburner/commit/c8379955ba7dbcdd9d98c3a4a70019f60129511d
 
 <!-- generated by git-cliff -->

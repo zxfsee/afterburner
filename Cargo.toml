@@ -13,33 +13,26 @@ header = """# Changelog
 
 ## TODO
 
-- Command-input helper rollout for cleanup [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the cleanup family so those artifact-heavy variants stop carrying local JSON object loader, string, and write helper logic.
+- Just orchestration semantic extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Extract deploy, profile, and rollout family semantics out of `justfile` into typed Rust helpers and grouped entrypoints so `just` returns to being a thin orchestration surface instead of a protocol registry and workflow-policy layer.
   - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
-- Command-input helper rollout for provenance [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the source-provenance and profiling-provenance families plus the remaining specialized contract parsers after the cleanup slice lands.
+- Profile infer native helper extraction [Runtime Infra, Inference]
+  - Goal: Move `profile-infer` artifact resolution, backend derivation, and environment snapshot semantics out of recipe-local shell logic and behind one typed native helper while keeping the `just` entrypoint stable.
   - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`
 
-- Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, or artifact-family semantics after the decomposition work lands.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `src/main.rs`, `src/cli_dispatch/`, `justfile`, `tests/`
-
-- Debug deploy taxonomy regression gate [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Add one focused mechanical guard so the regrouped debug deploy family-first command tree does not regress back to flat artifact-taxonomy command names in the CLI surface, recipe bodies, or redirect tests.
-  - Kind: `gate`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `src/cli_dispatch/`, `justfile`, `tests/`
+- Rollout pointer mutation typed helper extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Push rollout pointer and state mutation flows behind typed commands so recipes stop directly encoding canonical state-file mutation and family-specific rollout behavior.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Grouped distributed-lineage docs surface consolidation [Runtime Infra]
   - Goal: Collapse the distributed shard-lineage sections in docs/reference.md and docs/workflows.md from per-artifact registries into grouped family maps while leaving exhaustive mechanical coverage in the existing family-level tests.
