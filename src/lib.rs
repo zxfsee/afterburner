@@ -3,6 +3,7 @@
 pub use afterburner_core::{data, preprocess};
 
 pub mod command_artifacts;
+pub mod command_input_json;
 pub mod command_reconciliation;
 pub mod infer;
 pub mod manifest;

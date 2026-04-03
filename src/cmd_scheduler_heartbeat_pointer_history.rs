@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
@@ -222,74 +221,11 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, SchedulerHeartbeatPointerHistoryError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        SchedulerHeartbeatPointerHistoryError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        SchedulerHeartbeatPointerHistoryError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn load_history(path: &Path) -> Result<Value, SchedulerHeartbeatPointerHistoryError> {
-    let text = fs::read_to_string(path)?;
-    let history: Value = serde_json::from_str(&text).map_err(|err| {
-        SchedulerHeartbeatPointerHistoryError::Parse(format!(
-            "parse scheduler heartbeat pointer history `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    history
-        .get("entries")
-        .and_then(Value::as_array)
-        .ok_or_else(|| {
-            SchedulerHeartbeatPointerHistoryError::Parse(format!(
-                "scheduler heartbeat pointer history `{}` must contain an `entries` array",
-                path.display()
-            ))
-        })?;
-    Ok(history)
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, SchedulerHeartbeatPointerHistoryError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            SchedulerHeartbeatPointerHistoryError::Parse(format!(
-                "gpu scheduler heartbeat pointer `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<u64, SchedulerHeartbeatPointerHistoryError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        SchedulerHeartbeatPointerHistoryError::Parse(format!(
-            "gpu scheduler heartbeat pointer `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
+afterburner::define_command_input_json_non_empty_kind_history_helpers!(
+    SchedulerHeartbeatPointerHistoryError,
+    "gpu scheduler heartbeat pointer",
+    "scheduler heartbeat pointer history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner debug deploy record-scheduler-heartbeat-pointer-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"

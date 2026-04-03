@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
@@ -163,51 +162,10 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, SchedulerHeartbeatPointerError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        SchedulerHeartbeatPointerError::Parse(format!("parse {kind} `{}`: {err}", path.display()))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        SchedulerHeartbeatPointerError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, SchedulerHeartbeatPointerError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            SchedulerHeartbeatPointerError::Parse(format!(
-                "gpu scheduler heartbeat `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn read_u64(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<u64, SchedulerHeartbeatPointerError> {
-    object.get(key).and_then(Value::as_u64).ok_or_else(|| {
-        SchedulerHeartbeatPointerError::Parse(format!(
-            "gpu scheduler heartbeat `{}` missing integer field `{key}`",
-            path.display()
-        ))
-    })
-}
+afterburner::define_command_input_json_non_empty_kind_helpers!(
+    SchedulerHeartbeatPointerError,
+    "gpu scheduler heartbeat"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner debug deploy point-scheduler-heartbeat --heartbeat PATH [--out PATH]"

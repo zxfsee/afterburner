@@ -1,8 +1,8 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::observability::emit_event;
-use serde_json::{Value, json};
+use serde_json::json;
 
 const DEPLOYMENT_VERIFICATION_HANDOFF_TRANSPORT_LOCATOR_PATH: &str =
     "artifacts/deploy/deployment_verification_evidence_handoff_transport_locator.json";
@@ -167,41 +167,10 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DeploymentVerificationHandoffTransportLocatorError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationHandoffTransportLocatorError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentVerificationHandoffTransportLocatorError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DeploymentVerificationHandoffTransportLocatorError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentVerificationHandoffTransportLocatorError::Parse(format!(
-                "deployment verification evidence handoff `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
+afterburner::define_command_input_json_kind_helpers!(
+    DeploymentVerificationHandoffTransportLocatorError,
+    "deployment verification evidence handoff"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner debug deploy point-verification-handoff-transport-locator --handoff PATH [--out PATH]"

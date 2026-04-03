@@ -1,5 +1,4 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::observability::emit_event;
 use serde_json::{Value, json};
@@ -251,59 +250,7 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DeploymentVerificationBundleLocatorRollbackError> {
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationBundleLocatorRollbackError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentVerificationBundleLocatorRollbackError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-    kind: &str,
-) -> Result<String, DeploymentVerificationBundleLocatorRollbackError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentVerificationBundleLocatorRollbackError::Parse(format!(
-                "{kind} `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
-
-fn write_json(
-    path: &Path,
-    value: &Value,
-    kind: &str,
-) -> Result<(), DeploymentVerificationBundleLocatorRollbackError> {
-    if let Some(parent) = path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let text = serde_json::to_string_pretty(value).map_err(|err| {
-        DeploymentVerificationBundleLocatorRollbackError::Parse(format!(
-            "serialize {kind} json: {err}"
-        ))
-    })?;
-    fs::write(path, text)?;
-    Ok(())
-}
+afterburner::define_command_input_json_helpers!(DeploymentVerificationBundleLocatorRollbackError);
 
 fn usage() -> &'static str {
     "usage: afterburner rollback verification-bundle-locator --current-pointer PATH --restored-pointer PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"

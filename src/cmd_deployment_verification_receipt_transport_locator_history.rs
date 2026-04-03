@@ -1,10 +1,9 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use afterburner::command_artifacts::{
     JsonArtifactError, emit_json_artifact_written, write_json_value,
 };
-use serde_json::{Value, json};
+use serde_json::json;
 
 const DEFAULT_OUT_PATH: &str =
     "artifacts/deploy/deployment_verification_receipt_transport_locator_history.json";
@@ -215,68 +214,11 @@ where
     })
 }
 
-fn load_json_object(
-    path: &Path,
-    kind: &str,
-) -> Result<serde_json::Map<String, Value>, DeploymentVerificationReceiptTransportLocatorHistoryError>
-{
-    let text = fs::read_to_string(path)?;
-    let value: Value = serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationReceiptTransportLocatorHistoryError::Parse(format!(
-            "parse {kind} `{}`: {err}",
-            path.display()
-        ))
-    })?;
-    value.as_object().cloned().ok_or_else(|| {
-        DeploymentVerificationReceiptTransportLocatorHistoryError::Parse(format!(
-            "{kind} `{}` must be an object",
-            path.display()
-        ))
-    })
-}
-
-fn load_history(
-    path: &Path,
-) -> Result<Value, DeploymentVerificationReceiptTransportLocatorHistoryError> {
-    let text = fs::read_to_string(path)?;
-    serde_json::from_str(&text).map_err(|err| {
-        DeploymentVerificationReceiptTransportLocatorHistoryError::Parse(format!(
-            "parse deployment verification receipt transport locator history `{}`: {err}",
-            path.display()
-        ))
-    })
-}
-
-fn history_entries_mut(
-    history: &mut Value,
-) -> Result<&mut Vec<Value>, DeploymentVerificationReceiptTransportLocatorHistoryError> {
-    history
-        .get_mut("entries")
-        .and_then(Value::as_array_mut)
-        .ok_or_else(|| {
-            DeploymentVerificationReceiptTransportLocatorHistoryError::Parse(
-                "deployment verification receipt transport locator history must contain an `entries` array"
-                    .to_string(),
-            )
-        })
-}
-
-fn read_string(
-    object: &serde_json::Map<String, Value>,
-    key: &'static str,
-    path: &Path,
-) -> Result<String, DeploymentVerificationReceiptTransportLocatorHistoryError> {
-    object
-        .get(key)
-        .and_then(Value::as_str)
-        .map(str::to_string)
-        .ok_or_else(|| {
-            DeploymentVerificationReceiptTransportLocatorHistoryError::Parse(format!(
-                "deployment verification receipt transport locator `{}` missing string field `{key}`",
-                path.display()
-            ))
-        })
-}
+afterburner::define_command_input_json_kind_history_helpers!(
+    DeploymentVerificationReceiptTransportLocatorHistoryError,
+    "deployment verification receipt transport locator",
+    "deployment verification receipt transport locator history"
+);
 
 fn usage() -> &'static str {
     "usage: afterburner debug deploy record-verification-receipt-transport-locator-history --locator PATH --event EVENT --recorded-at-unix-ms UNIX_MS [--out PATH]"
