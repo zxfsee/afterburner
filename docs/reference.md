@@ -72,6 +72,7 @@ unless they graduate into a clear operator intent.
   - Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
   - Receipt locator, locator rollback, and rollback supersession flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
   - `deployment_verification_evidence_bundle*.json`
+  - Bundle core history, reconciliation, and transport-locator flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md); bundle locator and rollback variants remain explicit until their follow-on grouping lands.
   - `deployment_verification_evidence_handoff*.json`
   - Use [docs/workflows.md](./workflows.md) for the exhaustive recipe map and `workflow-surface-check-deployment-verification` for mechanical coverage.
   - `distributed_load_profile.json`

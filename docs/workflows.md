@@ -144,7 +144,9 @@ operator use case justifies promotion.
 - `just deployment-verification-point-receipt-locator` writes `deployment_verification_receipt_locator_pointer.json`.
 - `just deployment-verification-receipt-locator-manage <record-history|reconcile|record-reconciliation-history>` covers the receipt locator history and reconciliation artifacts.
 - `just deployment-verification-receipt-rollback-manage <rollback|record-locator-rollback-history|reconcile-rollback|record-rollback-reconciliation-history|supersede-rollback|reconcile-rollback-supersession|record-rollback-supersession-history|record-rollback-supersession-reconciliation-history>` covers the receipt locator rollback and rollback-supersession artifacts.
-- Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`, plus the bundle locator, transport locator, reconciliation, rollback, and supersession variants.
+- Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.
+- Core bundle sidecars: `just deployment-verification-bundle-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the bundle history, reconciliation, and transport-locator artifacts.
+- Bundle locator and rollback variants remain explicit until the dedicated locator-and-rollback grouping lands.
 - Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`, plus the handoff transport locator and reconciliation variants.
 - `just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked so this page can stay grouped instead of listing every artifact variant explicitly.
 
