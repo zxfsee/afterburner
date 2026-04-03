@@ -116,7 +116,8 @@ fn gpu_scheduler_heartbeat_pointer_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-scheduler-heartbeat-pointer-history")
+        .arg("scheduler-heartbeat")
+        .arg("point-record-history")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--event")

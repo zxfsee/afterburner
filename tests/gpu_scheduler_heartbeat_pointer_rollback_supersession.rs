@@ -115,7 +115,8 @@ fn gpu_scheduler_heartbeat_pointer_rollback_supersession_writes_artifact_and_eve
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("scheduler-heartbeat-point-rollback-supersede")
+        .arg("scheduler-heartbeat")
+        .arg("point-rollback-supersede")
         .arg("--previous-rollback")
         .arg(&previous)
         .arg("--next-rollback")

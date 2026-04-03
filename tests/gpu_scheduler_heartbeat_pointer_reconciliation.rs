@@ -103,7 +103,8 @@ fn gpu_scheduler_heartbeat_pointer_reconciliation_writes_artifact_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-scheduler-heartbeat-pointer")
+        .arg("scheduler-heartbeat")
+        .arg("point-reconcile")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--current-pointer")

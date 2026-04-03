@@ -33,13 +33,22 @@ fn deployment_verification_operator_surface_uses_intent_families() {
         .assert()
         .failure()
         .stderr(predicates::str::contains(
-            "use `afterburner debug deploy record-verification-bundle-rollback-history ...`",
+            "use `afterburner debug deploy verification-bundle record-rollback-history ...`",
         ));
 
     cargo_bin_cmd!("afterburner")
         .arg("debug")
         .arg("deploy")
         .arg("record-verification-bundle-rollback-history")
+        .arg("--help")
+        .assert()
+        .failure();
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("deploy")
+        .arg("verification-bundle")
+        .arg("record-rollback-history")
         .arg("--help")
         .assert()
         .success();

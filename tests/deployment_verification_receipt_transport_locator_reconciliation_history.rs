@@ -90,7 +90,8 @@ fn deployment_verification_receipt_transport_locator_reconciliation_history_writ
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-receipt-transport-locator-reconciliation-history")
+        .arg("verification-receipt")
+        .arg("record-transport-locator-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

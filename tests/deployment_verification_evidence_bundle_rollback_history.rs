@@ -106,7 +106,8 @@ fn deployment_verification_bundle_rollback_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-bundle-rollback-history")
+        .arg("verification-bundle")
+        .arg("record-rollback-history")
         .arg("--rollback")
         .arg(&rollback)
         .arg("--event")

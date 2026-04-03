@@ -107,7 +107,8 @@ fn deployment_verification_handoff_transport_locator_reconciliation_writes_artif
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-handoff-transport-locator")
+        .arg("verification-handoff")
+        .arg("reconcile-transport-locator")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--locator")

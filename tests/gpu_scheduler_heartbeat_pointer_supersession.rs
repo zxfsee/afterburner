@@ -126,7 +126,8 @@ fn gpu_scheduler_heartbeat_pointer_supersession_writes_artifact_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("scheduler-heartbeat-point-supersede")
+        .arg("scheduler-heartbeat")
+        .arg("point-supersede")
         .arg("--previous-pointer")
         .arg(&previous)
         .arg("--next-pointer")

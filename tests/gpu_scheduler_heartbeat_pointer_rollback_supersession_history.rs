@@ -97,7 +97,8 @@ fn gpu_scheduler_heartbeat_pointer_rollback_supersession_history_writes_history_
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-scheduler-heartbeat-pointer-rollback-supersession-history")
+        .arg("scheduler-heartbeat")
+        .arg("point-record-rollback-supersession-history")
         .arg("--supersession")
         .arg(&supersession)
         .arg("--event")

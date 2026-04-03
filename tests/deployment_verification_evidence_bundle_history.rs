@@ -97,7 +97,8 @@ fn deployment_verification_bundle_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-bundle-history")
+        .arg("verification-bundle")
+        .arg("record-history")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--event")

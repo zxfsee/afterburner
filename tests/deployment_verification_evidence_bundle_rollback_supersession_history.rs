@@ -85,7 +85,8 @@ fn deployment_verification_bundle_rollback_supersession_history_writes_history_a
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-bundle-rollback-supersession-history")
+        .arg("verification-bundle")
+        .arg("record-rollback-supersession-history")
         .arg("--supersession")
         .arg(&supersession)
         .arg("--event")

@@ -89,7 +89,8 @@ fn deployment_verification_receipt_locator_pointer_rollback_history_writes_histo
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-receipt-locator-rollback-history")
+        .arg("verification-receipt")
+        .arg("record-locator-rollback-history")
         .arg("--rollback")
         .arg(&rollback)
         .arg("--event")

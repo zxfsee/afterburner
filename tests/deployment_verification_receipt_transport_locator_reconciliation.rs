@@ -84,7 +84,8 @@ fn deployment_verification_receipt_transport_locator_reconciliation_writes_artif
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-receipt-transport-locator")
+        .arg("verification-receipt")
+        .arg("reconcile-transport-locator")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--locator")

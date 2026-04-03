@@ -92,7 +92,8 @@ fn deployment_verification_bundle_locator_pointer_history_writes_history_and_eve
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-bundle-locator-history")
+        .arg("verification-bundle")
+        .arg("record-locator-history")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--event")

@@ -103,7 +103,8 @@ fn deployment_verification_bundle_rollback_supersession_writes_artifact_and_even
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("supersede-verification-bundle-rollback")
+        .arg("verification-bundle")
+        .arg("supersede-rollback")
         .arg("--previous-rollback")
         .arg(&previous)
         .arg("--next-rollback")

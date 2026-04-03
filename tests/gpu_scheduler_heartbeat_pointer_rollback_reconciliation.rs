@@ -87,7 +87,8 @@ fn gpu_scheduler_heartbeat_pointer_rollback_reconciliation_writes_artifact_and_e
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-scheduler-heartbeat-pointer-rollback")
+        .arg("scheduler-heartbeat")
+        .arg("point-rollback-reconcile")
         .arg("--rollback")
         .arg(&rollback)
         .arg("--current-rollback")

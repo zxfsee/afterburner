@@ -84,7 +84,8 @@ fn deployment_verification_receipt_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-receipt-history")
+        .arg("verification-receipt")
+        .arg("record-history")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--event")

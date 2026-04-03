@@ -12,7 +12,7 @@ fn heartbeat_low_level_commands_move_under_debug_deploy() {
         .failure()
         .code(2)
         .stderr(predicate::str::contains(
-            "afterburner debug deploy scheduler-heartbeat-supersede",
+            "afterburner debug deploy scheduler-heartbeat supersede",
         ));
 
     let mut debug_cmd = cargo_bin_cmd!("afterburner");
@@ -20,6 +20,16 @@ fn heartbeat_low_level_commands_move_under_debug_deploy() {
         .arg("debug")
         .arg("deploy")
         .arg("scheduler-heartbeat-supersede")
+        .arg("--help")
+        .assert()
+        .failure();
+
+    let mut nested_debug_cmd = cargo_bin_cmd!("afterburner");
+    nested_debug_cmd
+        .arg("debug")
+        .arg("deploy")
+        .arg("scheduler-heartbeat")
+        .arg("supersede")
         .arg("--help")
         .assert()
         .success();

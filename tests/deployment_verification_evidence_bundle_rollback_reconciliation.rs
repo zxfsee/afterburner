@@ -114,7 +114,8 @@ fn deployment_verification_bundle_rollback_reconciliation_writes_artifact_and_ev
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-bundle-rollback")
+        .arg("verification-bundle")
+        .arg("reconcile-rollback")
         .arg("--rollback")
         .arg(&rollback)
         .arg("--current-rollback")

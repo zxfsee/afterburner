@@ -109,7 +109,8 @@ fn deployment_verification_evidence_handoff_reconciliation_writes_artifact_and_e
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-handoff")
+        .arg("verification-handoff")
+        .arg("reconcile")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--handoff")

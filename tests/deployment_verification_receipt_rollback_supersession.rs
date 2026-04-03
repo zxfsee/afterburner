@@ -99,7 +99,8 @@ fn deployment_verification_receipt_rollback_supersession_writes_artifact_and_eve
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("supersede-verification-receipt-rollback")
+        .arg("verification-receipt")
+        .arg("supersede-rollback")
         .arg("--previous-rollback")
         .arg(&previous)
         .arg("--next-rollback")

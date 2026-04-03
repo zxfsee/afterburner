@@ -122,7 +122,8 @@ fn gpu_scheduler_heartbeat_reconciliation_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-scheduler-heartbeat-reconciliation-history")
+        .arg("scheduler-heartbeat")
+        .arg("record-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

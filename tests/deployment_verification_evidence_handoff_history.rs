@@ -92,7 +92,8 @@ fn deployment_verification_handoff_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-verification-handoff-history")
+        .arg("verification-handoff")
+        .arg("record-history")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--event")

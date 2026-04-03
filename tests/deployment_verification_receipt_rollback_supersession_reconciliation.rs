@@ -95,7 +95,8 @@ fn deployment_verification_receipt_rollback_supersession_reconciliation_writes_a
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-receipt-rollback-supersession")
+        .arg("verification-receipt")
+        .arg("reconcile-rollback-supersession")
         .arg("--supersession")
         .arg(&supersession)
         .arg("--current-supersession")

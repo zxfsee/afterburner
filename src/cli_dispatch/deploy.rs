@@ -13,9 +13,9 @@ where
         );
         return 2;
     }
-    if is_debug_only_deploy_subcommand(&subcommand) {
+    if let Some(target) = legacy_debug_deploy_target(&subcommand) {
         eprintln!(
-            "deploy subcommand `{subcommand}` is debug-only; use `afterburner debug deploy {subcommand} ...`"
+            "deploy subcommand `{subcommand}` is debug-only; use `afterburner debug deploy {target} ...`"
         );
         return 2;
     }
@@ -26,16 +26,27 @@ pub fn run_debug_deploy<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
 {
-    let Some(subcommand) = args.next() else {
+    let Some(group) = args.next() else {
         eprintln!("missing debug deploy subcommand");
         eprintln!("{}", super::usage());
         return 2;
     };
-    if !is_debug_only_deploy_subcommand(&subcommand) {
-        eprintln!("unknown debug deploy subcommand: {subcommand}");
-        eprintln!("{}", super::usage());
+    if let Some(target) = legacy_debug_deploy_target(&group) {
+        eprintln!(
+            "debug deploy subcommand `{group}` moved to `{target}`; use `afterburner debug deploy {target} ...`"
+        );
         return 2;
     }
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy action for `{group}`");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    let Some(subcommand) = regrouped_debug_deploy_subcommand(&group, &action) else {
+        eprintln!("unknown debug deploy command: {group} {action}");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
     dispatch_deploy(subcommand, args)
 }
 
@@ -87,37 +98,6 @@ where
     }
 }
 
-fn is_debug_only_deploy_subcommand(subcommand: &str) -> bool {
-    matches!(
-        subcommand,
-        "record-scheduler-heartbeat-history"
-            | "record-scheduler-heartbeat-pointer-history"
-            | "record-scheduler-heartbeat-pointer-rollback-history"
-            | "record-scheduler-heartbeat-pointer-rollback-reconciliation-history"
-            | "reconcile-scheduler-heartbeat-pointer-rollback"
-            | "scheduler-heartbeat-point-rollback-supersede"
-            | "record-scheduler-heartbeat-pointer-rollback-supersession-history"
-            | "reconcile-scheduler-heartbeat-pointer-rollback-supersession"
-            | "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history"
-            | "record-scheduler-heartbeat-pointer-supersession-history"
-            | "record-scheduler-heartbeat-pointer-supersession-reconciliation-history"
-            | "rollback-scheduler-heartbeat-pointer"
-            | "reconcile-scheduler-heartbeat-pointer-supersession"
-            | "scheduler-heartbeat-point-supersede"
-            | "reconcile-scheduler-heartbeat-pointer"
-            | "scheduler-heartbeat-reconcile"
-            | "record-scheduler-heartbeat-reconciliation-history"
-            | "point-scheduler-heartbeat"
-            | "scheduler-heartbeat-supersede"
-            | "scheduler-heartbeat-supersession-reconcile"
-            | "record-scheduler-heartbeat-supersession-history"
-            | "record-scheduler-heartbeat-supersession-reconciliation-history"
-    ) || subcommand.starts_with("record-verification-")
-        || subcommand.starts_with("point-verification-")
-        || subcommand.starts_with("reconcile-verification-")
-        || subcommand.starts_with("supersede-verification-")
-}
-
 fn deploy_redirect_target(subcommand: &str) -> Option<&'static str> {
     match subcommand {
         "verification-receipt" => Some("verify receipt"),
@@ -128,6 +108,205 @@ fn deploy_redirect_target(subcommand: &str) -> Option<&'static str> {
         "rollback-verification-bundle" => Some("rollback verification-bundle"),
         _ => None,
     }
+}
+
+fn regrouped_debug_deploy_subcommand(group: &str, action: &str) -> Option<String> {
+    if let Some(legacy) = legacy_verification_subcommand(group, action) {
+        return Some(legacy);
+    }
+
+    if group == "scheduler-heartbeat" {
+        return match action {
+            "point" => Some("point-scheduler-heartbeat".to_string()),
+            "point-record-history" => {
+                Some("record-scheduler-heartbeat-pointer-history".to_string())
+            }
+            "point-reconcile" => Some("reconcile-scheduler-heartbeat-pointer".to_string()),
+            "point-supersede" => Some("scheduler-heartbeat-point-supersede".to_string()),
+            "point-record-supersession-history" => {
+                Some("record-scheduler-heartbeat-pointer-supersession-history".to_string())
+            }
+            "point-supersession-reconcile" => {
+                Some("reconcile-scheduler-heartbeat-pointer-supersession".to_string())
+            }
+            "point-record-supersession-reconciliation-history" => Some(
+                "record-scheduler-heartbeat-pointer-supersession-reconciliation-history"
+                    .to_string(),
+            ),
+            "point-rollback" => Some("rollback-scheduler-heartbeat-pointer".to_string()),
+            "point-record-rollback-history" => {
+                Some("record-scheduler-heartbeat-pointer-rollback-history".to_string())
+            }
+            "point-rollback-reconcile" => {
+                Some("reconcile-scheduler-heartbeat-pointer-rollback".to_string())
+            }
+            "point-record-rollback-reconciliation-history" => Some(
+                "record-scheduler-heartbeat-pointer-rollback-reconciliation-history".to_string(),
+            ),
+            "point-rollback-supersede" => {
+                Some("scheduler-heartbeat-point-rollback-supersede".to_string())
+            }
+            "point-record-rollback-supersession-history" => {
+                Some("record-scheduler-heartbeat-pointer-rollback-supersession-history".to_string())
+            }
+            "point-rollback-supersession-reconcile" => {
+                Some("reconcile-scheduler-heartbeat-pointer-rollback-supersession".to_string())
+            }
+            "point-record-rollback-supersession-reconciliation-history" => Some(
+                "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history"
+                    .to_string(),
+            ),
+            "record-history" => Some("record-scheduler-heartbeat-history".to_string()),
+            "reconcile" => Some("scheduler-heartbeat-reconcile".to_string()),
+            "record-reconciliation-history" => {
+                Some("record-scheduler-heartbeat-reconciliation-history".to_string())
+            }
+            "supersede" => Some("scheduler-heartbeat-supersede".to_string()),
+            "reconcile-supersession" => {
+                Some("scheduler-heartbeat-supersession-reconcile".to_string())
+            }
+            "record-supersession-history" => {
+                Some("record-scheduler-heartbeat-supersession-history".to_string())
+            }
+            "record-supersession-reconciliation-history" => {
+                Some("record-scheduler-heartbeat-supersession-reconciliation-history".to_string())
+            }
+            _ => None,
+        };
+    }
+
+    None
+}
+
+fn legacy_debug_deploy_target(subcommand: &str) -> Option<String> {
+    if let Some(target) = legacy_verification_target(subcommand) {
+        return Some(target);
+    }
+
+    let target = match subcommand {
+        "point-scheduler-heartbeat" => "scheduler-heartbeat point",
+        "record-scheduler-heartbeat-pointer-history" => "scheduler-heartbeat point-record-history",
+        "reconcile-scheduler-heartbeat-pointer" => "scheduler-heartbeat point-reconcile",
+        "scheduler-heartbeat-point-supersede" => "scheduler-heartbeat point-supersede",
+        "record-scheduler-heartbeat-pointer-supersession-history" => {
+            "scheduler-heartbeat point-record-supersession-history"
+        }
+        "reconcile-scheduler-heartbeat-pointer-supersession" => {
+            "scheduler-heartbeat point-supersession-reconcile"
+        }
+        "record-scheduler-heartbeat-pointer-supersession-reconciliation-history" => {
+            "scheduler-heartbeat point-record-supersession-reconciliation-history"
+        }
+        "rollback-scheduler-heartbeat-pointer" => "scheduler-heartbeat point-rollback",
+        "record-scheduler-heartbeat-pointer-rollback-history" => {
+            "scheduler-heartbeat point-record-rollback-history"
+        }
+        "reconcile-scheduler-heartbeat-pointer-rollback" => {
+            "scheduler-heartbeat point-rollback-reconcile"
+        }
+        "record-scheduler-heartbeat-pointer-rollback-reconciliation-history" => {
+            "scheduler-heartbeat point-record-rollback-reconciliation-history"
+        }
+        "scheduler-heartbeat-point-rollback-supersede" => {
+            "scheduler-heartbeat point-rollback-supersede"
+        }
+        "record-scheduler-heartbeat-pointer-rollback-supersession-history" => {
+            "scheduler-heartbeat point-record-rollback-supersession-history"
+        }
+        "reconcile-scheduler-heartbeat-pointer-rollback-supersession" => {
+            "scheduler-heartbeat point-rollback-supersession-reconcile"
+        }
+        "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history" => {
+            "scheduler-heartbeat point-record-rollback-supersession-reconciliation-history"
+        }
+        "record-scheduler-heartbeat-history" => "scheduler-heartbeat record-history",
+        "scheduler-heartbeat-reconcile" => "scheduler-heartbeat reconcile",
+        "record-scheduler-heartbeat-reconciliation-history" => {
+            "scheduler-heartbeat record-reconciliation-history"
+        }
+        "scheduler-heartbeat-supersede" => "scheduler-heartbeat supersede",
+        "scheduler-heartbeat-supersession-reconcile" => {
+            "scheduler-heartbeat reconcile-supersession"
+        }
+        "record-scheduler-heartbeat-supersession-history" => {
+            "scheduler-heartbeat record-supersession-history"
+        }
+        "record-scheduler-heartbeat-supersession-reconciliation-history" => {
+            "scheduler-heartbeat record-supersession-reconciliation-history"
+        }
+        _ => return None,
+    };
+
+    Some(target.to_string())
+}
+
+fn legacy_verification_subcommand(group: &str, action: &str) -> Option<String> {
+    let family = group.strip_prefix("verification-")?;
+    if !matches!(family, "receipt" | "bundle" | "handoff") {
+        return None;
+    }
+    if !matches!(
+        action,
+        "record-history"
+            | "point-locator"
+            | "record-locator-history"
+            | "reconcile-locator"
+            | "record-locator-reconciliation-history"
+            | "record-locator-rollback-history"
+            | "record-rollback-history"
+            | "reconcile-rollback"
+            | "record-rollback-reconciliation-history"
+            | "supersede-rollback"
+            | "reconcile-rollback-supersession"
+            | "record-rollback-supersession-reconciliation-history"
+            | "record-rollback-supersession-history"
+            | "point-transport-locator"
+            | "record-transport-locator-history"
+            | "reconcile-transport-locator"
+            | "record-transport-locator-reconciliation-history"
+            | "reconcile"
+            | "record-reconciliation-history"
+    ) {
+        return None;
+    }
+
+    Some(legacy_verification_target_parts(family, action))
+}
+
+fn legacy_verification_target(subcommand: &str) -> Option<String> {
+    let (verb, rest) = subcommand.split_once("-verification-")?;
+    if !matches!(verb, "record" | "point" | "reconcile" | "supersede") {
+        return None;
+    }
+    let (family, suffix) = verification_family_and_suffix(rest)?;
+    let mut target = format!("verification-{family} {verb}");
+    if !suffix.is_empty() {
+        target.push('-');
+        target.push_str(suffix);
+    }
+    Some(target)
+}
+
+fn legacy_verification_target_parts(family: &str, action: &str) -> String {
+    let (verb, suffix) = action.split_once('-').unwrap_or((action, ""));
+    let mut subcommand = format!("{verb}-verification-{family}");
+    if !suffix.is_empty() {
+        subcommand.push('-');
+        subcommand.push_str(suffix);
+    }
+    subcommand
+}
+
+fn verification_family_and_suffix(rest: &str) -> Option<(&str, &str)> {
+    for family in ["receipt", "bundle", "handoff"] {
+        if rest == family {
+            return Some((family, ""));
+        }
+        if let Some(suffix) = rest.strip_prefix(&format!("{family}-")) {
+            return Some((family, suffix));
+        }
+    }
+    None
 }
 
 fn dispatch_deploy<I>(subcommand: String, args: I) -> i32

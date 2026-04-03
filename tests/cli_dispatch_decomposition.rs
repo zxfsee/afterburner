@@ -34,8 +34,10 @@ fn main_entrypoint_stays_thin_and_deploy_dispatch_lives_in_grouped_helper() {
     for required in [
         "pub fn run_deploy",
         "pub fn run_debug_deploy",
-        "\"record-verification-receipt-locator-history\"",
-        "\"scheduler-heartbeat-point-rollback-supersede\"",
+        "\"verification-receipt\"",
+        "\"record-locator-history\"",
+        "\"scheduler-heartbeat\"",
+        "\"point-rollback-supersede\"",
     ] {
         assert!(
             deploy_dispatch.contains(required),

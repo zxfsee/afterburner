@@ -97,7 +97,8 @@ fn deployment_verification_bundle_transport_locator_reconciliation_writes_artifa
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-bundle-transport-locator")
+        .arg("verification-bundle")
+        .arg("reconcile-transport-locator")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--locator")

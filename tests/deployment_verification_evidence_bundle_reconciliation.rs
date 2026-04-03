@@ -100,7 +100,8 @@ fn deployment_verification_evidence_bundle_reconciliation_writes_artifact_and_ev
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("reconcile-verification-bundle")
+        .arg("verification-bundle")
+        .arg("reconcile")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--bundle")

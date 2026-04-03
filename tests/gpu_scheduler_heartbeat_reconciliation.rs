@@ -115,7 +115,8 @@ fn gpu_scheduler_heartbeat_reconciliation_writes_artifact_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("scheduler-heartbeat-reconcile")
+        .arg("scheduler-heartbeat")
+        .arg("reconcile")
         .arg("--heartbeat")
         .arg(&heartbeat)
         .arg("--current-heartbeat")

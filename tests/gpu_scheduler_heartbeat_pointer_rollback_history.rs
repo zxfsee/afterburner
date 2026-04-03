@@ -95,7 +95,8 @@ fn gpu_scheduler_heartbeat_pointer_rollback_history_writes_history_and_event() {
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("debug")
         .arg("deploy")
-        .arg("record-scheduler-heartbeat-pointer-rollback-history")
+        .arg("scheduler-heartbeat")
+        .arg("point-record-rollback-history")
         .arg("--rollback")
         .arg(&rollback)
         .arg("--event")
