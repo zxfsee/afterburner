@@ -27,8 +27,8 @@ Rules:
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`
 
-- CLI and recipe dispatch decomposition [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Reduce semantic concentration in `src/main.rs` and `justfile` by extracting grouped dispatch/orchestration helpers so they stop acting as the permanent control-plane choke points.
+- Routing and orchestration semantic decomposition [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Prevent routing and orchestration surfaces from becoming the permanent home of domain semantics by extracting grouped dispatch/orchestration helpers out of `src/main.rs`, `justfile`, and similar workflow chokepoints.
   - Kind: `mixed`
   - Boundary: `none`
   - Contracts: `cli`
