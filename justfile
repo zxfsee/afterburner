@@ -54,12 +54,17 @@ objective-lock-pin-review:
 
 # validate queue freshness, then pin the top active TODO scope as the current execute objective
 objective-lock-pin-execute-top-item:
+    just queue-completion-boundary-check
     just queue-snapshot-check
     cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
 
 # verify current repo mutations against the active objective lock
 objective-lock-check-worktree action:
     cargo run --locked --bin workflow_objective_lock -- check-worktree --action {{ action }}
+
+# detect if the current top TODO appears landed without queue advancement
+queue-completion-boundary-check:
+    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
 
 # clear the current objective lock before switching objective classes
 objective-lock-clear:
@@ -85,6 +90,13 @@ queue-fix-top-scope:
 # start top-item execution through the canonical execute-side guarded path
 queue-execute-preflight:
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
+    just objective-lock-pin-execute-top-item
+    just objective-lock-check-worktree execute-top-item
+
+# explicitly repair stale queue snapshot lineage and resume execute preflight
+queue-resume:
+    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
+    just queue-refresh
     just objective-lock-pin-execute-top-item
     just objective-lock-check-worktree execute-top-item
 

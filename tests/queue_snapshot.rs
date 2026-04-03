@@ -97,8 +97,10 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
     let assert = mismatch.assert().failure();
     let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
     assert!(
-        stderr.contains("run `just queue-refresh` first"),
-        "queue snapshot parent mismatch must point resumptions at queue-refresh: {stderr}"
+        stderr.contains("queue snapshot lineage is stale")
+            && stderr.contains("just queue-resume")
+            && stderr.contains("just queue-refresh"),
+        "queue snapshot parent mismatch must classify stale lineage and point at queue-resume plus queue-refresh: {stderr}"
     );
 
     let mut tolerate_previous_parent = cargo_bin_cmd!("workflow_queue_snapshot");
@@ -113,6 +115,59 @@ fn queue_snapshot_stamp_and_verify_round_trip() {
         .arg("--previous-parent-commit")
         .arg("abc123");
     tolerate_previous_parent.assert().success();
+}
+
+#[test]
+fn queue_completion_boundary_flags_completed_top_todo_left_active() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let root = tmp.path();
+    let cargo_toml = root.join("Cargo.toml");
+    let changelog = root.join("CHANGELOG.md");
+    let src_dir = root.join("src");
+    fs::create_dir_all(&src_dir).expect("create src dir");
+    fs::write(src_dir.join("lib.rs"), "pub fn initial() {}\n").expect("write src/lib.rs");
+
+    fs::write(
+        &cargo_toml,
+        "## TODO\n\n- Top item\n  - Goal: x\n  - Kind: `mixed`\n  - Boundary: `none`\n  - Contracts: `none`\n  - Scope: `src/`\n\n## [Trunk]\n",
+    )
+    .expect("write Cargo.toml");
+    fs::write(
+        &changelog,
+        "# Changelog\n\n## TODO\n\n- Top item\n\n## [Trunk]\n",
+    )
+    .expect("write changelog");
+    init_jj_repo(root);
+
+    fs::write(src_dir.join("lib.rs"), "pub fn changed() {}\n").expect("update src/lib.rs");
+    run_jj(
+        root,
+        &[
+            "--config",
+            "user.name=Afterburner Tests",
+            "--config",
+            "user.email=afterburner-tests@example.com",
+            "commit",
+            "-m",
+            "work",
+        ],
+    );
+
+    let mut check = cargo_bin_cmd!("workflow_queue_snapshot");
+    check
+        .arg("check-completion-boundary")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml)
+        .arg("--repo-root")
+        .arg(root);
+    let assert = check.assert().failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("queue completion boundary violation")
+            && stderr.contains("still appears active")
+            && stderr.contains("just queue-resume"),
+        "completion boundary must classify an unadvanced completed top TODO: {stderr}"
+    );
 }
 
 #[test]

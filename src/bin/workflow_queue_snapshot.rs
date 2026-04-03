@@ -62,6 +62,10 @@ enum Command {
         changelog: PathBuf,
         repo_root: PathBuf,
     },
+    CheckCompletionBoundary {
+        cargo_toml: PathBuf,
+        repo_root: PathBuf,
+    },
 }
 
 fn main() {
@@ -113,6 +117,10 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             let previous_parent_commit = jj_optional_commit_id(&repo_root, "@--")?;
             verify_snapshot(cargo_toml, changelog, parent_commit, previous_parent_commit)
         }
+        Command::CheckCompletionBoundary {
+            cargo_toml,
+            repo_root,
+        } => check_completion_boundary(cargo_toml, repo_root),
     }
 }
 
@@ -160,10 +168,48 @@ fn verify_snapshot(
             .map(|previous| format!("`{parent_commit}` or `{previous}`"))
             .unwrap_or_else(|| format!("`{parent_commit}`"));
         return Err(QueueSnapshotError::Parse(format!(
-            "queue snapshot parent mismatch: changelog has `{}`, expected {accepted}\nrun `just queue-refresh` first if queue work resumed after backlog-only or maintenance commits",
+            "queue snapshot lineage is stale: changelog has `{}`, expected {accepted}\nrun `just queue-resume` to repair and continue, or `just queue-refresh` if you only want to refresh the queue snapshot",
             snapshot.parent_commit
         )));
     }
+    Ok(())
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TodoScope {
+    title: String,
+    scope: Vec<String>,
+}
+
+fn check_completion_boundary(
+    cargo_toml: PathBuf,
+    repo_root: PathBuf,
+) -> Result<(), QueueSnapshotError> {
+    if jj_optional_commit_id(&repo_root, "@--")?.is_none() {
+        return Ok(());
+    }
+
+    let cargo_text = fs::read_to_string(&cargo_toml)?;
+    let todo = top_todo_scope(&cargo_text)?;
+    let changed = jj_changed_paths_between(&repo_root, "@--", "@-")?;
+    if changed.is_empty() {
+        return Ok(());
+    }
+
+    let touched_queue_files = changed
+        .iter()
+        .any(|path| path == "Cargo.toml" || path == "CHANGELOG.md");
+    let touched_top_scope = changed
+        .iter()
+        .any(|path| is_allowed_path(&todo.scope, path.as_str()));
+
+    if touched_top_scope && !touched_queue_files {
+        return Err(QueueSnapshotError::Parse(format!(
+            "queue completion boundary violation: current top TODO `{}` still appears active even though the most recent landed commit touched its scope {:?}\nadvance `Cargo.toml` and `CHANGELOG.md` first, then run `just queue-resume`",
+            todo.title, todo.scope
+        )));
+    }
+
     Ok(())
 }
 
@@ -239,12 +285,46 @@ where
         "verify" => parse_command_args(args, false),
         "stamp-current-parent" => parse_lineage_command_args(args, true),
         "verify-current-lineage" => parse_lineage_command_args(args, false),
+        "check-completion-boundary" => parse_completion_boundary_args(args),
         "--help" | "-h" | "help" => Err(QueueSnapshotError::InvalidArg(usage().to_string())),
         _ => Err(QueueSnapshotError::InvalidArg(format!(
             "unknown queue-snapshot subcommand `{subcommand}`\n{}",
             usage()
         ))),
     }
+}
+
+fn parse_completion_boundary_args<I>(args: I) -> Result<Command, QueueSnapshotError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut cargo_toml = PathBuf::from("Cargo.toml");
+    let mut repo_root = PathBuf::from(".");
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
+            _ if arg.starts_with("--cargo-toml=") => {
+                cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
+            }
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
+            _ => {
+                return Err(QueueSnapshotError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(Command::CheckCompletionBoundary {
+        cargo_toml,
+        repo_root,
+    })
 }
 
 fn parse_command_args<I>(args: I, stamp: bool) -> Result<Command, QueueSnapshotError>
@@ -378,6 +458,125 @@ fn normalized_todo_block(cargo_toml: &str) -> Result<String, QueueSnapshotError>
     Ok(normalized_lines.join("\n").trim().to_string())
 }
 
+fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
+    let todo_section = cargo_toml
+        .split(TODO_START)
+        .nth(1)
+        .and_then(|rest| rest.split(TODO_END).next())
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+        })?;
+
+    let mut lines = todo_section.lines();
+    let title = lines
+        .by_ref()
+        .find_map(|line| {
+            line.strip_prefix("- ")
+                .map(|title| title.trim().to_string())
+        })
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse("Cargo.toml TODO section does not contain any item".into())
+        })?;
+    let mut current_lines = Vec::new();
+    for line in lines {
+        if line.starts_with("- ") {
+            break;
+        }
+        current_lines.push(line.trim().to_string());
+    }
+    let scope_line = current_lines
+        .iter()
+        .find(|line| line.contains("Scope:"))
+        .ok_or_else(|| QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Scope:`")))?;
+    let scope = extract_backtick_values(scope_line);
+    if scope.is_empty() {
+        return Err(QueueSnapshotError::Parse(format!(
+            "TODO `{title}` must declare at least one backtick-quoted scope path"
+        )));
+    }
+
+    Ok(TodoScope { title, scope })
+}
+
+fn extract_backtick_values(line: &str) -> Vec<String> {
+    let mut values = Vec::new();
+    let mut current = String::new();
+    let mut in_tick = false;
+
+    for ch in line.chars() {
+        if ch == '`' {
+            if in_tick && !current.is_empty() {
+                values.push(normalize_scope_path(&current));
+                current.clear();
+            }
+            in_tick = !in_tick;
+            continue;
+        }
+        if in_tick {
+            current.push(ch);
+        }
+    }
+
+    values
+}
+
+fn normalize_scope_path(path: &str) -> String {
+    let mut normalized = path.replace('\\', "/");
+    while normalized.starts_with("./") {
+        normalized = normalized.trim_start_matches("./").to_string();
+    }
+    let is_dir = normalized.ends_with('/');
+    let normalized = normalized.trim_matches('/').to_string();
+    if is_dir && !normalized.is_empty() {
+        format!("{normalized}/")
+    } else {
+        normalized
+    }
+}
+
+fn normalize_candidate_path(path: &str) -> String {
+    let mut normalized = path.replace('\\', "/");
+    while normalized.starts_with("./") {
+        normalized = normalized.trim_start_matches("./").to_string();
+    }
+    normalized.trim_matches('/').to_string()
+}
+
+fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
+    allowed_paths.iter().any(|allowed| {
+        let allowed = normalize_scope_path(allowed);
+        if allowed.ends_with('/') {
+            candidate == allowed.trim_end_matches('/') || candidate.starts_with(&allowed)
+        } else {
+            candidate == allowed
+        }
+    })
+}
+
+fn jj_changed_paths_between(
+    repo_root: &PathBuf,
+    from_rev: &str,
+    to_rev: &str,
+) -> Result<Vec<String>, QueueSnapshotError> {
+    let output = ProcessCommand::new("jj")
+        .current_dir(repo_root)
+        .args(["diff", "--from", from_rev, "--to", to_rev, "--name-only"])
+        .output()?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+        return Err(QueueSnapshotError::Parse(format!(
+            "jj diff for completion boundary failed: {stderr}"
+        )));
+    }
+    let stdout = String::from_utf8(output.stdout)
+        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
+    Ok(stdout
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .map(normalize_candidate_path)
+        .collect())
+}
+
 fn snapshot_comment(snapshot: &QueueSnapshot) -> String {
     format!(
         "<!-- queue-snapshot: todo_sha256={} parent_commit={} -->",
@@ -467,11 +666,12 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage> [options]\n\
+    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage|check-completion-boundary> [options]\n\
 stamp: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID\n\
 verify: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID [--previous-parent-commit ID]\n\
 stamp-current-parent: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
-verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]"
+verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
+check-completion-boundary: [--cargo-toml PATH] [--repo-root PATH]"
 }
 
 #[cfg(test)]

@@ -59,6 +59,13 @@ Do not include temporary heuristics that reflect a single session correction.
   - Before starting implementation of the top active TODO, run the queue freshness check and pin the execute objective through the canonical repo entrypoints.
   - Before queue-only refreshes (for example active horizon updates in `Cargo.toml` / `CHANGELOG.md`), pin the queue-refresh objective through the canonical repo entrypoint.
   - When changing objective class, clear or replace the prior objective lock before continuing.
+- Workflow hardening preemption:
+  - If execution reveals a missing workflow/helper hardening or a queue-correctness weakness that requires manual repair, do not continue adjacent queue items by default.
+  - Before resuming normal queue advancement, either:
+    - implement the hardening immediately, or
+    - promote it to the top active TODO with an explicit rationale and blocking relationship.
+  - Do not treat such hardening as implied follow-on work, and do not let “keep the TODO queue spinning” override queue-correctness or workflow-safety issues.
+  - If the same class of queue/workflow weakness appears a second time in one session or across adjacent landings, treat it as a blocking top-priority hardening item.
 - “Evolving organism” loop:
   - Each completed TODO must add at least one of:
     - a new gate (test/CI check), or
