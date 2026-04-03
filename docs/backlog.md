@@ -20,6 +20,27 @@ Rules:
 
 ## Items
 
+- Protocol family surface consolidation [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse repeated scheduler-heartbeat and deployment-verification variant families into smaller shared surfaces so new artifact/history/reconciliation variants stop multiplying modules, fixtures, and tests by noun swap.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `src/`, `fixtures/`, `tests/`, `justfile`, `docs/reference.md`, `docs/workflows.md`
+
+- CLI and recipe dispatch decomposition [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Reduce semantic concentration in `src/main.rs` and `justfile` by extracting grouped dispatch/orchestration helpers so they stop acting as the permanent control-plane choke points.
+  - Kind: `mixed`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/main.rs`, `src/bin/`, `justfile`, `tests/`
+
+- Reference and workflow surface consolidation [Runtime Infra]
+  - Goal: Shrink `docs/reference.md` and `docs/workflows.md` from long artifact registries into grouped operator/index surfaces that stay useful without carrying every variant explicitly.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
 - GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
   - Kind: `mixed`
