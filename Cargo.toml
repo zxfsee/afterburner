@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Debug deploy command taxonomy regrouping [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Regroup the low-level debug deploy command tree around clearer action/object boundaries so long internal artifact noun chains stop leaking directly into the CLI path even on internal surfaces.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `cli`
-  - Scope: `src/cli_dispatch/`, `src/main.rs`, `justfile`, `tests/`, `docs/reference.md`, `docs/workflows.md`
-
 - Doc-test admission snapshot burn-down [Runtime Infra]
   - Goal: Shrink the transitional doc-test admission snapshot files in bounded cleanup batches so the allowlist and legacy exception sets do not ossify into permanent policy.
   - Kind: `mixed`
@@ -40,6 +33,13 @@ header = """# Changelog
   - Boundary: `none`
   - Contracts: `cli`
   - Scope: `src/main.rs`, `src/cli_dispatch/`, `justfile`, `tests/`
+
+- Debug deploy taxonomy regression gate [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Add one focused mechanical guard so the regrouped debug deploy family-first command tree does not regress back to flat artifact-taxonomy command names in the CLI surface, recipe bodies, or redirect tests.
+  - Kind: `gate`
+  - Boundary: `none`
+  - Contracts: `cli`
+  - Scope: `src/cli_dispatch/`, `justfile`, `tests/`
 
 - GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
