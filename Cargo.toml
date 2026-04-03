@@ -13,8 +13,8 @@ header = """# Changelog
 
 ## TODO
 
-- Deploy family grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse deploy, verification, heartbeat, and lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring internal artifact taxonomy directly.
+- Deploy verification and heartbeat grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Collapse deployment-verification and scheduler-heartbeat noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring internal artifact taxonomy directly across the deploy-side family surface.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`
@@ -32,6 +32,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `artifact`, `event`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Distributed shard-lineage grouped entrypoint extraction [Distributed Training, Runtime Infra]
+  - Goal: Collapse the distributed shard-lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the lineage family stops carrying its own hand-expanded command registry in `justfile`.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
