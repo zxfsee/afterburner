@@ -54,8 +54,8 @@ objective-lock-pin-review:
 
 # validate queue freshness, then pin the top active TODO scope as the current execute objective
 objective-lock-pin-execute-top-item:
-    just queue-completion-boundary-check
-    just queue-snapshot-check
+    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
+    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
     cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
 
 # verify current repo mutations against the active objective lock
@@ -88,17 +88,24 @@ queue-fix-top-scope:
     just objective-lock-clear
 
 # start top-item execution through the canonical execute-side guarded path
-queue-execute-preflight:
+queue-execute-preflight repair='':
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
-    just objective-lock-pin-execute-top-item
-    just objective-lock-check-worktree execute-top-item
+    if '{{ repair }}' == '--repair-stale-snapshot' { just queue-refresh }
+    if '{{ repair }}' == '--repair-stale-snapshot' { cargo nextest run --locked --test todo_queue_horizon }
+    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
+    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+    cargo run --locked --bin workflow_objective_lock -- check-worktree --action execute-top-item
 
 # explicitly repair stale queue snapshot lineage and resume execute preflight
 queue-resume:
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just queue-refresh
-    just objective-lock-pin-execute-top-item
-    just objective-lock-check-worktree execute-top-item
+    cargo nextest run --locked --test todo_queue_horizon
+    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
+    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+    cargo run --locked --bin workflow_objective_lock -- check-worktree --action execute-top-item
 
 # format rust + toml + nix
 fmt:
