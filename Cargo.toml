@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment verification receipt locator and rollback grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Collapse the deployment-verification receipt locator, locator rollback, and rollback supersession recipe expansion into grouped `just` entrypoints backed by typed helpers so the remaining receipt-side mutation surface stops carrying a hand-expanded command registry.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Deployment verification bundle grouped entrypoint extraction [Runtime Infra, Serving/Deployment Infra]
   - Goal: Collapse the deployment-verification bundle noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so `justfile` stops mirroring bundle artifact taxonomy directly.
   - Kind: `mixed`

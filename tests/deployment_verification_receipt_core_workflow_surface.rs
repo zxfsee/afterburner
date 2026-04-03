@@ -36,7 +36,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     for needle in [
         "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
         "Core receipt sidecars: `just deployment-verification-receipt-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the receipt history, reconciliation, and transport-locator artifacts.",
-        "Receipt locator and rollback variants remain explicit until the dedicated locator-and-rollback grouping lands.",
+        "Receipt locator and rollback sidecars stay grouped under three entrypoints:",
     ] {
         assert!(
             workflows.contains(needle),
@@ -47,7 +47,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_receipt*.json`",
-        "Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md); receipt locator and rollback variants remain explicit until their follow-on grouping lands.",
+        "Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

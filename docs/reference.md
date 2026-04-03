@@ -69,7 +69,8 @@ unless they graduate into a clear operator intent.
   - `burn_bpk_migration_surface_inventory.json`
   - Deployment verification family groups:
   - `deployment_verification_receipt*.json`
-  - Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md); receipt locator and rollback variants remain explicit until their follow-on grouping lands.
+  - Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
+  - Receipt locator, locator rollback, and rollback supersession flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
   - `deployment_verification_evidence_bundle*.json`
   - `deployment_verification_evidence_handoff*.json`
   - Use [docs/workflows.md](./workflows.md) for the exhaustive recipe map and `workflow-surface-check-deployment-verification` for mechanical coverage.
