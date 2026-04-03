@@ -2,8 +2,15 @@
 
 ## TODO
 
-- Command-input helper rollout for drift, cleanup, and provenance [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Finish the remaining shared command-input helper rollout through the drift baseline, cleanup, source-provenance, profiling-provenance, and related specialized contract parsers after the deployment-stack and lineage slices land.
+- Command-input helper rollout for drift baseline [Runtime Infra]
+  - Goal: Extend the shared command-input helper surface through the drift baseline family so those artifact-heavy variants stop carrying local JSON object loader, string/u64 reader, and history helper logic.
+  - Kind: `mixed`
+  - Boundary: `none`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/`, `tests/`
+
+- Command-input helper rollout for cleanup and provenance [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Finish the remaining shared command-input helper rollout through cleanup, source-provenance, profiling-provenance, and the remaining specialized contract parsers after the drift baseline slice lands.
   - Kind: `mixed`
   - Boundary: `none`
   - Contracts: `artifact`, `event`
@@ -45,7 +52,7 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-<!-- queue-snapshot: todo_sha256=0cf15a9fa37a72ef91c92fdc1cf3bf5d8e4f625a7e32ac03420c1c7a85e13f3f parent_commit=b2f106d704ee2df42a04ec3ac2370e238d5fb782 -->
+<!-- queue-snapshot: todo_sha256=42022fd712812a1eb8368ba339372ddc6da551221b68de76151227e48aa4b955 parent_commit=bfb331efa2e64b6050f382e198b870e06986bc40 -->
 
 ## [Trunk]
 
@@ -273,11 +280,11 @@
 - Move queue lineage checks into rust ([31c5790])
 - Extract rollback payload helpers ([3dcf04e])
 - Roll out rollback payload helpers ([ff3dd01])
-- Consolidate family json helpers ([bcd0149])
-- Extract grouped dispatch helpers ([a6d280a])
-- Regroup debug deploy taxonomy ([1cabbd1])
-- Roll out launch command input helpers ([a659c68])
-- Roll out lineage command input helpers ([b2f106d])
+- Consolidate family json helpers ([166a3ee])
+- Extract grouped dispatch helpers ([73e0288])
+- Regroup debug deploy taxonomy ([a1a8813])
+- Roll out launch command input helpers ([24a56d2])
+- Roll out lineage command input helpers ([bc6bae6])
 
 ### Chore
 
@@ -360,23 +367,24 @@
 - Advance readme front page ([e580407])
 - Advance github metadata candidates ([c559afe])
 - Add doc-test snapshot debt ([f069e49])
-- Capture repo drift debt ([6c7ecfe])
-- Refine orchestration drift wording ([ecbc71a])
-- Reprioritize cleanup debt ([4adcf15])
-- Advance protocol helper consolidation ([a4f80f1])
-- Insert optimizer checkpoint docs unblocker ([10589ae])
-- Advance optimizer checkpoint docs unblocker ([5589028])
-- Add orchestration semantic guard ([ba96a5a])
-- Refresh queue snapshot lineage ([6a2e5f4])
-- Widen orchestration refactor scope ([a5901c4])
-- Advance dispatch decomposition ([3cccced])
-- Add debug deploy taxonomy regrouping ([649ce70])
-- Advance reference surface consolidation ([85eabd4])
-- Advance debug deploy taxonomy regrouping ([424bca1])
-- Advance doc admission burn-down ([0ce10e1])
-- Split helper rollout slice ([ace3a72])
-- Split helper rollout further ([9e2af48])
-- Advance launch helper rollout ([3ca8a08])
+- Capture repo drift debt ([99a14e9])
+- Refine orchestration drift wording ([aff116e])
+- Reprioritize cleanup debt ([529561e])
+- Advance protocol helper consolidation ([e57b234])
+- Insert optimizer checkpoint docs unblocker ([c96ed02])
+- Advance optimizer checkpoint docs unblocker ([7e4d9f3])
+- Add orchestration semantic guard ([49025c5])
+- Refresh queue snapshot lineage ([47006c7])
+- Widen orchestration refactor scope ([15bd378])
+- Advance dispatch decomposition ([d4952c4])
+- Add debug deploy taxonomy regrouping ([6f915fc])
+- Advance reference surface consolidation ([6796657])
+- Advance debug deploy taxonomy regrouping ([086cfe6])
+- Advance doc admission burn-down ([9b7309d])
+- Split helper rollout slice ([54d2db1])
+- Split helper rollout further ([3d0fd7b])
+- Advance launch helper rollout ([775e493])
+- Advance lineage helper rollout ([bfb331e])
 
 ### Documentation
 
@@ -547,8 +555,8 @@
 - Tighten front page ([0953edc])
 - Add github metadata candidates ([6b775f1])
 - Collapse github metadata workstream ([7d1746e])
-- Restore checkpoint group anchor ([bfce79c])
-- Group deployment verification surfaces ([5d7b665])
+- Restore checkpoint group anchor ([4676420])
+- Group deployment verification surfaces ([ba78f03])
 
 ### Fixed
 
@@ -601,8 +609,8 @@
 - Trim verification bundle locator doc-policing ([1e579e0])
 - Trim verification transport doc-policing ([5a04821])
 - Add doc-test admission guard ([ce76111])
-- Refresh burn inventory example ([f657ab3])
-- Burn down stale admission snapshots ([9d14123])
+- Refresh burn inventory example ([557d69e])
+- Burn down stale admission snapshots ([505f2b6])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -1113,31 +1121,32 @@
 [5a04821]: https://github.com/zxfsee/afterburner/commit/5a048211270545527360d53a2793a23e37e452da
 [ce76111]: https://github.com/zxfsee/afterburner/commit/ce761112632dea236a732a483f52dcf1da0ccf73
 [f069e49]: https://github.com/zxfsee/afterburner/commit/f069e49ec49c12b6e576823279f288893e879f4b
-[6c7ecfe]: https://github.com/zxfsee/afterburner/commit/6c7ecfe331327360b5a70b63c6c090e7dcc07cb6
-[ecbc71a]: https://github.com/zxfsee/afterburner/commit/ecbc71a5a3c2095b1f0010ad1e1d739d23c4432a
-[4adcf15]: https://github.com/zxfsee/afterburner/commit/4adcf15c443f39e4307f1ff3626260808e334906
-[bcd0149]: https://github.com/zxfsee/afterburner/commit/bcd0149b132558c7d4a9fd75e281e3ac601c7719
-[a4f80f1]: https://github.com/zxfsee/afterburner/commit/a4f80f10495c60ef8c7bbd0c69537b1481e922ff
-[f657ab3]: https://github.com/zxfsee/afterburner/commit/f657ab3af945479570a4c51f85112349a3bcb821
-[10589ae]: https://github.com/zxfsee/afterburner/commit/10589aeed2ff1f4841744d501c8e997ac04ed845
-[bfce79c]: https://github.com/zxfsee/afterburner/commit/bfce79cfdf80e189b981f9c0adcfe7b9b428218d
-[5589028]: https://github.com/zxfsee/afterburner/commit/5589028dcd5ac1dfc9ba26b25727a4dde243fba0
-[ba96a5a]: https://github.com/zxfsee/afterburner/commit/ba96a5a313b99e43fb5e939514668ec073a88b58
-[6a2e5f4]: https://github.com/zxfsee/afterburner/commit/6a2e5f44c8882eab8f64ab3f209b911d42549d9c
-[a5901c4]: https://github.com/zxfsee/afterburner/commit/a5901c40b4e9a5a6224c4de12f074b22f4aa3f32
-[a6d280a]: https://github.com/zxfsee/afterburner/commit/a6d280a902279951a376310d1acf69fdf4771921
-[3cccced]: https://github.com/zxfsee/afterburner/commit/3cccced509ba5ad6665918f3c42708c26d0d13d3
-[649ce70]: https://github.com/zxfsee/afterburner/commit/649ce70938c9f286734b173c20a140e60f621107
-[5d7b665]: https://github.com/zxfsee/afterburner/commit/5d7b665a31aff65787ff5b7fbb152ac804fe77a6
-[85eabd4]: https://github.com/zxfsee/afterburner/commit/85eabd45616c143b386a5e6f6143442a562c13cc
-[1cabbd1]: https://github.com/zxfsee/afterburner/commit/1cabbd17cdd104499b1783c60f20d4ac05e210ed
-[424bca1]: https://github.com/zxfsee/afterburner/commit/424bca1e0f2ddb5f09fa524a57006ec7bc27cd6e
-[9d14123]: https://github.com/zxfsee/afterburner/commit/9d14123236f4ab5540ae4c4d6e663d1b257d1dd4
-[0ce10e1]: https://github.com/zxfsee/afterburner/commit/0ce10e1e20a148cbcb9148f88d751847cd3fea12
-[ace3a72]: https://github.com/zxfsee/afterburner/commit/ace3a724a45a778432243fd2a849e2f398bf407b
-[9e2af48]: https://github.com/zxfsee/afterburner/commit/9e2af481aa60b0db29ea3d45352406cf68ca09e9
-[a659c68]: https://github.com/zxfsee/afterburner/commit/a659c6867a3e87b99df7e0dc74b765c10b919420
-[3ca8a08]: https://github.com/zxfsee/afterburner/commit/3ca8a08d330d0a3d7107acae0a595ad075a84ef1
-[b2f106d]: https://github.com/zxfsee/afterburner/commit/b2f106d704ee2df42a04ec3ac2370e238d5fb782
+[99a14e9]: https://github.com/zxfsee/afterburner/commit/99a14e921f4d6f74b3ed1da799ae3e8748febecd
+[aff116e]: https://github.com/zxfsee/afterburner/commit/aff116e1ab34aee106bc7f9ab77fe1d82b94a5d5
+[529561e]: https://github.com/zxfsee/afterburner/commit/529561eac3b234bf3cb4c6452f9f1b8d25bd5230
+[166a3ee]: https://github.com/zxfsee/afterburner/commit/166a3eeb77d006eddc1f2b4e0946f034522dd88d
+[e57b234]: https://github.com/zxfsee/afterburner/commit/e57b234f2ff567d6c7164a8193df8d8328b0cc3c
+[557d69e]: https://github.com/zxfsee/afterburner/commit/557d69ee967aa819d3c3d02deca146f9face7447
+[c96ed02]: https://github.com/zxfsee/afterburner/commit/c96ed023634991b571e296557350923fd026510d
+[4676420]: https://github.com/zxfsee/afterburner/commit/46764201b0284ee5102187d8d14f3a0f0d55a39f
+[7e4d9f3]: https://github.com/zxfsee/afterburner/commit/7e4d9f31fc6b7204f1cbef9d2ff56d13361fa7a3
+[49025c5]: https://github.com/zxfsee/afterburner/commit/49025c520c0d183b7042891dd0dfc6f76557555a
+[47006c7]: https://github.com/zxfsee/afterburner/commit/47006c768085e81fa636b6349446ca6b3f0c177c
+[15bd378]: https://github.com/zxfsee/afterburner/commit/15bd3788b7326b861e56e62c8fde034cbe047fc6
+[73e0288]: https://github.com/zxfsee/afterburner/commit/73e0288f223f87736fe96f845cfe95e7eb44a671
+[d4952c4]: https://github.com/zxfsee/afterburner/commit/d4952c49fe308cc9e6f26db14c373dea9948dd8a
+[6f915fc]: https://github.com/zxfsee/afterburner/commit/6f915fcea7b0f2130569725bcfb05c6259149298
+[ba78f03]: https://github.com/zxfsee/afterburner/commit/ba78f03efd98cc66c554de34e07da78d30596c91
+[6796657]: https://github.com/zxfsee/afterburner/commit/6796657f91764cab96249e77aafef7924df36776
+[a1a8813]: https://github.com/zxfsee/afterburner/commit/a1a8813b17dcc1184f23bd0bc95a67010fcc5416
+[086cfe6]: https://github.com/zxfsee/afterburner/commit/086cfe6a41da9e10f2f4044b757678e7114b445b
+[505f2b6]: https://github.com/zxfsee/afterburner/commit/505f2b6e51d9802f30e72216c9be469f6d8f6c46
+[9b7309d]: https://github.com/zxfsee/afterburner/commit/9b7309d2bd5ec484fc4d494ee6d388786d85ad75
+[54d2db1]: https://github.com/zxfsee/afterburner/commit/54d2db14c76ed5f3553419b4455273c83cb7b9db
+[3d0fd7b]: https://github.com/zxfsee/afterburner/commit/3d0fd7b50cf3053ed3ca595b359143be01f4eb61
+[24a56d2]: https://github.com/zxfsee/afterburner/commit/24a56d29709b368ae6ee2c1e96974ffdd45af8c8
+[775e493]: https://github.com/zxfsee/afterburner/commit/775e493af7362ec13d81d5e7094a4a149e5d5617
+[bc6bae6]: https://github.com/zxfsee/afterburner/commit/bc6bae6c9f63c712f89f52f9938acc0af74abe36
+[bfb331e]: https://github.com/zxfsee/afterburner/commit/bfb331efa2e64b6050f382e198b870e06986bc40
 
 <!-- generated by git-cliff -->
