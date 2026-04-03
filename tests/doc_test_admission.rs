@@ -95,3 +95,38 @@ fn doc_test_admission_stays_on_the_known_legacy_surface() {
         unexpected_string_policing
     );
 }
+
+#[test]
+fn doc_test_snapshots_only_keep_still_relevant_legacy_entries() {
+    let doc_reader_allowlist = load_snapshot("tests/fixtures/doc_test_admission_allowlist.txt");
+    let string_policing_allowlist =
+        load_snapshot("tests/fixtures/doc_test_string_policing_allowlist.txt");
+
+    let stale_doc_readers = doc_reader_allowlist
+        .iter()
+        .filter(|rel_path| {
+            let text = repo_file(rel_path);
+            !tracked_doc_surface_reads(&text)
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+    let stale_string_policing = string_policing_allowlist
+        .iter()
+        .filter(|rel_path| {
+            let text = repo_file(rel_path);
+            !brittle_doc_policing(&text)
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+
+    assert!(
+        stale_doc_readers.is_empty(),
+        "doc-reader legacy snapshot must not keep stale entries: {:?}",
+        stale_doc_readers
+    );
+    assert!(
+        stale_string_policing.is_empty(),
+        "docs-string legacy snapshot must not keep stale entries: {:?}",
+        stale_string_policing
+    );
+}
