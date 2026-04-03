@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Command-input helper rollout for lineage and kube lease [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Extend the shared command-input helper surface through the distributed shard-lineage and kube lease families after the deployment-stack launch slice lands.
-  - Kind: `mixed`
-  - Boundary: `none`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/`, `tests/`
-
 - Command-input helper rollout for drift, cleanup, and provenance [Runtime Infra, Serving/Deployment Infra]
   - Goal: Finish the remaining shared command-input helper rollout through the drift baseline, cleanup, source-provenance, profiling-provenance, and related specialized contract parsers after the deployment-stack and lineage slices land.
   - Kind: `mixed`
