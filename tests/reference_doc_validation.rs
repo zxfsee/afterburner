@@ -60,4 +60,21 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
             "reference index must keep the workflow linkage `{link_line}`"
         );
     }
+
+    let referenced_checks = reference
+        .lines()
+        .filter(|line| line.contains("workflow-surface-check-"))
+        .collect::<Vec<_>>();
+    for line in referenced_checks {
+        let start = line.find("workflow-surface-check-").expect("contains check");
+        let check = &line[start..]
+            .split('`')
+            .next()
+            .unwrap_or("workflow-surface-check-missing");
+        let recipe = format!("{check}:");
+        assert!(
+            justfile.contains(&recipe),
+            "reference index must not point at missing workflow surface check `{check}`"
+        );
+    }
 }

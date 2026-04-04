@@ -13,6 +13,7 @@ fn justfile_thinness_debt_stays_bounded() {
     let mut current_recipe = None::<String>;
     let mut branching_recipes = BTreeSet::new();
     let mut action_arg_recipes = BTreeSet::new();
+    let mut expanded_recipes = BTreeSet::new();
 
     for line in justfile.lines() {
         let trimmed = line.trim_end();
@@ -24,6 +25,18 @@ fn justfile_thinness_debt_stays_bounded() {
             let recipe = trimmed.trim_end_matches(':').to_string();
             if recipe.ends_with(" action +args") {
                 action_arg_recipes.insert(recipe.clone());
+            }
+            if !recipe.ends_with(" action +args")
+                && !recipe.starts_with("rollout-")
+                && (recipe.contains("-record-")
+                    || recipe.contains("-reconcile")
+                    || recipe.contains("reconciliation-history")
+                    || recipe.contains("-point-")
+                    || recipe.contains("-rollback")
+                    || recipe.contains("-supersede")
+                    || recipe.starts_with("kube-rs-lease-"))
+            {
+                expanded_recipes.insert(recipe.clone());
             }
             current_recipe = Some(recipe);
             continue;
@@ -64,6 +77,43 @@ fn justfile_thinness_debt_stays_bounded() {
     assert_eq!(
         action_arg_recipes, allowed_action_args,
         "generic `action +args` buckets must stay bounded to the explicit allowlist until their families are removed end to end"
+    );
+
+    let allowed_expanded = BTreeSet::from([
+        "deploy-reconcile-launch-bundle receipt bundle".to_string(),
+        "deploy-record-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "deploy-reconcile-launch-handoff bundle handoff".to_string(),
+        "deploy-record-launch-handoff-history handoff event recorded_at_unix_ms".to_string(),
+        "deploy-record-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "deploy-point-launch-transport-locator handoff".to_string(),
+        "deploy-record-launch-transport-locator-history locator event recorded_at_unix_ms".to_string(),
+        "deploy-record-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "deploy-reconcile-launch-transport-locator handoff locator".to_string(),
+        "deploy-point-launch-locator locator".to_string(),
+        "deploy-reconcile-launch-locator plan pointer".to_string(),
+        "deploy-record-launch-locator-history pointer event recorded_at_unix_ms".to_string(),
+        "deploy-record-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "kube-rs-lease-reconcile lease namespace resource_name".to_string(),
+        "kube-rs-lease-point reconciliation".to_string(),
+        "kube-rs-lease-record-history pointer event recorded_at_unix_ms".to_string(),
+        "kube-rs-lease-record-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-reconcile heartbeat current_heartbeat".to_string(),
+        "scheduler-heartbeat-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_unix_ms".to_string(),
+        "deployment-verification-bundle-reconcile receipt bundle".to_string(),
+        "deployment-verification-handoff-reconcile bundle handoff".to_string(),
+        "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources".to_string(),
+        "distributed-shard-lineage-bundle-reconcile receipt bundle".to_string(),
+        "distributed-shard-lineage-handoff-reconcile bundle handoff".to_string(),
+        "drift-point-approved-baseline approval".to_string(),
+        "drift-record-approved-baseline-history pointer event recorded_at_unix_ms".to_string(),
+        "drift-point-baseline-transport-locator handoff".to_string(),
+        "drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms".to_string(),
+        "drift-supersede-baseline-approval previous_approval next_approval superseded_at_unix_ms".to_string(),
+    ]);
+    assert_eq!(
+        expanded_recipes, allowed_expanded,
+        "artifact-family expansion in justfile must stay bounded to the explicit current allowlist until those families are removed end to end"
     );
 
     for forbidden in [

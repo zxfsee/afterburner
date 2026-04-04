@@ -70,6 +70,24 @@ fn grouped_operator_grammar_stays_intent_first() {
     }
 
     for forbidden in [
+        "afterburner drift-receipt",
+        "afterburner source approval-receipt",
+        "afterburner source provenance-evidence-bundle",
+        "afterburner record-verification-receipt-locator-history",
+        "afterburner point-transport-locator",
+        "afterburner record-handoff-history",
+    ] {
+        assert!(
+            !workflows.contains(forbidden),
+            "workflow reference must not present flat operator grammar `{forbidden}`"
+        );
+        assert!(
+            !reference.contains(forbidden),
+            "reference index must not present flat operator grammar `{forbidden}`"
+        );
+    }
+
+    for forbidden in [
         "drift-receipt",
         "approval-receipt",
         "provenance-evidence-bundle",
