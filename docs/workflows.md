@@ -123,7 +123,7 @@ operator use case justifies promotion.
 - `just kube-rs-lease-point` writes `kube_rs_gpu_lease_pointer.json`.
 - `just kube-rs-lease-record-history` writes `kube_rs_gpu_lease_history.json`.
 - `just kube-rs-lease-record-reconciliation-history` writes `kube_rs_gpu_lease_reconciliation_history.json`.
-- Scheduler heartbeat stays grouped under ten workflow entrypoints:
+- Scheduler heartbeat stays grouped under these workflow entrypoints:
 - `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.
 - `just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.
 - `just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.

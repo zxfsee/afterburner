@@ -63,7 +63,7 @@ fn scheduler_heartbeat_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Scheduler heartbeat stays grouped under ten workflow entrypoints:",
+        "Scheduler heartbeat stays grouped under these workflow entrypoints:",
         "`just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.",
         "`just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.",
         "`just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.",
