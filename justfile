@@ -66,6 +66,10 @@ objective-lock-check-worktree action:
 queue-completion-boundary-check:
     cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
 
+# fail if the current top active TODO is blocked and report the next runnable item
+queue-top-runnable-check:
+    cargo run --locked --bin workflow_queue_snapshot -- check-top-runnable --cargo-toml Cargo.toml
+
 # clear the current objective lock before switching objective classes
 objective-lock-clear:
     cargo run --locked --bin workflow_objective_lock -- clear
@@ -75,6 +79,7 @@ queue-refresh:
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-queue
     just changelog
+    just queue-top-runnable-check
     just queue-snapshot-check
     just objective-lock-clear
 
@@ -84,6 +89,17 @@ queue-fix-top-scope:
     just objective-lock-pin-top-scope-fix
     just objective-lock-check-worktree top-scope-fix
     just changelog-top-scope-fix
+    just queue-top-runnable-check
+    just queue-snapshot-check
+    just objective-lock-clear
+
+# promote the next runnable active TODO above a blocked top item through a queue-only repair path
+queue-promote-next-runnable:
+    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
+    just objective-lock-pin-queue
+    cargo run --locked --bin workflow_queue_snapshot -- promote-next-runnable --cargo-toml Cargo.toml
+    just changelog
+    just queue-top-runnable-check
     just queue-snapshot-check
     just objective-lock-clear
 
@@ -92,6 +108,7 @@ queue-execute-preflight repair='':
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     if '{{ repair }}' == '--repair-stale-snapshot' { just queue-refresh }
     if '{{ repair }}' == '--repair-stale-snapshot' { cargo nextest run --locked --test todo_queue_horizon }
+    just queue-top-runnable-check
     cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
     cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
     if '{{ repair }}' == '--repair-stale-snapshot' { cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --repo-root . --allow-existing-path CHANGELOG.md --expected-action execute-top-item }
@@ -103,6 +120,7 @@ queue-resume:
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just queue-refresh
     cargo nextest run --locked --test todo_queue_horizon
+    just queue-top-runnable-check
     cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
     cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
     cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --repo-root . --allow-existing-path CHANGELOG.md --expected-action execute-top-item

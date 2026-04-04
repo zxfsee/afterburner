@@ -66,6 +66,12 @@ enum Command {
         cargo_toml: PathBuf,
         repo_root: PathBuf,
     },
+    CheckTopRunnable {
+        cargo_toml: PathBuf,
+    },
+    PromoteNextRunnable {
+        cargo_toml: PathBuf,
+    },
 }
 
 fn main() {
@@ -121,6 +127,8 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             repo_root,
         } => check_completion_boundary(cargo_toml, repo_root),
+        Command::CheckTopRunnable { cargo_toml } => check_top_runnable(cargo_toml),
+        Command::PromoteNextRunnable { cargo_toml } => promote_next_runnable(cargo_toml),
     }
 }
 
@@ -183,6 +191,13 @@ struct TodoScope {
     contracts: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TodoItem {
+    title: String,
+    lines: Vec<String>,
+    blocked_by: Option<String>,
+}
+
 fn check_completion_boundary(
     cargo_toml: PathBuf,
     repo_root: PathBuf,
@@ -218,6 +233,51 @@ fn check_completion_boundary(
         )));
     }
 
+    Ok(())
+}
+
+fn check_top_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> {
+    let cargo_text = fs::read_to_string(&cargo_toml)?;
+    let items = todo_items(&cargo_text)?;
+    let Some(top) = items.first() else {
+        return Ok(());
+    };
+    let Some(blocked_by) = &top.blocked_by else {
+        return Ok(());
+    };
+    let next_runnable = items
+        .iter()
+        .skip(1)
+        .find(|item| item.blocked_by.is_none())
+        .map(|item| item.title.as_str());
+    match next_runnable {
+        Some(next) => Err(QueueSnapshotError::Parse(format!(
+            "top active TODO `{}` is blocked by `{}`\nnext runnable item: `{}`\nrun `just queue-promote-next-runnable` to repair the active queue order",
+            top.title, blocked_by, next
+        ))),
+        None => Err(QueueSnapshotError::Parse(format!(
+            "top active TODO `{}` is blocked by `{}` and no runnable item exists in the active queue\nrepair the queue order or promote a runnable backlog item before execution",
+            top.title, blocked_by
+        ))),
+    }
+}
+
+fn promote_next_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> {
+    let cargo_text = fs::read_to_string(&cargo_toml)?;
+    let (prefix, suffix, mut items) = split_todo_items(&cargo_text)?;
+    let Some(first_runnable) = items.iter().position(|item| item.blocked_by.is_none()) else {
+        return Err(QueueSnapshotError::Parse(
+            "cannot promote next runnable item because no runnable TODO exists in the active queue"
+                .into(),
+        ));
+    };
+    if first_runnable == 0 {
+        return Ok(());
+    }
+    let promoted = items.remove(first_runnable);
+    items.insert(0, promoted);
+    let rebuilt = rebuild_todo_block(&prefix, &items, &suffix);
+    fs::write(&cargo_toml, rebuilt)?;
     Ok(())
 }
 
@@ -294,12 +354,43 @@ where
         "stamp-current-parent" => parse_lineage_command_args(args, true),
         "verify-current-lineage" => parse_lineage_command_args(args, false),
         "check-completion-boundary" => parse_completion_boundary_args(args),
+        "check-top-runnable" => parse_top_runnable_args(args, false),
+        "promote-next-runnable" => parse_top_runnable_args(args, true),
         "--help" | "-h" | "help" => Err(QueueSnapshotError::InvalidArg(usage().to_string())),
         _ => Err(QueueSnapshotError::InvalidArg(format!(
             "unknown queue-snapshot subcommand `{subcommand}`\n{}",
             usage()
         ))),
     }
+}
+
+fn parse_top_runnable_args<I>(args: I, promote: bool) -> Result<Command, QueueSnapshotError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut cargo_toml = PathBuf::from("Cargo.toml");
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            _ if arg.starts_with("--cargo-toml=") => {
+                cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
+            }
+            _ => {
+                return Err(QueueSnapshotError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(if promote {
+        Command::PromoteNextRunnable { cargo_toml }
+    } else {
+        Command::CheckTopRunnable { cargo_toml }
+    })
 }
 
 fn parse_completion_boundary_args<I>(args: I) -> Result<Command, QueueSnapshotError>
@@ -464,6 +555,103 @@ fn normalized_todo_block(cargo_toml: &str) -> Result<String, QueueSnapshotError>
 
     let normalized_lines = section.lines().map(str::trim_end).collect::<Vec<_>>();
     Ok(normalized_lines.join("\n").trim().to_string())
+}
+
+fn split_todo_items(
+    cargo_toml: &str,
+) -> Result<(String, String, Vec<TodoItem>), QueueSnapshotError> {
+    let start = cargo_toml.find(TODO_START).ok_or_else(|| {
+        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })?;
+    let suffix_start = cargo_toml[start..]
+        .find(TODO_END)
+        .map(|offset| start + offset)
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse("Cargo.toml changelog template missing `## [Trunk]` marker".into())
+        })?;
+    let prefix_end = start + TODO_START.len();
+    let prefix = cargo_toml[..prefix_end].to_string();
+    let section = cargo_toml[prefix_end..suffix_start].to_string();
+    let suffix = cargo_toml[suffix_start..].to_string();
+    Ok((prefix, suffix, parse_todo_items_section(&section)?))
+}
+
+fn todo_items(cargo_toml: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
+    let section = cargo_toml
+        .split(TODO_START)
+        .nth(1)
+        .and_then(|rest| rest.split(TODO_END).next())
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+        })?;
+    parse_todo_items_section(section)
+}
+
+fn parse_todo_items_section(section: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
+    let mut items = Vec::new();
+    let mut current = Vec::<String>::new();
+
+    for line in section.lines() {
+        if line.starts_with("- ") {
+            if !current.is_empty() {
+                items.push(parse_todo_item(&current)?);
+            }
+            current = vec![line.to_string()];
+        } else if !current.is_empty() {
+            current.push(line.to_string());
+        }
+    }
+
+    if !current.is_empty() {
+        items.push(parse_todo_item(&current)?);
+    }
+
+    if items.is_empty() {
+        return Err(QueueSnapshotError::Parse(
+            "Cargo.toml TODO section does not contain any item".into(),
+        ));
+    }
+    Ok(items)
+}
+
+fn parse_todo_item(lines: &[String]) -> Result<TodoItem, QueueSnapshotError> {
+    let title = lines[0]
+        .strip_prefix("- ")
+        .map(str::trim)
+        .filter(|title| !title.is_empty())
+        .ok_or_else(|| QueueSnapshotError::Parse("TODO item missing title".into()))?
+        .to_string();
+    let blocked_by = lines.iter().find_map(|line| {
+        line.trim()
+            .strip_prefix("- Blocked-by:")
+            .map(|value| value.trim().to_string())
+    });
+    Ok(TodoItem {
+        title,
+        lines: lines.to_vec(),
+        blocked_by,
+    })
+}
+
+fn rebuild_todo_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String {
+    let mut out = String::new();
+    out.push_str(prefix);
+    out.push('\n');
+    out.push('\n');
+    for (index, item) in items.iter().enumerate() {
+        if index > 0 {
+            out.push('\n');
+        }
+        for line in &item.lines {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
+    if !suffix.starts_with('\n') {
+        out.push('\n');
+    }
+    out.push_str(suffix);
+    out
 }
 
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
@@ -736,12 +924,14 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage|check-completion-boundary> [options]\n\
+    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage|check-completion-boundary|check-top-runnable|promote-next-runnable> [options]\n\
 stamp: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID\n\
 verify: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID [--previous-parent-commit ID]\n\
 stamp-current-parent: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
 verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
-check-completion-boundary: [--cargo-toml PATH] [--repo-root PATH]"
+check-completion-boundary: [--cargo-toml PATH] [--repo-root PATH]\n\
+check-top-runnable: [--cargo-toml PATH]\n\
+promote-next-runnable: [--cargo-toml PATH]"
 }
 
 #[cfg(test)]

@@ -171,6 +171,66 @@ fn queue_completion_boundary_flags_completed_top_todo_left_active() {
 }
 
 #[test]
+fn queue_top_runnable_check_flags_blocked_top_and_reports_next_runnable() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let cargo_toml = tmp.path().join("Cargo.toml");
+
+    fs::write(
+        &cargo_toml,
+        "## TODO\n\n- blocked item\n  - Goal: x\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/workflows.md`\n  - Blocked-by: external dependency\n\n- runnable item\n  - Goal: y\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/reference.md`\n\n## [Trunk]\n",
+    )
+    .expect("write Cargo.toml");
+
+    let mut check = cargo_bin_cmd!("workflow_queue_snapshot");
+    check
+        .arg("check-top-runnable")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml);
+    let assert = check.assert().failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("top active TODO `blocked item` is blocked by `external dependency`")
+            && stderr.contains("next runnable item: `runnable item`")
+            && stderr.contains("just queue-promote-next-runnable"),
+        "blocked top runnable check must report the next runnable item and repair path: {stderr}"
+    );
+}
+
+#[test]
+fn queue_promote_next_runnable_moves_blocked_top_below_runnable_item() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let cargo_toml = tmp.path().join("Cargo.toml");
+
+    fs::write(
+        &cargo_toml,
+        "## TODO\n\n- blocked item\n  - Goal: x\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/workflows.md`\n  - Blocked-by: external dependency\n\n- runnable item\n  - Goal: y\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/reference.md`\n\n## [Trunk]\n",
+    )
+    .expect("write Cargo.toml");
+
+    let mut promote = cargo_bin_cmd!("workflow_queue_snapshot");
+    promote
+        .arg("promote-next-runnable")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml);
+    promote.assert().success();
+
+    let updated = fs::read_to_string(&cargo_toml).expect("read updated Cargo.toml");
+    let runnable_pos = updated.find("- runnable item").expect("runnable item remains");
+    let blocked_pos = updated.find("- blocked item").expect("blocked item remains");
+    assert!(
+        runnable_pos < blocked_pos,
+        "promote-next-runnable must move the next runnable item above the blocked top item"
+    );
+
+    let mut check = cargo_bin_cmd!("workflow_queue_snapshot");
+    check
+        .arg("check-top-runnable")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml);
+    check.assert().success();
+}
+
+#[test]
 fn queue_completion_boundary_ignores_shared_docs_overlap_for_docs_family_todo() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let root = tmp.path();
