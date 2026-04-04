@@ -61,13 +61,14 @@ fn infer_output_drift_baseline_rollback_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-rollback-approved-baseline workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline_rollback.json"),
+        reference.contains("infer_output_drift_baseline_rollback.json"),
         "workflow reference must mention the baseline rollback artifact"
     );
     assert!(
-        readme.contains("just drift-rollback-approved-baseline"),
+        workflows.contains("just drift-rollback-approved-baseline"),
         "workflow reference must mention the baseline rollback workflow"
     );
 }

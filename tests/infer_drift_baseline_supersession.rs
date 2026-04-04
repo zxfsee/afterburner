@@ -62,13 +62,14 @@ fn infer_output_drift_baseline_supersession_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-supersede-baseline-approval workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline_supersession.json"),
+        reference.contains("infer_output_drift_baseline_supersession.json"),
         "workflow reference must mention the baseline supersession artifact"
     );
     assert!(
-        readme.contains("just drift-supersede-baseline-approval"),
+        workflows.contains("just drift-supersede-baseline-approval"),
         "workflow reference must mention the baseline supersession workflow"
     );
 }

@@ -61,13 +61,14 @@ fn infer_output_drift_baseline_checkpoint_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-checkpoint-baseline workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline_checkpoint.json"),
+        reference.contains("infer_output_drift_baseline_checkpoint.json"),
         "workflow reference must mention the baseline checkpoint artifact"
     );
     assert!(
-        readme.contains("just drift-checkpoint-baseline"),
+        workflows.contains("just drift-checkpoint-baseline"),
         "workflow reference must mention the baseline checkpoint workflow"
     );
 }

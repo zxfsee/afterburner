@@ -61,13 +61,14 @@ fn infer_output_drift_baseline_handoff_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-export-baseline-handoff workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline_handoff.json"),
+        reference.contains("infer_output_drift_baseline_handoff.json"),
         "workflow reference must mention the baseline handoff manifest"
     );
     assert!(
-        readme.contains("just drift-export-baseline-handoff"),
+        workflows.contains("just drift-export-baseline-handoff"),
         "workflow reference must mention the baseline handoff workflow"
     );
 }

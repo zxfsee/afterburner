@@ -68,13 +68,14 @@ fn infer_output_drift_baseline_history_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-record-approved-baseline-history workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline_history.json"),
+        reference.contains("infer_output_drift_baseline_history.json"),
         "workflow reference must mention the baseline history artifact"
     );
     assert!(
-        readme.contains("just drift-record-approved-baseline-history"),
+        workflows.contains("just drift-record-approved-baseline-history"),
         "workflow reference must mention the baseline history workflow"
     );
 }

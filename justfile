@@ -508,3 +508,6 @@ workflow-surface-check-distributed-shard-lineage:
 
 workflow-surface-check-pretraining-source:
     cargo nextest run --locked --test pretraining_source_workflow_surface
+
+workflow-surface-check-drift:
+    cargo nextest run --locked --test drift_workflow_surface

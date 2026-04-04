@@ -64,13 +64,14 @@ fn infer_output_drift_baseline_schema_and_workflow_are_explicit() {
         "justfile must expose the drift-baseline workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("infer_output_drift_baseline.json"),
+        reference.contains("infer_output_drift_baseline.json"),
         "workflow reference must mention the infer drift baseline artifact"
     );
     assert!(
-        readme.contains("just drift-baseline"),
+        workflows.contains("just drift-baseline"),
         "workflow reference must mention the drift baseline workflow"
     );
 }

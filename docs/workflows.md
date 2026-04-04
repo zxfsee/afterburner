@@ -168,17 +168,12 @@ operator use case justifies promotion.
 ## Drift
 
 - `just drift-receipt` writes `infer_output_drift_receipt.json`.
-- `just drift-baseline` writes `infer_output_drift_baseline.json`.
-- `just drift-approve-baseline` writes `infer_output_drift_baseline_approval.json`.
-- `just drift-point-approved-baseline` writes `infer_output_drift_baseline_pointer.json`.
-- `just drift-record-approved-baseline-history` writes `infer_output_drift_baseline_history.json`.
-- `just drift-checkpoint-baseline` writes `infer_output_drift_baseline_checkpoint.json`.
-- `just drift-export-baseline-bundle` writes `infer_output_drift_baseline_bundle.json`.
-- `just drift-export-baseline-handoff` writes `infer_output_drift_baseline_handoff.json`.
-- `just drift-point-baseline-transport-locator` writes `infer_output_drift_baseline_transport_locator.json`.
-- `just drift-rollback-approved-baseline` writes `infer_output_drift_baseline_rollback.json`.
-- `just drift-supersede-baseline-approval` writes `infer_output_drift_baseline_supersession.json`.
-- `just drift-refresh-baseline` writes `infer_output_drift_baseline_refresh.json`.
+- Drift stays grouped under these workflow families:
+- Baseline setup: `just drift-baseline`, `just drift-approve-baseline`.
+- Approved baseline state: `just drift-point-approved-baseline`, `just drift-record-approved-baseline-history`, `just drift-checkpoint-baseline`.
+- Baseline exports: `just drift-export-baseline-bundle`, `just drift-export-baseline-handoff`, `just drift-point-baseline-transport-locator`.
+- Baseline changes: `just drift-rollback-approved-baseline`, `just drift-supersede-baseline-approval`, `just drift-refresh-baseline`.
+- `just workflow-surface-check-drift` keeps the grouped drift recipe and reference split checked.
 
 ## Profiling
 

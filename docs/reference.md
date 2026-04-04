@@ -94,6 +94,7 @@ unless they graduate into a clear operator intent.
   - `infer_output_drift_baseline_rollback.json`
   - `infer_output_drift_baseline_supersession.json`
   - `infer_output_drift_baseline_refresh.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-drift` for mechanical coverage.
 - Cleanup:
   - `artifact_cleanup_inventory.json`
   - `artifact_cleanup_policy.json`
