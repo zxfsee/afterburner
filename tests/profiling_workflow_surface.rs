@@ -22,13 +22,13 @@ fn profiling_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Profiling stays grouped under these workflow families:",
-        "Hotspot capture: `just profile-infer`.",
+        "Profiling stays grouped under these operator flows:",
+        "Hotspot capture and infer path: `just profile-infer` delegates to `afterburner profile infer`.",
         "Environment capture: `just profile-environment-snapshot`, `just profile-refresh-environment-snapshot`.",
-        "Profiling provenance: `just profile-provenance-receipt`, `just profile-provenance-bundle`.",
+        "Provenance and evidence: `just profile-provenance-receipt`, `just profile-provenance-bundle`.",
         "On macOS, profiling requires `xcrun xctrace version` under full Xcode.",
         "The native profiling command forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`.",
-        "`just workflow-surface-check-profiling` keeps the grouped profiling recipe and reference split checked.",
+        "`just workflow-surface-check-profiling` guards the grouped profiling workflow map and reference split.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -56,7 +56,7 @@ fn profiling_family_stays_grouped_and_surface_complete() {
         "`profiling_environment_snapshot_refresh.json`",
         "`profiling_provenance_receipt.json`",
         "`profiling_provenance_evidence_bundle.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-profiling` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-profiling` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),

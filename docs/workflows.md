@@ -164,14 +164,13 @@ operator use case justifies promotion.
 
 ## Profiling
 
-- Profiling stays grouped under these workflow families:
-- Hotspot capture: `just profile-infer`.
-- `just profile-infer` is a thin wrapper over `afterburner profile infer`; it resolves the artifact through `artifacts/inference/current` and follows the active `BACKEND` env contract.
+- Profiling stays grouped under these operator flows:
+- Hotspot capture and infer path: `just profile-infer` delegates to `afterburner profile infer`.
 - On macOS, profiling requires `xcrun xctrace version` under full Xcode.
 - The native profiling command forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`.
 - Environment capture: `just profile-environment-snapshot`, `just profile-refresh-environment-snapshot`.
-- Profiling provenance: `just profile-provenance-receipt`, `just profile-provenance-bundle`.
-- `just workflow-surface-check-profiling` keeps the grouped profiling recipe and reference split checked.
+- Provenance and evidence: `just profile-provenance-receipt`, `just profile-provenance-bundle`.
+- `just workflow-surface-check-profiling` guards the grouped profiling workflow map and reference split.
 
 ## Source and lineage
 

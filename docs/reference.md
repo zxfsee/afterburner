@@ -111,7 +111,7 @@ unless they graduate into a clear operator intent.
   - `profiling_environment_snapshot_refresh.json`
   - `profiling_provenance_receipt.json`
   - `profiling_provenance_evidence_bundle.json`
-  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-profiling` for mechanical coverage.
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-profiling` for mechanical coverage.
 - Rollout orchestration:
   - `rollout_check.json`
   - `rollout_verify.json`
