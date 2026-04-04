@@ -20,6 +20,14 @@ Rules:
 
 ## Items
 
+- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
+  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+  - Kind: `mixed`
+  - Boundary: `core-contract`
+  - Contracts: `artifact`, `cli`, `event`
+  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
+  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
 - Doc-test admission rule note [Runtime Infra]
   - Goal: Add one short repo policy note for the doc-test admission guard only if future review or agent behavior shows the guard alone is too opaque to apply consistently.
   - Kind: `mixed`

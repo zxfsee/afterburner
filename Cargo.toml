@@ -48,13 +48,12 @@ header = """# Changelog
   - Contracts: `ops`
   - Scope: `src/bin/workflow_queue_snapshot.rs`, `tests/queue_snapshot.rs`, `docs/backlog.md`, `Cargo.toml`
 
-- Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
-  - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
+- Queue preflight branching extraction [Runtime Infra]
+  - Goal: Move the remaining queue repair and stale-snapshot branching out of `justfile` recipe control flow and into typed queue helpers so queue preflight stays canonical without embedding workflow policy in shell logic.
   - Kind: `mixed`
-  - Boundary: `core-contract`
-  - Contracts: `artifact`, `cli`, `event`
-  - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
-  - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+  - Boundary: `repo-workflow`
+  - Contracts: `ops`
+  - Scope: `justfile`, `src/bin/workflow_queue_snapshot.rs`, `src/bin/workflow_objective_lock.rs`, `tests/justfile_thinness_gate.rs`, `tests/queue_snapshot.rs`, `tests/developer_workflows.rs`
 
 ## [Trunk]
 """
