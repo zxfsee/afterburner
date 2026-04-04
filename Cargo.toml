@@ -13,6 +13,13 @@ header = """# Changelog
 
 ## TODO
 
+- Public CLI admission gate [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Turn the operator command matrix into an executable gate so the public CLI stays limited to the allowed grouped families and flat taxonomy-heavy command shapes cannot resurface unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `docs/workflows.md`, `docs/reference.md`, `tests/cli_subcommand_hierarchy.rs`, `tests/debug_deploy_taxonomy_regression.rs`, `tests/public_cli_admission_gate.rs`
+
 - Grouped deployment-verification wording tightening [Serving/Deployment Infra]
   - Goal: Keep the grouped deployment-verification workflow docs operator-centered by trimming any remaining wording that reads like an exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
