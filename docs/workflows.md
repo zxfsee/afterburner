@@ -109,20 +109,20 @@ one of these operator intents, it should default to `just` or `afterburner debug
 operator use case justifies promotion.
 
 - Deployment stays grouped under these operator-facing families:
-- Contract check: `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
-- Deployment stack launch and kube-rs lease workflows stay grouped under these families:
+- Contract check: `just deploy-check`.
+- Deployment stack launch and kube-rs lease stay grouped under these operator flows:
 - Launch planning: `just deploy-launch-plan`, `just deploy-launch-receipt`.
 - Bundle flow: `just deploy-launch-bundle`, `just deploy-reconcile-launch-bundle`, `just deploy-record-launch-bundle-reconciliation-history`.
 - Handoff flow: `just deploy-launch-handoff`, `just deploy-reconcile-launch-handoff`, `just deploy-record-launch-handoff-history`, `just deploy-record-launch-handoff-reconciliation-history`.
 - Locator flow: `just deploy-point-launch-transport-locator`, `just deploy-record-launch-transport-locator-history`, `just deploy-reconcile-launch-transport-locator`, `just deploy-record-launch-transport-locator-reconciliation-history`, `just deploy-point-launch-locator`, `just deploy-reconcile-launch-locator`, `just deploy-record-launch-locator-history`, `just deploy-record-launch-locator-reconciliation-history`.
 - Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-point`, `just kube-rs-lease-record-history`, `just kube-rs-lease-record-reconciliation-history`.
 - `just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.
-- Scheduler heartbeat stays grouped under these workflow families:
+- Scheduler heartbeat stays grouped under these operator flows:
 - Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.
 - Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`.
 - Pointer support flows: `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>`, `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>`, `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>`, `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>`.
-- `just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.
-- Deployment utility workflows stay grouped under these entrypoints:
+- `just workflow-surface-check-scheduler-heartbeat` keeps the grouped heartbeat workflow map and contract surface checked.
+- Deployment utility stays grouped under these operator flows:
 - Scheduler/runtime simulation: `just scheduler-runtime-simulate`.
 - Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.
 - Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.

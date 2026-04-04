@@ -21,7 +21,7 @@ fn deployment_utility_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Deployment utility workflows stay grouped under these entrypoints:",
+        "Deployment utility stays grouped under these operator flows:",
         "Scheduler/runtime simulation: `just scheduler-runtime-simulate`.",
         "Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.",
         "Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.",

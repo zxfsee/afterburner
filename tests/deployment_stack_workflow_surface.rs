@@ -38,7 +38,7 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Deployment stack launch and kube-rs lease workflows stay grouped under these families:",
+        "Deployment stack launch and kube-rs lease stay grouped under these operator flows:",
         "Launch planning: `just deploy-launch-plan`, `just deploy-launch-receipt`.",
         "Bundle flow: `just deploy-launch-bundle`, `just deploy-reconcile-launch-bundle`, `just deploy-record-launch-bundle-reconciliation-history`.",
         "Handoff flow: `just deploy-launch-handoff`, `just deploy-reconcile-launch-handoff`, `just deploy-record-launch-handoff-history`, `just deploy-record-launch-handoff-reconciliation-history`.",

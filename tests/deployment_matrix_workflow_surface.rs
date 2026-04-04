@@ -17,12 +17,12 @@ fn deployment_workflow_matrix_stays_grouped_by_operator_family() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Deployment stays grouped under these operator-facing families:",
-        "Contract check: `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.",
-        "Deployment stack launch and kube-rs lease workflows stay grouped under these families:",
-        "Scheduler heartbeat stays grouped under these workflow families:",
-        "Deployment utility workflows stay grouped under these entrypoints:",
+        "Contract check: `just deploy-check`.",
+        "Deployment stack launch and kube-rs lease stay grouped under these operator flows:",
+        "Scheduler heartbeat stays grouped under these operator flows:",
+        "Deployment utility stays grouped under these operator flows:",
         "`just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.",
-        "`just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.",
+        "`just workflow-surface-check-scheduler-heartbeat` keeps the grouped heartbeat workflow map and contract surface checked.",
         "`just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.",
     ] {
         assert!(

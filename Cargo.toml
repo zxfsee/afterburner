@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment matrix docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the main deployment workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand inventory instead of grouped operator guidance.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/workflows.md`, `tests/deployment_matrix_workflow_surface.rs`
-
 - Grouped deployment utility docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the deployment utility workflow docs concise and operator-centered by trimming remaining wording that still reads like artifact or subcommand inventory instead of grouped operator guidance.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `tests/reference_doc_validation.rs`
+
+- Grouped rollout/reference docs wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the remaining rollout and orchestration reference wording concise and operator-centered by trimming leftover artifact-oriented phrasing in grouped workflow/reference notes.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/promotion_orchestration.rs`, `tests/reference_doc_validation.rs`
 
 ## [Trunk]
 """
