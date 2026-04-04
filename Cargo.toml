@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped profiling/deployment reference wording tightening [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep the remaining reference index wording concise and operator-centered by trimming leftover “entrypoint map” phrasing in grouped profiling and deployment-family notes.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `tests/reference_doc_validation.rs`
-
 - Grouped rollout/reference docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the remaining rollout and orchestration reference wording concise and operator-centered by trimming leftover artifact-oriented phrasing in grouped workflow/reference notes.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `tests/reference_doc_validation.rs`
+
+- Grouped deployment-verification reference wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the remaining deployment-verification reference wording concise and operator-centered by trimming leftover “entry surface” phrasing in grouped reference notes and family surface tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
 
 ## [Trunk]
 """

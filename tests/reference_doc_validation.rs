@@ -14,39 +14,39 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
     let expected_links = [
         (
             "workflow-surface-check-deployment-stack:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-scheduler-heartbeat:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped recipe map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-deployment-verification:",
-            "Use [docs/workflows.md](./workflows.md) for the exhaustive recipe map and `workflow-surface-check-deployment-verification` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-verification` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-deployment-utility:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-utility` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-utility` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-drift:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-drift` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-drift` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-cleanup:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-cleanup` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-cleanup` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-profiling:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-profiling` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-profiling` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-pretraining-source:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-pretraining-source` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-pretraining-source` for mechanical coverage.",
         ),
         (
             "workflow-surface-check-distributed-shard-lineage:",
-            "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
+            "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
         ),
     ];
 

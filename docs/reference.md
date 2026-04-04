@@ -66,7 +66,7 @@ unless they graduate into a clear operator intent.
   - `gpu_scheduler_heartbeat*.json`
   - `gpu_scheduler_heartbeat_pointer*.json`
   - `gpu_scheduler_heartbeat_pointer_rollback*.json`
-  - Use [docs/workflows.md](./workflows.md) for the grouped recipe map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.
   - `scheduler_runtime_simulation_report.json`
   - `burn_bpk_migration_surface_inventory.json`
   - Deployment verification family groups:
