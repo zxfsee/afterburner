@@ -24,6 +24,20 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
             && justfile.contains("artifacts/deploy/previous_current_version.txt"),
         "rollout orchestration recipes must preserve explicit eval, upload, deploy, and rollback evidence"
     );
+    assert!(
+        justfile.contains("cargo run --locked --bin afterburner -- deploy promote-current"),
+        "rollout-promote must delegate pointer mutation to the native deploy promote-current command"
+    );
+    assert!(
+        justfile.contains("cargo run --locked --bin afterburner -- rollback current-pointer"),
+        "rollout-rollback must delegate pointer mutation to the native rollback current-pointer command"
+    );
+    assert!(
+        !justfile.contains("open artifacts/inference/current | str trim | save --force artifacts/deploy/previous_current_version.txt")
+            && !justfile.contains("\"{{ artifact_version }}\" | save --force artifacts/inference/current")
+            && !justfile.contains("open artifacts/deploy/previous_current_version.txt | str trim | save --force artifacts/inference/current"),
+        "rollout pointer mutation must not stay encoded as recipe-local file writes"
+    );
 
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
@@ -51,6 +65,8 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
         "just rollout-promote",
         "just rollout-verify",
         "just rollout-rollback",
+        "afterburner deploy promote-current",
+        "afterburner rollback current-pointer",
     ] {
         assert!(
             readme.contains(workflow),

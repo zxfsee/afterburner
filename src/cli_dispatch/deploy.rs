@@ -61,6 +61,7 @@ where
     };
 
     match subcommand.as_str() {
+        "promote-current" => crate::cmd_deploy_promote_current::run(args),
         "receipt" => crate::cmd_deployment_verification_receipt::run(args),
         "bundle" => crate::cmd_deployment_verification_bundle::run(args),
         "handoff" => crate::cmd_deployment_verification_handoff::run(args),
@@ -83,6 +84,7 @@ where
     };
 
     match subcommand.as_str() {
+        "current-pointer" => crate::cmd_rollback_current_pointer::run(args),
         "verification-receipt-locator" => {
             crate::cmd_deployment_verification_receipt_locator_rollback::run(args)
         }
@@ -314,6 +316,7 @@ where
     I: Iterator<Item = String>,
 {
     match subcommand.as_str() {
+        "promote-current" => crate::cmd_deploy_promote_current::run(args),
         "hf-publish" => crate::cmd_hf_publish::run(args),
         "record-kube-rs-lease-history" => crate::cmd_kube_rs_lease_history::run(args),
         "record-kube-rs-lease-reconciliation-history" => {

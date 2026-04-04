@@ -10,6 +10,7 @@ pub mod manifest;
 pub mod model;
 pub mod observability;
 pub mod profiling_summary;
+pub mod rollout_current_pointer;
 pub mod scheduler_heartbeat_pointer_rollback_helpers;
 pub mod text_pretrain;
 pub mod train;

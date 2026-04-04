@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Rollout pointer mutation typed helper extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Push rollout pointer and state mutation flows behind typed commands so recipes stop directly encoding canonical state-file mutation and family-specific rollout behavior.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `artifact`, `event`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Distributed shard-lineage grouped entrypoint extraction [Distributed Training, Runtime Infra]
   - Goal: Collapse the distributed shard-lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the lineage family stops carrying its own hand-expanded command registry in `justfile`.
   - Kind: `mixed`
@@ -47,6 +40,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `none`
   - Scope: `unknown`
+
+- Rollout check/verify native orchestration extraction [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Move `rollout-check` and `rollout-verify` sequencing behind native deploy/verify orchestration commands so recipes stop chaining eval, upload planning, deploy-check, infer, and eval directly in shell form.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `artifact`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.

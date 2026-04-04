@@ -387,9 +387,7 @@ drift-refresh-baseline summary receipt current_baseline:
 
 # promote a vetted artifact version by updating the current pointer and saving the previous one
 rollout-promote artifact_version:
-    mkdir artifacts/deploy
-    open artifacts/inference/current | str trim | save --force artifacts/deploy/previous_current_version.txt
-    "{{ artifact_version }}" | save --force artifacts/inference/current
+    cargo run --locked --bin afterburner -- deploy promote-current --artifact-version {{ artifact_version }} --previous-version-file artifacts/deploy/previous_current_version.txt --out-record artifacts/deploy/inference_current_pointer_promotion.json
 
 # verify the promoted current pointer still resolves and passes the eval gate
 rollout-verify candidate_artifact:
@@ -398,7 +396,7 @@ rollout-verify candidate_artifact:
 
 # restore the previous current pointer after a failed rollout or explicit rollback
 rollout-rollback:
-    open artifacts/deploy/previous_current_version.txt | str trim | save --force artifacts/inference/current
+    cargo run --locked --bin afterburner -- rollback current-pointer --previous-version-file artifacts/deploy/previous_current_version.txt --out-record artifacts/deploy/inference_current_pointer_rollback.json
 
 # capture a deterministic infer flamegraph into artifacts/profiling
 # on macOS this requires `xcrun xctrace version` under full Xcode. The repo
