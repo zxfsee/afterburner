@@ -19,7 +19,7 @@ fn deployment_workflow_matrix_stays_grouped_by_operator_family() {
         "Deployment stays grouped under these operator-facing families:",
         "Contract check: `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.",
         "Deployment stack launch and kube-rs lease workflows stay grouped under these families:",
-        "Scheduler heartbeat stays grouped under these workflow entrypoints:",
+        "Scheduler heartbeat stays grouped under these workflow families:",
         "Deployment utility workflows stay grouped under these entrypoints:",
         "`just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.",
         "`just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.",

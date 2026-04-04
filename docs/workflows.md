@@ -117,18 +117,10 @@ operator use case justifies promotion.
 - Locator flow: `just deploy-point-launch-transport-locator`, `just deploy-record-launch-transport-locator-history`, `just deploy-reconcile-launch-transport-locator`, `just deploy-record-launch-transport-locator-reconciliation-history`, `just deploy-point-launch-locator`, `just deploy-reconcile-launch-locator`, `just deploy-record-launch-locator-history`, `just deploy-record-launch-locator-reconciliation-history`.
 - Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-point`, `just kube-rs-lease-record-history`, `just kube-rs-lease-record-reconciliation-history`.
 - `just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.
-- Scheduler heartbeat stays grouped under these workflow entrypoints:
-- `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.
-- `just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.
-- `just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.
-- `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.
-- `just scheduler-heartbeat-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.
-- `just scheduler-heartbeat-supersede` writes `gpu_scheduler_heartbeat_supersession.json`.
-- `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>` covers the remaining heartbeat supersession artifacts.
-- `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>` covers pointer history, reconciliation, supersession, and rollback artifacts.
-- `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>` covers pointer supersession artifacts.
-- `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>` covers pointer rollback artifacts.
-- `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>` covers pointer rollback supersession artifacts.
+- Scheduler heartbeat stays grouped under these workflow families:
+- Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.
+- Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`.
+- Pointer support flows: `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>`, `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>`, `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>`, `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>`.
 - `just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.
 - Deployment utility workflows stay grouped under these entrypoints:
 - Scheduler/runtime simulation: `just scheduler-runtime-simulate`.

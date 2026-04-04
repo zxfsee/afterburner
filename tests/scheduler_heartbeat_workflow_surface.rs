@@ -63,23 +63,29 @@ fn scheduler_heartbeat_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Scheduler heartbeat stays grouped under these workflow entrypoints:",
-        "`just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.",
-        "`just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.",
-        "`just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.",
-        "`just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.",
-        "`just scheduler-heartbeat-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.",
-        "`just scheduler-heartbeat-supersede` writes `gpu_scheduler_heartbeat_supersession.json`.",
-        "`just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`",
-        "`just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>`",
-        "`just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>`",
-        "`just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>`",
-        "`just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>`",
+        "Scheduler heartbeat stays grouped under these workflow families:",
+        "Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.",
+        "Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`.",
+        "Pointer support flows: `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>`, `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>`, `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>`, `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>`.",
         "`just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.",
     ] {
         assert!(
             workflows.contains(needle),
             "workflow reference must keep the grouped scheduler-heartbeat surface `{needle}`"
+        );
+    }
+
+    for forbidden in [
+        "- `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.",
+        "- `just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.",
+        "- `just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.",
+        "- `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.",
+        "- `just scheduler-heartbeat-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.",
+        "- `just scheduler-heartbeat-supersede` writes `gpu_scheduler_heartbeat_supersession.json`.",
+    ] {
+        assert!(
+            !workflows.contains(forbidden),
+            "workflow reference must stay grouped instead of enumerating scheduler-heartbeat variant `{forbidden}`"
         );
     }
 
