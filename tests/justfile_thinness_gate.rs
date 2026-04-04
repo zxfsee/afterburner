@@ -42,7 +42,9 @@ fn justfile_thinness_debt_stays_bounded() {
             continue;
         }
 
-        if line.trim_start().starts_with("if ") && let Some(recipe) = current_recipe.clone() {
+        if line.trim_start().starts_with("if ")
+            && let Some(recipe) = current_recipe.clone()
+        {
             branching_recipes.insert(recipe);
         }
     }

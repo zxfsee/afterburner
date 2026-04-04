@@ -146,11 +146,11 @@ operator use case justifies promotion.
 
 ## Cleanup
 
-- Cleanup stays grouped under these workflow families:
-- Inventory and policy: `just cleanup-inventory`, `just cleanup-policy`.
-- Execution flow: `just cleanup-dry-run`, `just cleanup-execute`.
-- Evidence packaging: `just cleanup-evidence-bundle`.
-- `just workflow-surface-check-cleanup` keeps the grouped cleanup recipe and reference split checked.
+- Cleanup stays grouped under these operator flows:
+- Scope and policy: `just cleanup-inventory`, `just cleanup-policy`.
+- Plan and execute: `just cleanup-dry-run`, `just cleanup-execute`.
+- Evidence pack: `just cleanup-evidence-bundle`.
+- `just workflow-surface-check-cleanup` guards the grouped cleanup workflow map and reference split.
 
 ## Drift
 

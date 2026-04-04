@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped cleanup docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the grouped cleanup workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/cleanup_workflow_surface.rs`
-
 - Grouped drift docs wording tightening [Experimentation/Eval Infra]
   - Goal: Keep the grouped drift workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `ops`
   - Scope: `justfile`, `src/bin/workflow_queue_snapshot.rs`, `src/bin/workflow_objective_lock.rs`, `tests/justfile_thinness_gate.rs`, `tests/queue_snapshot.rs`, `tests/developer_workflows.rs`
+
+- Grouped source and lineage docs wording tightening [Data Infra, Distributed Training]
+  - Goal: Keep the grouped source and lineage workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand enumeration instead of family-level guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
 
 ## [Trunk]
 """

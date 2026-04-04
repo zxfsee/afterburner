@@ -215,8 +215,12 @@ fn queue_promote_next_runnable_moves_blocked_top_below_runnable_item() {
     promote.assert().success();
 
     let updated = fs::read_to_string(&cargo_toml).expect("read updated Cargo.toml");
-    let runnable_pos = updated.find("- runnable item").expect("runnable item remains");
-    let blocked_pos = updated.find("- blocked item").expect("blocked item remains");
+    let runnable_pos = updated
+        .find("- runnable item")
+        .expect("runnable item remains");
+    let blocked_pos = updated
+        .find("- blocked item")
+        .expect("blocked item remains");
     assert!(
         runnable_pos < blocked_pos,
         "promote-next-runnable must move the next runnable item above the blocked top item"

@@ -66,7 +66,9 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
         .filter(|line| line.contains("workflow-surface-check-"))
         .collect::<Vec<_>>();
     for line in referenced_checks {
-        let start = line.find("workflow-surface-check-").expect("contains check");
+        let start = line
+            .find("workflow-surface-check-")
+            .expect("contains check");
         let check = &line[start..]
             .split('`')
             .next()

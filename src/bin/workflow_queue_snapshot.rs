@@ -567,7 +567,9 @@ fn split_todo_items(
         .find(TODO_END)
         .map(|offset| start + offset)
         .ok_or_else(|| {
-            QueueSnapshotError::Parse("Cargo.toml changelog template missing `## [Trunk]` marker".into())
+            QueueSnapshotError::Parse(
+                "Cargo.toml changelog template missing `## [Trunk]` marker".into(),
+            )
         })?;
     let prefix_end = start + TODO_START.len();
     let prefix = cargo_toml[..prefix_end].to_string();

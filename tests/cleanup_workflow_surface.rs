@@ -22,11 +22,11 @@ fn cleanup_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Cleanup stays grouped under these workflow families:",
-        "Inventory and policy: `just cleanup-inventory`, `just cleanup-policy`.",
-        "Execution flow: `just cleanup-dry-run`, `just cleanup-execute`.",
-        "Evidence packaging: `just cleanup-evidence-bundle`.",
-        "`just workflow-surface-check-cleanup` keeps the grouped cleanup recipe and reference split checked.",
+        "Cleanup stays grouped under these operator flows:",
+        "Scope and policy: `just cleanup-inventory`, `just cleanup-policy`.",
+        "Plan and execute: `just cleanup-dry-run`, `just cleanup-execute`.",
+        "Evidence pack: `just cleanup-evidence-bundle`.",
+        "`just workflow-surface-check-cleanup` guards the grouped cleanup workflow map and reference split.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -55,7 +55,7 @@ fn cleanup_family_stays_grouped_and_surface_complete() {
         "`artifact_cleanup_dry_run_receipt.json`",
         "`artifact_cleanup_execution_receipt.json`",
         "`artifact_cleanup_evidence_bundle.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-cleanup` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-cleanup` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),
