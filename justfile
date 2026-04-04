@@ -427,15 +427,8 @@ optimized-model-local-profile package_contract quality_metric quality_value mini
     cargo run --locked --bin afterburner -- profile optimized-model-local-profile --package-contract {{ package_contract }} --quality-metric {{ quality_metric }} --quality-value {{ quality_value }} --minimum-quality-value {{ minimum_quality_value }} --observed-latency-ms-p99 {{ observed_latency_ms_p99 }} --observed-max-memory-bytes {{ observed_max_memory_bytes }} --observed-package-bytes {{ observed_package_bytes }} --out artifacts/eval/optimized_model_local_profile.json
 
 profile-infer:
-    mkdir artifacts/profiling
     rm -rf cargo-flamegraph.trace
-    let artifact_version = (open artifacts/inference/current | str trim)
-    let artifact = $"artifacts/inference/($artifact_version)/model.mpk"
-    let backend = (if ("BACKEND" in $env) { $env.BACKEND | str downcase } else { "wgpu" })
-    let profile_command = $"env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o {{ profile-infer-flamegraph }} -- infer ($artifact)"
-    env -u DEVELOPER_DIR -u SDKROOT XCTRACE=/usr/bin/xctrace cargo flamegraph --dev --deterministic --bin afterburner -o {{ profile-infer-flamegraph }} -- infer $artifact
-    cargo run --locked --bin afterburner_profile_summary -- --input {{ profile-infer-flamegraph }} --output {{ profile-infer-summary }} --weights-artifact $artifact --backend $backend --profile-command $profile_command
-    just profile-environment-snapshot
+    cargo run --locked --bin afterburner -- profile infer --flamegraph-out {{ profile-infer-flamegraph }} --summary-out {{ profile-infer-summary }} --snapshot-out artifacts/profiling/profiling_environment_snapshot.json --profiler-path cargo-flamegraph
 
 # open the terminal dashboard with profiling summary context
 dashboard:

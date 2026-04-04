@@ -90,6 +90,7 @@ where
     };
     match subcommand.as_str() {
         "environment-snapshot" => crate::cmd_profiling_environment_snapshot::run(args),
+        "infer" => crate::cmd_profiling_infer::run(args),
         "distributed-runtime-benchmark" => crate::cmd_distributed_runtime_benchmark::run(args),
         "distributed-runtime-profile" => crate::cmd_distributed_runtime_profile::run(args),
         "optimized-model-local-profile" => crate::cmd_optimized_model_local_profile::run(args),

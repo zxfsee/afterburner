@@ -181,7 +181,7 @@ where
     Ok(())
 }
 
-fn resolve_backend() -> String {
+pub(crate) fn resolve_backend() -> String {
     let default_backend = BACKEND_WGPU;
     env::var("BACKEND")
         .ok()

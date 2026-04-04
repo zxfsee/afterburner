@@ -115,6 +115,7 @@ mod cmd_pretraining_source_provenance_evidence_bundle;
 mod cmd_pretraining_source_provenance_receipt;
 mod cmd_profiling_environment_snapshot;
 mod cmd_profiling_environment_snapshot_refresh;
+mod cmd_profiling_infer;
 mod cmd_profiling_provenance_bundle;
 mod cmd_profiling_provenance_receipt;
 mod cmd_scheduler_heartbeat;

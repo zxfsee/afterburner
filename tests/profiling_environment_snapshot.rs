@@ -60,8 +60,8 @@ fn profiling_environment_snapshot_schema_and_workflow_are_explicit() {
         "justfile must expose the profile-environment-snapshot workflow"
     );
     assert!(
-        justfile.contains("just profile-environment-snapshot"),
-        "profile-infer workflow must invoke the environment snapshot recipe"
+        justfile.contains("cargo run --locked --bin afterburner -- profile infer"),
+        "profile-infer workflow must route through the native profile infer command"
     );
 
     let readme = repo_file("docs/workflows.md");
@@ -70,8 +70,8 @@ fn profiling_environment_snapshot_schema_and_workflow_are_explicit() {
         "workflow reference must mention the profiling environment snapshot artifact"
     );
     assert!(
-        readme.contains("just profile-environment-snapshot"),
-        "workflow reference must mention the profiling environment snapshot workflow"
+        readme.contains("afterburner profile infer"),
+        "workflow reference must mention the native profile infer workflow"
     );
 }
 

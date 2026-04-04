@@ -51,28 +51,13 @@ fn developer_workflows_are_repo_managed_and_documented() {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
     assert!(
-        justfile.contains("cargo flamegraph"),
-        "profile-infer must use cargo flamegraph"
+        justfile.contains("cargo run --locked --bin afterburner -- profile infer"),
+        "profile-infer must delegate to the native profile infer command"
     );
     assert!(
         justfile.contains("--allow-existing-path CHANGELOG.md"),
         "stale-lineage resume flows must carry the repaired CHANGELOG baseline into execute pinning"
     );
-    assert!(
-        justfile.contains("xcrun xctrace version"),
-        "profiling workflow must document the host-profiler prerequisite"
-    );
-    assert!(
-        justfile.contains("full Xcode"),
-        "profiling workflow must document the full Xcode requirement on macOS"
-    );
-    assert!(
-        justfile.contains("XCTRACE=/usr/bin/xctrace")
-            && justfile.contains("DEVELOPER_DIR")
-            && justfile.contains("SDKROOT"),
-        "profiling workflow must document the macOS xctrace override path"
-    );
-
     let readme = repo_file("docs/workflows.md");
     for workflow in [
         "just objective-lock-pin-execute-top-item",
@@ -100,6 +85,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
             "workflow reference must document `{workflow}`"
         );
     }
+    assert!(
+        readme.contains("afterburner profile infer"),
+        "workflow reference must document the native profile infer command"
+    );
     assert!(
         readme.contains("xcrun xctrace version"),
         "workflow reference must document the host-profiler prerequisite"

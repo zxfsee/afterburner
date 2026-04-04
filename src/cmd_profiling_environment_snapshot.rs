@@ -1,5 +1,5 @@
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use afterburner::observability::emit_event;
@@ -65,34 +65,55 @@ where
     I: Iterator<Item = String>,
 {
     let args = parse_args(args)?;
-    let profiler_version = detect_profiler_version(args.profiler_path.as_str())
-        .map_err(ProfilingEnvironmentSnapshotError::Parse)?;
+    write_environment_snapshot(
+        args.profile_kind.as_str(),
+        args.profiler.as_str(),
+        args.profiler_path.as_str(),
+        args.out_path.as_path(),
+    )
+    .map_err(ProfilingEnvironmentSnapshotError::Parse)
+}
+
+pub(crate) fn write_environment_snapshot(
+    profile_kind: &str,
+    profiler: &str,
+    profiler_path: &str,
+    out_path: &Path,
+) -> Result<(), String> {
+    let profiler_version = detect_profiler_version(profiler_path)?;
     let snapshot = json!({
         "schema_version": "1",
-        "profile_kind": args.profile_kind,
-        "profiler": args.profiler,
-        "profiler_path": args.profiler_path,
+        "profile_kind": profile_kind,
+        "profiler": profiler,
+        "profiler_path": profiler_path,
         "profiler_version": profiler_version,
         "host_os": std::env::consts::OS,
         "host_arch": std::env::consts::ARCH,
     });
 
-    if let Some(parent) = args.out_path.parent() {
-        fs::create_dir_all(parent)?;
+    if let Some(parent) = out_path.parent() {
+        fs::create_dir_all(parent).map_err(|err| {
+            format!(
+                "create profiling environment snapshot directory `{}`: {err}",
+                parent.display()
+            )
+        })?;
     }
-    let text = serde_json::to_string_pretty(&snapshot).map_err(|err| {
-        ProfilingEnvironmentSnapshotError::Parse(format!(
-            "serialize profiling environment snapshot json: {err}"
-        ))
+    let text = serde_json::to_string_pretty(&snapshot)
+        .map_err(|err| format!("serialize profiling environment snapshot json: {err}"))?;
+    fs::write(out_path, text).map_err(|err| {
+        format!(
+            "write profiling environment snapshot `{}`: {err}",
+            out_path.display()
+        )
     })?;
-    fs::write(&args.out_path, text)?;
 
     emit_event(
         "info",
         "profiling_cli",
         "profiling_environment_snapshot_written",
         json!({
-            "snapshot_path": args.out_path.display().to_string(),
+            "snapshot_path": out_path.display().to_string(),
             "snapshot": snapshot,
         }),
     );
