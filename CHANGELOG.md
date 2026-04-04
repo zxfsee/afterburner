@@ -2,40 +2,33 @@
 
 ## TODO
 
-- Docs-family queue scope narrowing follow-through [Runtime Infra]
-  - Goal: Backfill the remaining docs-family active TODO scopes away from shared `docs/workflows.md`, `docs/reference.md`, and broad `tests/` entries so completion-boundary signals stay precise without relying on the shared-doc fallback.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `Cargo.toml`, `tests/queue_snapshot.rs`
-
 - Grouped deployment docs matrix consolidation [Serving/Deployment Infra]
   - Goal: Keep the main deployment workflow matrix in `docs/workflows.md` grouped around operator-facing deploy families while leaving exact deployment-launch and lease artifact enumeration in `docs/reference.md`.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/deployment_utility_workflow_surface.rs`, `tests/scheduler_heartbeat_workflow_surface.rs`
 
 - Grouped source-and-lineage docs split narrowing [Runtime Infra]
   - Goal: Keep `docs/workflows.md` grouped around source and lineage family entrypoints while moving any remaining exact artifact-heavy wording into `docs/reference.md` and tightening family-level docs coverage.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
 
 - Grouped deployment-verification wording tightening [Serving/Deployment Infra]
   - Goal: Keep the grouped deployment-verification workflow docs operator-centered by trimming any remaining wording that reads like an exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_verification_workflow_surface.rs`, `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
 
 - Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the grouped scheduler-heartbeat workflow docs operator-centered by trimming any remaining wording that reads like exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/scheduler_heartbeat_workflow_surface.rs`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
@@ -45,7 +38,14 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-<!-- queue-snapshot: todo_sha256=2e0486979b37bc42e54c51d3d414426e27f5ecb277ca7b91c43139adaea538ab parent_commit=b53c9f2c8b532d97e10182f4e288190d30ad6d8f -->
+- Grouped cleanup docs wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the grouped cleanup workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/cleanup_workflow_surface.rs`
+
+<!-- queue-snapshot: todo_sha256=6f6b07eb7c31973c5d8eca7f1bfef389874bf2fd3e6052247cba6ae876d5009d parent_commit=a9e661e4448a9a14fc05d7d7cfe796ea80ff40ec -->
 
 ## [Trunk]
 
@@ -600,6 +600,8 @@
 - Group workflow surface and move details to reference ([156f17c])
 - Move blocked burn migration below runnable work ([321fbfe])
 - Group deployment-stack workflow surface and move details to reference ([b53c9f2])
+- Group deployment-utility workflow surface and move details to reference ([f261eda])
+- Clarify low-friction jj control points ([a9e661e])
 
 ### Fixed
 
@@ -1255,5 +1257,7 @@
 [156f17c]: https://github.com/zxfsee/afterburner/commit/156f17c7c467c9b8d82bf4e9b0a3c884403ee08c
 [321fbfe]: https://github.com/zxfsee/afterburner/commit/321fbfe710e9bf1d6785deec8930736730dec76c
 [b53c9f2]: https://github.com/zxfsee/afterburner/commit/b53c9f2c8b532d97e10182f4e288190d30ad6d8f
+[f261eda]: https://github.com/zxfsee/afterburner/commit/f261eda9ce5b2e0338c6439332c378e4456ccf54
+[a9e661e]: https://github.com/zxfsee/afterburner/commit/a9e661e4448a9a14fc05d7d7cfe796ea80ff40ec
 
 <!-- generated by git-cliff -->
