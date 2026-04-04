@@ -2,29 +2,36 @@
 
 ## TODO
 
-- Grouped pretraining-source docs surface consolidation [Data Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped pretraining source entrypoints while moving exact source artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Distributed shard-lineage operator grammar consolidation [Distributed Training, Runtime Infra]
+  - Goal: Collapse the remaining taxonomy-heavy `lineage *-manage ...` operator paths into fewer action-oriented grouped commands so the lineage family stops leaking protocol detail through generic `manage` buckets.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Scheduler-heartbeat operator grammar consolidation [Serving/Deployment Infra]
+  - Goal: Collapse the remaining taxonomy-heavy `scheduler-heartbeat-manage ...` operator paths into fewer action-oriented grouped commands so the heartbeat family stops routing operators through one generic `manage` bucket.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Grouped drift docs surface consolidation [Experimentation/Eval Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
-- Grouped rollout docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped rollout entrypoints while moving exact rollout artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Grouped cleanup docs surface consolidation [Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped cleanup entrypoints while moving exact cleanup artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
-- Grouped deployment-verification docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped deployment verification entrypoints while moving exact deployment verification artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
-- Grouped scheduler-heartbeat docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped scheduler heartbeat entrypoints while moving exact scheduler-heartbeat artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Grouped profiling docs surface consolidation [Runtime Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped profiling entrypoints while moving exact profiling artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
@@ -38,14 +45,7 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-- Grouped drift docs surface consolidation [Experimentation/Eval Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
-<!-- queue-snapshot: todo_sha256=b7501b7755085739501671a2eeb4fdcb440ff4c5bf1ebd086a69ac3c19ab8697 parent_commit=c7cf353080ebe8d566df43ea42c3fb405624ca46 -->
+<!-- queue-snapshot: todo_sha256=c8312fd81882177369e58ac9ea20600b1ef6fbe866d1d6cbfa21fb1eb120d43f parent_commit=b0036fff95fcce5ad80202cb16b52ff0af7ec70a -->
 
 ## [Trunk]
 
@@ -263,6 +263,7 @@
 - Group distributed shard lineage workflows ([5573746])
 - Move check and verify behind native commands ([3f0494e])
 - Collapse deployment verification manage surfaces ([c7cf353])
+- Group pretraining source workflows ([b0036ff])
 
 ### Changed
 
@@ -1229,5 +1230,6 @@
 [3f0494e]: https://github.com/zxfsee/afterburner/commit/3f0494e594cfe23aa59ed719eebc1c01f7605801
 [c35f1a7]: https://github.com/zxfsee/afterburner/commit/c35f1a7c72d99a3903fb8b0787511427a369a75c
 [c7cf353]: https://github.com/zxfsee/afterburner/commit/c7cf353080ebe8d566df43ea42c3fb405624ca46
+[b0036ff]: https://github.com/zxfsee/afterburner/commit/b0036fff95fcce5ad80202cb16b52ff0af7ec70a
 
 <!-- generated by git-cliff -->

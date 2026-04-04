@@ -13,29 +13,36 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped pretraining-source docs surface consolidation [Data Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped pretraining source entrypoints while moving exact source artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Distributed shard-lineage operator grammar consolidation [Distributed Training, Runtime Infra]
+  - Goal: Collapse the remaining taxonomy-heavy `lineage *-manage ...` operator paths into fewer action-oriented grouped commands so the lineage family stops leaking protocol detail through generic `manage` buckets.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Scheduler-heartbeat operator grammar consolidation [Serving/Deployment Infra]
+  - Goal: Collapse the remaining taxonomy-heavy `scheduler-heartbeat-manage ...` operator paths into fewer action-oriented grouped commands so the heartbeat family stops routing operators through one generic `manage` bucket.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Grouped drift docs surface consolidation [Experimentation/Eval Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
-- Grouped rollout docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped rollout entrypoints while moving exact rollout artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Grouped cleanup docs surface consolidation [Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped cleanup entrypoints while moving exact cleanup artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
-- Grouped deployment-verification docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped deployment verification entrypoints while moving exact deployment verification artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
-- Grouped scheduler-heartbeat docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped scheduler heartbeat entrypoints while moving exact scheduler-heartbeat artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+- Grouped profiling docs surface consolidation [Runtime Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped profiling entrypoints while moving exact profiling artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
@@ -48,13 +55,6 @@ header = """# Changelog
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
-
-- Grouped drift docs surface consolidation [Experimentation/Eval Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 ## [Trunk]
 """
