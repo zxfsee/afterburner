@@ -75,8 +75,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
     );
     let queue_snapshot = repo_file("src/bin/workflow_queue_snapshot.rs");
     assert!(
-        queue_snapshot.contains("\"--allow-existing-path\", \"CHANGELOG.md\""),
-        "stale-lineage resume flows must carry the repaired CHANGELOG baseline into execute pinning"
+        queue_snapshot.contains("--allow-existing-path")
+            && queue_snapshot.contains("\"Cargo.toml\"")
+            && queue_snapshot.contains("\"CHANGELOG.md\""),
+        "execute preflight must carry repaired queue metadata into execute pinning when unchanged"
     );
     let readme = repo_file("docs/workflows.md");
     for workflow in [

@@ -381,7 +381,7 @@ fn execute_preflight(
     let repo_root_str = repo_root
         .to_str()
         .ok_or_else(|| QueueSnapshotError::Parse("repo_root path is not utf8".into()))?;
-    let mut pin_args = vec![
+    let pin_args = vec![
         "pin",
         "--objective",
         "execute-top-item",
@@ -391,10 +391,11 @@ fn execute_preflight(
         repo_root_str,
         "--expected-action",
         "execute-top-item",
+        "--allow-existing-path",
+        "Cargo.toml",
+        "--allow-existing-path",
+        "CHANGELOG.md",
     ];
-    if repair_stale_snapshot {
-        pin_args.extend(["--allow-existing-path", "CHANGELOG.md"]);
-    }
     run_binary_command(repo_root.as_path(), &objective_lock_bin, &pin_args)?;
     run_binary_command(
         repo_root.as_path(),

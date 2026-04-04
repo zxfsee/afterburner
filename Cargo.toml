@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Queue top-scope carry-forward hardening [Runtime Infra]
-  - Goal: Let top-scope metadata repair and execute preflight cooperate cleanly when queue metadata widens mid-work, so the repaired `CHANGELOG.md` baseline and updated active scope can carry forward without a manual lock-clear detour.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `justfile`, `src/bin/workflow_queue_snapshot.rs`, `docs/workflows.md`, `tests/queue_snapshot.rs`, `tests/developer_workflows.rs`
-
 - Grouped source and lineage docs wording tightening [Data Infra, Distributed Training]
   - Goal: Keep the grouped source and lineage workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand enumeration instead of family-level guidance.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`
+
+- Queue in-flight top-scope repair hardening [Runtime Infra]
+  - Goal: Let `queue-fix-top-scope` repair active TODO metadata even when legitimate in-scope worktree changes already exist, so a late-discovered scope widening does not force a manual lock clear before the metadata repair can land.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `ops`
+  - Scope: `Cargo.toml`, `CHANGELOG.md`, `justfile`, `src/bin/workflow_objective_lock.rs`, `docs/workflows.md`, `tests/objective_lock.rs`, `tests/developer_workflows.rs`
 
 ## [Trunk]
 """
