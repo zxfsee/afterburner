@@ -526,3 +526,6 @@ workflow-surface-check-deployment-utility:
 
 workflow-surface-check-deployment-matrix:
     cargo nextest run --locked --test deployment_matrix_workflow_surface
+
+workflow-surface-check-public-cli:
+    cargo nextest run --locked --test public_cli_admission_gate
