@@ -82,6 +82,7 @@ unless they graduate into a clear operator intent.
   - `distributed_load_profile.json`
   - `artifact_upload_request.json`
   - `huggingface_publish_receipt.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-utility` for mechanical coverage.
 - Drift and rollback:
   - `infer_output_drift_summary.json`
   - `infer_output_drift_receipt.json`

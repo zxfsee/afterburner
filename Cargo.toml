@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-utility docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on deploy utility entrypoints while moving exact scheduler-runtime simulation, load-profile, Burn migration inventory, and Hugging Face publish artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - Docs-family queue scope narrowing follow-through [Runtime Infra]
   - Goal: Backfill the remaining docs-family active TODO scopes away from shared `docs/workflows.md`, `docs/reference.md`, and broad `tests/` entries so completion-boundary signals stay precise without relying on the shared-doc fallback.
   - Kind: `mixed`
@@ -43,6 +36,13 @@ header = """# Changelog
 
 - Grouped deployment-verification wording tightening [Serving/Deployment Infra]
   - Goal: Keep the grouped deployment-verification workflow docs operator-centered by trimming any remaining wording that reads like an exhaustive artifact taxonomy instead of family-level operator guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the grouped scheduler-heartbeat workflow docs operator-centered by trimming any remaining wording that reads like exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

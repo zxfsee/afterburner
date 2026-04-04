@@ -520,3 +520,6 @@ workflow-surface-check-profiling:
 
 workflow-surface-check-deployment-stack:
     cargo nextest run --locked --test deployment_stack_workflow_surface
+
+workflow-surface-check-deployment-utility:
+    cargo nextest run --locked --test deployment_utility_workflow_surface

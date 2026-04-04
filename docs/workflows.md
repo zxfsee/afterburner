@@ -122,11 +122,11 @@ operator use case justifies promotion.
 - `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>` covers pointer rollback artifacts.
 - `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>` covers pointer rollback supersession artifacts.
 - `just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.
-- `just scheduler-runtime-simulate` writes `scheduler_runtime_simulation_report.json`.
-- `just burn-bpk-migration-surface-report` writes `burn_bpk_migration_surface_inventory.json`.
-- `cargo nextest run --locked --test burn_stable_release_availability` enforces the checked stable Burn release availability state recorded in ADR-033 before the `.bpk` migration can advance.
-- `just distributed-load-profile` writes `distributed_load_profile.json`.
-- `afterburner deploy hf-publish --request <path>` writes `huggingface_publish_receipt.json`.
+- Deployment utility workflows stay grouped under these entrypoints:
+- Scheduler/runtime simulation: `just scheduler-runtime-simulate`.
+- Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.
+- Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.
+- `just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.
 
 ## Rollout verification
 

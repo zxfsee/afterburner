@@ -19,9 +19,9 @@
       "burn_mpk_export_format": 5,
       "burn_pre_release": 4,
       "burn_refresh_decision": 1,
-      "mpk_literal": 63
+      "mpk_literal": 65
     },
-    "touchpoint_count": 71
+    "touchpoint_count": 73
   },
   "touchpoints": [
     {
@@ -450,6 +450,12 @@
       ]
     },
     {
+      "path": "tests/profiling_infer_command.rs",
+      "tags": [
+        "mpk_literal"
+      ]
+    },
+    {
       "path": "tests/profiling_provenance_evidence_bundle.rs",
       "tags": [
         "mpk_literal"
@@ -457,6 +463,12 @@
     },
     {
       "path": "tests/profiling_recipe_current_pointer.rs",
+      "tags": [
+        "mpk_literal"
+      ]
+    },
+    {
+      "path": "tests/rollout_orchestration_commands.rs",
       "tags": [
         "mpk_literal"
       ]

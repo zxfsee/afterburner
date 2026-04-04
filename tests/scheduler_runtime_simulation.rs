@@ -73,9 +73,10 @@ fn scheduler_runtime_simulation_schema_and_workflow_are_explicit() {
         "justfile must expose the scheduler-runtime-simulate workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("scheduler_runtime_simulation_report.json"),
+        reference.contains("scheduler_runtime_simulation_report.json"),
         "workflow reference must mention the simulation report artifact"
     );
     assert!(

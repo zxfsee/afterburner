@@ -59,9 +59,10 @@ fn burn_bpk_migration_surface_inventory_schema_and_workflow_are_explicit() {
         "justfile must expose the burn-bpk-migration-surface-report workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("burn_bpk_migration_surface_inventory.json"),
+        reference.contains("burn_bpk_migration_surface_inventory.json"),
         "workflow reference must mention the burn `.bpk` surface inventory artifact"
     );
     assert!(
