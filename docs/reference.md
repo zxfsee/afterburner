@@ -113,21 +113,15 @@ unless they graduate into a clear operator intent.
   - `pretraining_source_approval_receipt.json`
   - `pretraining_source_provenance_receipt.json`
   - `pretraining_source_provenance_evidence_bundle.json`
+  - Distributed shard lineage family groups:
   - `distributed_shard_lineage_receipt.json`
-  - `distributed_shard_lineage_evidence_bundle.json`
-  - `distributed_shard_lineage_evidence_bundle_reconciliation.json`
-  - `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`
-  - `distributed_shard_lineage_evidence_handoff.json`
-  - `distributed_shard_lineage_evidence_handoff_reconciliation.json`
-  - `distributed_shard_lineage_evidence_handoff_history.json`
-  - `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`
-  - `distributed_shard_lineage_transport_locator.json`
-  - `distributed_shard_lineage_transport_locator_reconciliation.json`
-  - `distributed_shard_lineage_transport_locator_reconciliation_history.json`
-  - `distributed_shard_lineage_locator_pointer.json`
-  - `distributed_shard_lineage_locator_history.json`
+  - `distributed_shard_lineage_evidence_bundle*.json`
+  - `distributed_shard_lineage_evidence_handoff*.json`
+  - `distributed_shard_lineage_transport_locator*.json`
+  - `distributed_shard_lineage_locator*.json`
 
 For command entrypoints, use [docs/workflows.md](./workflows.md).
+Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.
 
 ## Capability and stance summary
 

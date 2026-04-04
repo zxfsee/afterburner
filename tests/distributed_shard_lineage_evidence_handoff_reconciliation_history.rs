@@ -60,10 +60,8 @@ fn distributed_shard_lineage_handoff_reconciliation_history_schema_and_workflow_
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains(
-            "distributed-shard-lineage-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:"
-        ),
-        "justfile must expose the distributed-shard-lineage-record-handoff-reconciliation-history workflow"
+        justfile.contains("distributed-shard-lineage-handoff-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-handoff-manage workflow"
     );
 
     let workflows = repo_file("docs/workflows.md");
@@ -73,8 +71,10 @@ fn distributed_shard_lineage_handoff_reconciliation_history_schema_and_workflow_
         "workflow reference must mention the lineage handoff reconciliation history artifact"
     );
     assert!(
-        workflows.contains("just distributed-shard-lineage-record-handoff-reconciliation-history"),
-        "workflow reference must mention the lineage handoff reconciliation history workflow"
+        workflows.contains(
+            "just distributed-shard-lineage-handoff-manage record-reconciliation-history"
+        ),
+        "workflow reference must mention the grouped lineage handoff reconciliation history workflow"
     );
 }
 
@@ -115,7 +115,8 @@ fn distributed_shard_lineage_handoff_reconciliation_history_writes_history_and_e
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("record-handoff-reconciliation-history")
+        .arg("handoff-manage")
+        .arg("record-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

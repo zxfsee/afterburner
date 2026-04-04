@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed shard-lineage grouped entrypoint extraction [Distributed Training, Runtime Infra]
-  - Goal: Collapse the distributed shard-lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the lineage family stops carrying its own hand-expanded command registry in `justfile`.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, artifact-family semantics, or recipe-body `just` CLI re-entry after the extraction work lands.
   - Kind: `gate`
@@ -46,6 +39,13 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `artifact`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Pretraining source grouped entrypoint extraction [Data Infra, Runtime Infra]
+  - Goal: Collapse the pretraining source provenance noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the source family stops carrying its own hand-expanded command registry in `justfile`.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]

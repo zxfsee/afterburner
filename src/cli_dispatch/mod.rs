@@ -117,6 +117,8 @@ where
         return 2;
     };
     match subcommand.as_str() {
+        "bundle" => crate::cmd_distributed_shard_lineage_evidence_bundle::run(args),
+        "bundle-manage" => run_lineage_bundle_manage(args),
         "evidence-bundle" => crate::cmd_distributed_shard_lineage_evidence_bundle::run(args),
         "reconcile-evidence-bundle" => {
             crate::cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(args)
@@ -125,11 +127,13 @@ where
             crate::cmd_distributed_shard_lineage_evidence_bundle_reconciliation_history::run(args)
         }
         "handoff" => crate::cmd_distributed_shard_lineage_handoff::run(args),
+        "handoff-manage" => run_lineage_handoff_manage(args),
         "record-handoff-history" => crate::cmd_distributed_shard_lineage_handoff_history::run(args),
         "reconcile-handoff" => crate::cmd_distributed_shard_lineage_handoff_reconcile::run(args),
         "record-handoff-reconciliation-history" => {
             crate::cmd_distributed_shard_lineage_handoff_reconciliation_history::run(args)
         }
+        "locator-manage" => run_lineage_locator_manage(args),
         "record-locator-history" => crate::cmd_distributed_shard_lineage_locator_history::run(args),
         "point-locator" => crate::cmd_distributed_shard_lineage_locator_pointer::run(args),
         "reconcile-transport-locator" => {
@@ -144,6 +148,78 @@ where
         "receipt" => crate::cmd_distributed_shard_lineage_receipt::run(args),
         _ => {
             eprintln!("unknown lineage subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_lineage_bundle_manage<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing lineage bundle-manage action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match action.as_str() {
+        "reconcile" => crate::cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(args),
+        "record-reconciliation-history" => {
+            crate::cmd_distributed_shard_lineage_evidence_bundle_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown lineage bundle-manage action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_lineage_handoff_manage<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing lineage handoff-manage action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match action.as_str() {
+        "reconcile" => crate::cmd_distributed_shard_lineage_handoff_reconcile::run(args),
+        "record-history" => crate::cmd_distributed_shard_lineage_handoff_history::run(args),
+        "record-reconciliation-history" => {
+            crate::cmd_distributed_shard_lineage_handoff_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown lineage handoff-manage action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_lineage_locator_manage<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing lineage locator-manage action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match action.as_str() {
+        "point-transport" => crate::cmd_distributed_shard_lineage_transport_locator::run(args),
+        "reconcile-transport" => {
+            crate::cmd_distributed_shard_lineage_transport_locator_reconcile::run(args)
+        }
+        "record-transport-reconciliation-history" => {
+            crate::cmd_distributed_shard_lineage_transport_locator_reconciliation_history::run(args)
+        }
+        "point" => crate::cmd_distributed_shard_lineage_locator_pointer::run(args),
+        "record-history" => crate::cmd_distributed_shard_lineage_locator_history::run(args),
+        _ => {
+            eprintln!("unknown lineage locator-manage action: {action}");
             eprintln!("{}", usage());
             2
         }

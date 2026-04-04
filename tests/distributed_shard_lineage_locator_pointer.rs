@@ -55,8 +55,8 @@ fn distributed_shard_lineage_locator_pointer_schema_and_workflow_are_explicit() 
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-point-locator locator:"),
-        "justfile must expose the distributed-shard-lineage-point-locator workflow"
+        justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
 
     let readme = repo_file("docs/workflows.md");
@@ -65,8 +65,8 @@ fn distributed_shard_lineage_locator_pointer_schema_and_workflow_are_explicit() 
         "workflow reference must mention the distributed shard lineage locator pointer artifact"
     );
     assert!(
-        readme.contains("just distributed-shard-lineage-point-locator"),
-        "workflow reference must mention the distributed shard lineage locator pointer workflow"
+        readme.contains("just distributed-shard-lineage-locator-manage point"),
+        "workflow reference must mention the grouped distributed shard lineage locator pointer workflow"
     );
 }
 
@@ -94,7 +94,8 @@ fn distributed_shard_lineage_locator_pointer_writes_pointer_and_event() {
         .join("distributed_shard_lineage_locator_pointer.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("point-locator")
+        .arg("locator-manage")
+        .arg("point")
         .arg("--locator")
         .arg(&locator)
         .arg("--out")

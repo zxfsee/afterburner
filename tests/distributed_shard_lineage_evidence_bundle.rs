@@ -58,8 +58,8 @@ fn distributed_shard_lineage_evidence_bundle_schema_and_workflow_are_explicit() 
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-evidence-bundle receipt:"),
-        "justfile must expose the distributed-shard-lineage-evidence-bundle workflow"
+        justfile.contains("distributed-shard-lineage-bundle receipt:"),
+        "justfile must expose the grouped distributed-shard-lineage-bundle workflow"
     );
 
     let readme = repo_file("docs/workflows.md");
@@ -68,8 +68,8 @@ fn distributed_shard_lineage_evidence_bundle_schema_and_workflow_are_explicit() 
         "workflow reference must mention the distributed shard lineage evidence bundle artifact"
     );
     assert!(
-        readme.contains("just distributed-shard-lineage-evidence-bundle"),
-        "workflow reference must mention the distributed shard lineage evidence bundle workflow"
+        readme.contains("just distributed-shard-lineage-bundle"),
+        "workflow reference must mention the grouped distributed shard lineage evidence bundle workflow"
     );
 }
 
@@ -102,7 +102,7 @@ fn distributed_shard_lineage_evidence_bundle_writes_bundle_and_event() {
         .join("distributed_shard_lineage_evidence_bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("evidence-bundle")
+        .arg("bundle")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--out")

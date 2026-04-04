@@ -57,8 +57,8 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_schema_and_workflow_
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-reconcile-evidence-bundle receipt bundle:"),
-        "justfile must expose the distributed-shard-lineage-reconcile-evidence-bundle workflow"
+        justfile.contains("distributed-shard-lineage-bundle-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-bundle-manage workflow"
     );
 
     let workflows = repo_file("docs/workflows.md");
@@ -67,8 +67,8 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_schema_and_workflow_
         "workflow reference must mention the lineage evidence bundle reconciliation artifact"
     );
     assert!(
-        workflows.contains("just distributed-shard-lineage-reconcile-evidence-bundle"),
-        "workflow reference must mention the lineage evidence bundle reconciliation workflow"
+        workflows.contains("just distributed-shard-lineage-bundle-manage reconcile"),
+        "workflow reference must mention the grouped lineage evidence bundle reconciliation workflow"
     );
 }
 
@@ -127,7 +127,8 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_writes_artifact_and_
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("reconcile-evidence-bundle")
+        .arg("bundle-manage")
+        .arg("reconcile")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--bundle")

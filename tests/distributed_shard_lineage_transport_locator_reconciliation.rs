@@ -57,8 +57,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_schema_and_workflo
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-reconcile-transport-locator handoff locator:"),
-        "justfile must expose the distributed-shard-lineage-reconcile-transport-locator workflow"
+        justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
 
     let workflows = repo_file("docs/workflows.md");
@@ -67,8 +67,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_schema_and_workflo
         "workflow reference must mention the lineage transport locator reconciliation artifact"
     );
     assert!(
-        workflows.contains("just distributed-shard-lineage-reconcile-transport-locator"),
-        "workflow reference must mention the lineage transport locator reconciliation workflow"
+        workflows.contains("just distributed-shard-lineage-locator-manage reconcile-transport"),
+        "workflow reference must mention the grouped lineage transport locator reconciliation workflow"
     );
 }
 
@@ -112,7 +112,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_writes_artifact_an
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("reconcile-transport-locator")
+        .arg("locator-manage")
+        .arg("reconcile-transport")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--locator")

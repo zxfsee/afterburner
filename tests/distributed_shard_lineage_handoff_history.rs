@@ -61,10 +61,8 @@ fn distributed_shard_lineage_handoff_history_schema_and_workflow_are_explicit() 
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains(
-            "distributed-shard-lineage-record-handoff-history handoff event recorded_at_unix_ms:"
-        ),
-        "justfile must expose the distributed-shard-lineage-record-handoff-history workflow"
+        justfile.contains("distributed-shard-lineage-handoff-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-handoff-manage workflow"
     );
 
     let workflows = repo_file("docs/workflows.md");
@@ -73,8 +71,8 @@ fn distributed_shard_lineage_handoff_history_schema_and_workflow_are_explicit() 
         "workflow reference must mention the distributed shard lineage handoff history artifact"
     );
     assert!(
-        workflows.contains("just distributed-shard-lineage-record-handoff-history"),
-        "workflow reference must mention the distributed shard lineage handoff history workflow"
+        workflows.contains("just distributed-shard-lineage-handoff-manage record-history"),
+        "workflow reference must mention the grouped distributed shard lineage handoff history workflow"
     );
 }
 
@@ -103,7 +101,8 @@ fn distributed_shard_lineage_handoff_history_writes_history_and_event() {
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("record-handoff-history")
+        .arg("handoff-manage")
+        .arg("record-history")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--event")

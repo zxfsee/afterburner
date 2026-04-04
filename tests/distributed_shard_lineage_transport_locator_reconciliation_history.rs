@@ -61,10 +61,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_history_schema_and
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains(
-            "distributed-shard-lineage-record-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:"
-        ),
-        "justfile must expose the distributed-shard-lineage-record-transport-locator-reconciliation-history workflow"
+        justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
 
     let workflows = repo_file("docs/workflows.md");
@@ -75,9 +73,9 @@ fn distributed_shard_lineage_transport_locator_reconciliation_history_schema_and
     );
     assert!(
         workflows.contains(
-            "just distributed-shard-lineage-record-transport-locator-reconciliation-history"
+            "just distributed-shard-lineage-locator-manage record-transport-reconciliation-history"
         ),
-        "workflow reference must mention the lineage transport locator reconciliation history workflow"
+        "workflow reference must mention the grouped lineage transport locator reconciliation history workflow"
     );
 }
 
@@ -116,7 +114,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_history_writes_his
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("record-transport-locator-reconciliation-history")
+        .arg("locator-manage")
+        .arg("record-transport-reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

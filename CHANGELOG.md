@@ -2,13 +2,6 @@
 
 ## TODO
 
-- Distributed shard-lineage grouped entrypoint extraction [Distributed Training, Runtime Infra]
-  - Goal: Collapse the distributed shard-lineage noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the lineage family stops carrying its own hand-expanded command registry in `justfile`.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Routing and orchestration semantic regression gate [Runtime Infra, Serving/Deployment Infra]
   - Goal: Add one focused mechanical guard so `src/main.rs`, `justfile`, and related routing/orchestration surfaces do not regress into owning domain payload-building, protocol parsing, artifact-family semantics, or recipe-body `just` CLI re-entry after the extraction work lands.
   - Kind: `gate`
@@ -37,6 +30,13 @@
   - Contracts: `cli`, `artifact`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
+- Pretraining source grouped entrypoint extraction [Data Infra, Runtime Infra]
+  - Goal: Collapse the pretraining source provenance noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the source family stops carrying its own hand-expanded command registry in `justfile`.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
@@ -45,7 +45,7 @@
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
 
-<!-- queue-snapshot: todo_sha256=e0f94a782ba20a30d5d822afeb0d8dbe8b36989a9ede95a93651eff4d670f99e parent_commit=e88e6995ec70a58c4c129608843f0f9c56f50070 -->
+<!-- queue-snapshot: todo_sha256=bd5d15cd320e491807ec24d8b870949aaa99e23225c1c81ca2f9ada2cc0056d9 parent_commit=82740141cac8b778685153d3aa0a5335735a9537 -->
 
 ## [Trunk]
 
@@ -258,7 +258,8 @@
 - Add scheduler heartbeat pointer rollback supersession history ([aa4c6e7])
 - Add heartbeat pointer rollback supersession reconciliation ([356ef50])
 - Add rollback supersession reconciliation history ([f85edf5])
-- Move infer workflow behind native command ([e88e699])
+- Move infer workflow behind native command ([0d135f5])
+- Move rollout pointer mutation behind native commands ([8274014])
 
 ### Changed
 
@@ -279,14 +280,14 @@
 - Regroup debug deploy taxonomy ([a1a8813])
 - Roll out launch command input helpers ([24a56d2])
 - Roll out lineage command input helpers ([bc6bae6])
-- Roll out drift command input helpers ([0bcc595])
-- Finish durability hardening ([c837995])
-- Group scheduler heartbeat just surface ([99f4830])
-- Group deployment verification receipt core just surface ([6c2990c])
-- Group deployment verification receipt locator and rollback just surface ([6814d8a])
-- Group deployment verification bundle core just surface ([8ea50b3])
-- Group deployment verification bundle locator and rollback just surface ([f25654e])
-- Group deployment verification handoff just surface ([14099dd])
+- Roll out drift command input helpers ([be1e298])
+- Finish durability hardening ([0ffc865])
+- Group scheduler heartbeat just surface ([8e73da5])
+- Group deployment verification receipt core just surface ([abca69b])
+- Group deployment verification receipt locator and rollback just surface ([3e560de])
+- Group deployment verification bundle core just surface ([f2f12f0])
+- Group deployment verification bundle locator and rollback just surface ([af0da7f])
+- Group deployment verification handoff just surface ([70d30b5])
 
 ### Chore
 
@@ -387,24 +388,24 @@
 - Split helper rollout further ([3d0fd7b])
 - Advance launch helper rollout ([775e493])
 - Advance lineage helper rollout ([bfb331e])
-- Split drift helper rollout ([9bbe01b])
-- Advance drift helper rollout ([a2a2d75])
-- Split cleanup provenance rollout ([44cc117])
-- Promote orchestration extraction ([d3456a2])
-- Refine orchestration extraction slices ([c9346c5])
-- Split grouped entrypoint extraction ([e8308b7])
-- Split deploy-side grouped extraction ([2a30d41])
-- Advance heartbeat grouped extraction ([168a00a])
-- Tighten same-commit queue wording ([c2dd4a9])
-- Refresh queue snapshot lineage ([3c74bb6])
-- Split deployment verification extraction ([e723d14])
-- Split deployment verification receipt extraction ([cd9827f])
-- Add formatter and search heuristics ([3f37241])
-- Refresh queue snapshot lineage ([f0f21e1])
-- Split deployment verification bundle extraction ([5ea7aaa])
-- Refresh queue snapshot lineage ([4856f9a])
-- Advance bundle rollback grouping ([394324b])
-- Prioritize queue hardening ([9aec9a5])
+- Split drift helper rollout ([71d1337])
+- Advance drift helper rollout ([f708791])
+- Split cleanup provenance rollout ([ffba2cd])
+- Promote orchestration extraction ([be2d50b])
+- Refine orchestration extraction slices ([ee3289f])
+- Split grouped entrypoint extraction ([aba64b4])
+- Split deploy-side grouped extraction ([9f6c607])
+- Advance heartbeat grouped extraction ([6fc6863])
+- Tighten same-commit queue wording ([04d350e])
+- Refresh queue snapshot lineage ([94b547b])
+- Split deployment verification extraction ([eb36f20])
+- Split deployment verification receipt extraction ([9142545])
+- Add formatter and search heuristics ([2427295])
+- Refresh queue snapshot lineage ([08a6253])
+- Split deployment verification bundle extraction ([f2302e4])
+- Refresh queue snapshot lineage ([e84b3f6])
+- Advance bundle rollback grouping ([aec7d16])
+- Prioritize queue hardening ([4b29939])
 
 ### Documentation
 
@@ -577,9 +578,9 @@
 - Collapse github metadata workstream ([7d1746e])
 - Restore checkpoint group anchor ([4676420])
 - Group deployment verification surfaces ([ba78f03])
-- Add queue status reporting rule ([ae2de33])
-- Clarify single-objective commit heuristic ([8f051e0])
-- Capture end-to-end workflow-surface heuristic ([9d28135])
+- Add queue status reporting rule ([f85091a])
+- Clarify single-objective commit heuristic ([74ee370])
+- Capture end-to-end workflow-surface heuristic ([09a0bb5])
 
 ### Fixed
 
@@ -590,16 +591,16 @@
 - Tolerate queue-refresh commit in snapshot check ([ddd9360])
 - Correct handoff transport locator history context ([03127dd])
 - Add explicit top-scope repair path ([e5f4a44])
-- Harden queue preflight against stale state ([00afacc])
-- Add queue resume and completion boundary guard ([a043d94])
-- Add explicit stale-snapshot repair mode to preflight ([6d4a2cd])
-- Carry changelog baseline through queue resume ([db04cb5])
+- Harden queue preflight against stale state ([fa920fa])
+- Add queue resume and completion boundary guard ([865714b])
+- Add explicit stale-snapshot repair mode to preflight ([a003f63])
+- Carry changelog baseline through queue resume ([3c6b0c1])
 
 ### Other
 
 - Revert "feat(devenv): enable Rust and mold in devenv.nix" ([271f315])
 - Revert "chore(devenv): add devenv & direnv configs, update .gitignore, add initial model.rs" ([3d1724d])
-- Apply canonical formatter ([f39698c])
+- Apply canonical formatter ([fd46fc0])
 
 ### Tests
 
@@ -1176,40 +1177,41 @@
 [775e493]: https://github.com/zxfsee/afterburner/commit/775e493af7362ec13d81d5e7094a4a149e5d5617
 [bc6bae6]: https://github.com/zxfsee/afterburner/commit/bc6bae6c9f63c712f89f52f9938acc0af74abe36
 [bfb331e]: https://github.com/zxfsee/afterburner/commit/bfb331efa2e64b6050f382e198b870e06986bc40
-[9bbe01b]: https://github.com/zxfsee/afterburner/commit/9bbe01b2b33245b06c9d0c740ec61c633bcca633
-[0bcc595]: https://github.com/zxfsee/afterburner/commit/0bcc5958e2f76302edb852aa8d00dd6f440e8cd3
-[a2a2d75]: https://github.com/zxfsee/afterburner/commit/a2a2d75f31dae1a6806349dd4a3cbbc052b974b1
-[44cc117]: https://github.com/zxfsee/afterburner/commit/44cc117815af9b9599c95f7e13b061eda0d51f92
-[00afacc]: https://github.com/zxfsee/afterburner/commit/00afacc3a23520d71a5da5b472758b17cfddc09b
-[c837995]: https://github.com/zxfsee/afterburner/commit/c8379955ba7dbcdd9d98c3a4a70019f60129511d
-[d3456a2]: https://github.com/zxfsee/afterburner/commit/d3456a2fb274d10d66ca07be11f5694fc5f1b6bd
-[c9346c5]: https://github.com/zxfsee/afterburner/commit/c9346c55274c5a29e8d8cc5fd1615d3f3d0a6b73
-[e8308b7]: https://github.com/zxfsee/afterburner/commit/e8308b705db06fb70456dae4d092438af0bcd818
-[2a30d41]: https://github.com/zxfsee/afterburner/commit/2a30d41f8b35344ae97cfb9ebce3b3e2d0eb1262
-[99f4830]: https://github.com/zxfsee/afterburner/commit/99f4830dd6e71589313652a49a72606dd3a5da7f
-[168a00a]: https://github.com/zxfsee/afterburner/commit/168a00a98df06024bf7c75bb2bd67ef0c7fb2a6a
-[c2dd4a9]: https://github.com/zxfsee/afterburner/commit/c2dd4a9be4343e9147a13846a7bb3f3337e67579
-[3c74bb6]: https://github.com/zxfsee/afterburner/commit/3c74bb669421ac3d80c7399a2d1656dc685a54b1
-[e723d14]: https://github.com/zxfsee/afterburner/commit/e723d146af0040c32396afa0df8d93a35f8caf65
-[cd9827f]: https://github.com/zxfsee/afterburner/commit/cd9827f46af153db2c29a25d1bf7612a6a190f94
-[6c2990c]: https://github.com/zxfsee/afterburner/commit/6c2990c72e728f279d2ceb8c878c45630055e9f4
-[3f37241]: https://github.com/zxfsee/afterburner/commit/3f372416cb137ac39842d0570215f4abdd349c33
-[f0f21e1]: https://github.com/zxfsee/afterburner/commit/f0f21e12804e074c9f3c0ca38ec92ebae5d0321e
-[6814d8a]: https://github.com/zxfsee/afterburner/commit/6814d8a19d963d948f4127e375b88fcf72eac8d1
-[5ea7aaa]: https://github.com/zxfsee/afterburner/commit/5ea7aaacc5255bda7644fa63d0f26549f7e9e1c5
-[f39698c]: https://github.com/zxfsee/afterburner/commit/f39698cdb9152f1c07d24957c060c578faa11425
-[4856f9a]: https://github.com/zxfsee/afterburner/commit/4856f9a145025cc97e46c5dcf535a4cf3a749041
-[8ea50b3]: https://github.com/zxfsee/afterburner/commit/8ea50b302bdf4a3d7a5cb6e95fe006d7478a4619
-[f25654e]: https://github.com/zxfsee/afterburner/commit/f25654ec41d9df3259bf36d2c0eb71620ae67147
-[394324b]: https://github.com/zxfsee/afterburner/commit/394324ba96048985a2facac69b871fa956f94e8b
-[14099dd]: https://github.com/zxfsee/afterburner/commit/14099dd86fe393efa4c7dd5412d9bfff4aac54b1
-[9aec9a5]: https://github.com/zxfsee/afterburner/commit/9aec9a5b1318589376536c699dd0f18d878f55d0
-[a043d94]: https://github.com/zxfsee/afterburner/commit/a043d94bc2eec9b19b86f7c13a93ac00855efba1
-[ae2de33]: https://github.com/zxfsee/afterburner/commit/ae2de3364e65e73375a35f92752294c840d1fa3f
-[6d4a2cd]: https://github.com/zxfsee/afterburner/commit/6d4a2cd5ff6b6f7f38175edf3865fb15ffbe0dee
-[8f051e0]: https://github.com/zxfsee/afterburner/commit/8f051e06c6a8d5f6f02108eb0cc02eed1a5a7eb6
-[9d28135]: https://github.com/zxfsee/afterburner/commit/9d28135e94ecef2589f2c6621b282b3bc3842cf6
-[db04cb5]: https://github.com/zxfsee/afterburner/commit/db04cb50a0b6b6fbcfd92744b56e13cc117427ad
-[e88e699]: https://github.com/zxfsee/afterburner/commit/e88e6995ec70a58c4c129608843f0f9c56f50070
+[71d1337]: https://github.com/zxfsee/afterburner/commit/71d133729d464b98b610bc678a6fe1ded86799bc
+[be1e298]: https://github.com/zxfsee/afterburner/commit/be1e29887076810e5b18f8b3bd7bfe1a82faad66
+[f708791]: https://github.com/zxfsee/afterburner/commit/f708791f5b88e147d6c2f5299ad81c91b39bbfeb
+[ffba2cd]: https://github.com/zxfsee/afterburner/commit/ffba2cd348d078ca6c6ae60aa032e14dbb22197c
+[fa920fa]: https://github.com/zxfsee/afterburner/commit/fa920faed835d76fe9eaddda803558872a78dadf
+[0ffc865]: https://github.com/zxfsee/afterburner/commit/0ffc86536b7645966c202877b875777088c66644
+[be2d50b]: https://github.com/zxfsee/afterburner/commit/be2d50b8c81a65ccf5b391682f51fe6b503c8fdf
+[ee3289f]: https://github.com/zxfsee/afterburner/commit/ee3289fa9c34010fcd2f105dc32d5dc439061cd2
+[aba64b4]: https://github.com/zxfsee/afterburner/commit/aba64b4e982f2c67c4450e2d347507a2bd2124a6
+[9f6c607]: https://github.com/zxfsee/afterburner/commit/9f6c6071049a675181d5d091136cd24a528ca1c1
+[8e73da5]: https://github.com/zxfsee/afterburner/commit/8e73da5d2be7459a77be5e29ed261af7dc08413f
+[6fc6863]: https://github.com/zxfsee/afterburner/commit/6fc6863fe2d9d267f3c90f4928989385cf2d01d5
+[04d350e]: https://github.com/zxfsee/afterburner/commit/04d350e49d6645db68811dd72b2b0c572c1639e3
+[94b547b]: https://github.com/zxfsee/afterburner/commit/94b547bf0dc8c0a0d995dded3a9218a3bcb61777
+[eb36f20]: https://github.com/zxfsee/afterburner/commit/eb36f20c7924f9feeaadf37e83053fab7e1db4b7
+[9142545]: https://github.com/zxfsee/afterburner/commit/9142545842272cf51078bd135dae8d7d9d201537
+[abca69b]: https://github.com/zxfsee/afterburner/commit/abca69b3b7f0edd296a6ba2116b4b5434a6344a6
+[2427295]: https://github.com/zxfsee/afterburner/commit/24272955be4433f9e78734804e2f112d40eb128b
+[08a6253]: https://github.com/zxfsee/afterburner/commit/08a625329b07c63a3a9241740eb3a9088d159937
+[3e560de]: https://github.com/zxfsee/afterburner/commit/3e560de231f3f3ddb6d901fd9cfcbfadf2b4a423
+[f2302e4]: https://github.com/zxfsee/afterburner/commit/f2302e49fc7e1c81273e9f46ea4806b26f6c8640
+[fd46fc0]: https://github.com/zxfsee/afterburner/commit/fd46fc0304cf51a12e732c858920385ddb7d2000
+[e84b3f6]: https://github.com/zxfsee/afterburner/commit/e84b3f68a3fdfe4afeab8ea630e3d5b8b4963d3f
+[f2f12f0]: https://github.com/zxfsee/afterburner/commit/f2f12f081aa2fef03317950bcb8e733d1ce78ce1
+[af0da7f]: https://github.com/zxfsee/afterburner/commit/af0da7fc312434fd932595636a729ef36751f1f3
+[aec7d16]: https://github.com/zxfsee/afterburner/commit/aec7d16b0213b5ccf43fbf583db74f594eb76a4f
+[70d30b5]: https://github.com/zxfsee/afterburner/commit/70d30b5f2afca0d09f56e4e67f4f398d7ca47376
+[4b29939]: https://github.com/zxfsee/afterburner/commit/4b29939c8a93d2f2519afa91c118880cbca13aa6
+[865714b]: https://github.com/zxfsee/afterburner/commit/865714b9b70906d9673286e0e7adb101308e9200
+[f85091a]: https://github.com/zxfsee/afterburner/commit/f85091a92b8042b7f1cb8de336d40c4b53abc6f5
+[a003f63]: https://github.com/zxfsee/afterburner/commit/a003f6335b6c18f6613612c1ae7763a5438e3a41
+[74ee370]: https://github.com/zxfsee/afterburner/commit/74ee3704d37efdcba54303c98e4ad3fb6981bb68
+[09a0bb5]: https://github.com/zxfsee/afterburner/commit/09a0bb5eea95d7ab87e694714779196faed84a3d
+[3c6b0c1]: https://github.com/zxfsee/afterburner/commit/3c6b0c1818d98067f2a9c310c9d1da2cb194fdf7
+[0d135f5]: https://github.com/zxfsee/afterburner/commit/0d135f5e56dd679475fa60112444bd2256ba3e2c
+[8274014]: https://github.com/zxfsee/afterburner/commit/82740141cac8b778685153d3aa0a5335735a9537
 
 <!-- generated by git-cliff -->

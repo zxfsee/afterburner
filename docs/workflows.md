@@ -196,16 +196,21 @@ operator use case justifies promotion.
 - `just pretraining-source-provenance-receipt` writes `pretraining_source_provenance_receipt.json`.
 - That workflow is the source provenance receipt layer over the source approval receipt and reviewed source metadata.
 - `just pretraining-source-provenance-evidence-bundle` writes `pretraining_source_provenance_evidence_bundle.json`.
+- Distributed shard lineage stays grouped under six workflow entrypoints:
 - `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.
-- `just distributed-shard-lineage-evidence-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.
-- `just distributed-shard-lineage-reconcile-evidence-bundle` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.
-- `just distributed-shard-lineage-record-evidence-bundle-reconciliation-history` writes `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.
+- `just distributed-shard-lineage-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.
+- `just distributed-shard-lineage-bundle-manage <reconcile|record-reconciliation-history>` covers `distributed_shard_lineage_evidence_bundle_reconciliation.json` and `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.
+- `just distributed-shard-lineage-bundle-manage reconcile` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.
+- `just distributed-shard-lineage-bundle-manage record-reconciliation-history` writes `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.
 - `just distributed-shard-lineage-handoff` writes `distributed_shard_lineage_evidence_handoff.json`.
-- `just distributed-shard-lineage-reconcile-handoff` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.
-- `just distributed-shard-lineage-record-handoff-history` writes `distributed_shard_lineage_evidence_handoff_history.json`.
-- `just distributed-shard-lineage-record-handoff-reconciliation-history` writes `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.
-- `just distributed-shard-lineage-point-transport-locator` writes `distributed_shard_lineage_transport_locator.json`.
-- `just distributed-shard-lineage-reconcile-transport-locator` writes `distributed_shard_lineage_transport_locator_reconciliation.json`.
-- `just distributed-shard-lineage-record-transport-locator-reconciliation-history` writes `distributed_shard_lineage_transport_locator_reconciliation_history.json`.
-- `just distributed-shard-lineage-point-locator` writes `distributed_shard_lineage_locator_pointer.json`.
-- `just distributed-shard-lineage-record-locator-history` writes `distributed_shard_lineage_locator_history.json`.
+- `just distributed-shard-lineage-handoff-manage <reconcile|record-history|record-reconciliation-history>` covers `distributed_shard_lineage_evidence_handoff_reconciliation.json`, `distributed_shard_lineage_evidence_handoff_history.json`, and `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.
+- `just distributed-shard-lineage-handoff-manage reconcile` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.
+- `just distributed-shard-lineage-handoff-manage record-history` writes `distributed_shard_lineage_evidence_handoff_history.json`.
+- `just distributed-shard-lineage-handoff-manage record-reconciliation-history` writes `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.
+- `just distributed-shard-lineage-locator-manage <point-transport|reconcile-transport|record-transport-reconciliation-history|point|record-history>` covers `distributed_shard_lineage_transport_locator.json`, `distributed_shard_lineage_transport_locator_reconciliation.json`, `distributed_shard_lineage_transport_locator_reconciliation_history.json`, `distributed_shard_lineage_locator_pointer.json`, and `distributed_shard_lineage_locator_history.json`.
+- `just distributed-shard-lineage-locator-manage point-transport` writes `distributed_shard_lineage_transport_locator.json`.
+- `just distributed-shard-lineage-locator-manage reconcile-transport` writes `distributed_shard_lineage_transport_locator_reconciliation.json`.
+- `just distributed-shard-lineage-locator-manage record-transport-reconciliation-history` writes `distributed_shard_lineage_transport_locator_reconciliation_history.json`.
+- `just distributed-shard-lineage-locator-manage point` writes `distributed_shard_lineage_locator_pointer.json`.
+- `just distributed-shard-lineage-locator-manage record-history` writes `distributed_shard_lineage_locator_history.json`.
+- `just workflow-surface-check-distributed-shard-lineage` keeps the grouped CLI and recipe surface checked.

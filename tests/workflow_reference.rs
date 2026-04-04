@@ -53,7 +53,7 @@ fn workflow_reference_is_split_from_frontpage() {
         "just rollout-verify",
         "just cleanup-dry-run",
         "just profile-provenance-bundle",
-        "just distributed-shard-lineage-handoff",
+        "just distributed-shard-lineage-bundle",
     ] {
         assert!(
             workflows.contains(workflow),
