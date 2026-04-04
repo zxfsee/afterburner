@@ -101,7 +101,8 @@ Use this matrix as the admission check for new public commands: if a candidate c
 one of these operator intents, it should default to `just` or `afterburner debug ...` until a real
 operator use case justifies promotion.
 
-- `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
+- Deployment stays grouped under these operator-facing families:
+- Contract check: `just deploy-check` validates `deployment_target_profile.example.json`, `deployment_stack_profile.example.json`, and writes `deployment_stack_check.json`.
 - Deployment stack launch and kube-rs lease workflows stay grouped under these families:
 - Launch planning: `just deploy-launch-plan`, `just deploy-launch-receipt`.
 - Bundle flow: `just deploy-launch-bundle`, `just deploy-reconcile-launch-bundle`, `just deploy-record-launch-bundle-reconciliation-history`.
@@ -126,6 +127,7 @@ operator use case justifies promotion.
 - Scheduler/runtime simulation: `just scheduler-runtime-simulate`.
 - Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.
 - Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.
+- `just workflow-surface-check-deployment-matrix` keeps the grouped deployment matrix wording checked across the main deployment section.
 - `just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.
 
 ## Rollout verification

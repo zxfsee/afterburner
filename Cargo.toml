@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment docs matrix consolidation [Serving/Deployment Infra]
-  - Goal: Keep the main deployment workflow matrix in `docs/workflows.md` grouped around operator-facing deploy families while leaving exact deployment-launch and lease artifact enumeration in `docs/reference.md`.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/deployment_utility_workflow_surface.rs`, `tests/scheduler_heartbeat_workflow_surface.rs`
-
 - Grouped source-and-lineage docs split narrowing [Runtime Infra]
   - Goal: Keep `docs/workflows.md` grouped around source and lineage family entrypoints while moving any remaining exact artifact-heavy wording into `docs/reference.md` and tightening family-level docs coverage.
   - Kind: `mixed`
@@ -55,6 +48,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/cleanup_workflow_surface.rs`
+
+- Grouped profiling docs wording tightening [Runtime Infra]
+  - Goal: Keep the grouped profiling workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/profiling_workflow_surface.rs`
 
 ## [Trunk]
 """
