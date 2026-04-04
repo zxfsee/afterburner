@@ -117,6 +117,7 @@ unless they graduate into a clear operator intent.
   - `rollout_verify.json`
   - `inference_current_pointer_promotion.json`
   - `inference_current_pointer_rollback.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map.
 - Source and lineage:
   - Pretraining source family groups:
   - `pretraining_source_approval_receipt.json`

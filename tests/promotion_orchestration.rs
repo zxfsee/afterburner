@@ -92,20 +92,32 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
         "ADR-017 must describe the rollback recipe"
     );
 
-    let readme = repo_file("docs/workflows.md");
-    for workflow in [
-        "just rollout-check",
-        "just rollout-promote",
-        "just rollout-verify",
-        "just rollout-rollback",
-        "afterburner deploy rollout-check",
-        "afterburner verify rollout",
-        "afterburner deploy promote-current",
-        "afterburner rollback current-pointer",
+    let workflows = repo_file("docs/workflows.md");
+    for needle in [
+        "Rollout verification stays grouped under these operator flows:",
+        "Candidate check: `just rollout-check` delegates to `afterburner deploy rollout-check`.",
+        "Promotion: `just rollout-promote` delegates to `afterburner deploy promote-current`.",
+        "Post-promotion verification: `just rollout-verify` delegates to `afterburner verify rollout`.",
+        "Rollback: `just rollout-rollback` delegates to `afterburner rollback current-pointer`.",
     ] {
         assert!(
-            readme.contains(workflow),
-            "workflow reference must document `{workflow}`"
+            workflows.contains(needle),
+            "workflow reference must keep the grouped rollout surface `{needle}`"
+        );
+    }
+
+    let reference = repo_file("docs/reference.md");
+    for needle in [
+        "Rollout orchestration:",
+        "`rollout_check.json`",
+        "`rollout_verify.json`",
+        "`inference_current_pointer_promotion.json`",
+        "`inference_current_pointer_rollback.json`",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map.",
+    ] {
+        assert!(
+            reference.contains(needle),
+            "reference index must keep the rollout surface `{needle}`"
         );
     }
 }
