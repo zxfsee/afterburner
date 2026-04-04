@@ -47,7 +47,8 @@ fn profiling_recipe_delegates_current_pointer_and_backend_resolution_to_native_c
         "profile-infer must not pin a fixed backend variable in justfile"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
         readme.contains("afterburner profile infer"),
         "workflow reference should document the native profile infer command behind the stable just entrypoint"

@@ -64,13 +64,14 @@ fn profiling_provenance_evidence_bundle_schema_and_workflow_are_explicit() {
         "justfile must expose the profile-provenance-bundle workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("profiling_provenance_evidence_bundle.json"),
+        reference.contains("profiling_provenance_evidence_bundle.json"),
         "workflow reference must mention the profiling provenance evidence bundle artifact"
     );
     assert!(
-        readme.contains("just profile-provenance-bundle"),
+        workflows.contains("just profile-provenance-bundle"),
         "workflow reference must mention the profiling provenance evidence bundle workflow"
     );
 }

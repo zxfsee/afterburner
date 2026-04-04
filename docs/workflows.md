@@ -177,13 +177,14 @@ operator use case justifies promotion.
 
 ## Profiling
 
-- `just profile-infer` is a thin wrapper over `afterburner profile infer`; it writes `infer_hotspot_summary.json`, resolves the artifact through `artifacts/inference/current`, and follows the active `BACKEND` env contract.
+- Profiling stays grouped under these workflow families:
+- Hotspot capture: `just profile-infer`.
+- `just profile-infer` is a thin wrapper over `afterburner profile infer`; it resolves the artifact through `artifacts/inference/current` and follows the active `BACKEND` env contract.
 - On macOS, profiling requires `xcrun xctrace version` under full Xcode.
 - The native profiling command forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`.
-- `just profile-environment-snapshot` writes `profiling_environment_snapshot.json`.
-- `just profile-refresh-environment-snapshot` writes `profiling_environment_snapshot_refresh.json`.
-- `just profile-provenance-receipt` writes `profiling_provenance_receipt.json`.
-- `just profile-provenance-bundle` writes `profiling_provenance_evidence_bundle.json`.
+- Environment capture: `just profile-environment-snapshot`, `just profile-refresh-environment-snapshot`.
+- Profiling provenance: `just profile-provenance-receipt`, `just profile-provenance-bundle`.
+- `just workflow-surface-check-profiling` keeps the grouped profiling recipe and reference split checked.
 
 ## Source and lineage
 

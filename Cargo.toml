@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped profiling docs surface consolidation [Runtime Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped profiling entrypoints while moving exact profiling artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
   - Kind: `mixed`
@@ -51,6 +44,13 @@ header = """# Changelog
 
 - Grouped deployment docs matrix consolidation [Serving/Deployment Infra]
   - Goal: Keep the main deployment workflow matrix in `docs/workflows.md` grouped around operator-facing deploy families while leaving exact deployment-launch and lease artifact enumeration in `docs/reference.md`.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Grouped source-and-lineage docs split narrowing [Runtime Infra]
+  - Goal: Keep `docs/workflows.md` grouped around source and lineage family entrypoints while moving any remaining exact artifact-heavy wording into `docs/reference.md` and tightening family-level docs coverage.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

@@ -64,13 +64,14 @@ fn profiling_environment_snapshot_schema_and_workflow_are_explicit() {
         "profile-infer workflow must route through the native profile infer command"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("profiling_environment_snapshot.json"),
+        reference.contains("profiling_environment_snapshot.json"),
         "workflow reference must mention the profiling environment snapshot artifact"
     );
     assert!(
-        readme.contains("afterburner profile infer"),
+        workflows.contains("afterburner profile infer"),
         "workflow reference must mention the native profile infer workflow"
     );
 }
