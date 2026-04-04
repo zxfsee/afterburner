@@ -115,6 +115,9 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "just changelog",
         "just profile-infer",
         "just queue-snapshot-check",
+        "Queue state refresh and repair: `just queue-refresh`, `just queue-top-runnable-check`, `just queue-promote-next-runnable`, `just queue-snapshot-check`, `just queue-completion-boundary-check`.",
+        "Queue metadata repair: `just queue-fix-top-scope`, `just changelog-top-scope-fix`.",
+        "Queue execution entry: `just queue-execute-preflight`, `just queue-execute-preflight --repair-stale-snapshot`, `just queue-resume`.",
     ] {
         assert!(
             readme.contains(workflow),
