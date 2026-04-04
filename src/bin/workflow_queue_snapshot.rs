@@ -179,6 +179,8 @@ fn verify_snapshot(
 struct TodoScope {
     title: String,
     scope: Vec<String>,
+    boundary: String,
+    contracts: Vec<String>,
 }
 
 fn check_completion_boundary(
@@ -199,11 +201,17 @@ fn check_completion_boundary(
     let touched_queue_files = changed
         .iter()
         .any(|path| path == "Cargo.toml" || path == "CHANGELOG.md");
-    let touched_top_scope = changed
+    let touched_top_scope_paths = changed
         .iter()
-        .any(|path| is_allowed_path(&todo.scope, path.as_str()));
+        .filter(|path| is_allowed_path(&todo.scope, path.as_str()))
+        .cloned()
+        .collect::<Vec<_>>();
+    let touched_top_scope = !touched_top_scope_paths.is_empty();
 
-    if touched_top_scope && !touched_queue_files {
+    if touched_top_scope
+        && !touched_queue_files
+        && !is_docs_family_shared_overlap_only(&todo, &touched_top_scope_paths)
+    {
         return Err(QueueSnapshotError::Parse(format!(
             "queue completion boundary violation: current top TODO `{}` still appears active even though the most recent landed commit touched its scope {:?}\nadvance `Cargo.toml` and `CHANGELOG.md` first, then run `just queue-resume`",
             todo.title, todo.scope
@@ -488,14 +496,45 @@ fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
         .iter()
         .find(|line| line.contains("Scope:"))
         .ok_or_else(|| QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Scope:`")))?;
+    let boundary_line = current_lines
+        .iter()
+        .find(|line| line.contains("Boundary:"))
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Boundary:`"))
+        })?;
+    let contracts_line = current_lines
+        .iter()
+        .find(|line| line.contains("Contracts:"))
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Contracts:`"))
+        })?;
     let scope = extract_backtick_values(scope_line);
     if scope.is_empty() {
         return Err(QueueSnapshotError::Parse(format!(
             "TODO `{title}` must declare at least one backtick-quoted scope path"
         )));
     }
+    let boundary = extract_backtick_values(boundary_line)
+        .into_iter()
+        .next()
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse(format!(
+                "TODO `{title}` must declare one backtick-quoted boundary value"
+            ))
+        })?;
+    let contracts = extract_backtick_values(contracts_line);
+    if contracts.is_empty() {
+        return Err(QueueSnapshotError::Parse(format!(
+            "TODO `{title}` must declare at least one backtick-quoted contract value"
+        )));
+    }
 
-    Ok(TodoScope { title, scope })
+    Ok(TodoScope {
+        title,
+        scope,
+        boundary,
+        contracts,
+    })
 }
 
 fn extract_backtick_values(line: &str) -> Vec<String> {
@@ -550,6 +589,37 @@ fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
         } else {
             candidate == allowed
         }
+    })
+}
+
+fn is_docs_family_shared_overlap_only(todo: &TodoScope, changed_paths: &[String]) -> bool {
+    if todo.boundary != "repo-workflow" || !todo.contracts.iter().any(|contract| contract == "docs")
+    {
+        return false;
+    }
+
+    let shared_scope_entries = todo
+        .scope
+        .iter()
+        .filter_map(|path| match normalize_scope_path(path).as_str() {
+            "docs/workflows.md" => Some("docs/workflows.md".to_string()),
+            "docs/reference.md" => Some("docs/reference.md".to_string()),
+            "tests/" => Some("tests/".to_string()),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    if shared_scope_entries.is_empty() {
+        return false;
+    }
+
+    changed_paths.iter().all(|path| {
+        shared_scope_entries.iter().any(|shared| {
+            if shared.ends_with('/') {
+                path.starts_with(shared)
+            } else {
+                path == shared
+            }
+        })
     })
 }
 

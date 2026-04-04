@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Queue completion-boundary shared-docs hardening [Runtime Infra]
-  - Goal: Prevent false completion-boundary violations when unrelated queue items touch shared workflow/reference docs or broad test directories by hardening the queue snapshot guard around docs-family TODO scopes.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `src/bin/workflow_queue_snapshot.rs`, `tests/queue_snapshot.rs`, `Cargo.toml`
-
 - Grouped cleanup docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped cleanup entrypoints while moving exact cleanup artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
@@ -55,6 +48,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Docs-family queue scope narrowing follow-through [Runtime Infra]
+  - Goal: Backfill the remaining docs-family active TODO scopes away from shared `docs/workflows.md`, `docs/reference.md`, and broad `tests/` entries so completion-boundary signals stay precise without relying on the shared-doc fallback.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `ops`
+  - Scope: `Cargo.toml`, `tests/queue_snapshot.rs`
 
 ## [Trunk]
 """
