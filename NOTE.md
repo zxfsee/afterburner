@@ -12,6 +12,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 ## Heuristics
 
 - If the next phase will use `jj` repo metadata operations (`status`, `diff`, `log`, `commit`, workspace management) in a sandboxed repo, request `.git` read/write permission up front instead of waiting for the first lock failure.
+- Use `jj` only at control points by default: queue preflight, commit, queue refresh when the TODO actually completes or queue state is being explicitly repaired, and explicit cleanliness proof when needed. During normal implementation, avoid routine `jj status` chatter and use ordinary reads/search/tests instead; `jj diff` and `jj log` remain allowed for ambiguity, not as default background checks.
 - If the user gives a process reminder during active changes (for example commit hygiene), treat it as a request to execute the missing step now, not as documentation work.
 - If proposing additional work outside the active TODO queue, either add it to TODO immediately or do not mention it.
 - If the user asks to append or reprioritize TODO items, treat that as queue-only work; do not start implementing the queued item in the same pass unless they explicitly ask for execution too.
@@ -34,6 +35,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Treat queue freshness as part of completing each queue item: when landing a TODO, refresh the active queue in that same commit, and before continuing confirm the top visible item is not already represented by a freshly landed commit. Keep the dependency explicit by running the canonical queue command and re-reading the resulting files instead of relying on hidden bookkeeping state.
 - When a commit completes a TODO, default to one atomic commit that includes the functional change, the `Cargo.toml` queue advancement, and the derived `CHANGELOG.md` refresh.
 - In queue-work status or final reporting, prove only the current objective. Queue advancement is bookkeeping, and the next top TODO may be named only as resulting state, never as part of what the current commit or verification "covers".
+- Treat `jj status` as optional evidence, not a default final step. Use it only when repo-clean proof is actually needed, the outcome is unclear, or the user asked for it.
 - If a separate queue/bookkeeping commit is genuinely necessary, keep it for independently meaningful queue-only work such as stale-state repair or explicit reprioritization, and give it a bookkeeping-specific commit message rather than reusing the feature commit subject/body.
 - Shape commit subjects for fast visual distinction: keep only one primary dimension in the subject, push secondary detail into the body, and avoid adjacent same-family commits whose subjects differ only by one noun like `bundle` vs `receipt` or `history` vs `reconciliation`. Fold purely derived changelog refreshes into the functional commit unless they are independently meaningful.
 - Keep commit bodies focused on the change itself: problem, rationale, constraints, and non-obvious effects. Do not spend body space on queue/changelog bookkeeping unless that bookkeeping is independently meaningful to the landed change.
@@ -54,6 +56,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Treat this repo as a monorepo for workflow purposes: monorepo-local helper binaries, Nushell scripts, and Nix-integrated harness code are acceptable implementation tools as long as they stay behind the canonical `just` entry surface instead of creating parallel user-facing workflows.
 - In this repo, use a short commit body by default when a change touches public contracts, queue/changelog state, or architecture-adjacent behavior; subject-only commits are often too thin for later review.
 - When a user correction changes the real success criterion for a doc or queue item, stop queue advancement, move any stale test/assertion ownership to the correct surface, and revalidate against the corrected document purpose before continuing.
+- Do not do memory lookup for self-contained operating-pattern questions unless prior repo history is actually needed to answer them.
 - If the user states a queue prioritization rule, treat it as a live ordering constraint: reorder active and backlog items by ROI instead of preserving thematic or historical sequencing.
 - Do not turn tiny external settings polish tasks into README/reference/test contract surfaces; either apply the setting directly or track it as one small backlog/maintenance note outside the front page and reference index.
 - If the user explicitly suspends TODO-queue execution to finish a higher-priority direct objective, stop treating queue order as the driver and complete that objective end to end before returning to queue semantics.
