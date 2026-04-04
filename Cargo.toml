@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment verification docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the deployment verification workflow docs concise and operator-centered by trimming remaining wording that still reads like artifact-family inventory instead of grouped operator guidance.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_verification_workflow_surface.rs`
-
 - Grouped deployment stack docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the deployment stack workflow docs concise and operator-centered by trimming remaining wording that still reads like artifact-family inventory instead of grouped operator guidance.
   - Kind: `mixed`
@@ -47,6 +40,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/promotion_orchestration.rs`, `tests/reference_doc_validation.rs`
+
+- Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the scheduler-heartbeat workflow and reference docs concise and operator-centered by trimming remaining “workflow families” and “recipe map” phrasing from the grouped surface.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/scheduler_heartbeat_workflow_surface.rs`
 
 - Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the scheduler-heartbeat workflow and reference docs concise and operator-centered by trimming remaining “workflow families” and “recipe map” phrasing from the grouped surface.

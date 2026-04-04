@@ -136,14 +136,14 @@ operator use case justifies promotion.
 - Promotion: `just rollout-promote` delegates to `afterburner deploy promote-current`.
 - Post-promotion verification: `just rollout-verify` delegates to `afterburner verify rollout`.
 - Rollback: `just rollout-rollback` delegates to `afterburner rollback current-pointer`.
-- Deployment verification stays grouped under three family maps:
-- Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.
-- Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.
-- Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.
-- Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.
-- Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.
-- Handoff support flows: history/reconciliation and transport stay grouped under the handoff family entrypoints.
-- `just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked so this page can stay grouped instead of listing every artifact variant explicitly.
+- Deployment verification stays grouped under these operator flows:
+- Receipt flow: `just deployment-verification-receipt`.
+- Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.
+- Bundle flow: `just deployment-verification-bundle`.
+- Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow.
+- Handoff flow: `just deployment-verification-handoff`.
+- Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow.
+- `just workflow-surface-check-deployment-verification` guards the grouped deployment-verification workflow map and contract surface.
 
 ## Cleanup
 

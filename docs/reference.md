@@ -78,7 +78,7 @@ unless they graduate into a clear operator intent.
   - Bundle locator, locator rollback, bundle rollback, and rollback supersession flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).
   - `deployment_verification_evidence_handoff*.json`
   - Handoff history, transport-locator, and reconciliation flows stay grouped under the handoff entry surface in [docs/workflows.md](./workflows.md).
-  - Use [docs/workflows.md](./workflows.md) for the exhaustive recipe map and `workflow-surface-check-deployment-verification` for mechanical coverage.
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-verification` for mechanical coverage.
   - `distributed_load_profile.json`
   - `artifact_upload_request.json`
   - `huggingface_publish_receipt.json`

@@ -38,7 +38,7 @@ fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() 
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.",
     ] {
         assert!(
             workflows.contains(needle),

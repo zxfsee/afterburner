@@ -202,14 +202,14 @@ fn deployment_verification_family_stays_surface_complete() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "just workflow-surface-check-deployment-verification",
-        "Deployment verification stays grouped under three family maps",
-        "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
-        "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
-        "Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.",
-        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.",
-        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.",
-        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff family entrypoints.",
-        "`just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked",
+        "Deployment verification stays grouped under these operator flows:",
+        "Receipt flow: `just deployment-verification-receipt`.",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.",
+        "Bundle flow: `just deployment-verification-bundle`.",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow.",
+        "Handoff flow: `just deployment-verification-handoff`.",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow.",
+        "`just workflow-surface-check-deployment-verification` guards the grouped deployment-verification workflow map and contract surface.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -223,7 +223,7 @@ fn deployment_verification_family_stays_surface_complete() {
         "`deployment_verification_receipt*.json`",
         "`deployment_verification_evidence_bundle*.json`",
         "`deployment_verification_evidence_handoff*.json`",
-        "Use [docs/workflows.md](./workflows.md) for the exhaustive recipe map and `workflow-surface-check-deployment-verification` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-verification` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),
