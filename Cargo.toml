@@ -18,7 +18,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+  - Scope: `tests/drift_workflow_surface.rs`, `tests/infer_output_drift_summary.rs`, `tests/infer_drift_receipt.rs`, `tests/infer_drift_baseline.rs`, `tests/infer_drift_baseline_approval.rs`, `tests/infer_drift_baseline_pointer.rs`, `tests/infer_drift_baseline_history.rs`, `tests/infer_drift_baseline_checkpoint.rs`, `tests/infer_drift_baseline_bundle.rs`, `tests/infer_drift_baseline_handoff.rs`, `tests/infer_drift_baseline_transport_locator.rs`, `tests/infer_drift_baseline_rollback.rs`, `tests/infer_drift_baseline_supersession.rs`, `tests/infer_drift_baseline_refresh.rs`
 
 - Grouped cleanup docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped cleanup entrypoints while moving exact cleanup artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
