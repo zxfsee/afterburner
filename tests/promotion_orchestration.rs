@@ -6,6 +6,15 @@ fn repo_file(path: &str) -> String {
         .unwrap_or_else(|err| panic!("read {path}: {err}"))
 }
 
+fn recipe_block<'a>(justfile: &'a str, recipe: &str) -> &'a str {
+    let anchor = format!("{recipe}:");
+    justfile
+        .split(&anchor)
+        .nth(1)
+        .and_then(|rest| rest.split("\n\n").next())
+        .unwrap_or_else(|| panic!("missing recipe block `{recipe}`"))
+}
+
 #[test]
 fn promotion_orchestration_contract_is_documented_and_wired() {
     let justfile = repo_file("justfile");
@@ -17,19 +26,43 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
+    let rollout_check = recipe_block(
+        &justfile,
+        "rollout-check candidate_artifact candidate_manifest ownership provider destination",
+    );
+    let rollout_verify = recipe_block(&justfile, "rollout-verify candidate_artifact");
+    let rollout_promote = recipe_block(&justfile, "rollout-promote artifact_version");
+    let rollout_rollback = recipe_block(&justfile, "rollout-rollback");
     assert!(
-        justfile.contains("eval --artifact")
-            && justfile.contains("upload --manifest")
-            && justfile.contains("deploy-check")
-            && justfile.contains("artifacts/deploy/previous_current_version.txt"),
+        justfile.contains("artifacts/deploy/previous_current_version.txt"),
         "rollout orchestration recipes must preserve explicit eval, upload, deploy, and rollback evidence"
     );
     assert!(
-        justfile.contains("cargo run --locked --bin afterburner -- deploy promote-current"),
+        rollout_check.contains("cargo run --locked --bin afterburner -- deploy rollout-check"),
+        "rollout-check must delegate orchestration to the native deploy rollout-check command"
+    );
+    assert!(
+        !rollout_check.contains("eval --artifact")
+            && !rollout_check.contains("upload --manifest")
+            && !rollout_check.contains("just deploy-check"),
+        "rollout-check must not keep shell-chained eval, upload, or just re-entry"
+    );
+    assert!(
+        rollout_verify.contains("cargo run --locked --bin afterburner -- verify rollout"),
+        "rollout-verify must delegate orchestration to the native verify rollout command"
+    );
+    assert!(
+        !rollout_verify.contains("cargo run --locked --bin afterburner -- infer")
+            && !rollout_verify.contains("cargo run --locked --bin afterburner -- eval"),
+        "rollout-verify must not keep shell-chained infer/eval steps"
+    );
+    assert!(
+        rollout_promote.contains("cargo run --locked --bin afterburner -- deploy promote-current"),
         "rollout-promote must delegate pointer mutation to the native deploy promote-current command"
     );
     assert!(
-        justfile.contains("cargo run --locked --bin afterburner -- rollback current-pointer"),
+        rollout_rollback
+            .contains("cargo run --locked --bin afterburner -- rollback current-pointer"),
         "rollout-rollback must delegate pointer mutation to the native rollback current-pointer command"
     );
     assert!(
@@ -65,6 +98,8 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
         "just rollout-promote",
         "just rollout-verify",
         "just rollout-rollback",
+        "afterburner deploy rollout-check",
+        "afterburner verify rollout",
         "afterburner deploy promote-current",
         "afterburner rollback current-pointer",
     ] {

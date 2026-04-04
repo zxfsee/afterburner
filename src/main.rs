@@ -8,6 +8,7 @@ mod cmd_cleanup_execute;
 mod cmd_cleanup_inventory;
 mod cmd_cleanup_policy;
 mod cmd_deploy_promote_current;
+mod cmd_deploy_rollout_check;
 mod cmd_deployment_stack_check;
 mod cmd_deployment_stack_launch_bundle;
 mod cmd_deployment_stack_launch_bundle_reconcile;
@@ -147,6 +148,7 @@ mod cmd_scheduler_runtime_simulation;
 mod cmd_single_node_scheduler;
 mod cmd_train;
 mod cmd_upload;
+mod cmd_verify_rollout;
 
 fn main() {
     let code = cli_dispatch::run(std::env::args().skip(1));

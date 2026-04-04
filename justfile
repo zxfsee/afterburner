@@ -197,9 +197,7 @@ deploy-record-launch-locator-reconciliation-history reconciliation event recorde
 
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:
-    cargo run --locked --bin afterburner -- eval --artifact {{ candidate_artifact }} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
-    cargo run --locked --bin afterburner -- deploy upload --manifest {{ candidate_manifest }} --ownership {{ ownership }} --provider {{ provider }} --destination {{ destination }} --out artifacts/deploy/candidate_upload_request.json
-    just deploy-check
+    cargo run --locked --bin afterburner -- deploy rollout-check --artifact {{ candidate_artifact }} --manifest {{ candidate_manifest }} --ownership {{ ownership }} --provider {{ provider }} --destination {{ destination }} --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --eval-out artifacts/eval/mnist_eval_summary.json --upload-out artifacts/deploy/candidate_upload_request.json --stack-check-out artifacts/deploy/deployment_stack_check.json --out-record artifacts/deploy/rollout_check.json
 
 huggingface-publish request:
     cargo run --locked --bin afterburner -- deploy hf-publish --request {{ request }}
@@ -370,8 +368,7 @@ rollout-promote artifact_version:
 
 # verify the promoted current pointer still resolves and passes the eval gate
 rollout-verify candidate_artifact:
-    cargo run --locked --bin afterburner -- infer
-    cargo run --locked --bin afterburner -- eval --artifact {{ candidate_artifact }} --seed 42 --batch-size 128 --max-batches 8 --min-accuracy 0.98925781 --out artifacts/eval/mnist_eval_summary.json
+    cargo run --locked --bin afterburner -- verify rollout --artifact {{ candidate_artifact }} --eval-out artifacts/eval/mnist_eval_summary.json --out-record artifacts/deploy/rollout_verify.json
 
 # restore the previous current pointer after a failed rollout or explicit rollback
 rollout-rollback:

@@ -61,7 +61,7 @@ where
     };
 
     match subcommand.as_str() {
-        "promote-current" => crate::cmd_deploy_promote_current::run(args),
+        "rollout" => crate::cmd_verify_rollout::run(args),
         "receipt" => crate::cmd_deployment_verification_receipt::run(args),
         "bundle" => crate::cmd_deployment_verification_bundle::run(args),
         "handoff" => crate::cmd_deployment_verification_handoff::run(args),
@@ -317,6 +317,7 @@ where
 {
     match subcommand.as_str() {
         "promote-current" => crate::cmd_deploy_promote_current::run(args),
+        "rollout-check" => crate::cmd_deploy_rollout_check::run(args),
         "hf-publish" => crate::cmd_hf_publish::run(args),
         "record-kube-rs-lease-history" => crate::cmd_kube_rs_lease_history::run(args),
         "record-kube-rs-lease-reconciliation-history" => {

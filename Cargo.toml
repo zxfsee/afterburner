@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Rollout check/verify native orchestration extraction [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Move `rollout-check` and `rollout-verify` sequencing behind native deploy/verify orchestration commands so recipes stop chaining eval, upload planning, deploy-check, infer, and eval directly in shell form.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `artifact`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Pretraining source grouped entrypoint extraction [Data Infra, Runtime Infra]
   - Goal: Collapse the pretraining source provenance noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the source family stops carrying its own hand-expanded command registry in `justfile`.
   - Kind: `mixed`
@@ -43,6 +36,13 @@ header = """# Changelog
 
 - Grouped rollout docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped rollout entrypoints while moving exact rollout artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Grouped deployment-verification docs surface consolidation [Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped deployment verification entrypoints while moving exact deployment verification artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

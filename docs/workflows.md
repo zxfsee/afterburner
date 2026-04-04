@@ -136,9 +136,9 @@ operator use case justifies promotion.
 
 ## Rollout verification
 
-- `just rollout-check` runs eval, upload planning, and deploy-check together.
+- `just rollout-check` is a thin wrapper over `afterburner deploy rollout-check`; it runs eval, upload planning, and deploy-check together and writes `rollout_check.json`.
 - `just rollout-promote` is a thin wrapper over `afterburner deploy promote-current`; it advances the current inference pointer, saves the previous version, and writes `inference_current_pointer_promotion.json`.
-- `just rollout-verify` exercises infer and eval on the promoted artifact.
+- `just rollout-verify` is a thin wrapper over `afterburner verify rollout`; it exercises infer and eval on the promoted artifact and writes `rollout_verify.json`.
 - `just rollout-rollback` is a thin wrapper over `afterburner rollback current-pointer`; it restores the saved previous current pointer and writes `inference_current_pointer_rollback.json`.
 - Deployment verification stays grouped under three family maps:
 - Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.

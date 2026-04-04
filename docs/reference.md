@@ -107,6 +107,8 @@ unless they graduate into a clear operator intent.
   - `profiling_provenance_receipt.json`
   - `profiling_provenance_evidence_bundle.json`
 - Rollout orchestration:
+  - `rollout_check.json`
+  - `rollout_verify.json`
   - `inference_current_pointer_promotion.json`
   - `inference_current_pointer_rollback.json`
 - Source and lineage:
