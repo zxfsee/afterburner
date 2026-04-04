@@ -39,6 +39,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "queue-execute-preflight repair='':",
         "changelog-top-scope-fix:",
         "workflow-surface-check-deployment-verification:",
+        "workflow-surface-check-routing-orchestration:",
         "workflow-surface-check-distributed-shard-lineage:",
         "eval-gate:",
         "backend-profile-gate:",

@@ -458,6 +458,9 @@ queue-snapshot-check:
 workflow-surface-check-deployment-verification:
     cargo nextest run --locked --test deployment_verification_workflow_surface
 
+workflow-surface-check-routing-orchestration:
+    cargo nextest run --locked --test routing_orchestration_semantic_regression --test cli_dispatch_decomposition --test routing_orchestration_workflow_surface
+
 workflow-surface-check-scheduler-heartbeat:
     cargo nextest run --locked --test scheduler_heartbeat_workflow_surface
 
