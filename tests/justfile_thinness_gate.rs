@@ -49,10 +49,10 @@ fn justfile_thinness_debt_stays_bounded() {
         }
     }
 
-    let allowed_branching = BTreeSet::from(["queue-execute-preflight repair=''".to_string()]);
+    let allowed_branching = BTreeSet::new();
     assert_eq!(
         branching_recipes, allowed_branching,
-        "justfile control-flow branching must stay limited to the explicit queue preflight recovery path"
+        "justfile control-flow branching must stay out of the canonical workflow surface"
     );
 
     let allowed_action_args = BTreeSet::from([

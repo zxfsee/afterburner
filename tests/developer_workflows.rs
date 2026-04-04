@@ -70,7 +70,12 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "profile-infer must delegate to the native profile infer command"
     );
     assert!(
-        justfile.contains("--allow-existing-path CHANGELOG.md"),
+        justfile.contains("workflow_queue_snapshot -- execute-preflight"),
+        "queue execute and resume surfaces must delegate branching to the typed execute-preflight helper"
+    );
+    let queue_snapshot = repo_file("src/bin/workflow_queue_snapshot.rs");
+    assert!(
+        queue_snapshot.contains("\"--allow-existing-path\", \"CHANGELOG.md\""),
         "stale-lineage resume flows must carry the repaired CHANGELOG baseline into execute pinning"
     );
     let readme = repo_file("docs/workflows.md");

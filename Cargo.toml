@@ -13,12 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Queue preflight branching extraction [Runtime Infra]
-  - Goal: Move the remaining queue repair and stale-snapshot branching out of `justfile` recipe control flow and into typed queue helpers so queue preflight stays canonical without embedding workflow policy in shell logic.
+- Queue top-scope carry-forward hardening [Runtime Infra]
+  - Goal: Let top-scope metadata repair and execute preflight cooperate cleanly when queue metadata widens mid-work, so the repaired `CHANGELOG.md` baseline and updated active scope can carry forward without a manual lock-clear detour.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `ops`
-  - Scope: `justfile`, `src/bin/workflow_queue_snapshot.rs`, `src/bin/workflow_objective_lock.rs`, `tests/justfile_thinness_gate.rs`, `tests/queue_snapshot.rs`, `tests/developer_workflows.rs`
+  - Scope: `Cargo.toml`, `CHANGELOG.md`, `justfile`, `src/bin/workflow_queue_snapshot.rs`, `docs/workflows.md`, `tests/queue_snapshot.rs`, `tests/developer_workflows.rs`
 
 - Grouped source and lineage docs wording tightening [Data Infra, Distributed Training]
   - Goal: Keep the grouped source and lineage workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand enumeration instead of family-level guidance.

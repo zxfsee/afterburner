@@ -75,6 +75,12 @@ enum Command {
         cargo_toml: PathBuf,
         backlog: PathBuf,
     },
+    ExecutePreflight {
+        cargo_toml: PathBuf,
+        changelog: PathBuf,
+        repo_root: PathBuf,
+        repair_stale_snapshot: bool,
+    },
 }
 
 fn main() {
@@ -138,6 +144,12 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             backlog,
         } => promote_next_runnable(cargo_toml, backlog),
+        Command::ExecutePreflight {
+            cargo_toml,
+            changelog,
+            repo_root,
+            repair_stale_snapshot,
+        } => execute_preflight(cargo_toml, changelog, repo_root, repair_stale_snapshot),
     }
 }
 
@@ -329,6 +341,182 @@ fn promote_from_backlog(
     Ok(())
 }
 
+fn execute_preflight(
+    cargo_toml: PathBuf,
+    changelog: PathBuf,
+    repo_root: PathBuf,
+    repair_stale_snapshot: bool,
+) -> Result<(), QueueSnapshotError> {
+    let objective_lock_bin = workflow_objective_lock_binary()?;
+    run_binary_command(
+        repo_root.as_path(),
+        &objective_lock_bin,
+        &["check-repo-locks", "--repo-root", "."],
+    )?;
+
+    if repair_stale_snapshot {
+        refresh_queue_snapshot(&cargo_toml, &changelog, &repo_root)?;
+        run_command(
+            repo_root.as_path(),
+            "cargo",
+            &["nextest", "run", "--locked", "--test", "todo_queue_horizon"],
+        )?;
+    }
+
+    let backlog = repo_root.join("docs/backlog.md");
+    check_top_runnable(cargo_toml.clone(), backlog)?;
+    check_completion_boundary(cargo_toml.clone(), repo_root.clone())?;
+    let parent_commit = jj_commit_id(&repo_root, "@-")?;
+    let previous_parent_commit = jj_optional_commit_id(&repo_root, "@--")?;
+    verify_snapshot(
+        cargo_toml.clone(),
+        changelog.clone(),
+        parent_commit,
+        previous_parent_commit,
+    )?;
+
+    let cargo_toml_str = cargo_toml
+        .to_str()
+        .ok_or_else(|| QueueSnapshotError::Parse("cargo_toml path is not utf8".into()))?;
+    let repo_root_str = repo_root
+        .to_str()
+        .ok_or_else(|| QueueSnapshotError::Parse("repo_root path is not utf8".into()))?;
+    let mut pin_args = vec![
+        "pin",
+        "--objective",
+        "execute-top-item",
+        "--cargo-toml",
+        cargo_toml_str,
+        "--repo-root",
+        repo_root_str,
+        "--expected-action",
+        "execute-top-item",
+    ];
+    if repair_stale_snapshot {
+        pin_args.extend(["--allow-existing-path", "CHANGELOG.md"]);
+    }
+    run_binary_command(repo_root.as_path(), &objective_lock_bin, &pin_args)?;
+    run_binary_command(
+        repo_root.as_path(),
+        &objective_lock_bin,
+        &["check-worktree", "--action", "execute-top-item"],
+    )?;
+    Ok(())
+}
+
+fn refresh_queue_snapshot(
+    cargo_toml: &PathBuf,
+    changelog: &PathBuf,
+    repo_root: &PathBuf,
+) -> Result<(), QueueSnapshotError> {
+    let objective_lock_bin = workflow_objective_lock_binary()?;
+    run_binary_command(
+        repo_root.as_path(),
+        &objective_lock_bin,
+        &[
+            "pin",
+            "--objective",
+            "queue-only",
+            "--expected-action",
+            "queue-refresh",
+        ],
+    )?;
+    let changelog_name = changelog
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| QueueSnapshotError::Parse("changelog filename is not utf8".into()))?;
+    run_binary_command(
+        repo_root.as_path(),
+        &objective_lock_bin,
+        &[
+            "check-paths",
+            "--action",
+            "queue-refresh",
+            "--path",
+            changelog_name,
+        ],
+    )?;
+    let changelog_str = changelog
+        .to_str()
+        .ok_or_else(|| QueueSnapshotError::Parse("changelog path is not utf8".into()))?;
+    run_command(repo_root.as_path(), "git-cliff", &["-o", changelog_str])?;
+    let parent_commit = jj_commit_id(repo_root, "@-")?;
+    stamp_snapshot(cargo_toml.clone(), changelog.clone(), parent_commit)?;
+    let backlog = repo_root.join("docs/backlog.md");
+    check_top_runnable(cargo_toml.clone(), backlog)?;
+    let previous_parent_commit = jj_optional_commit_id(repo_root, "@--")?;
+    let current_parent_commit = jj_commit_id(repo_root, "@-")?;
+    verify_snapshot(
+        cargo_toml.clone(),
+        changelog.clone(),
+        current_parent_commit,
+        previous_parent_commit,
+    )?;
+    run_binary_command(repo_root.as_path(), &objective_lock_bin, &["clear"])?;
+    Ok(())
+}
+
+fn run_command(
+    repo_root: &std::path::Path,
+    program: &str,
+    args: &[&str],
+) -> Result<(), QueueSnapshotError> {
+    let output = ProcessCommand::new(program)
+        .current_dir(repo_root)
+        .args(args)
+        .output()?;
+    if output.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let details = if stderr.is_empty() { stdout } else { stderr };
+    Err(QueueSnapshotError::Parse(format!(
+        "{program} {} failed: {details}",
+        args.join(" ")
+    )))
+}
+
+fn run_binary_command(
+    repo_root: &std::path::Path,
+    program: &PathBuf,
+    args: &[&str],
+) -> Result<(), QueueSnapshotError> {
+    let output = ProcessCommand::new(program)
+        .current_dir(repo_root)
+        .args(args)
+        .output()?;
+    if output.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let details = if stderr.is_empty() { stdout } else { stderr };
+    Err(QueueSnapshotError::Parse(format!(
+        "{} {} failed: {details}",
+        program.display(),
+        args.join(" ")
+    )))
+}
+
+fn workflow_objective_lock_binary() -> Result<PathBuf, QueueSnapshotError> {
+    let current_exe = std::env::current_exe()?;
+    let sibling = current_exe
+        .parent()
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse("current executable has no parent directory".into())
+        })?
+        .join("workflow_objective_lock");
+    if sibling.exists() {
+        Ok(sibling)
+    } else {
+        Err(QueueSnapshotError::Parse(format!(
+            "workflow objective lock helper binary is missing at `{}`; build the repo before running queue execute preflight",
+            sibling.display()
+        )))
+    }
+}
+
 fn jj_commit_id(repo_root: &PathBuf, revset: &str) -> Result<String, QueueSnapshotError> {
     let output = ProcessCommand::new("jj")
         .current_dir(repo_root)
@@ -404,6 +592,7 @@ where
         "check-completion-boundary" => parse_completion_boundary_args(args),
         "check-top-runnable" => parse_top_runnable_args(args, false),
         "promote-next-runnable" => parse_top_runnable_args(args, true),
+        "execute-preflight" => parse_execute_preflight_args(args),
         "--help" | "-h" | "help" => Err(QueueSnapshotError::InvalidArg(usage().to_string())),
         _ => Err(QueueSnapshotError::InvalidArg(format!(
             "unknown queue-snapshot subcommand `{subcommand}`\n{}",
@@ -449,6 +638,48 @@ where
             cargo_toml,
             backlog,
         }
+    })
+}
+
+fn parse_execute_preflight_args<I>(args: I) -> Result<Command, QueueSnapshotError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut cargo_toml = PathBuf::from("Cargo.toml");
+    let mut changelog = PathBuf::from("CHANGELOG.md");
+    let mut repo_root = PathBuf::from(".");
+    let mut repair_stale_snapshot = false;
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            "--changelog" => changelog = PathBuf::from(parse_value(&mut args, "--changelog")?),
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
+            "--repair-stale-snapshot" => repair_stale_snapshot = true,
+            _ if arg.starts_with("--cargo-toml=") => {
+                cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
+            }
+            _ if arg.starts_with("--changelog=") => {
+                changelog = PathBuf::from(arg.trim_start_matches("--changelog=").to_string())
+            }
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
+            _ => {
+                return Err(QueueSnapshotError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(Command::ExecutePreflight {
+        cargo_toml,
+        changelog,
+        repo_root,
+        repair_stale_snapshot,
     })
 }
 
@@ -1025,14 +1256,15 @@ fn sha256_hex(bytes: &[u8]) -> String {
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage|check-completion-boundary|check-top-runnable|promote-next-runnable> [options]\n\
+    "usage: workflow_queue_snapshot <stamp|verify|stamp-current-parent|verify-current-lineage|check-completion-boundary|check-top-runnable|promote-next-runnable|execute-preflight> [options]\n\
 stamp: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID\n\
 verify: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID [--previous-parent-commit ID]\n\
 stamp-current-parent: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
 verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
 check-completion-boundary: [--cargo-toml PATH] [--repo-root PATH]\n\
 check-top-runnable: [--cargo-toml PATH] [--backlog PATH]\n\
-promote-next-runnable: [--cargo-toml PATH] [--backlog PATH]"
+promote-next-runnable: [--cargo-toml PATH] [--backlog PATH]\n\
+execute-preflight: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH] [--repair-stale-snapshot]"
 }
 
 #[cfg(test)]
