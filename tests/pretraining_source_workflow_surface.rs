@@ -30,10 +30,10 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Pretraining source stays grouped under these workflow families:",
+        "Pretraining source stays grouped under these operator flows:",
         "Approval flow: `just pretraining-source-approval`.",
         "Provenance flow: `just pretraining-source-provenance <receipt|bundle>`.",
-        "`just workflow-surface-check-pretraining-source` keeps the grouped CLI and recipe surface checked.",
+        "`just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -60,7 +60,7 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
         "`pretraining_source_approval_receipt.json`",
         "`pretraining_source_provenance_receipt.json`",
         "`pretraining_source_provenance_evidence_bundle.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-pretraining-source` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-pretraining-source` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),

@@ -175,14 +175,14 @@ operator use case justifies promotion.
 
 ## Source and lineage
 
-- Pretraining source stays grouped under these workflow families:
+- Pretraining source stays grouped under these operator flows:
 - Approval flow: `just pretraining-source-approval`.
 - Provenance flow: `just pretraining-source-provenance <receipt|bundle>`.
 - The `source provenance receipt` captures reviewed source metadata over one approval receipt; `bundle` packages the approval and provenance evidence together.
-- `just workflow-surface-check-pretraining-source` keeps the grouped CLI and recipe surface checked.
-- Distributed shard lineage stays grouped under these workflow families:
+- `just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.
+- Distributed shard lineage stays grouped under these operator flows:
 - Receipt flow: `just distributed-shard-lineage-receipt`.
 - Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.
 - Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history <record|reconciliation>`.
 - Locator flow: `just distributed-shard-lineage-locator <point|history>`, `just distributed-shard-lineage-locator-transport <point|reconcile|history>`.
-- `just workflow-surface-check-distributed-shard-lineage` keeps the grouped CLI and recipe surface checked.
+- `just workflow-surface-check-distributed-shard-lineage` guards the grouped lineage workflow map and recipe surface.

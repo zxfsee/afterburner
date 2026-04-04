@@ -48,12 +48,12 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Distributed shard lineage stays grouped under these workflow families:",
+        "Distributed shard lineage stays grouped under these operator flows:",
         "Receipt flow: `just distributed-shard-lineage-receipt`.",
         "Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.",
         "Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history <record|reconciliation>`.",
         "Locator flow: `just distributed-shard-lineage-locator <point|history>`, `just distributed-shard-lineage-locator-transport <point|reconcile|history>`.",
-        "`just workflow-surface-check-distributed-shard-lineage` keeps the grouped CLI and recipe surface checked.",
+        "`just workflow-surface-check-distributed-shard-lineage` guards the grouped lineage workflow map and recipe surface.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -96,7 +96,7 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
         "`distributed_shard_lineage_transport_locator_reconciliation_history.json`",
         "`distributed_shard_lineage_locator_pointer.json`",
         "`distributed_shard_lineage_locator_history.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),

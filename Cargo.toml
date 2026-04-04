@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped source and lineage docs wording tightening [Data Infra, Distributed Training]
-  - Goal: Keep the grouped source and lineage workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand enumeration instead of family-level guidance.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
-
 - Grouped deployment matrix docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the main deployment workflow docs concise and operator-centered by trimming remaining wording that still reads like subcommand inventory instead of grouped operator guidance.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/workflows.md`, `tests/developer_workflows.rs`
+
+- Grouped profiling/deployment reference wording tightening [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep the remaining reference index wording concise and operator-centered by trimming leftover “entrypoint map” phrasing in grouped profiling and deployment-family notes.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `tests/reference_doc_validation.rs`
 
 ## [Trunk]
 """

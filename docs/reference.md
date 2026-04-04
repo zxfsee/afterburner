@@ -123,7 +123,7 @@ unless they graduate into a clear operator intent.
   - `pretraining_source_approval_receipt.json`
   - `pretraining_source_provenance_receipt.json`
   - `pretraining_source_provenance_evidence_bundle.json`
-  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-pretraining-source` for mechanical coverage.
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-pretraining-source` for mechanical coverage.
   - Distributed shard lineage family groups:
   - `distributed_shard_lineage_receipt.json`
   - `distributed_shard_lineage_evidence_bundle.json`
@@ -140,7 +140,7 @@ unless they graduate into a clear operator intent.
   - `distributed_shard_lineage_locator_history.json`
 
 For command entrypoints, use [docs/workflows.md](./workflows.md).
-Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.
+Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.
 
 ## Capability and stance summary
 
