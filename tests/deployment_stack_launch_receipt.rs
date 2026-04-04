@@ -60,13 +60,14 @@ fn deployment_stack_launch_receipt_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-launch-receipt workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("deployment_stack_launch_receipt.json"),
+        reference.contains("deployment_stack_launch_receipt.json"),
         "workflow reference must mention the deployment stack launch receipt artifact"
     );
     assert!(
-        readme.contains("just deploy-launch-receipt"),
+        workflows.contains("just deploy-launch-receipt"),
         "workflow reference must mention the deployment stack launch receipt workflow"
     );
 }

@@ -60,9 +60,10 @@ fn kube_rs_gpu_lease_pointer_schema_and_workflow_are_explicit() {
         "justfile must expose the kube-rs-lease-point workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("kube_rs_gpu_lease_pointer.json"),
+        reference.contains("kube_rs_gpu_lease_pointer.json"),
         "workflow reference must mention the kube-rs lease pointer artifact"
     );
     assert!(

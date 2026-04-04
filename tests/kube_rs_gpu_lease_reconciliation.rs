@@ -62,13 +62,14 @@ fn kube_rs_gpu_lease_reconciliation_schema_and_workflow_are_explicit() {
         "justfile must expose the kube-rs-lease-reconcile workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("kube_rs_gpu_lease_reconciliation.json"),
+        reference.contains("kube_rs_gpu_lease_reconciliation.json"),
         "workflow reference must mention the kube-rs lease reconciliation artifact"
     );
     assert!(
-        readme.contains("just kube-rs-lease-reconcile"),
+        workflows.contains("just kube-rs-lease-reconcile"),
         "workflow reference must mention the kube-rs lease reconciliation workflow"
     );
 }

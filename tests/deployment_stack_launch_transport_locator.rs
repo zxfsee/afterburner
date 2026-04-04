@@ -58,13 +58,14 @@ fn deployment_stack_launch_transport_locator_schema_and_workflow_are_explicit() 
         "justfile must expose the deploy-point-launch-transport-locator workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("deployment_stack_launch_transport_locator.json"),
+        reference.contains("deployment_stack_launch_transport_locator.json"),
         "workflow reference must mention the deployment stack launch transport locator artifact"
     );
     assert!(
-        readme.contains("just deploy-point-launch-transport-locator"),
+        workflows.contains("just deploy-point-launch-transport-locator"),
         "workflow reference must mention the deployment stack launch transport locator workflow"
     );
 }

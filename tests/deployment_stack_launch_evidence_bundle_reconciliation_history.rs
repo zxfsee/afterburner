@@ -67,9 +67,10 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_history_schema_and_wor
         "justfile must expose the deploy-record-launch-bundle-reconciliation-history workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("deployment_stack_launch_evidence_bundle_reconciliation_history.json"),
+        reference.contains("deployment_stack_launch_evidence_bundle_reconciliation_history.json"),
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation history artifact"
     );
     assert!(

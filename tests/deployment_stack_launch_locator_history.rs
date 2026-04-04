@@ -64,13 +64,14 @@ fn deployment_stack_launch_locator_history_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-record-launch-locator-history workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("deployment_stack_launch_locator_history.json"),
+        reference.contains("deployment_stack_launch_locator_history.json"),
         "workflow reference must mention the deployment stack launch locator history artifact"
     );
     assert!(
-        readme.contains("just deploy-record-launch-locator-history"),
+        workflows.contains("just deploy-record-launch-locator-history"),
         "workflow reference must mention the deployment stack launch locator history workflow"
     );
 }

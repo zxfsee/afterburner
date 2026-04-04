@@ -59,9 +59,10 @@ fn deployment_stack_launch_locator_reconciliation_schema_and_workflow_are_explic
         "justfile must expose the deploy-reconcile-launch-locator workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("deployment_stack_launch_locator_reconciliation.json"),
+        reference.contains("deployment_stack_launch_locator_reconciliation.json"),
         "workflow reference must mention the deployment stack launch locator reconciliation artifact"
     );
     assert!(

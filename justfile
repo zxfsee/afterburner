@@ -517,3 +517,6 @@ workflow-surface-check-cleanup:
 
 workflow-surface-check-profiling:
     cargo nextest run --locked --test profiling_workflow_surface
+
+workflow-surface-check-deployment-stack:
+    cargo nextest run --locked --test deployment_stack_workflow_surface

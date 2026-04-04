@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-stack docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped deployment-stack entrypoints while moving exact deployment-launch and kube-rs lease artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - Grouped deployment-utility docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on deploy utility entrypoints while moving exact scheduler-runtime simulation, load-profile, Burn migration inventory, and Hugging Face publish artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
@@ -43,6 +36,13 @@ header = """# Changelog
 
 - Grouped source-and-lineage docs split narrowing [Runtime Infra]
   - Goal: Keep `docs/workflows.md` grouped around source and lineage family entrypoints while moving any remaining exact artifact-heavy wording into `docs/reference.md` and tightening family-level docs coverage.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Grouped deployment-verification wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the grouped deployment-verification workflow docs operator-centered by trimming any remaining wording that reads like an exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

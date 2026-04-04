@@ -75,13 +75,14 @@ fn deployment_stack_contract_is_explicit() {
         );
     }
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("deployment_stack_profile.example.json"),
+        reference.contains("deployment_stack_profile.example.json"),
         "workflow reference must mention the deployment stack profile contract"
     );
     assert!(
-        readme.contains("deployment_stack_check.json"),
+        reference.contains("deployment_stack_check.json"),
         "workflow reference must mention the checked deployment stack artifact"
     );
 }

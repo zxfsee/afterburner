@@ -67,9 +67,10 @@ fn deployment_stack_launch_handoff_history_schema_and_workflow_are_explicit() {
         "justfile must expose the deploy-record-launch-handoff-history workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("deployment_stack_launch_evidence_handoff_history.json"),
+        reference.contains("deployment_stack_launch_evidence_handoff_history.json"),
         "workflow reference must mention the deployment stack launch handoff history artifact"
     );
     assert!(

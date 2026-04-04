@@ -54,12 +54,14 @@ unless they graduate into a clear operator intent.
   - `deployment_stack_launch_transport_locator_reconciliation.json`
   - `deployment_stack_launch_transport_locator_reconciliation_history.json`
   - `deployment_stack_launch_locator_pointer.json`
+  - `deployment_stack_launch_locator_history.json`
   - `deployment_stack_launch_locator_reconciliation.json`
   - `deployment_stack_launch_locator_reconciliation_history.json`
   - `kube_rs_gpu_lease_reconciliation.json`
   - `kube_rs_gpu_lease_reconciliation_history.json`
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-stack` for mechanical coverage.
   - Scheduler heartbeat family groups:
   - `gpu_scheduler_heartbeat*.json`
   - `gpu_scheduler_heartbeat_pointer*.json`

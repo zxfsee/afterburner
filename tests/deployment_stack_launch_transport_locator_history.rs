@@ -65,9 +65,10 @@ fn deployment_stack_launch_transport_locator_history_schema_and_workflow_are_exp
         "justfile must expose the deploy-record-launch-transport-locator-history workflow"
     );
 
+    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        workflows.contains("deployment_stack_launch_transport_locator_history.json"),
+        reference.contains("deployment_stack_launch_transport_locator_history.json"),
         "workflow reference must mention the deployment stack launch transport locator history artifact"
     );
     assert!(
