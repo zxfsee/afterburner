@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `none`
-  - Scope: `unknown`
-
 - Rollout check/verify native orchestration extraction [Runtime Infra, Serving/Deployment Infra]
   - Goal: Move `rollout-check` and `rollout-verify` sequencing behind native deploy/verify orchestration commands so recipes stop chaining eval, upload planning, deploy-check, infer, and eval directly in shell form.
   - Kind: `mixed`
@@ -47,6 +40,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `cli`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Grouped rollout docs surface consolidation [Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped rollout entrypoints while moving exact rollout artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 - Burn `.bpk` artifact migration contract [Frameworks, Runtime Infra]
   - Goal: Migrate the repo's inference artifact contract from `.mpk` to `.bpk` only after a pinned Burn refresh confirms the target APIs and the repo is ready to cut over docs, fixtures, CLI paths, and event payloads together.
