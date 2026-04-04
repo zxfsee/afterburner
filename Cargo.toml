@@ -48,12 +48,12 @@ header = """# Changelog
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`
 
-- Queue in-flight top-scope repair hardening [Runtime Infra]
-  - Goal: Let `queue-fix-top-scope` repair active TODO metadata even when legitimate in-scope worktree changes already exist, so a late-discovered scope widening does not force a manual lock clear before the metadata repair can land.
+- Grouped queue workflow docs wording tightening [Runtime Infra]
+  - Goal: Keep the queue workflow docs concise and operator-centered by trimming remaining wording that still reads like repair-step inventory instead of grouped maintenance guidance.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `Cargo.toml`, `CHANGELOG.md`, `justfile`, `src/bin/workflow_objective_lock.rs`, `docs/workflows.md`, `tests/objective_lock.rs`, `tests/developer_workflows.rs`
+  - Contracts: `docs`
+  - Scope: `docs/workflows.md`, `tests/developer_workflows.rs`
 
 ## [Trunk]
 """

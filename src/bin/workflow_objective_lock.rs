@@ -434,7 +434,6 @@ fn build_lock(
     expected_action: Option<String>,
     allow_existing_paths: &[String],
 ) -> Result<ObjectiveLock, ObjectiveLockError> {
-    let carried_worktree_paths = capture_existing_paths(repo_root, allow_existing_paths)?;
     let lock = match objective {
         Objective::QueueOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -451,7 +450,7 @@ fn build_lock(
                 "docs/workflows.md".to_string(),
             ],
             source_title: None,
-            carried_worktree_paths,
+            carried_worktree_paths: capture_existing_paths(repo_root, allow_existing_paths)?,
         },
         Objective::TopScopeFix => ObjectiveLock {
             objective: objective.clone(),
@@ -465,7 +464,11 @@ fn build_lock(
                 "docs/workflows.md".to_string(),
             ],
             source_title: None,
-            carried_worktree_paths,
+            carried_worktree_paths: capture_top_scope_fix_paths(
+                cargo_toml,
+                repo_root,
+                allow_existing_paths,
+            )?,
         },
         Objective::BacklogOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -478,7 +481,7 @@ fn build_lock(
                 "tests/".to_string(),
             ],
             source_title: None,
-            carried_worktree_paths,
+            carried_worktree_paths: capture_existing_paths(repo_root, allow_existing_paths)?,
         },
         Objective::DocsOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -496,7 +499,7 @@ fn build_lock(
                 "fixtures/".to_string(),
             ],
             source_title: None,
-            carried_worktree_paths,
+            carried_worktree_paths: capture_existing_paths(repo_root, allow_existing_paths)?,
         },
         Objective::ReviewOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -504,7 +507,7 @@ fn build_lock(
             allowed_paths: Vec::new(),
             forbidden_paths: vec!["<any repo mutation>".to_string()],
             source_title: None,
-            carried_worktree_paths,
+            carried_worktree_paths: capture_existing_paths(repo_root, allow_existing_paths)?,
         },
         Objective::ExecuteTopItem => {
             let cargo_text = fs::read_to_string(cargo_toml)?;
@@ -519,7 +522,7 @@ fn build_lock(
                     "docs/backlog.md".to_string(),
                 ],
                 source_title: Some(top_scope.title),
-                carried_worktree_paths,
+                carried_worktree_paths: capture_existing_paths(repo_root, allow_existing_paths)?,
             }
         }
     };
@@ -830,6 +833,36 @@ fn capture_existing_paths(
         carried.insert(normalized, file_sha256_hex(&full_path)?);
     }
     Ok(carried)
+}
+
+fn capture_top_scope_fix_paths(
+    cargo_toml: &Path,
+    repo_root: &Path,
+    allow_existing_paths: &[String],
+) -> Result<BTreeMap<String, String>, ObjectiveLockError> {
+    let mut paths = allow_existing_paths
+        .iter()
+        .map(|path| normalize_candidate_path(path))
+        .collect::<BTreeSet<_>>();
+
+    if cargo_toml.exists()
+        && (repo_root.join(".jj").exists() || repo_root.join(".git").exists())
+        && let Ok(cargo_text) = fs::read_to_string(cargo_toml)
+        && let Ok(top_scope) = top_todo_scope(&cargo_text)
+        && let Ok(changed_paths) = jj_changed_paths(repo_root)
+    {
+        for path in changed_paths {
+            if path != "Cargo.toml"
+                && path != "CHANGELOG.md"
+                && is_allowed_path(&top_scope.scope, &path)
+            {
+                paths.insert(path);
+            }
+        }
+    }
+
+    let collected = paths.into_iter().collect::<Vec<_>>();
+    capture_existing_paths(repo_root, &collected)
 }
 
 fn file_sha256_hex(path: &Path) -> Result<String, ObjectiveLockError> {

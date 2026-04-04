@@ -316,6 +316,69 @@ fn objective_lock_can_carry_existing_queue_metadata_into_execute_resume_only_if_
 }
 
 #[test]
+fn objective_lock_can_carry_existing_in_scope_paths_into_top_scope_fix_only_if_unchanged() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let root = tmp.path();
+    fs::create_dir_all(root.join("src")).expect("create src");
+    fs::create_dir_all(root.join("docs")).expect("create docs");
+    write_sample_cargo_toml(&root.join("Cargo.toml"));
+    fs::write(root.join("CHANGELOG.md"), "# Changelog\n").expect("write CHANGELOG.md");
+    fs::write(root.join("src/lib.rs"), "pub fn x() {}\n").expect("write src/lib.rs");
+    init_jj_repo(root);
+
+    fs::write(
+        root.join("Cargo.toml"),
+        "[package]\nname = \"afterburner\"\n",
+    )
+    .expect("edit Cargo.toml");
+    fs::write(root.join("CHANGELOG.md"), "# Changelog\n\nrepaired\n").expect("edit CHANGELOG.md");
+    fs::write(root.join("src/lib.rs"), "pub fn repaired() {}\n").expect("edit src/lib.rs");
+    let lock_file = root.join(".git/afterburner/objective-lock.json");
+
+    let mut pin_scope_fix = cargo_bin_cmd!("workflow_objective_lock");
+    pin_scope_fix
+        .arg("pin")
+        .arg("--objective")
+        .arg("top-scope-fix")
+        .arg("--cargo-toml")
+        .arg(root.join("Cargo.toml"))
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--allow-existing-path")
+        .arg("src/lib.rs")
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--expected-action")
+        .arg("top-scope-fix");
+    pin_scope_fix.assert().success();
+
+    let mut allow_check = cargo_bin_cmd!("workflow_objective_lock");
+    allow_check
+        .arg("check-worktree")
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--action")
+        .arg("top-scope-fix");
+    allow_check.assert().success();
+
+    fs::write(root.join("src/lib.rs"), "pub fn changed_again() {}\n")
+        .expect("edit src/lib.rs again");
+
+    let mut reject_check = cargo_bin_cmd!("workflow_objective_lock");
+    reject_check
+        .arg("check-worktree")
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--action")
+        .arg("top-scope-fix");
+    reject_check.assert().failure();
+}
+
+#[test]
 fn objective_lock_checks_action_and_explicit_paths() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let lock_file = PathBuf::from(tmp.path()).join("objective-lock.json");
