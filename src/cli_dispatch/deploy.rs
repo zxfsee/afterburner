@@ -62,9 +62,9 @@ where
 
     match subcommand.as_str() {
         "rollout" => crate::cmd_verify_rollout::run(args),
-        "receipt" => crate::cmd_deployment_verification_receipt::run(args),
-        "bundle" => crate::cmd_deployment_verification_bundle::run(args),
-        "handoff" => crate::cmd_deployment_verification_handoff::run(args),
+        "receipt" => run_verify_receipt(args),
+        "bundle" => run_verify_bundle(args),
+        "handoff" => run_verify_handoff(args),
         _ => {
             eprintln!("unknown verify subcommand: {subcommand}");
             eprintln!("{}", super::usage());
@@ -85,15 +85,390 @@ where
 
     match subcommand.as_str() {
         "current-pointer" => crate::cmd_rollback_current_pointer::run(args),
+        "verification-receipt" => run_rollback_verification_receipt(args),
+        "verification-bundle" => run_rollback_verification_bundle(args),
         "verification-receipt-locator" => {
             crate::cmd_deployment_verification_receipt_locator_rollback::run(args)
         }
         "verification-bundle-locator" => {
             crate::cmd_deployment_verification_bundle_locator_rollback::run(args)
         }
-        "verification-bundle" => crate::cmd_deployment_verification_bundle_rollback::run(args),
         _ => {
             eprintln!("unknown rollback subcommand: {subcommand}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_receipt<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return crate::cmd_deployment_verification_receipt::run(args.into_iter());
+    };
+    if action.starts_with('-') {
+        return crate::cmd_deployment_verification_receipt::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "history" => run_verify_receipt_history(rest),
+        "reconcile" => crate::cmd_deployment_verification_receipt_reconcile::run(rest),
+        "transport" => run_verify_receipt_transport(rest),
+        "locator" => run_verify_receipt_locator(rest),
+        _ => {
+            eprintln!("unknown verify receipt action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_receipt_history<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify receipt history action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "record" => crate::cmd_deployment_verification_receipt_history::run(args),
+        "reconciliation" => {
+            crate::cmd_deployment_verification_receipt_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify receipt history action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_receipt_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify receipt transport action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_deployment_verification_receipt_transport_locator::run(args),
+        "history" => {
+            crate::cmd_deployment_verification_receipt_transport_locator_history::run(args)
+        }
+        "reconcile" => {
+            crate::cmd_deployment_verification_receipt_transport_locator_reconcile::run(args)
+        }
+        "reconciliation-history" => {
+            crate::cmd_deployment_verification_receipt_transport_locator_reconciliation_history::run(
+                args,
+            )
+        }
+        _ => {
+            eprintln!("unknown verify receipt transport action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_receipt_locator<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify receipt locator action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_deployment_verification_receipt_locator_pointer::run(args),
+        "history" => crate::cmd_deployment_verification_receipt_locator_history::run(args),
+        "reconcile" => crate::cmd_deployment_verification_receipt_locator_reconcile::run(args),
+        "reconciliation-history" => {
+            crate::cmd_deployment_verification_receipt_locator_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify receipt locator action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_bundle<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return crate::cmd_deployment_verification_bundle::run(args.into_iter());
+    };
+    if action.starts_with('-') {
+        return crate::cmd_deployment_verification_bundle::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "history" => run_verify_bundle_history(rest),
+        "reconcile" => crate::cmd_deployment_verification_bundle_reconcile::run(rest),
+        "transport" => run_verify_bundle_transport(rest),
+        "locator" => run_verify_bundle_locator(rest),
+        _ => {
+            eprintln!("unknown verify bundle action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_bundle_history<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify bundle history action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "record" => crate::cmd_deployment_verification_bundle_history::run(args),
+        "reconciliation" => {
+            crate::cmd_deployment_verification_bundle_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify bundle history action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_bundle_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify bundle transport action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_deployment_verification_bundle_transport_locator::run(args),
+        "history" => crate::cmd_deployment_verification_bundle_transport_locator_history::run(args),
+        "reconcile" => {
+            crate::cmd_deployment_verification_bundle_transport_locator_reconcile::run(args)
+        }
+        "reconciliation-history" => {
+            crate::cmd_deployment_verification_bundle_transport_locator_reconciliation_history::run(
+                args,
+            )
+        }
+        _ => {
+            eprintln!("unknown verify bundle transport action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_bundle_locator<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify bundle locator action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_deployment_verification_bundle_locator_pointer::run(args),
+        "history" => crate::cmd_deployment_verification_bundle_locator_history::run(args),
+        "reconcile" => crate::cmd_deployment_verification_bundle_locator_reconcile::run(args),
+        "reconciliation-history" => {
+            crate::cmd_deployment_verification_bundle_locator_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify bundle locator action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_handoff<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return crate::cmd_deployment_verification_handoff::run(args.into_iter());
+    };
+    if action.starts_with('-') {
+        return crate::cmd_deployment_verification_handoff::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "history" => run_verify_handoff_history(rest),
+        "reconcile" => crate::cmd_deployment_verification_handoff_reconcile::run(rest),
+        "transport" => run_verify_handoff_transport(rest),
+        _ => {
+            eprintln!("unknown verify handoff action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_handoff_history<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify handoff history action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "record" => crate::cmd_deployment_verification_handoff_history::run(args),
+        "reconciliation" => {
+            crate::cmd_deployment_verification_handoff_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify handoff history action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_verify_handoff_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing verify handoff transport action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_deployment_verification_handoff_transport_locator::run(args),
+        "history" => {
+            crate::cmd_deployment_verification_handoff_transport_locator_history::run(args)
+        }
+        "reconcile" => {
+            crate::cmd_deployment_verification_handoff_transport_locator_reconcile::run(args)
+        }
+        _ => {
+            eprintln!("unknown verify handoff transport action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_rollback_verification_receipt<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing rollback verification-receipt action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "locator" => crate::cmd_deployment_verification_receipt_locator_rollback::run(args),
+        "locator-history" => crate::cmd_deployment_verification_receipt_locator_rollback_history::run(args),
+        "reconcile" => crate::cmd_deployment_verification_receipt_rollback_reconcile::run(args),
+        "reconciliation-history" => crate::cmd_deployment_verification_receipt_rollback_reconciliation_history::run(args),
+        "supersede" => crate::cmd_deployment_verification_receipt_rollback_supersession::run(args),
+        "supersession-history" => crate::cmd_deployment_verification_receipt_rollback_supersession_history::run(args),
+        "supersession-reconcile" => crate::cmd_deployment_verification_receipt_rollback_supersession_reconcile::run(args),
+        "supersession-reconciliation-history" => {
+            crate::cmd_deployment_verification_receipt_rollback_supersession_reconciliation_history::run(args)
+        }
+        _ => {
+            eprintln!("unknown rollback verification-receipt action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_rollback_verification_bundle<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        eprintln!("missing rollback verification-bundle action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    if action.starts_with('-') {
+        return crate::cmd_deployment_verification_bundle_rollback::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "locator" => crate::cmd_deployment_verification_bundle_locator_rollback::run(rest),
+        "locator-history" => crate::cmd_deployment_verification_bundle_locator_rollback_history::run(rest),
+        "apply" => crate::cmd_deployment_verification_bundle_rollback::run(rest),
+        "history" => crate::cmd_deployment_verification_bundle_rollback_history::run(rest),
+        "reconcile" => crate::cmd_deployment_verification_bundle_rollback_reconcile::run(rest),
+        "reconciliation-history" => crate::cmd_deployment_verification_bundle_rollback_reconciliation_history::run(rest),
+        "supersede" => crate::cmd_deployment_verification_bundle_rollback_supersession::run(rest),
+        "supersession-history" => crate::cmd_deployment_verification_bundle_rollback_supersession_history::run(rest),
+        "supersession-reconcile" => crate::cmd_deployment_verification_bundle_rollback_supersession_reconcile::run(rest),
+        "supersession-reconciliation-history" => {
+            crate::cmd_deployment_verification_bundle_rollback_supersession_reconciliation_history::run(rest)
+        }
+        _ => {
+            eprintln!("unknown rollback verification-bundle action: {action}");
             eprintln!("{}", super::usage());
             2
         }

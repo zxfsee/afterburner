@@ -12,9 +12,9 @@ fn debug_deploy_surface_stays_family_first() {
     let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "deployment-verification-bundle-rollback-manage action +args:",
-        "-- debug deploy verification-receipt point-locator",
-        "deployment-verification-handoff-manage action +args:",
+        "deployment-verification-bundle-rollback action +args:",
+        "deployment-verification-receipt-locator action +args:",
+        "deployment-verification-handoff-transport action +args:",
         "scheduler-heartbeat-manage action +args:",
         "fn regrouped_debug_deploy_subcommand(",
         "\"verification-bundle\"",
@@ -29,9 +29,9 @@ fn debug_deploy_surface_stays_family_first() {
     }
 
     for forbidden in [
-        "-- debug deploy record-verification-bundle-rollback-history",
-        "-- debug deploy record-verification-receipt-locator-history",
-        "-- debug deploy record-verification-handoff-history",
+        "deployment-verification-bundle-rollback-manage action +args:",
+        "deployment-verification-receipt-manage action +args:",
+        "deployment-verification-handoff-manage action +args:",
         "-- debug deploy scheduler-heartbeat-point-rollback-supersede",
         "-- debug deploy record-scheduler-heartbeat-pointer-rollback-history",
         "-- debug deploy scheduler-heartbeat-supersede",

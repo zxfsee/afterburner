@@ -11,7 +11,9 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-bundle receipt:",
-        "deployment-verification-bundle-manage action +args:",
+        "deployment-verification-bundle-history action +args:",
+        "deployment-verification-bundle-reconcile receipt bundle:",
+        "deployment-verification-bundle-transport action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -35,8 +37,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
-        "Core bundle sidecars: `just deployment-verification-bundle-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the bundle history, reconciliation, and transport-locator artifacts.",
-        "Bundle locator and rollback sidecars stay grouped under three entrypoints:",
+        "Bundle sidecars: `just deployment-verification-bundle-history <record|reconciliation>`, `just deployment-verification-bundle-reconcile`, `just deployment-verification-bundle-transport <point|history|reconcile|reconciliation-history>`",
     ] {
         assert!(
             workflows.contains(needle),

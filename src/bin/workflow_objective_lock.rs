@@ -918,7 +918,9 @@ mod tests {
         let lock = build_lock(
             &Objective::ExecuteTopItem,
             &PathBuf::from(&cargo_toml),
+            dir.path(),
             Some("execute-top-item".into()),
+            &[],
         )
         .expect("lock");
         assert_eq!(
@@ -943,7 +945,9 @@ mod tests {
         let lock = build_lock(
             &Objective::TopScopeFix,
             &PathBuf::from(&cargo_toml),
+            dir.path(),
             Some("top-scope-fix".into()),
+            &[],
         )
         .expect("lock");
         assert_eq!(lock.allowed_paths, vec!["Cargo.toml", "CHANGELOG.md"]);

@@ -10,9 +10,8 @@ fn repo_file(path: &str) -> String {
 fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-point-bundle-locator locator:",
-        "deployment-verification-bundle-locator-manage action +args:",
-        "deployment-verification-bundle-rollback-manage action +args:",
+        "deployment-verification-bundle-locator action +args:",
+        "deployment-verification-bundle-rollback action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -41,10 +40,9 @@ fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Bundle locator and rollback sidecars stay grouped under three entrypoints:",
-        "`just deployment-verification-point-bundle-locator` writes `deployment_verification_evidence_bundle_locator_pointer.json`.",
-        "`just deployment-verification-bundle-locator-manage <record-history|reconcile|record-reconciliation-history>` covers the bundle locator history and reconciliation artifacts.",
-        "`just deployment-verification-bundle-rollback-manage <rollback-locator|record-locator-rollback-history|rollback|record-rollback-history|reconcile-rollback|record-rollback-reconciliation-history|supersede-rollback|reconcile-rollback-supersession|record-rollback-supersession-history|record-rollback-supersession-reconciliation-history>` covers the bundle locator rollback, bundle rollback, and rollback-supersession artifacts.",
+        "Bundle sidecars:",
+        "`just deployment-verification-bundle-locator <point|history|reconcile|reconciliation-history>`",
+        "`just deployment-verification-bundle-rollback <locator|locator-history|apply|history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history>`",
     ] {
         assert!(
             workflows.contains(needle),

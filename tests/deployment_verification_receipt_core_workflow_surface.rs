@@ -11,7 +11,9 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
-        "deployment-verification-receipt-manage action +args:",
+        "deployment-verification-receipt-history action +args:",
+        "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:",
+        "deployment-verification-receipt-transport action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -35,8 +37,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
-        "Core receipt sidecars: `just deployment-verification-receipt-manage <record-history|reconcile|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|record-transport-locator-reconciliation-history>` covers the receipt history, reconciliation, and transport-locator artifacts.",
-        "Receipt locator and rollback sidecars stay grouped under three entrypoints:",
+        "Receipt sidecars: `just deployment-verification-receipt-history <record|reconciliation>`, `just deployment-verification-receipt-reconcile`, `just deployment-verification-receipt-transport <point|history|reconcile|reconciliation-history>`",
     ] {
         assert!(
             workflows.contains(needle),

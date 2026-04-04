@@ -11,7 +11,9 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-handoff bundle:",
-        "deployment-verification-handoff-manage action +args:",
+        "deployment-verification-handoff-history action +args:",
+        "deployment-verification-handoff-reconcile bundle handoff:",
+        "deployment-verification-handoff-transport action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -34,7 +36,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.",
-        "Handoff sidecars: `just deployment-verification-handoff-manage <record-history|point-transport-locator|record-transport-locator-history|reconcile-transport-locator|reconcile|record-reconciliation-history>` covers the handoff history, transport-locator, and reconciliation artifacts.",
+        "Handoff sidecars: `just deployment-verification-handoff-history <record|reconciliation>`, `just deployment-verification-handoff-reconcile`, and `just deployment-verification-handoff-transport <point|history|reconcile>` cover the handoff history, transport, and reconciliation artifacts.",
     ] {
         assert!(
             workflows.contains(needle),

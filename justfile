@@ -233,39 +233,51 @@ distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_b
 deployment-verification-bundle receipt:
     cargo run --locked --bin afterburner -- verify bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
 
-deployment-verification-bundle-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-bundle {{ action }} {{ args }}
+deployment-verification-bundle-history action +args:
+    cargo run --locked --bin afterburner -- verify bundle history {{ action }} {{ args }}
 
-deployment-verification-point-bundle-locator locator:
-    cargo run --locked --bin afterburner -- debug deploy verification-bundle point-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_evidence_bundle_locator_pointer.json
+deployment-verification-bundle-reconcile receipt bundle:
+    cargo run --locked --bin afterburner -- verify bundle reconcile --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
 
-deployment-verification-bundle-locator-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-bundle {{ action }} {{ args }}
+deployment-verification-bundle-transport action +args:
+    cargo run --locked --bin afterburner -- verify bundle transport {{ action }} {{ args }}
 
-deployment-verification-bundle-rollback-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-bundle {{ action }} {{ args }}
+deployment-verification-bundle-locator action +args:
+    cargo run --locked --bin afterburner -- verify bundle locator {{ action }} {{ args }}
+
+deployment-verification-bundle-rollback action +args:
+    cargo run --locked --bin afterburner -- rollback verification-bundle {{ action }} {{ args }}
 
 deployment-verification-handoff bundle:
     cargo run --locked --bin afterburner -- verify handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_handoff.json
 
-deployment-verification-handoff-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-handoff {{ action }} {{ args }}
+deployment-verification-handoff-history action +args:
+    cargo run --locked --bin afterburner -- verify handoff history {{ action }} {{ args }}
+
+deployment-verification-handoff-reconcile bundle handoff:
+    cargo run --locked --bin afterburner -- verify handoff reconcile --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_verification_evidence_handoff_reconciliation.json
+
+deployment-verification-handoff-transport action +args:
+    cargo run --locked --bin afterburner -- verify handoff transport {{ action }} {{ args }}
 
 # write one deployment verification receipt with explicit evidence-source references
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
     cargo run --locked --bin afterburner -- verify receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json
 
-deployment-verification-receipt-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-receipt {{ action }} {{ args }}
+deployment-verification-receipt-history action +args:
+    cargo run --locked --bin afterburner -- verify receipt history {{ action }} {{ args }}
 
-deployment-verification-point-receipt-locator locator:
-    cargo run --locked --bin afterburner -- debug deploy verification-receipt point-locator --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
+deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:
+    cargo run --locked --bin afterburner -- verify receipt reconcile --receipt {{ receipt }} --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' {{ evidence_sources }} --out artifacts/deploy/deployment_verification_receipt_reconciliation.json
 
-deployment-verification-receipt-locator-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-receipt {{ action }} {{ args }}
+deployment-verification-receipt-transport action +args:
+    cargo run --locked --bin afterburner -- verify receipt transport {{ action }} {{ args }}
 
-deployment-verification-receipt-rollback-manage action +args:
-    cargo run --locked --bin afterburner -- debug deploy verification-receipt {{ action }} {{ args }}
+deployment-verification-receipt-locator action +args:
+    cargo run --locked --bin afterburner -- verify receipt locator {{ action }} {{ args }}
+
+deployment-verification-receipt-rollback action +args:
+    cargo run --locked --bin afterburner -- rollback verification-receipt {{ action }} {{ args }}
 
 distributed-shard-lineage-receipt metadata shard_id source source_revision checkpoint_group checkpoint_root checked_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage receipt --metadata {{ metadata }} --shard-id {{ shard_id }} --source {{ source }} --source-revision {{ source_revision }} --checkpoint-group {{ checkpoint_group }} --checkpoint-root {{ checkpoint_root }} --checked-at-unix-ms {{ checked_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_receipt.json

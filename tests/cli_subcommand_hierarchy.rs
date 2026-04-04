@@ -91,4 +91,21 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
             .assert()
             .success();
     }
+
+    let nested_help_cases = [
+        ("verify", "receipt", "history"),
+        ("verify", "bundle", "transport"),
+        ("verify", "handoff", "reconcile"),
+        ("rollback", "verification-receipt", "supersession-reconcile"),
+        ("rollback", "verification-bundle", "apply"),
+    ];
+    for (group, family, action) in nested_help_cases {
+        let mut cmd = cargo_bin_cmd!("afterburner");
+        cmd.arg(group)
+            .arg(family)
+            .arg(action)
+            .arg("--help")
+            .assert()
+            .success();
+    }
 }

@@ -10,9 +10,8 @@ fn repo_file(path: &str) -> String {
 fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-point-receipt-locator locator:",
-        "deployment-verification-receipt-locator-manage action +args:",
-        "deployment-verification-receipt-rollback-manage action +args:",
+        "deployment-verification-receipt-locator action +args:",
+        "deployment-verification-receipt-rollback action +args:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -39,10 +38,9 @@ fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() 
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Receipt locator and rollback sidecars stay grouped under three entrypoints:",
-        "`just deployment-verification-point-receipt-locator` writes `deployment_verification_receipt_locator_pointer.json`.",
-        "`just deployment-verification-receipt-locator-manage <record-history|reconcile|record-reconciliation-history>` covers the receipt locator history and reconciliation artifacts.",
-        "`just deployment-verification-receipt-rollback-manage <rollback|record-locator-rollback-history|reconcile-rollback|record-rollback-reconciliation-history|supersede-rollback|reconcile-rollback-supersession|record-rollback-supersession-history|record-rollback-supersession-reconciliation-history>` covers the receipt locator rollback and rollback-supersession artifacts.",
+        "Receipt sidecars:",
+        "`just deployment-verification-receipt-locator <point|history|reconcile|reconciliation-history>`",
+        "`just deployment-verification-receipt-rollback <locator|locator-history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history>`",
     ] {
         assert!(
             workflows.contains(needle),
