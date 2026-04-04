@@ -37,7 +37,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
-        "Receipt sidecars: `just deployment-verification-receipt-history <record|reconciliation>`, `just deployment-verification-receipt-reconcile`, `just deployment-verification-receipt-transport <point|history|reconcile|reconciliation-history>`",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.",
     ] {
         assert!(
             workflows.contains(needle),

@@ -206,6 +206,9 @@ fn deployment_verification_family_stays_surface_complete() {
         "Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.",
         "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
         "Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff family entrypoints.",
         "`just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked",
     ] {
         assert!(
@@ -225,6 +228,18 @@ fn deployment_verification_family_stays_surface_complete() {
         assert!(
             reference.contains(needle),
             "reference index must keep the grouped deployment verification surface `{needle}`"
+        );
+    }
+
+    for forbidden in [
+        "Receipt sidecars:",
+        "Bundle sidecars:",
+        "Handoff sidecars:",
+        "locator|locator-history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history",
+    ] {
+        assert!(
+            !workflows.contains(forbidden),
+            "workflow reference must not regress to taxonomy-heavy deployment verification wording `{forbidden}`"
         );
     }
 }

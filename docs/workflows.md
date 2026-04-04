@@ -145,11 +145,11 @@ operator use case justifies promotion.
 - `just rollout-rollback` is a thin wrapper over `afterburner rollback current-pointer`; it restores the saved previous current pointer and writes `inference_current_pointer_rollback.json`.
 - Deployment verification stays grouped under three family maps:
 - Receipt family: `just deployment-verification-receipt` anchors `deployment_verification_receipt*.json`.
-- Receipt sidecars: `just deployment-verification-receipt-history <record|reconciliation>`, `just deployment-verification-receipt-reconcile`, `just deployment-verification-receipt-transport <point|history|reconcile|reconciliation-history>`, `just deployment-verification-receipt-locator <point|history|reconcile|reconciliation-history>`, and `just deployment-verification-receipt-rollback <locator|locator-history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history>` cover the receipt history, reconciliation, transport, locator, and rollback artifacts.
+- Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt family entrypoints.
 - Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.
-- Bundle sidecars: `just deployment-verification-bundle-history <record|reconciliation>`, `just deployment-verification-bundle-reconcile`, `just deployment-verification-bundle-transport <point|history|reconcile|reconciliation-history>`, `just deployment-verification-bundle-locator <point|history|reconcile|reconciliation-history>`, and `just deployment-verification-bundle-rollback <locator|locator-history|apply|history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history>` cover the bundle history, reconciliation, transport, locator, and rollback artifacts.
+- Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.
 - Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.
-- Handoff sidecars: `just deployment-verification-handoff-history <record|reconciliation>`, `just deployment-verification-handoff-reconcile`, and `just deployment-verification-handoff-transport <point|history|reconcile>` cover the handoff history, transport, and reconciliation artifacts.
+- Handoff support flows: history/reconciliation and transport stay grouped under the handoff family entrypoints.
 - `just workflow-surface-check-deployment-verification` keeps the exhaustive CLI, fixture, and recipe surface checked so this page can stay grouped instead of listing every artifact variant explicitly.
 
 ## Cleanup

@@ -36,7 +36,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Handoff family: `just deployment-verification-handoff` anchors `deployment_verification_evidence_handoff*.json`.",
-        "Handoff sidecars: `just deployment-verification-handoff-history <record|reconciliation>`, `just deployment-verification-handoff-reconcile`, and `just deployment-verification-handoff-transport <point|history|reconcile>` cover the handoff history, transport, and reconciliation artifacts.",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff family entrypoints.",
     ] {
         assert!(
             workflows.contains(needle),

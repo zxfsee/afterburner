@@ -40,9 +40,7 @@ fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Bundle sidecars:",
-        "`just deployment-verification-bundle-locator <point|history|reconcile|reconciliation-history>`",
-        "`just deployment-verification-bundle-rollback <locator|locator-history|apply|history|reconcile|reconciliation-history|supersede|supersession-history|supersession-reconcile|supersession-reconciliation-history>`",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.",
     ] {
         assert!(
             workflows.contains(needle),

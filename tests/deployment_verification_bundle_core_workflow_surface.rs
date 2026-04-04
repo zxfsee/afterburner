@@ -37,7 +37,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Bundle family: `just deployment-verification-bundle` anchors `deployment_verification_evidence_bundle*.json`.",
-        "Bundle sidecars: `just deployment-verification-bundle-history <record|reconciliation>`, `just deployment-verification-bundle-reconcile`, `just deployment-verification-bundle-transport <point|history|reconcile|reconciliation-history>`",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle family entrypoints.",
     ] {
         assert!(
             workflows.contains(needle),
