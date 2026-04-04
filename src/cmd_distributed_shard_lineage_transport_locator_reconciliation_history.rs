@@ -174,7 +174,7 @@ where
                 return Err(
                     DistributedShardLineageTransportLocatorReconciliationHistoryError::InvalidArg(
                         format!(
-                            "unknown argument for lineage record-transport-locator-reconciliation-history: {arg}\n{}",
+                            "unknown argument for lineage locator transport history: {arg}\n{}",
                             usage()
                         ),
                     ),
@@ -235,5 +235,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage record-transport-locator-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner lineage locator transport history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

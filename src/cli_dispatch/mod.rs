@@ -117,34 +117,9 @@ where
         return 2;
     };
     match subcommand.as_str() {
-        "bundle" => crate::cmd_distributed_shard_lineage_evidence_bundle::run(args),
-        "bundle-manage" => run_lineage_bundle_manage(args),
-        "evidence-bundle" => crate::cmd_distributed_shard_lineage_evidence_bundle::run(args),
-        "reconcile-evidence-bundle" => {
-            crate::cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(args)
-        }
-        "record-evidence-bundle-reconciliation-history" => {
-            crate::cmd_distributed_shard_lineage_evidence_bundle_reconciliation_history::run(args)
-        }
-        "handoff" => crate::cmd_distributed_shard_lineage_handoff::run(args),
-        "handoff-manage" => run_lineage_handoff_manage(args),
-        "record-handoff-history" => crate::cmd_distributed_shard_lineage_handoff_history::run(args),
-        "reconcile-handoff" => crate::cmd_distributed_shard_lineage_handoff_reconcile::run(args),
-        "record-handoff-reconciliation-history" => {
-            crate::cmd_distributed_shard_lineage_handoff_reconciliation_history::run(args)
-        }
-        "locator-manage" => run_lineage_locator_manage(args),
-        "record-locator-history" => crate::cmd_distributed_shard_lineage_locator_history::run(args),
-        "point-locator" => crate::cmd_distributed_shard_lineage_locator_pointer::run(args),
-        "reconcile-transport-locator" => {
-            crate::cmd_distributed_shard_lineage_transport_locator_reconcile::run(args)
-        }
-        "record-transport-locator-reconciliation-history" => {
-            crate::cmd_distributed_shard_lineage_transport_locator_reconciliation_history::run(args)
-        }
-        "point-transport-locator" => {
-            crate::cmd_distributed_shard_lineage_transport_locator::run(args)
-        }
+        "bundle" => run_lineage_bundle(args),
+        "handoff" => run_lineage_handoff(args),
+        "locator" => run_lineage_locator(args),
         "receipt" => crate::cmd_distributed_shard_lineage_receipt::run(args),
         _ => {
             eprintln!("unknown lineage subcommand: {subcommand}");
@@ -154,72 +129,126 @@ where
     }
 }
 
-fn run_lineage_bundle_manage<I>(mut args: I) -> i32
+fn run_lineage_bundle<I>(args: I) -> i32
 where
     I: Iterator<Item = String>,
 {
-    let Some(action) = args.next() else {
-        eprintln!("missing lineage bundle-manage action");
-        eprintln!("{}", usage());
-        return 2;
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return crate::cmd_distributed_shard_lineage_evidence_bundle::run(args.into_iter());
     };
+    if action.starts_with('-') {
+        return crate::cmd_distributed_shard_lineage_evidence_bundle::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
     match action.as_str() {
-        "reconcile" => crate::cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(args),
-        "record-reconciliation-history" => {
-            crate::cmd_distributed_shard_lineage_evidence_bundle_reconciliation_history::run(args)
+        "reconcile" => crate::cmd_distributed_shard_lineage_evidence_bundle_reconcile::run(rest),
+        "history" => {
+            crate::cmd_distributed_shard_lineage_evidence_bundle_reconciliation_history::run(rest)
         }
         _ => {
-            eprintln!("unknown lineage bundle-manage action: {action}");
+            eprintln!("unknown lineage bundle action: {action}");
             eprintln!("{}", usage());
             2
         }
     }
 }
 
-fn run_lineage_handoff_manage<I>(mut args: I) -> i32
+fn run_lineage_handoff<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return crate::cmd_distributed_shard_lineage_handoff::run(args.into_iter());
+    };
+    if action.starts_with('-') {
+        return crate::cmd_distributed_shard_lineage_handoff::run(args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "reconcile" => crate::cmd_distributed_shard_lineage_handoff_reconcile::run(rest),
+        "history" => run_lineage_handoff_history(rest),
+        _ => {
+            eprintln!("unknown lineage handoff action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_lineage_handoff_history<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
 {
     let Some(action) = args.next() else {
-        eprintln!("missing lineage handoff-manage action");
+        eprintln!("missing lineage handoff history action");
         eprintln!("{}", usage());
         return 2;
     };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
     match action.as_str() {
-        "reconcile" => crate::cmd_distributed_shard_lineage_handoff_reconcile::run(args),
-        "record-history" => crate::cmd_distributed_shard_lineage_handoff_history::run(args),
-        "record-reconciliation-history" => {
+        "record" => crate::cmd_distributed_shard_lineage_handoff_history::run(args),
+        "reconciliation" => {
             crate::cmd_distributed_shard_lineage_handoff_reconciliation_history::run(args)
         }
         _ => {
-            eprintln!("unknown lineage handoff-manage action: {action}");
+            eprintln!("unknown lineage handoff history action: {action}");
             eprintln!("{}", usage());
             2
         }
     }
 }
 
-fn run_lineage_locator_manage<I>(mut args: I) -> i32
+fn run_lineage_locator<I>(mut args: I) -> i32
 where
     I: Iterator<Item = String>,
 {
     let Some(action) = args.next() else {
-        eprintln!("missing lineage locator-manage action");
+        eprintln!("missing lineage locator action");
         eprintln!("{}", usage());
         return 2;
     };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
     match action.as_str() {
-        "point-transport" => crate::cmd_distributed_shard_lineage_transport_locator::run(args),
-        "reconcile-transport" => {
-            crate::cmd_distributed_shard_lineage_transport_locator_reconcile::run(args)
+        "transport" => run_lineage_locator_transport(args),
+        "point" => crate::cmd_distributed_shard_lineage_locator_pointer::run(args),
+        "history" => crate::cmd_distributed_shard_lineage_locator_history::run(args),
+        _ => {
+            eprintln!("unknown lineage locator action: {action}");
+            eprintln!("{}", usage());
+            2
         }
-        "record-transport-reconciliation-history" => {
+    }
+}
+
+fn run_lineage_locator_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing lineage locator transport action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_distributed_shard_lineage_transport_locator::run(args),
+        "reconcile" => crate::cmd_distributed_shard_lineage_transport_locator_reconcile::run(args),
+        "history" => {
             crate::cmd_distributed_shard_lineage_transport_locator_reconciliation_history::run(args)
         }
-        "point" => crate::cmd_distributed_shard_lineage_locator_pointer::run(args),
-        "record-history" => crate::cmd_distributed_shard_lineage_locator_history::run(args),
         _ => {
-            eprintln!("unknown lineage locator-manage action: {action}");
+            eprintln!("unknown lineage locator transport action: {action}");
             eprintln!("{}", usage());
             2
         }

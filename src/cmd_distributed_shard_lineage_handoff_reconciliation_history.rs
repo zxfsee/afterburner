@@ -161,7 +161,7 @@ where
             _ => {
                 return Err(
                     DistributedShardLineageHandoffReconciliationHistoryError::InvalidArg(format!(
-                        "unknown argument for lineage record-handoff-reconciliation-history: {arg}\n{}",
+                        "unknown argument for lineage handoff history reconciliation: {arg}\n{}",
                         usage()
                     )),
                 );
@@ -215,5 +215,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage record-handoff-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner lineage handoff history reconciliation --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

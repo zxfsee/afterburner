@@ -168,7 +168,7 @@ where
             _ => {
                 return Err(DistributedShardLineageHandoffHistoryError::InvalidArg(
                     format!(
-                        "unknown argument for lineage record-handoff-history: {arg}\n{}",
+                        "unknown argument for lineage handoff history record: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -228,5 +228,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage record-handoff-history --handoff PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner lineage handoff history record --handoff PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

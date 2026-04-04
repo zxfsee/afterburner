@@ -285,17 +285,26 @@ distributed-shard-lineage-receipt metadata shard_id source source_revision check
 distributed-shard-lineage-bundle receipt:
     cargo run --locked --bin afterburner -- lineage bundle --receipt {{ receipt }} --out artifacts/train/distributed_shard_lineage_evidence_bundle.json
 
-distributed-shard-lineage-bundle-manage action +args:
-    cargo run --locked --bin afterburner -- lineage bundle-manage {{ action }} {{ args }}
+distributed-shard-lineage-bundle-reconcile receipt bundle:
+    cargo run --locked --bin afterburner -- lineage bundle reconcile --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation.json
+
+distributed-shard-lineage-bundle-history reconciliation event recorded_at_unix_ms:
+    cargo run --locked --bin afterburner -- lineage bundle history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_bundle_reconciliation_history.json
 
 distributed-shard-lineage-handoff bundle:
     cargo run --locked --bin afterburner -- lineage handoff --bundle {{ bundle }} --out artifacts/train/distributed_shard_lineage_evidence_handoff.json
 
-distributed-shard-lineage-handoff-manage action +args:
-    cargo run --locked --bin afterburner -- lineage handoff-manage {{ action }} {{ args }}
+distributed-shard-lineage-handoff-reconcile bundle handoff:
+    cargo run --locked --bin afterburner -- lineage handoff reconcile --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_reconciliation.json
 
-distributed-shard-lineage-locator-manage action +args:
-    cargo run --locked --bin afterburner -- lineage locator-manage {{ action }} {{ args }}
+distributed-shard-lineage-handoff-history action +args:
+    cargo run --locked --bin afterburner -- lineage handoff history {{ action }} {{ args }}
+
+distributed-shard-lineage-locator action +args:
+    cargo run --locked --bin afterburner -- lineage locator {{ action }} {{ args }}
+
+distributed-shard-lineage-locator-transport action +args:
+    cargo run --locked --bin afterburner -- lineage locator transport {{ action }} {{ args }}
 
 pretraining-source-approval source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- source approval receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }}

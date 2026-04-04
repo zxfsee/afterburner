@@ -168,7 +168,7 @@ where
             _ => {
                 return Err(
                     DistributedShardLineageTransportLocatorReconcileError::InvalidArg(format!(
-                        "unknown argument for lineage reconcile-transport-locator: {arg}\n{}",
+                        "unknown argument for lineage locator transport reconcile: {arg}\n{}",
                         usage()
                     )),
                 );
@@ -220,5 +220,5 @@ afterburner::define_command_input_json_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage reconcile-transport-locator --handoff PATH --locator PATH [--out PATH]"
+    "usage: afterburner lineage locator transport reconcile --handoff PATH --locator PATH [--out PATH]"
 }

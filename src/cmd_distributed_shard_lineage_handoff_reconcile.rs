@@ -170,7 +170,7 @@ where
             _ => {
                 return Err(DistributedShardLineageHandoffReconcileError::InvalidArg(
                     format!(
-                        "unknown argument for lineage reconcile-handoff: {arg}\n{}",
+                        "unknown argument for lineage handoff reconcile: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -220,5 +220,5 @@ where
 afterburner::define_command_input_json_helpers!(DistributedShardLineageHandoffReconcileError);
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage reconcile-handoff --bundle PATH --handoff PATH [--out PATH]"
+    "usage: afterburner lineage handoff reconcile --bundle PATH --handoff PATH [--out PATH]"
 }

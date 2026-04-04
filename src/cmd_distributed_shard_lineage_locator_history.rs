@@ -167,7 +167,7 @@ where
             _ => {
                 return Err(DistributedShardLineageLocatorHistoryError::InvalidArg(
                     format!(
-                        "unknown argument for lineage record-locator-history: {arg}\n{}",
+                        "unknown argument for lineage locator history: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -227,5 +227,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage record-locator-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner lineage locator history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

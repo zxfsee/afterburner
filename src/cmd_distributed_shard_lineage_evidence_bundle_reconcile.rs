@@ -180,7 +180,7 @@ where
             _ => {
                 return Err(
                     DistributedShardLineageEvidenceBundleReconcileError::InvalidArg(format!(
-                        "unknown argument for lineage reconcile-evidence-bundle: {arg}\n{}",
+                        "unknown argument for lineage bundle reconcile: {arg}\n{}",
                         usage()
                     )),
                 );
@@ -232,5 +232,5 @@ afterburner::define_command_input_json_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage reconcile-evidence-bundle --receipt PATH --bundle PATH [--out PATH]"
+    "usage: afterburner lineage bundle reconcile --receipt PATH --bundle PATH [--out PATH]"
 }

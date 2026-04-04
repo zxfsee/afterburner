@@ -57,8 +57,8 @@ fn distributed_shard_lineage_handoff_reconciliation_schema_and_workflow_are_expl
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-handoff-manage action +args:"),
-        "justfile must expose the grouped distributed-shard-lineage-handoff-manage workflow"
+        justfile.contains("distributed-shard-lineage-handoff-reconcile bundle handoff:"),
+        "justfile must expose the distributed-shard-lineage-handoff-reconcile workflow"
     );
 }
 
@@ -106,7 +106,7 @@ fn distributed_shard_lineage_handoff_reconciliation_writes_artifact_and_event() 
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("handoff-manage")
+        .arg("handoff")
         .arg("reconcile")
         .arg("--bundle")
         .arg(&bundle)

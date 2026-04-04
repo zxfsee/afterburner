@@ -169,7 +169,7 @@ where
                 return Err(
                     DistributedShardLineageEvidenceBundleReconciliationHistoryError::InvalidArg(
                         format!(
-                            "unknown argument for lineage record-evidence-bundle-reconciliation-history: {arg}\n{}",
+                            "unknown argument for lineage bundle history: {arg}\n{}",
                             usage()
                         ),
                     ),
@@ -230,5 +230,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage record-evidence-bundle-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner lineage bundle history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

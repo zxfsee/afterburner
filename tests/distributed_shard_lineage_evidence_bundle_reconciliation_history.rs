@@ -61,8 +61,10 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_history_schema_and_w
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-bundle-manage action +args:"),
-        "justfile must expose the grouped distributed-shard-lineage-bundle-manage workflow"
+        justfile.contains(
+            "distributed-shard-lineage-bundle-history reconciliation event recorded_at_unix_ms:"
+        ),
+        "justfile must expose the distributed-shard-lineage-bundle-history workflow"
     );
 }
 
@@ -118,8 +120,8 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_history_writes_histo
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("bundle-manage")
-        .arg("record-reconciliation-history")
+        .arg("bundle")
+        .arg("history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

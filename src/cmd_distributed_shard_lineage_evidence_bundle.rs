@@ -211,5 +211,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage evidence-bundle --receipt PATH [--out PATH]"
+    "usage: afterburner lineage bundle --receipt PATH [--out PATH]"
 }

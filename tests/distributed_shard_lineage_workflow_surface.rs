@@ -12,10 +12,13 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
     for recipe in [
         "distributed-shard-lineage-receipt metadata shard_id source source_revision checkpoint_group checkpoint_root checked_at_unix_ms:",
         "distributed-shard-lineage-bundle receipt:",
-        "distributed-shard-lineage-bundle-manage action +args:",
+        "distributed-shard-lineage-bundle-reconcile receipt bundle:",
+        "distributed-shard-lineage-bundle-history reconciliation event recorded_at_unix_ms:",
         "distributed-shard-lineage-handoff bundle:",
-        "distributed-shard-lineage-handoff-manage action +args:",
-        "distributed-shard-lineage-locator-manage action +args:",
+        "distributed-shard-lineage-handoff-reconcile bundle handoff:",
+        "distributed-shard-lineage-handoff-history action +args:",
+        "distributed-shard-lineage-locator action +args:",
+        "distributed-shard-lineage-locator-transport action +args:",
         "workflow-surface-check-distributed-shard-lineage:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -33,6 +36,9 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
         "distributed-shard-lineage-record-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "distributed-shard-lineage-point-locator locator:",
         "distributed-shard-lineage-record-locator-history pointer event recorded_at_unix_ms:",
+        "distributed-shard-lineage-bundle-manage action +args:",
+        "distributed-shard-lineage-handoff-manage action +args:",
+        "distributed-shard-lineage-locator-manage action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),
@@ -42,13 +48,16 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Distributed shard lineage stays grouped under six workflow entrypoints:",
+        "Distributed shard lineage stays grouped under eight workflow entrypoints:",
         "`just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.",
         "`just distributed-shard-lineage-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.",
-        "`just distributed-shard-lineage-bundle-manage <reconcile|record-reconciliation-history>`",
+        "`just distributed-shard-lineage-bundle-reconcile` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.",
+        "`just distributed-shard-lineage-bundle-history` writes `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.",
         "`just distributed-shard-lineage-handoff` writes `distributed_shard_lineage_evidence_handoff.json`.",
-        "`just distributed-shard-lineage-handoff-manage <reconcile|record-history|record-reconciliation-history>`",
-        "`just distributed-shard-lineage-locator-manage <point-transport|reconcile-transport|record-transport-reconciliation-history|point|record-history>`",
+        "`just distributed-shard-lineage-handoff-reconcile` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.",
+        "`just distributed-shard-lineage-handoff-history <record|reconciliation>` covers `distributed_shard_lineage_evidence_handoff_history.json` and `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.",
+        "`just distributed-shard-lineage-locator <point|history>` covers `distributed_shard_lineage_locator_pointer.json` and `distributed_shard_lineage_locator_history.json`.",
+        "`just distributed-shard-lineage-locator-transport <point|reconcile|history>` covers `distributed_shard_lineage_transport_locator.json`, `distributed_shard_lineage_transport_locator_reconciliation.json`, and `distributed_shard_lineage_transport_locator_reconciliation_history.json`.",
         "`just workflow-surface-check-distributed-shard-lineage` keeps the grouped CLI and recipe surface checked.",
     ] {
         assert!(
@@ -57,16 +66,9 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
         );
     }
     for forbidden in [
-        "just distributed-shard-lineage-bundle-manage reconcile",
-        "just distributed-shard-lineage-bundle-manage record-reconciliation-history",
-        "just distributed-shard-lineage-handoff-manage reconcile",
-        "just distributed-shard-lineage-handoff-manage record-history",
-        "just distributed-shard-lineage-handoff-manage record-reconciliation-history",
-        "just distributed-shard-lineage-locator-manage point-transport",
-        "just distributed-shard-lineage-locator-manage reconcile-transport",
-        "just distributed-shard-lineage-locator-manage record-transport-reconciliation-history",
-        "just distributed-shard-lineage-locator-manage point",
-        "just distributed-shard-lineage-locator-manage record-history",
+        "just distributed-shard-lineage-bundle-manage",
+        "just distributed-shard-lineage-handoff-manage",
+        "just distributed-shard-lineage-locator-manage",
     ] {
         assert!(
             !workflows.contains(forbidden),

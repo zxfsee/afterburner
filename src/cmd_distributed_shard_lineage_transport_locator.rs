@@ -127,7 +127,7 @@ where
             _ => {
                 return Err(DistributedShardLineageTransportLocatorError::InvalidArg(
                     format!(
-                        "unknown argument for lineage point-transport-locator: {arg}\n{}",
+                        "unknown argument for lineage locator transport point: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -174,5 +174,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage point-transport-locator --handoff PATH [--out PATH]"
+    "usage: afterburner lineage locator transport point --handoff PATH [--out PATH]"
 }

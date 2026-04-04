@@ -57,8 +57,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_schema_and_workflo
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
-        "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
+        justfile.contains("distributed-shard-lineage-locator-transport action +args:"),
+        "justfile must expose the grouped distributed-shard-lineage-locator-transport workflow"
     );
 }
 
@@ -102,8 +102,9 @@ fn distributed_shard_lineage_transport_locator_reconciliation_writes_artifact_an
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("lineage")
-        .arg("locator-manage")
-        .arg("reconcile-transport")
+        .arg("locator")
+        .arg("transport")
+        .arg("reconcile")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--locator")
