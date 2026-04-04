@@ -58,8 +58,8 @@ fn pretraining_source_provenance_evidence_bundle_schema_and_workflow_are_explici
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("pretraining-source-provenance-evidence-bundle provenance_receipt:"),
-        "justfile must expose the pretraining-source-provenance-evidence-bundle workflow"
+        justfile.contains("pretraining-source-provenance action +args:"),
+        "justfile must expose the grouped pretraining-source-provenance workflow"
     );
 
     let readme = repo_file("docs/workflows.md");
@@ -68,8 +68,8 @@ fn pretraining_source_provenance_evidence_bundle_schema_and_workflow_are_explici
         "workflow reference must mention the pretraining source provenance evidence bundle artifact"
     );
     assert!(
-        readme.contains("just pretraining-source-provenance-evidence-bundle"),
-        "workflow reference must mention the pretraining source provenance evidence bundle workflow"
+        readme.contains("just pretraining-source-provenance <receipt|bundle>"),
+        "workflow reference must mention the grouped pretraining source provenance workflow"
     );
 }
 
@@ -114,7 +114,8 @@ fn pretraining_source_provenance_evidence_bundle_writes_bundle_and_event() {
         .join("pretraining_source_provenance_evidence_bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("source")
-        .arg("provenance-evidence-bundle")
+        .arg("provenance")
+        .arg("bundle")
         .arg("--provenance-receipt")
         .arg(&provenance_receipt)
         .arg("--out")

@@ -22,7 +22,7 @@ The minimum receipt contract should include:
 - `approved_at_unix_ms`
 
 Current stance: the repo now materializes this receipt through
-`afterburner source approval-receipt`.
+`afterburner source approval receipt`.
 
 ## Consequences
 

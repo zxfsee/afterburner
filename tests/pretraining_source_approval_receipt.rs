@@ -64,8 +64,8 @@ fn pretraining_source_approval_receipt_contract_is_documented() {
         "workflow reference must mention the pretraining source approval receipt artifact"
     );
     assert!(
-        readme.contains("just pretraining-source-approval-receipt"),
-        "workflow reference must mention the pretraining source approval receipt workflow"
+        readme.contains("just pretraining-source-approval"),
+        "workflow reference must mention the grouped pretraining source approval workflow"
     );
 }
 
@@ -76,7 +76,8 @@ fn pretraining_source_approval_receipt_writes_receipt_and_event() {
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("source")
-        .arg("approval-receipt")
+        .arg("approval")
+        .arg("receipt")
         .arg("--source")
         .arg("fineweb-edu/slice")
         .arg("--source-revision")

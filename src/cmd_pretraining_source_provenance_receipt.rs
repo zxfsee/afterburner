@@ -151,7 +151,7 @@ where
             _ => {
                 return Err(PretrainingSourceProvenanceReceiptError::InvalidArg(
                     format!(
-                        "unknown argument for source provenance-receipt: {arg}\n{}",
+                        "unknown argument for source provenance receipt: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -226,5 +226,5 @@ fn require_non_empty(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner source provenance-receipt --approval-receipt PATH --registry-entry-path PATH --upstream-locator LOCATOR --reviewed-metadata-sha256 SHA256 [--out PATH]"
+    "usage: afterburner source provenance receipt --approval-receipt PATH --registry-entry-path PATH --upstream-locator LOCATOR --reviewed-metadata-sha256 SHA256 [--out PATH]"
 }

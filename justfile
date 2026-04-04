@@ -297,14 +297,11 @@ distributed-shard-lineage-handoff-manage action +args:
 distributed-shard-lineage-locator-manage action +args:
     cargo run --locked --bin afterburner -- lineage locator-manage {{ action }} {{ args }}
 
-pretraining-source-approval-receipt source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
-    cargo run --locked --bin afterburner -- source approval-receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }} --out artifacts/data/pretraining_source_approval_receipt.json
+pretraining-source-approval source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
+    cargo run --locked --bin afterburner -- source approval receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }}
 
-pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:
-    cargo run --locked --bin afterburner -- source provenance-receipt --approval-receipt {{ approval_receipt }} --registry-entry-path {{ registry_entry_path }} --upstream-locator {{ upstream_locator }} --reviewed-metadata-sha256 {{ reviewed_metadata_sha256 }} --out artifacts/data/pretraining_source_provenance_receipt.json
-
-pretraining-source-provenance-evidence-bundle provenance_receipt:
-    cargo run --locked --bin afterburner -- source provenance-evidence-bundle --provenance-receipt {{ provenance_receipt }} --out artifacts/data/pretraining_source_provenance_evidence_bundle.json
+pretraining-source-provenance action +args:
+    cargo run --locked --bin afterburner -- source provenance {{ action }} {{ args }}
 
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:
@@ -475,3 +472,6 @@ workflow-surface-check-scheduler-heartbeat:
 
 workflow-surface-check-distributed-shard-lineage:
     cargo nextest run --locked --test distributed_shard_lineage_workflow_surface
+
+workflow-surface-check-pretraining-source:
+    cargo nextest run --locked --test pretraining_source_workflow_surface

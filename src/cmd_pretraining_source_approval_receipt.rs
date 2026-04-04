@@ -163,7 +163,7 @@ where
             }
             _ => {
                 return Err(PretrainingSourceApprovalReceiptError::InvalidArg(format!(
-                    "unknown argument for source approval-receipt: {arg}\n{}",
+                    "unknown argument for source approval receipt: {arg}\n{}",
                     usage()
                 )));
             }
@@ -225,5 +225,5 @@ fn require_non_empty(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner source approval-receipt --source NAME --source-revision REV --approval-status STATUS --approved-by NAME --approval-ticket TICKET --approved-at-unix-ms N [--out PATH]"
+    "usage: afterburner source approval receipt --source NAME --source-revision REV --approval-status STATUS --approved-by NAME --approval-ticket TICKET --approved-at-unix-ms N [--out PATH]"
 }

@@ -112,9 +112,11 @@ unless they graduate into a clear operator intent.
   - `inference_current_pointer_promotion.json`
   - `inference_current_pointer_rollback.json`
 - Source and lineage:
+  - Pretraining source family groups:
   - `pretraining_source_approval_receipt.json`
   - `pretraining_source_provenance_receipt.json`
   - `pretraining_source_provenance_evidence_bundle.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-pretraining-source` for mechanical coverage.
   - Distributed shard lineage family groups:
   - `distributed_shard_lineage_receipt.json`
   - `distributed_shard_lineage_evidence_bundle.json`
@@ -144,7 +146,7 @@ Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `work
   inspectable without guessing from scheduler placement.
 - Distributed runtime: workload-driven DP-first growth; explicit `world_size`/rank/`device_group` topology; `worker_parallelism` is only a local throughput knob; `distributed_runtime_profile.json`, `distributed_runtime_benchmark_run.json`, and the distributed runtime layout feasibility artifact stay explicit.
 - Scheduler/control plane: the distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when; the scheduler lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`; lease-owned resources and rank assignments stay explicit; supported preemption is cooperative checkpoint/resume; scheduler policy stays conservative with priority and queueing first, plus constrained GPU colocation for known low-saturation workloads.
-- Operator surfaces stay grouped under `afterburner deploy <subcommand>`, `afterburner verify <subcommand>`, `afterburner rollback <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, and `afterburner profile <subcommand>`.
+- Operator surfaces stay grouped under `afterburner deploy <subcommand>`, `afterburner verify <subcommand>`, `afterburner rollback <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, `afterburner profile <subcommand>`, and `afterburner source <subcommand>`.
 - Backend/runtime evolution stays measured: `backend_performance_profile.json`, `CubeCL`, `CubeK`, `cutile-rs`, Burn 0.20.1, `.mpk` to `.bpk`, later NVIDIA-specific backend-extension candidate, explicit Metal backend option, `BACKEND=cpu|wgpu|metal`, `process-compose-flake`, and local process-compose fit.
 - The `.mpk` to `.bpk` cutover now has one explicit inventory artifact, `burn_bpk_migration_surface_inventory.json`, so the migration can proceed as one tracked contract change when Burn ships a newer stable line.
 - Burn stable release availability gate: ADR-033 records the checked latest stable Burn line and whether a newer stable release beyond `0.20.1` exists, and `burn_stable_release_availability` keeps that blocker explicit in-repo.

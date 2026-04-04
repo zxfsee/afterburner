@@ -19,7 +19,7 @@ through at least:
 - `reviewed_metadata_sha256`
 
 Current stance: the repo now materializes this provenance receipt through
-`afterburner source provenance-receipt`.
+`afterburner source provenance receipt`.
 
 ## Consequences
 

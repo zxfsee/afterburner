@@ -184,10 +184,11 @@ operator use case justifies promotion.
 
 ## Source and lineage
 
-- `just pretraining-source-approval-receipt` writes `pretraining_source_approval_receipt.json`.
-- `just pretraining-source-provenance-receipt` writes `pretraining_source_provenance_receipt.json`.
-- That workflow is the source provenance receipt layer over the source approval receipt and reviewed source metadata.
-- `just pretraining-source-provenance-evidence-bundle` writes `pretraining_source_provenance_evidence_bundle.json`.
+- Pretraining source stays grouped under two workflow entrypoints:
+- `just pretraining-source-approval` writes `pretraining_source_approval_receipt.json`.
+- `just pretraining-source-provenance <receipt|bundle>` covers `pretraining_source_provenance_receipt.json` and `pretraining_source_provenance_evidence_bundle.json`.
+- The `source provenance receipt` captures reviewed source metadata over one approval receipt; `bundle` packages the approval and provenance evidence together.
+- `just workflow-surface-check-pretraining-source` keeps the grouped CLI and recipe surface checked.
 - Distributed shard lineage stays grouped under six workflow entrypoints:
 - `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.
 - `just distributed-shard-lineage-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.

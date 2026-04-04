@@ -147,7 +147,7 @@ where
             _ => {
                 return Err(PretrainingSourceProvenanceEvidenceBundleError::InvalidArg(
                     format!(
-                        "unknown argument for source provenance-evidence-bundle: {arg}\n{}",
+                        "unknown argument for source provenance bundle: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -189,7 +189,7 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner source provenance-evidence-bundle --provenance-receipt PATH [--out PATH]"
+    "usage: afterburner source provenance bundle --provenance-receipt PATH [--out PATH]"
 }
 
 afterburner::define_command_input_json_helpers!(PretrainingSourceProvenanceEvidenceBundleError);

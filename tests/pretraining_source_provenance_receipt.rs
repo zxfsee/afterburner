@@ -61,8 +61,8 @@ fn pretraining_source_provenance_receipt_contract_is_documented() {
         "workflow reference must mention the pretraining source provenance receipt contract"
     );
     assert!(
-        readme.contains("just pretraining-source-provenance-receipt"),
-        "workflow reference must mention the pretraining source provenance receipt workflow"
+        readme.contains("just pretraining-source-provenance <receipt|bundle>"),
+        "workflow reference must mention the grouped pretraining source provenance workflow"
     );
 }
 
@@ -89,7 +89,8 @@ fn pretraining_source_provenance_receipt_writes_receipt_and_event() {
         .join("pretraining_source_provenance_receipt.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("source")
-        .arg("provenance-receipt")
+        .arg("provenance")
+        .arg("receipt")
         .arg("--approval-receipt")
         .arg(&approval_receipt)
         .arg("--registry-entry-path")

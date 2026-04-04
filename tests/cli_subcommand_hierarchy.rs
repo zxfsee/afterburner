@@ -32,6 +32,10 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         "usage must advertise the grouped profile subcommand"
     );
     assert!(
+        usage.contains("source <"),
+        "usage must advertise the grouped source subcommand"
+    );
+    assert!(
         usage.contains("deploy <"),
         "usage must advertise the grouped deploy subcommand"
     );
@@ -65,6 +69,10 @@ fn cli_usage_and_docs_prefer_grouped_subcommands() {
         readme.contains("afterburner rollback <subcommand>"),
         "reference index must mention the grouped rollback command family"
     );
+    assert!(
+        readme.contains("afterburner source <subcommand>"),
+        "reference index must mention the grouped source command family"
+    );
 
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
@@ -82,6 +90,7 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
         ("drift", "receipt"),
         ("cleanup", "inventory"),
         ("profile", "environment-snapshot"),
+        ("source", "approval"),
     ];
     for (group, subcommand) in help_cases {
         let mut cmd = cargo_bin_cmd!("afterburner");
@@ -98,6 +107,8 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
         ("verify", "handoff", "reconcile"),
         ("rollback", "verification-receipt", "supersession-reconcile"),
         ("rollback", "verification-bundle", "apply"),
+        ("source", "approval", "receipt"),
+        ("source", "provenance", "bundle"),
     ];
     for (group, family, action) in nested_help_cases {
         let mut cmd = cargo_bin_cmd!("afterburner");

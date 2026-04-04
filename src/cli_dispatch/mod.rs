@@ -236,13 +236,61 @@ where
         return 2;
     };
     match subcommand.as_str() {
-        "approval-receipt" => crate::cmd_pretraining_source_approval_receipt::run(args),
-        "provenance-evidence-bundle" => {
-            crate::cmd_pretraining_source_provenance_evidence_bundle::run(args)
+        "--help" | "-h" | "help" => {
+            println!("{}", usage());
+            0
         }
-        "provenance-receipt" => crate::cmd_pretraining_source_provenance_receipt::run(args),
+        "approval" => run_source_approval(args),
+        "provenance" => run_source_provenance(args),
         _ => {
             eprintln!("unknown source subcommand: {subcommand}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_source_approval<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing source approval action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match action.as_str() {
+        "--help" | "-h" | "help" => {
+            println!("{}", usage());
+            0
+        }
+        "receipt" => crate::cmd_pretraining_source_approval_receipt::run(args),
+        _ => {
+            eprintln!("unknown source approval action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_source_provenance<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing source provenance action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    match action.as_str() {
+        "--help" | "-h" | "help" => {
+            println!("{}", usage());
+            0
+        }
+        "bundle" => crate::cmd_pretraining_source_provenance_evidence_bundle::run(args),
+        "receipt" => crate::cmd_pretraining_source_provenance_receipt::run(args),
+        _ => {
+            eprintln!("unknown source provenance action: {action}");
             eprintln!("{}", usage());
             2
         }

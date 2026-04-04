@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Pretraining source grouped entrypoint extraction [Data Infra, Runtime Infra]
-  - Goal: Collapse the pretraining source provenance noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the source family stops carrying its own hand-expanded command registry in `justfile`.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Grouped pretraining-source docs surface consolidation [Data Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped pretraining source entrypoints while moving exact source artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
@@ -55,6 +48,13 @@ header = """# Changelog
   - Contracts: `artifact`, `cli`, `event`
   - Scope: `Cargo.toml`, `src/`, `fixtures/`, `tests/`, `README.md`, `ARCHITECTURE.md`, `docs/adr/`
   - Blocked-by: Newer stable Burn release after `0.20.1`; see ADR-033.
+
+- Grouped drift docs surface consolidation [Experimentation/Eval Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 ## [Trunk]
 """
