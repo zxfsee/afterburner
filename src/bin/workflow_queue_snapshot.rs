@@ -6,6 +6,7 @@ use sha2::{Digest, Sha256};
 
 const TODO_START: &str = "## TODO";
 const TODO_END: &str = "## [Trunk]";
+const BACKLOG_ITEMS_START: &str = "## Items";
 const SNAPSHOT_PREFIX: &str = "<!-- queue-snapshot:";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -68,9 +69,11 @@ enum Command {
     },
     CheckTopRunnable {
         cargo_toml: PathBuf,
+        backlog: PathBuf,
     },
     PromoteNextRunnable {
         cargo_toml: PathBuf,
+        backlog: PathBuf,
     },
 }
 
@@ -127,8 +130,14 @@ fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             repo_root,
         } => check_completion_boundary(cargo_toml, repo_root),
-        Command::CheckTopRunnable { cargo_toml } => check_top_runnable(cargo_toml),
-        Command::PromoteNextRunnable { cargo_toml } => promote_next_runnable(cargo_toml),
+        Command::CheckTopRunnable {
+            cargo_toml,
+            backlog,
+        } => check_top_runnable(cargo_toml, backlog),
+        Command::PromoteNextRunnable {
+            cargo_toml,
+            backlog,
+        } => promote_next_runnable(cargo_toml, backlog),
     }
 }
 
@@ -236,7 +245,7 @@ fn check_completion_boundary(
     Ok(())
 }
 
-fn check_top_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> {
+fn check_top_runnable(cargo_toml: PathBuf, backlog: PathBuf) -> Result<(), QueueSnapshotError> {
     let cargo_text = fs::read_to_string(&cargo_toml)?;
     let items = todo_items(&cargo_text)?;
     let Some(top) = items.first() else {
@@ -255,21 +264,24 @@ fn check_top_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> {
             "top active TODO `{}` is blocked by `{}`\nnext runnable item: `{}`\nrun `just queue-promote-next-runnable` to repair the active queue order",
             top.title, blocked_by, next
         ))),
-        None => Err(QueueSnapshotError::Parse(format!(
-            "top active TODO `{}` is blocked by `{}` and no runnable item exists in the active queue\nrepair the queue order or promote a runnable backlog item before execution",
-            top.title, blocked_by
-        ))),
+        None => match first_runnable_backlog_item(&backlog)? {
+            Some(next) => Err(QueueSnapshotError::Parse(format!(
+                "top active TODO `{}` is blocked by `{}` and no runnable item exists in the active queue\nnext runnable backlog item: `{}`\nrun `just queue-promote-next-runnable` to promote it into the active queue",
+                top.title, blocked_by, next.title
+            ))),
+            None => Err(QueueSnapshotError::Parse(format!(
+                "top active TODO `{}` is blocked by `{}` and no runnable item exists in the active queue or backlog\nrepair the queue order or unblock a backlog item before execution",
+                top.title, blocked_by
+            ))),
+        },
     }
 }
 
-fn promote_next_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> {
+fn promote_next_runnable(cargo_toml: PathBuf, backlog: PathBuf) -> Result<(), QueueSnapshotError> {
     let cargo_text = fs::read_to_string(&cargo_toml)?;
     let (prefix, suffix, mut items) = split_todo_items(&cargo_text)?;
     let Some(first_runnable) = items.iter().position(|item| item.blocked_by.is_none()) else {
-        return Err(QueueSnapshotError::Parse(
-            "cannot promote next runnable item because no runnable TODO exists in the active queue"
-                .into(),
-        ));
+        return promote_from_backlog(cargo_toml, backlog, prefix, suffix, items);
     };
     if first_runnable == 0 {
         return Ok(());
@@ -278,6 +290,42 @@ fn promote_next_runnable(cargo_toml: PathBuf) -> Result<(), QueueSnapshotError> 
     items.insert(0, promoted);
     let rebuilt = rebuild_todo_block(&prefix, &items, &suffix);
     fs::write(&cargo_toml, rebuilt)?;
+    Ok(())
+}
+
+fn promote_from_backlog(
+    cargo_toml: PathBuf,
+    backlog: PathBuf,
+    prefix: String,
+    suffix: String,
+    mut active_items: Vec<TodoItem>,
+) -> Result<(), QueueSnapshotError> {
+    let Some(backlog_text) = read_optional_file(&backlog)? else {
+        return Err(QueueSnapshotError::Parse(
+            "cannot promote next runnable item because no runnable TODO exists in the active queue or backlog"
+                .into(),
+        ));
+    };
+    let (backlog_prefix, backlog_suffix, mut backlog_items) = split_backlog_items(&backlog_text)?;
+    let Some(first_runnable_backlog) = backlog_items
+        .iter()
+        .position(|item| item.blocked_by.is_none())
+    else {
+        return Err(QueueSnapshotError::Parse(
+            "cannot promote next runnable item because no runnable TODO exists in the active queue or backlog"
+                .into(),
+        ));
+    };
+    let promoted = backlog_items.remove(first_runnable_backlog);
+    active_items.insert(0, promoted);
+    fs::write(
+        &cargo_toml,
+        rebuild_todo_block(&prefix, &active_items, &suffix),
+    )?;
+    fs::write(
+        &backlog,
+        rebuild_item_block(&backlog_prefix, &backlog_items, &backlog_suffix),
+    )?;
     Ok(())
 }
 
@@ -370,12 +418,17 @@ where
 {
     let mut args = args.peekable();
     let mut cargo_toml = PathBuf::from("Cargo.toml");
+    let mut backlog = PathBuf::from("docs/backlog.md");
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            "--backlog" => backlog = PathBuf::from(parse_value(&mut args, "--backlog")?),
             _ if arg.starts_with("--cargo-toml=") => {
                 cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
+            }
+            _ if arg.starts_with("--backlog=") => {
+                backlog = PathBuf::from(arg.trim_start_matches("--backlog=").to_string())
             }
             _ => {
                 return Err(QueueSnapshotError::InvalidArg(format!(
@@ -387,9 +440,15 @@ where
     }
 
     Ok(if promote {
-        Command::PromoteNextRunnable { cargo_toml }
+        Command::PromoteNextRunnable {
+            cargo_toml,
+            backlog,
+        }
     } else {
-        Command::CheckTopRunnable { cargo_toml }
+        Command::CheckTopRunnable {
+            cargo_toml,
+            backlog,
+        }
     })
 }
 
@@ -578,6 +637,19 @@ fn split_todo_items(
     Ok((prefix, suffix, parse_todo_items_section(&section)?))
 }
 
+fn split_backlog_items(
+    backlog_text: &str,
+) -> Result<(String, String, Vec<TodoItem>), QueueSnapshotError> {
+    let start = backlog_text.find(BACKLOG_ITEMS_START).ok_or_else(|| {
+        QueueSnapshotError::Parse("docs/backlog.md missing `## Items` section".into())
+    })?;
+    let prefix_end = start + BACKLOG_ITEMS_START.len();
+    let prefix = backlog_text[..prefix_end].to_string();
+    let section = backlog_text[prefix_end..].to_string();
+    let items = parse_item_section(&section, false)?;
+    Ok((prefix, String::new(), items))
+}
+
 fn todo_items(cargo_toml: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
     let section = cargo_toml
         .split(TODO_START)
@@ -586,10 +658,17 @@ fn todo_items(cargo_toml: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
         .ok_or_else(|| {
             QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
         })?;
-    parse_todo_items_section(section)
+    parse_item_section(section, true)
 }
 
 fn parse_todo_items_section(section: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
+    parse_item_section(section, true)
+}
+
+fn parse_item_section(
+    section: &str,
+    require_non_empty: bool,
+) -> Result<Vec<TodoItem>, QueueSnapshotError> {
     let mut items = Vec::new();
     let mut current = Vec::<String>::new();
 
@@ -608,7 +687,7 @@ fn parse_todo_items_section(section: &str) -> Result<Vec<TodoItem>, QueueSnapsho
         items.push(parse_todo_item(&current)?);
     }
 
-    if items.is_empty() {
+    if require_non_empty && items.is_empty() {
         return Err(QueueSnapshotError::Parse(
             "Cargo.toml TODO section does not contain any item".into(),
         ));
@@ -636,6 +715,10 @@ fn parse_todo_item(lines: &[String]) -> Result<TodoItem, QueueSnapshotError> {
 }
 
 fn rebuild_todo_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String {
+    rebuild_item_block(prefix, items, suffix)
+}
+
+fn rebuild_item_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String {
     let mut out = String::new();
     out.push_str(prefix);
     out.push('\n');
@@ -654,6 +737,22 @@ fn rebuild_todo_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String 
     }
     out.push_str(suffix);
     out
+}
+
+fn read_optional_file(path: &PathBuf) -> Result<Option<String>, QueueSnapshotError> {
+    match fs::read_to_string(path) {
+        Ok(text) => Ok(Some(text)),
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(err) => Err(QueueSnapshotError::Io(err)),
+    }
+}
+
+fn first_runnable_backlog_item(backlog: &PathBuf) -> Result<Option<TodoItem>, QueueSnapshotError> {
+    let Some(backlog_text) = read_optional_file(backlog)? else {
+        return Ok(None);
+    };
+    let (_, _, items) = split_backlog_items(&backlog_text)?;
+    Ok(items.into_iter().find(|item| item.blocked_by.is_none()))
 }
 
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
@@ -932,8 +1031,8 @@ verify: [--cargo-toml PATH] [--changelog PATH] --parent-commit ID [--previous-pa
 stamp-current-parent: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
 verify-current-lineage: [--cargo-toml PATH] [--changelog PATH] [--repo-root PATH]\n\
 check-completion-boundary: [--cargo-toml PATH] [--repo-root PATH]\n\
-check-top-runnable: [--cargo-toml PATH]\n\
-promote-next-runnable: [--cargo-toml PATH]"
+check-top-runnable: [--cargo-toml PATH] [--backlog PATH]\n\
+promote-next-runnable: [--cargo-toml PATH] [--backlog PATH]"
 }
 
 #[cfg(test)]

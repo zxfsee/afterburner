@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Backlog runnable-promotion semantics hardening [Runtime Infra]
-  - Goal: Make queue repair and promotion semantics prefer the highest-priority runnable item cleanly when the active queue cannot satisfy runnability on its own, so blocked items do not just move around inside the active horizon without a clear next repair path.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `ops`
-  - Scope: `src/bin/workflow_queue_snapshot.rs`, `tests/queue_snapshot.rs`, `docs/backlog.md`, `Cargo.toml`
-
 - Queue preflight branching extraction [Runtime Infra]
   - Goal: Move the remaining queue repair and stale-snapshot branching out of `justfile` recipe control flow and into typed queue helpers so queue preflight stays canonical without embedding workflow policy in shell logic.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_verification_workflow_surface.rs`
+
+- Grouped deployment stack docs wording tightening [Serving/Deployment Infra]
+  - Goal: Keep the deployment stack workflow docs concise and operator-centered by trimming remaining wording that still reads like artifact-family inventory instead of grouped operator guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`
 
 ## [Trunk]
 """
