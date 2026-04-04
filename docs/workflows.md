@@ -77,6 +77,8 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 - `just workflow-surface-check-deployment-verification` validates the deployment verification family stays surface-complete across CLI, `just`, fixtures, workflow docs, and the reference index.
 - `just workflow-surface-check-public-cli` keeps the admitted public CLI family set and grouped-path guard checked.
 - `just workflow-surface-check-operator-grammar` keeps the grouped nested operator grammar checked.
+- `just workflow-surface-check-justfile-thinness` keeps the current `justfile` branching and generic bucket debt bounded to the explicit allowlist.
+- `just workflow-surface-check-reference-docs` validates the family-level workflow-to-reference linkage notes in `docs/reference.md`.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment

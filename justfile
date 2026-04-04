@@ -532,3 +532,9 @@ workflow-surface-check-public-cli:
 
 workflow-surface-check-operator-grammar:
     cargo nextest run --locked --test operator_grammar_gate
+
+workflow-surface-check-justfile-thinness:
+    cargo nextest run --locked --test justfile_thinness_gate
+
+workflow-surface-check-reference-docs:
+    cargo nextest run --locked --test reference_doc_validation
