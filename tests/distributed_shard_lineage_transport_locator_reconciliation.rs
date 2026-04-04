@@ -60,16 +60,6 @@ fn distributed_shard_lineage_transport_locator_reconciliation_schema_and_workflo
         justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("distributed_shard_lineage_transport_locator_reconciliation.json"),
-        "workflow reference must mention the lineage transport locator reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just distributed-shard-lineage-locator-manage reconcile-transport"),
-        "workflow reference must mention the grouped lineage transport locator reconciliation workflow"
-    );
 }
 
 #[test]

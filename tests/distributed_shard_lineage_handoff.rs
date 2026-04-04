@@ -59,16 +59,6 @@ fn distributed_shard_lineage_handoff_schema_and_workflow_are_explicit() {
         justfile.contains("distributed-shard-lineage-handoff bundle:"),
         "justfile must expose the distributed-shard-lineage-handoff workflow"
     );
-
-    let readme = repo_file("docs/workflows.md");
-    assert!(
-        readme.contains("distributed_shard_lineage_evidence_handoff.json"),
-        "workflow reference must mention the distributed shard lineage evidence handoff artifact"
-    );
-    assert!(
-        readme.contains("just distributed-shard-lineage-handoff"),
-        "workflow reference must mention the distributed shard lineage evidence handoff workflow"
-    );
 }
 
 #[test]

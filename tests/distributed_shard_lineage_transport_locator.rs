@@ -58,16 +58,6 @@ fn distributed_shard_lineage_transport_locator_schema_and_workflow_are_explicit(
         justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
-
-    let readme = repo_file("docs/workflows.md");
-    assert!(
-        readme.contains("distributed_shard_lineage_transport_locator.json"),
-        "workflow reference must mention the distributed shard lineage transport locator artifact"
-    );
-    assert!(
-        readme.contains("just distributed-shard-lineage-locator-manage point-transport"),
-        "workflow reference must mention the grouped distributed shard lineage transport locator workflow"
-    );
 }
 
 #[test]

@@ -63,16 +63,6 @@ fn distributed_shard_lineage_locator_history_schema_and_workflow_are_explicit() 
         justfile.contains("distributed-shard-lineage-locator-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-locator-manage workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("distributed_shard_lineage_locator_history.json"),
-        "workflow reference must mention the distributed shard lineage locator history artifact"
-    );
-    assert!(
-        workflows.contains("just distributed-shard-lineage-locator-manage record-history"),
-        "workflow reference must mention the grouped distributed shard lineage locator history workflow"
-    );
 }
 
 #[test]

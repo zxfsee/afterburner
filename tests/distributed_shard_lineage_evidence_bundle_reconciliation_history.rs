@@ -64,17 +64,6 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_history_schema_and_w
         justfile.contains("distributed-shard-lineage-bundle-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-bundle-manage workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("distributed_shard_lineage_evidence_bundle_reconciliation_history.json"),
-        "workflow reference must mention the lineage evidence bundle reconciliation history artifact"
-    );
-    assert!(
-        workflows
-            .contains("just distributed-shard-lineage-bundle-manage record-reconciliation-history"),
-        "workflow reference must mention the grouped lineage evidence bundle reconciliation history workflow"
-    );
 }
 
 #[test]

@@ -64,16 +64,6 @@ fn distributed_shard_lineage_handoff_history_schema_and_workflow_are_explicit() 
         justfile.contains("distributed-shard-lineage-handoff-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-handoff-manage workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows.contains("distributed_shard_lineage_evidence_handoff_history.json"),
-        "workflow reference must mention the distributed shard lineage handoff history artifact"
-    );
-    assert!(
-        workflows.contains("just distributed-shard-lineage-handoff-manage record-history"),
-        "workflow reference must mention the grouped distributed shard lineage handoff history workflow"
-    );
 }
 
 #[test]

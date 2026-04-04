@@ -63,19 +63,6 @@ fn distributed_shard_lineage_handoff_reconciliation_history_schema_and_workflow_
         justfile.contains("distributed-shard-lineage-handoff-manage action +args:"),
         "justfile must expose the grouped distributed-shard-lineage-handoff-manage workflow"
     );
-
-    let workflows = repo_file("docs/workflows.md");
-    assert!(
-        workflows
-            .contains("distributed_shard_lineage_evidence_handoff_reconciliation_history.json"),
-        "workflow reference must mention the lineage handoff reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains(
-            "just distributed-shard-lineage-handoff-manage record-reconciliation-history"
-        ),
-        "workflow reference must mention the grouped lineage handoff reconciliation history workflow"
-    );
 }
 
 #[test]

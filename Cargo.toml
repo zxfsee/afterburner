@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped distributed-lineage docs surface consolidation [Runtime Infra]
-  - Goal: Collapse the distributed shard-lineage sections in docs/reference.md and docs/workflows.md from per-artifact registries into grouped family maps while leaving exhaustive mechanical coverage in the existing family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - GitHub repo settings polish [Runtime Infra, Serving/Deployment Infra]
   - Goal: Apply the GitHub repository description/topics/website settings directly or from one small maintenance note without growing README, reference-index, or docs-only string-presence test surface.
   - Kind: `mixed`
@@ -40,6 +33,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `cli`
   - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
+- Grouped pretraining-source docs surface consolidation [Data Infra]
+  - Goal: Keep `docs/workflows.md` focused on grouped pretraining source entrypoints while moving exact source artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 - Deployment verification operator grammar consolidation [Runtime Infra, Serving/Deployment Infra]
   - Goal: Replace grouped deployment verification `*-manage <taxonomy-heavy-action>` surfaces with fewer, stable, action-oriented operator segments so artifact/protocol detail stops dominating the visible command path.

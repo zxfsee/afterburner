@@ -56,15 +56,40 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
             "workflow reference must keep the grouped distributed-shard-lineage surface `{needle}`"
         );
     }
+    for forbidden in [
+        "just distributed-shard-lineage-bundle-manage reconcile",
+        "just distributed-shard-lineage-bundle-manage record-reconciliation-history",
+        "just distributed-shard-lineage-handoff-manage reconcile",
+        "just distributed-shard-lineage-handoff-manage record-history",
+        "just distributed-shard-lineage-handoff-manage record-reconciliation-history",
+        "just distributed-shard-lineage-locator-manage point-transport",
+        "just distributed-shard-lineage-locator-manage reconcile-transport",
+        "just distributed-shard-lineage-locator-manage record-transport-reconciliation-history",
+        "just distributed-shard-lineage-locator-manage point",
+        "just distributed-shard-lineage-locator-manage record-history",
+    ] {
+        assert!(
+            !workflows.contains(forbidden),
+            "workflow reference must stay grouped instead of enumerating lineage variant `{forbidden}`"
+        );
+    }
 
     let reference = repo_file("docs/reference.md");
     for needle in [
         "Distributed shard lineage family groups:",
         "`distributed_shard_lineage_receipt.json`",
-        "`distributed_shard_lineage_evidence_bundle*.json`",
-        "`distributed_shard_lineage_evidence_handoff*.json`",
-        "`distributed_shard_lineage_transport_locator*.json`",
-        "`distributed_shard_lineage_locator*.json`",
+        "`distributed_shard_lineage_evidence_bundle.json`",
+        "`distributed_shard_lineage_evidence_bundle_reconciliation.json`",
+        "`distributed_shard_lineage_evidence_bundle_reconciliation_history.json`",
+        "`distributed_shard_lineage_evidence_handoff.json`",
+        "`distributed_shard_lineage_evidence_handoff_reconciliation.json`",
+        "`distributed_shard_lineage_evidence_handoff_history.json`",
+        "`distributed_shard_lineage_evidence_handoff_reconciliation_history.json`",
+        "`distributed_shard_lineage_transport_locator.json`",
+        "`distributed_shard_lineage_transport_locator_reconciliation.json`",
+        "`distributed_shard_lineage_transport_locator_reconciliation_history.json`",
+        "`distributed_shard_lineage_locator_pointer.json`",
+        "`distributed_shard_lineage_locator_history.json`",
         "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
     ] {
         assert!(
