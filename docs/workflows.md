@@ -123,10 +123,18 @@ operator use case justifies promotion.
 - `just kube-rs-lease-point` writes `kube_rs_gpu_lease_pointer.json`.
 - `just kube-rs-lease-record-history` writes `kube_rs_gpu_lease_history.json`.
 - `just kube-rs-lease-record-reconciliation-history` writes `kube_rs_gpu_lease_reconciliation_history.json`.
-- Scheduler heartbeat stays grouped under three workflow entrypoints:
+- Scheduler heartbeat stays grouped under ten workflow entrypoints:
 - `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.
 - `just scheduler-heartbeat-point` writes `gpu_scheduler_heartbeat_pointer.json`.
-- `just scheduler-heartbeat-manage <record-history|reconcile|supersede|record-supersession-history|reconcile-supersession|record-supersession-reconciliation-history|point-record-history|point-reconcile|point-supersede|point-record-supersession-history|point-supersession-reconcile|point-record-supersession-reconciliation-history|point-rollback|point-record-rollback-history|point-rollback-reconcile|point-record-rollback-reconciliation-history|point-rollback-supersede|point-record-rollback-supersession-history|point-rollback-supersession-reconcile|point-record-rollback-supersession-reconciliation-history>` covers the remaining heartbeat history, reconciliation, supersession, and rollback artifacts.
+- `just scheduler-heartbeat-history` writes `gpu_scheduler_heartbeat_history.json`.
+- `just scheduler-heartbeat-reconcile` writes `gpu_scheduler_heartbeat_reconciliation.json`.
+- `just scheduler-heartbeat-reconciliation-history` writes `gpu_scheduler_heartbeat_reconciliation_history.json`.
+- `just scheduler-heartbeat-supersede` writes `gpu_scheduler_heartbeat_supersession.json`.
+- `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>` covers the remaining heartbeat supersession artifacts.
+- `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>` covers pointer history, reconciliation, supersession, and rollback artifacts.
+- `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>` covers pointer supersession artifacts.
+- `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>` covers pointer rollback artifacts.
+- `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>` covers pointer rollback supersession artifacts.
 - `just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.
 - `just scheduler-runtime-simulate` writes `scheduler_runtime_simulation_report.json`.
 - `just burn-bpk-migration-surface-report` writes `burn_bpk_migration_surface_inventory.json`.

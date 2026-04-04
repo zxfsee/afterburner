@@ -37,6 +37,9 @@ where
         );
         return 2;
     }
+    if group == "scheduler-heartbeat" {
+        return run_debug_scheduler_heartbeat(args);
+    }
     let Some(action) = args.next() else {
         eprintln!("missing debug deploy action for `{group}`");
         eprintln!("{}", super::usage());
@@ -48,6 +51,220 @@ where
         return 2;
     };
     dispatch_deploy(subcommand, args)
+}
+
+fn run_debug_scheduler_heartbeat<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        eprintln!("missing debug deploy action for `scheduler-heartbeat`");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "point" => dispatch_deploy("point-scheduler-heartbeat".to_string(), rest),
+        "history" => dispatch_deploy("record-scheduler-heartbeat-history".to_string(), rest),
+        "reconcile" => dispatch_deploy("scheduler-heartbeat-reconcile".to_string(), rest),
+        "reconciliation-history" => dispatch_deploy(
+            "record-scheduler-heartbeat-reconciliation-history".to_string(),
+            rest,
+        ),
+        "supersede" => dispatch_deploy("scheduler-heartbeat-supersede".to_string(), rest),
+        "supersession" => run_debug_scheduler_heartbeat_supersession(rest),
+        "pointer" => run_debug_scheduler_heartbeat_pointer(rest),
+        _ => {
+            eprintln!("unknown debug deploy scheduler-heartbeat action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_scheduler_heartbeat_supersession<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy scheduler-heartbeat supersession action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "history" => dispatch_deploy(
+            "record-scheduler-heartbeat-supersession-history".to_string(),
+            args,
+        ),
+        "reconcile" => dispatch_deploy(
+            "scheduler-heartbeat-supersession-reconcile".to_string(),
+            args,
+        ),
+        "reconciliation-history" => dispatch_deploy(
+            "record-scheduler-heartbeat-supersession-reconciliation-history".to_string(),
+            args,
+        ),
+        _ => {
+            eprintln!("unknown debug deploy scheduler-heartbeat supersession action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_scheduler_heartbeat_pointer<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy scheduler-heartbeat pointer action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-history".to_string(),
+            args,
+        ),
+        "reconcile" => dispatch_deploy("reconcile-scheduler-heartbeat-pointer".to_string(), args),
+        "supersede" => dispatch_deploy("scheduler-heartbeat-point-supersede".to_string(), args),
+        "supersession" => run_debug_scheduler_heartbeat_pointer_supersession(args),
+        "rollback" => run_debug_scheduler_heartbeat_pointer_rollback(args),
+        _ => {
+            eprintln!("unknown debug deploy scheduler-heartbeat pointer action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_scheduler_heartbeat_pointer_supersession<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy scheduler-heartbeat pointer supersession action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-supersession-history".to_string(),
+            args,
+        ),
+        "reconcile" => dispatch_deploy(
+            "reconcile-scheduler-heartbeat-pointer-supersession".to_string(),
+            args,
+        ),
+        "reconciliation-history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-supersession-reconciliation-history".to_string(),
+            args,
+        ),
+        _ => {
+            eprintln!(
+                "unknown debug deploy scheduler-heartbeat pointer supersession action: {action}"
+            );
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_scheduler_heartbeat_pointer_rollback<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        return dispatch_deploy("rollback-scheduler-heartbeat-pointer".to_string(), args);
+    };
+    if action.starts_with('-') {
+        return dispatch_deploy(
+            "rollback-scheduler-heartbeat-pointer".to_string(),
+            std::iter::once(action).chain(args),
+        );
+    }
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-rollback-history".to_string(),
+            args,
+        ),
+        "reconcile" => dispatch_deploy(
+            "reconcile-scheduler-heartbeat-pointer-rollback".to_string(),
+            args,
+        ),
+        "reconciliation-history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-rollback-reconciliation-history".to_string(),
+            args,
+        ),
+        "supersede" => dispatch_deploy(
+            "scheduler-heartbeat-point-rollback-supersede".to_string(),
+            args,
+        ),
+        "supersession" => run_debug_scheduler_heartbeat_pointer_rollback_supersession(args),
+        _ => {
+            eprintln!("unknown debug deploy scheduler-heartbeat pointer rollback action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_scheduler_heartbeat_pointer_rollback_supersession<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy scheduler-heartbeat pointer rollback supersession action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-rollback-supersession-history".to_string(),
+            args,
+        ),
+        "reconcile" => dispatch_deploy(
+            "reconcile-scheduler-heartbeat-pointer-rollback-supersession".to_string(),
+            args,
+        ),
+        "reconciliation-history" => dispatch_deploy(
+            "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history"
+                .to_string(),
+            args,
+        ),
+        _ => {
+            eprintln!(
+                "unknown debug deploy scheduler-heartbeat pointer rollback supersession action: {action}"
+            );
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
 }
 
 pub fn run_verify<I>(mut args: I) -> i32
@@ -492,66 +709,6 @@ fn regrouped_debug_deploy_subcommand(group: &str, action: &str) -> Option<String
         return Some(legacy);
     }
 
-    if group == "scheduler-heartbeat" {
-        return match action {
-            "point" => Some("point-scheduler-heartbeat".to_string()),
-            "point-record-history" => {
-                Some("record-scheduler-heartbeat-pointer-history".to_string())
-            }
-            "point-reconcile" => Some("reconcile-scheduler-heartbeat-pointer".to_string()),
-            "point-supersede" => Some("scheduler-heartbeat-point-supersede".to_string()),
-            "point-record-supersession-history" => {
-                Some("record-scheduler-heartbeat-pointer-supersession-history".to_string())
-            }
-            "point-supersession-reconcile" => {
-                Some("reconcile-scheduler-heartbeat-pointer-supersession".to_string())
-            }
-            "point-record-supersession-reconciliation-history" => Some(
-                "record-scheduler-heartbeat-pointer-supersession-reconciliation-history"
-                    .to_string(),
-            ),
-            "point-rollback" => Some("rollback-scheduler-heartbeat-pointer".to_string()),
-            "point-record-rollback-history" => {
-                Some("record-scheduler-heartbeat-pointer-rollback-history".to_string())
-            }
-            "point-rollback-reconcile" => {
-                Some("reconcile-scheduler-heartbeat-pointer-rollback".to_string())
-            }
-            "point-record-rollback-reconciliation-history" => Some(
-                "record-scheduler-heartbeat-pointer-rollback-reconciliation-history".to_string(),
-            ),
-            "point-rollback-supersede" => {
-                Some("scheduler-heartbeat-point-rollback-supersede".to_string())
-            }
-            "point-record-rollback-supersession-history" => {
-                Some("record-scheduler-heartbeat-pointer-rollback-supersession-history".to_string())
-            }
-            "point-rollback-supersession-reconcile" => {
-                Some("reconcile-scheduler-heartbeat-pointer-rollback-supersession".to_string())
-            }
-            "point-record-rollback-supersession-reconciliation-history" => Some(
-                "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history"
-                    .to_string(),
-            ),
-            "record-history" => Some("record-scheduler-heartbeat-history".to_string()),
-            "reconcile" => Some("scheduler-heartbeat-reconcile".to_string()),
-            "record-reconciliation-history" => {
-                Some("record-scheduler-heartbeat-reconciliation-history".to_string())
-            }
-            "supersede" => Some("scheduler-heartbeat-supersede".to_string()),
-            "reconcile-supersession" => {
-                Some("scheduler-heartbeat-supersession-reconcile".to_string())
-            }
-            "record-supersession-history" => {
-                Some("record-scheduler-heartbeat-supersession-history".to_string())
-            }
-            "record-supersession-reconciliation-history" => {
-                Some("record-scheduler-heartbeat-supersession-reconciliation-history".to_string())
-            }
-            _ => None,
-        };
-    }
-
     None
 }
 
@@ -562,54 +719,54 @@ fn legacy_debug_deploy_target(subcommand: &str) -> Option<String> {
 
     let target = match subcommand {
         "point-scheduler-heartbeat" => "scheduler-heartbeat point",
-        "record-scheduler-heartbeat-pointer-history" => "scheduler-heartbeat point-record-history",
-        "reconcile-scheduler-heartbeat-pointer" => "scheduler-heartbeat point-reconcile",
-        "scheduler-heartbeat-point-supersede" => "scheduler-heartbeat point-supersede",
+        "record-scheduler-heartbeat-pointer-history" => "scheduler-heartbeat pointer history",
+        "reconcile-scheduler-heartbeat-pointer" => "scheduler-heartbeat pointer reconcile",
+        "scheduler-heartbeat-point-supersede" => "scheduler-heartbeat pointer supersede",
         "record-scheduler-heartbeat-pointer-supersession-history" => {
-            "scheduler-heartbeat point-record-supersession-history"
+            "scheduler-heartbeat pointer supersession history"
         }
         "reconcile-scheduler-heartbeat-pointer-supersession" => {
-            "scheduler-heartbeat point-supersession-reconcile"
+            "scheduler-heartbeat pointer supersession reconcile"
         }
         "record-scheduler-heartbeat-pointer-supersession-reconciliation-history" => {
-            "scheduler-heartbeat point-record-supersession-reconciliation-history"
+            "scheduler-heartbeat pointer supersession reconciliation-history"
         }
-        "rollback-scheduler-heartbeat-pointer" => "scheduler-heartbeat point-rollback",
+        "rollback-scheduler-heartbeat-pointer" => "scheduler-heartbeat pointer rollback",
         "record-scheduler-heartbeat-pointer-rollback-history" => {
-            "scheduler-heartbeat point-record-rollback-history"
+            "scheduler-heartbeat pointer rollback history"
         }
         "reconcile-scheduler-heartbeat-pointer-rollback" => {
-            "scheduler-heartbeat point-rollback-reconcile"
+            "scheduler-heartbeat pointer rollback reconcile"
         }
         "record-scheduler-heartbeat-pointer-rollback-reconciliation-history" => {
-            "scheduler-heartbeat point-record-rollback-reconciliation-history"
+            "scheduler-heartbeat pointer rollback reconciliation-history"
         }
         "scheduler-heartbeat-point-rollback-supersede" => {
-            "scheduler-heartbeat point-rollback-supersede"
+            "scheduler-heartbeat pointer rollback supersede"
         }
         "record-scheduler-heartbeat-pointer-rollback-supersession-history" => {
-            "scheduler-heartbeat point-record-rollback-supersession-history"
+            "scheduler-heartbeat pointer rollback supersession history"
         }
         "reconcile-scheduler-heartbeat-pointer-rollback-supersession" => {
-            "scheduler-heartbeat point-rollback-supersession-reconcile"
+            "scheduler-heartbeat pointer rollback supersession reconcile"
         }
         "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history" => {
-            "scheduler-heartbeat point-record-rollback-supersession-reconciliation-history"
+            "scheduler-heartbeat pointer rollback supersession reconciliation-history"
         }
-        "record-scheduler-heartbeat-history" => "scheduler-heartbeat record-history",
+        "record-scheduler-heartbeat-history" => "scheduler-heartbeat history",
         "scheduler-heartbeat-reconcile" => "scheduler-heartbeat reconcile",
         "record-scheduler-heartbeat-reconciliation-history" => {
-            "scheduler-heartbeat record-reconciliation-history"
+            "scheduler-heartbeat reconciliation-history"
         }
         "scheduler-heartbeat-supersede" => "scheduler-heartbeat supersede",
         "scheduler-heartbeat-supersession-reconcile" => {
-            "scheduler-heartbeat reconcile-supersession"
+            "scheduler-heartbeat supersession reconcile"
         }
         "record-scheduler-heartbeat-supersession-history" => {
-            "scheduler-heartbeat record-supersession-history"
+            "scheduler-heartbeat supersession history"
         }
         "record-scheduler-heartbeat-supersession-reconciliation-history" => {
-            "scheduler-heartbeat record-supersession-reconciliation-history"
+            "scheduler-heartbeat supersession reconciliation-history"
         }
         _ => return None,
     };

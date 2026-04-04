@@ -82,7 +82,7 @@ fn gpu_scheduler_heartbeat_history_writes_history_and_event() {
     cmd.arg("debug")
         .arg("deploy")
         .arg("scheduler-heartbeat")
-        .arg("record-history")
+        .arg("history")
         .arg("--heartbeat")
         .arg(&heartbeat)
         .arg("--event")

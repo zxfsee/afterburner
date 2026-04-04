@@ -172,7 +172,7 @@ where
             }
             _ => {
                 return Err(SchedulerHeartbeatPointerHistoryError::InvalidArg(format!(
-                    "unknown argument for deploy record-scheduler-heartbeat-pointer-history: {arg}\n{}",
+                    "unknown argument for deploy scheduler-heartbeat pointer history: {arg}\n{}",
                     usage()
                 )));
             }
@@ -228,5 +228,5 @@ afterburner::define_command_input_json_non_empty_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy record-scheduler-heartbeat-pointer-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

@@ -189,7 +189,7 @@ where
             }
             _ => {
                 return Err(SchedulerHeartbeatReconcileError::InvalidArg(format!(
-                    "unknown argument for deploy scheduler-heartbeat-reconcile: {arg}\n{}",
+                    "unknown argument for deploy scheduler-heartbeat reconcile: {arg}\n{}",
                     usage()
                 )));
             }
@@ -233,5 +233,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy scheduler-heartbeat-reconcile --heartbeat PATH --current-heartbeat PATH [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat reconcile --heartbeat PATH --current-heartbeat PATH [--out PATH]"
 }

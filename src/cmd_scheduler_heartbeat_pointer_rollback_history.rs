@@ -209,7 +209,7 @@ where
             _ => {
                 return Err(SchedulerHeartbeatPointerRollbackHistoryError::InvalidArg(
                     format!(
-                        "unknown argument for deploy record-scheduler-heartbeat-pointer-rollback-history: {arg}\n{}",
+                        "unknown argument for deploy scheduler-heartbeat pointer rollback history: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -283,5 +283,5 @@ fn load_history(path: &Path) -> Result<Value, SchedulerHeartbeatPointerRollbackH
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy record-scheduler-heartbeat-pointer-rollback-history --rollback PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer rollback history --rollback PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

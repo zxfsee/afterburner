@@ -15,7 +15,7 @@ fn debug_deploy_surface_stays_family_first() {
         "deployment-verification-bundle-rollback action +args:",
         "deployment-verification-receipt-locator action +args:",
         "deployment-verification-handoff-transport action +args:",
-        "scheduler-heartbeat-manage action +args:",
+        "scheduler-heartbeat-pointer-rollback-supersession action +args:",
         "fn regrouped_debug_deploy_subcommand(",
         "\"verification-bundle\"",
         "\"verification-receipt\"",
@@ -35,6 +35,7 @@ fn debug_deploy_surface_stays_family_first() {
         "-- debug deploy scheduler-heartbeat-point-rollback-supersede",
         "-- debug deploy record-scheduler-heartbeat-pointer-rollback-history",
         "-- debug deploy scheduler-heartbeat-supersede",
+        "scheduler-heartbeat-manage action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

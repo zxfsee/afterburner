@@ -171,7 +171,7 @@ where
             _ => {
                 return Err(SchedulerHeartbeatPointerRollbackReconcileError::InvalidArg(
                     format!(
-                        "unknown argument for deploy reconcile-scheduler-heartbeat-pointer-rollback: {arg}\n{}",
+                        "unknown argument for deploy scheduler-heartbeat pointer rollback reconcile: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -219,5 +219,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy reconcile-scheduler-heartbeat-pointer-rollback --rollback PATH --current-rollback PATH [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer rollback reconcile --rollback PATH --current-rollback PATH [--out PATH]"
 }

@@ -164,7 +164,7 @@ where
                 return Err(
                     SchedulerHeartbeatPointerSupersessionReconciliationHistoryError::InvalidArg(
                         format!(
-                            "unknown argument for deploy record-scheduler-heartbeat-pointer-supersession-reconciliation-history: {arg}\n{}",
+                            "unknown argument for deploy scheduler-heartbeat pointer supersession reconciliation-history: {arg}\n{}",
                             usage()
                         ),
                     ),
@@ -219,5 +219,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy record-scheduler-heartbeat-pointer-supersession-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer supersession reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

@@ -219,7 +219,7 @@ where
             }
             _ => {
                 return Err(SchedulerHeartbeatSupersessionError::InvalidArg(format!(
-                    "unknown argument for deploy scheduler-heartbeat-supersede: {arg}\n{}",
+                    "unknown argument for deploy scheduler-heartbeat supersede: {arg}\n{}",
                     usage()
                 )));
             }
@@ -274,5 +274,5 @@ afterburner::define_command_input_json_non_empty_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy scheduler-heartbeat-supersede --previous-heartbeat PATH --next-heartbeat PATH --superseded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat supersede --previous-heartbeat PATH --next-heartbeat PATH --superseded-at-unix-ms MS [--out PATH]"
 }

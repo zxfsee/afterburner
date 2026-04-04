@@ -189,7 +189,7 @@ where
             _ => {
                 return Err(
                     SchedulerHeartbeatPointerSupersessionHistoryError::InvalidArg(format!(
-                        "unknown argument for deploy record-scheduler-heartbeat-pointer-supersession-history: {arg}\n{}",
+                        "unknown argument for deploy scheduler-heartbeat pointer supersession history: {arg}\n{}",
                         usage()
                     )),
                 );
@@ -243,5 +243,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy record-scheduler-heartbeat-pointer-supersession-history --supersession PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer supersession history --supersession PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

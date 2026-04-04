@@ -232,7 +232,7 @@ where
             _ => {
                 return Err(SchedulerHeartbeatSupersessionReconcileError::InvalidArg(
                     format!(
-                        "unknown argument for deploy scheduler-heartbeat-supersession-reconcile: {arg}\n{}",
+                        "unknown argument for deploy scheduler-heartbeat supersession reconcile: {arg}\n{}",
                         usage()
                     ),
                 ));
@@ -280,5 +280,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy scheduler-heartbeat-supersession-reconcile --supersession PATH --current-supersession PATH [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat supersession reconcile --supersession PATH --current-supersession PATH [--out PATH]"
 }

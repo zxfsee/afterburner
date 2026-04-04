@@ -194,7 +194,7 @@ where
             _ => {
                 return Err(
                     SchedulerHeartbeatPointerRollbackSupersessionError::InvalidArg(format!(
-                        "unknown argument for deploy scheduler-heartbeat-point-rollback-supersede: {arg}\n{}",
+                        "unknown argument for deploy scheduler-heartbeat pointer rollback supersede: {arg}\n{}",
                         usage()
                     )),
                 );
@@ -248,5 +248,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner debug deploy scheduler-heartbeat-point-rollback-supersede --previous-rollback PATH --next-rollback PATH --superseded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy scheduler-heartbeat pointer rollback supersede --previous-rollback PATH --next-rollback PATH --superseded-at-unix-ms MS [--out PATH]"
 }

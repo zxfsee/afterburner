@@ -37,7 +37,9 @@ fn main_entrypoint_stays_thin_and_deploy_dispatch_lives_in_grouped_helper() {
         "\"verification-receipt\"",
         "\"record-locator-history\"",
         "\"scheduler-heartbeat\"",
-        "\"point-rollback-supersede\"",
+        "\"pointer\"",
+        "\"rollback\"",
+        "\"supersession\"",
     ] {
         assert!(
             deploy_dispatch.contains(required),

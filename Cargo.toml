@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler-heartbeat operator grammar consolidation [Serving/Deployment Infra]
-  - Goal: Collapse the remaining taxonomy-heavy `scheduler-heartbeat-manage ...` operator paths into fewer action-oriented grouped commands so the heartbeat family stops routing operators through one generic `manage` bucket.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
-
 - Grouped drift docs surface consolidation [Experimentation/Eval Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped drift entrypoints while moving exact drift artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
@@ -51,6 +44,13 @@ header = """# Changelog
 
 - Grouped deployment-stack docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped deployment-stack entrypoints while moving exact deployment-launch and kube-rs lease artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
+
+- Grouped deployment-utility docs surface consolidation [Serving/Deployment Infra]
+  - Goal: Keep `docs/workflows.md` focused on deploy utility entrypoints while moving exact scheduler-runtime simulation, load-profile, Burn migration inventory, and Hugging Face publish artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

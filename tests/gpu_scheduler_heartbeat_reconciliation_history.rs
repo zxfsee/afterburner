@@ -95,7 +95,7 @@ fn gpu_scheduler_heartbeat_reconciliation_history_writes_history_and_event() {
     cmd.arg("debug")
         .arg("deploy")
         .arg("scheduler-heartbeat")
-        .arg("record-reconciliation-history")
+        .arg("reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")
