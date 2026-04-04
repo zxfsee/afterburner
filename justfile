@@ -94,7 +94,8 @@ queue-execute-preflight repair='':
     if '{{ repair }}' == '--repair-stale-snapshot' { cargo nextest run --locked --test todo_queue_horizon }
     cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
     cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
-    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+    if '{{ repair }}' == '--repair-stale-snapshot' { cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --repo-root . --allow-existing-path CHANGELOG.md --expected-action execute-top-item }
+    if '{{ repair }}' != '--repair-stale-snapshot' { cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item }
     cargo run --locked --bin workflow_objective_lock -- check-worktree --action execute-top-item
 
 # explicitly repair stale queue snapshot lineage and resume execute preflight
@@ -104,7 +105,7 @@ queue-resume:
     cargo nextest run --locked --test todo_queue_horizon
     cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
     cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
-    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --repo-root . --allow-existing-path CHANGELOG.md --expected-action execute-top-item
     cargo run --locked --bin workflow_objective_lock -- check-worktree --action execute-top-item
 
 # format rust + toml + nix

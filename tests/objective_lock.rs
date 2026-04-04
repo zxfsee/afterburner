@@ -244,6 +244,78 @@ fn objective_lock_top_scope_fix_allows_only_queue_metadata_paths() {
 }
 
 #[test]
+fn objective_lock_can_carry_existing_queue_metadata_into_execute_resume_only_if_unchanged() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let root = tmp.path();
+    fs::create_dir_all(root.join("src/bin")).expect("create src/bin");
+    fs::create_dir_all(root.join("tests")).expect("create tests");
+    fs::create_dir_all(root.join("docs")).expect("create docs");
+    write_sample_cargo_toml(&root.join("Cargo.toml"));
+    fs::write(root.join("CHANGELOG.md"), "# Changelog\n").expect("write CHANGELOG.md");
+    fs::write(root.join("justfile"), "workflows:\n    just --list\n").expect("write justfile");
+    fs::write(root.join("NOTE.md"), "# NOTE.md\n").expect("write NOTE.md");
+    fs::write(root.join("docs/workflows.md"), "# Workflows\n").expect("write workflows doc");
+    init_jj_repo(root);
+
+    fs::write(
+        root.join("CHANGELOG.md"),
+        "# Changelog\n\nresume baseline\n",
+    )
+    .expect("edit CHANGELOG.md");
+    let lock_file = root.join(".git/afterburner/objective-lock.json");
+
+    let mut pin_execute = cargo_bin_cmd!("workflow_objective_lock");
+    pin_execute
+        .arg("pin")
+        .arg("--objective")
+        .arg("execute-top-item")
+        .arg("--cargo-toml")
+        .arg(root.join("Cargo.toml"))
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--allow-existing-path")
+        .arg("CHANGELOG.md")
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--expected-action")
+        .arg("execute-top-item");
+    pin_execute.assert().success();
+
+    let mut execute_check = cargo_bin_cmd!("workflow_objective_lock");
+    execute_check
+        .arg("check-worktree")
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--action")
+        .arg("execute-top-item");
+    execute_check.assert().success();
+
+    fs::write(
+        root.join("CHANGELOG.md"),
+        "# Changelog\n\nresume baseline\nchanged again\n",
+    )
+    .expect("edit CHANGELOG.md again");
+
+    let assert = cargo_bin_cmd!("workflow_objective_lock")
+        .arg("check-worktree")
+        .arg("--repo-root")
+        .arg(root)
+        .arg("--lock-file")
+        .arg(&lock_file)
+        .arg("--action")
+        .arg("execute-top-item")
+        .assert()
+        .failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("CHANGELOG.md"),
+        "execute resume must reject further queue metadata drift after the carried baseline: {stderr}"
+    );
+}
+
+#[test]
 fn objective_lock_checks_action_and_explicit_paths() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let lock_file = PathBuf::from(tmp.path()).join("objective-lock.json");

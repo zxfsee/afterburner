@@ -1,9 +1,10 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use serde_json::{Value, json};
+use sha2::{Digest, Sha256};
 
 const DEFAULT_LOCK_PATH: &str = ".git/afterburner/objective-lock.json";
 const TODO_START: &str = "## TODO";
@@ -54,6 +55,7 @@ struct ObjectiveLock {
     allowed_paths: Vec<String>,
     forbidden_paths: Vec<String>,
     source_title: Option<String>,
+    carried_worktree_paths: BTreeMap<String, String>,
 }
 
 #[derive(Debug)]
@@ -96,8 +98,10 @@ enum CommandSpec {
     Pin {
         objective: Objective,
         cargo_toml: PathBuf,
+        repo_root: PathBuf,
         lock_file: PathBuf,
         expected_action: Option<String>,
+        allow_existing_paths: Vec<String>,
     },
     CheckPaths {
         lock_file: PathBuf,
@@ -147,10 +151,18 @@ fn run(command: CommandSpec) -> Result<(), ObjectiveLockError> {
         CommandSpec::Pin {
             objective,
             cargo_toml,
+            repo_root,
             lock_file,
             expected_action,
+            allow_existing_paths,
         } => {
-            let lock = build_lock(&objective, &cargo_toml, expected_action)?;
+            let lock = build_lock(
+                &objective,
+                &cargo_toml,
+                &repo_root,
+                expected_action,
+                &allow_existing_paths,
+            )?;
             write_lock(&lock_file, &lock)?;
             Ok(())
         }
@@ -171,7 +183,7 @@ fn run(command: CommandSpec) -> Result<(), ObjectiveLockError> {
             let lock = read_lock(&lock_file)?;
             validate_action(&lock, action.as_deref())?;
             let changed_paths = jj_changed_paths(&repo_root)?;
-            validate_paths(&lock, &changed_paths)
+            validate_worktree_paths(&lock, &repo_root, &changed_paths)
         }
         CommandSpec::CheckRepoLocks { repo_root } => check_repo_locks(&repo_root),
         CommandSpec::Clear { lock_file } => {
@@ -213,8 +225,10 @@ where
     let mut args = args.peekable();
     let mut objective = None::<Objective>;
     let mut cargo_toml = PathBuf::from("Cargo.toml");
+    let mut repo_root = PathBuf::from(".");
     let mut lock_file = PathBuf::from(DEFAULT_LOCK_PATH);
     let mut expected_action = None::<String>;
+    let mut allow_existing_paths = Vec::new();
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -222,9 +236,13 @@ where
                 objective = Some(Objective::parse(&parse_value(&mut args, "--objective")?)?)
             }
             "--cargo-toml" => cargo_toml = PathBuf::from(parse_value(&mut args, "--cargo-toml")?),
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
             "--lock-file" => lock_file = PathBuf::from(parse_value(&mut args, "--lock-file")?),
             "--expected-action" => {
                 expected_action = Some(parse_value(&mut args, "--expected-action")?)
+            }
+            "--allow-existing-path" => {
+                allow_existing_paths.push(parse_value(&mut args, "--allow-existing-path")?)
             }
             _ if arg.starts_with("--objective=") => {
                 objective = Some(Objective::parse(arg.trim_start_matches("--objective="))?)
@@ -232,12 +250,17 @@ where
             _ if arg.starts_with("--cargo-toml=") => {
                 cargo_toml = PathBuf::from(arg.trim_start_matches("--cargo-toml=").to_string())
             }
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
             _ if arg.starts_with("--lock-file=") => {
                 lock_file = PathBuf::from(arg.trim_start_matches("--lock-file=").to_string())
             }
             _ if arg.starts_with("--expected-action=") => {
                 expected_action = Some(arg.trim_start_matches("--expected-action=").to_string())
             }
+            _ if arg.starts_with("--allow-existing-path=") => allow_existing_paths
+                .push(arg.trim_start_matches("--allow-existing-path=").to_string()),
             _ => {
                 return Err(ObjectiveLockError::InvalidArg(format!(
                     "unknown argument `{arg}`\n{}",
@@ -254,8 +277,10 @@ where
     Ok(CommandSpec::Pin {
         objective,
         cargo_toml,
+        repo_root,
         lock_file,
         expected_action,
+        allow_existing_paths,
     })
 }
 
@@ -405,8 +430,11 @@ where
 fn build_lock(
     objective: &Objective,
     cargo_toml: &Path,
+    repo_root: &Path,
     expected_action: Option<String>,
+    allow_existing_paths: &[String],
 ) -> Result<ObjectiveLock, ObjectiveLockError> {
+    let carried_worktree_paths = capture_existing_paths(repo_root, allow_existing_paths)?;
     let lock = match objective {
         Objective::QueueOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -423,6 +451,7 @@ fn build_lock(
                 "docs/workflows.md".to_string(),
             ],
             source_title: None,
+            carried_worktree_paths,
         },
         Objective::TopScopeFix => ObjectiveLock {
             objective: objective.clone(),
@@ -436,6 +465,7 @@ fn build_lock(
                 "docs/workflows.md".to_string(),
             ],
             source_title: None,
+            carried_worktree_paths,
         },
         Objective::BacklogOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -448,6 +478,7 @@ fn build_lock(
                 "tests/".to_string(),
             ],
             source_title: None,
+            carried_worktree_paths,
         },
         Objective::DocsOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -465,6 +496,7 @@ fn build_lock(
                 "fixtures/".to_string(),
             ],
             source_title: None,
+            carried_worktree_paths,
         },
         Objective::ReviewOnly => ObjectiveLock {
             objective: objective.clone(),
@@ -472,6 +504,7 @@ fn build_lock(
             allowed_paths: Vec::new(),
             forbidden_paths: vec!["<any repo mutation>".to_string()],
             source_title: None,
+            carried_worktree_paths,
         },
         Objective::ExecuteTopItem => {
             let cargo_text = fs::read_to_string(cargo_toml)?;
@@ -486,6 +519,7 @@ fn build_lock(
                     "docs/backlog.md".to_string(),
                 ],
                 source_title: Some(top_scope.title),
+                carried_worktree_paths,
             }
         }
     };
@@ -507,6 +541,9 @@ fn write_lock(path: &Path, lock: &ObjectiveLock) -> Result<(), ObjectiveLockErro
     }
     if let Some(source_title) = &lock.source_title {
         payload["source_title"] = Value::String(source_title.clone());
+    }
+    if !lock.carried_worktree_paths.is_empty() {
+        payload["carried_worktree_paths"] = json!(lock.carried_worktree_paths);
     }
     fs::write(path, serde_json::to_vec_pretty(&payload)?)?;
     Ok(())
@@ -530,6 +567,7 @@ fn read_lock(path: &Path) -> Result<ObjectiveLock, ObjectiveLockError> {
     let source_title = optional_string_field(&value, "source_title");
     let allowed_paths = string_array_field(&value, "allowed_paths")?;
     let forbidden_paths = string_array_field(&value, "forbidden_paths")?;
+    let carried_worktree_paths = optional_string_map_field(&value, "carried_worktree_paths")?;
 
     Ok(ObjectiveLock {
         objective,
@@ -537,6 +575,7 @@ fn read_lock(path: &Path) -> Result<ObjectiveLock, ObjectiveLockError> {
         allowed_paths,
         forbidden_paths,
         source_title,
+        carried_worktree_paths,
     })
 }
 
@@ -568,6 +607,32 @@ fn string_array_field(value: &Value, field: &str) -> Result<Vec<String>, Objecti
                     "objective lock field `{field}` must contain only strings"
                 ))
             })
+        })
+        .collect()
+}
+
+fn optional_string_map_field(
+    value: &Value,
+    field: &str,
+) -> Result<BTreeMap<String, String>, ObjectiveLockError> {
+    let Some(object) = value.get(field) else {
+        return Ok(BTreeMap::new());
+    };
+    let Some(map) = object.as_object() else {
+        return Err(ObjectiveLockError::Parse(format!(
+            "objective lock field `{field}` must be an object"
+        )));
+    };
+    map.iter()
+        .map(|(key, value)| {
+            value
+                .as_str()
+                .map(|raw| (key.clone(), raw.to_string()))
+                .ok_or_else(|| {
+                    ObjectiveLockError::Parse(format!(
+                        "objective lock field `{field}` must map to string hashes"
+                    ))
+                })
         })
         .collect()
 }
@@ -622,6 +687,29 @@ fn validate_paths(lock: &ObjectiveLock, paths: &[String]) -> Result<(), Objectiv
         );
     }
     Err(ObjectiveLockError::Parse(message))
+}
+
+fn validate_worktree_paths(
+    lock: &ObjectiveLock,
+    repo_root: &Path,
+    paths: &[String],
+) -> Result<(), ObjectiveLockError> {
+    let filtered = paths
+        .iter()
+        .filter_map(|path| {
+            let normalized = normalize_candidate_path(path);
+            match lock.carried_worktree_paths.get(&normalized) {
+                Some(expected_hash)
+                    if file_sha256_hex(&repo_root.join(&normalized))
+                        .is_ok_and(|current_hash| current_hash == *expected_hash) =>
+                {
+                    None
+                }
+                _ => Some(normalized),
+            }
+        })
+        .collect::<Vec<_>>();
+    validate_paths(lock, &filtered)
 }
 
 fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
@@ -731,6 +819,24 @@ fn jj_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError>
     Ok(paths.into_iter().collect())
 }
 
+fn capture_existing_paths(
+    repo_root: &Path,
+    paths: &[String],
+) -> Result<BTreeMap<String, String>, ObjectiveLockError> {
+    let mut carried = BTreeMap::new();
+    for path in paths {
+        let normalized = normalize_candidate_path(path);
+        let full_path = repo_root.join(&normalized);
+        carried.insert(normalized, file_sha256_hex(&full_path)?);
+    }
+    Ok(carried)
+}
+
+fn file_sha256_hex(path: &Path) -> Result<String, ObjectiveLockError> {
+    let bytes = fs::read(path)?;
+    Ok(format!("{:x}", Sha256::digest(bytes)))
+}
+
 fn check_repo_locks(repo_root: &Path) -> Result<(), ObjectiveLockError> {
     let index_lock = repo_root.join(".git/index.lock");
     if index_lock.exists() {
@@ -767,7 +873,7 @@ fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, Objec
 
 fn usage() -> &'static str {
     "usage: workflow_objective_lock <pin|check-paths|check-worktree|check-repo-locks|clear> [options]\n\
-pin: --objective <queue-only|top-scope-fix|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--lock-file PATH] [--expected-action ACTION]\n\
+pin: --objective <queue-only|top-scope-fix|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--repo-root PATH] [--lock-file PATH] [--expected-action ACTION] [--allow-existing-path PATH...]\n\
 check-paths: [--lock-file PATH] [--action ACTION] --path PATH [--path PATH...]\n\
 check-worktree: [--lock-file PATH] [--repo-root PATH] [--action ACTION]\n\
 check-repo-locks: [--repo-root PATH]\n\

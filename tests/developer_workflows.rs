@@ -55,6 +55,10 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "profile-infer must use cargo flamegraph"
     );
     assert!(
+        justfile.contains("--allow-existing-path CHANGELOG.md"),
+        "stale-lineage resume flows must carry the repaired CHANGELOG baseline into execute pinning"
+    );
+    assert!(
         justfile.contains("xcrun xctrace version"),
         "profiling workflow must document the host-profiler prerequisite"
     );
