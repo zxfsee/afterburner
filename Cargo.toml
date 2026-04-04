@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment stack docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the deployment stack workflow docs concise and operator-centered by trimming remaining wording that still reads like artifact-family inventory instead of grouped operator guidance.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/deployment_stack_workflow_surface.rs`
-
 - Grouped queue workflow docs wording tightening [Runtime Infra]
   - Goal: Keep the queue workflow docs concise and operator-centered by trimming remaining wording that still reads like repair-step inventory instead of grouped maintenance guidance.
   - Kind: `mixed`
@@ -48,12 +41,19 @@ header = """# Changelog
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/scheduler_heartbeat_workflow_surface.rs`
 
-- Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the scheduler-heartbeat workflow and reference docs concise and operator-centered by trimming remaining “workflow families” and “recipe map” phrasing from the grouped surface.
+- Grouped reference validation wording alignment [Runtime Infra]
+  - Goal: Keep the cross-family reference validation gate aligned with the newer grouped operator-flow wording so it checks current docs intent instead of stale “entrypoint map” and “recipe map” phrases.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/scheduler_heartbeat_workflow_surface.rs`
+  - Scope: `tests/reference_doc_validation.rs`
+
+- Grouped deployment matrix validation wording alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared deployment-matrix validation aligned with the current grouped operator-flow wording so the matrix gate no longer lags behind the family-level docs phrasing.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/deployment_matrix_workflow_surface.rs`
 
 ## [Trunk]
 """

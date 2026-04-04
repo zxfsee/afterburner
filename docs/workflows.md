@@ -116,7 +116,7 @@ operator use case justifies promotion.
 - Handoff flow: `just deploy-launch-handoff`, `just deploy-reconcile-launch-handoff`, `just deploy-record-launch-handoff-history`, `just deploy-record-launch-handoff-reconciliation-history`.
 - Locator flow: `just deploy-point-launch-transport-locator`, `just deploy-record-launch-transport-locator-history`, `just deploy-reconcile-launch-transport-locator`, `just deploy-record-launch-transport-locator-reconciliation-history`, `just deploy-point-launch-locator`, `just deploy-reconcile-launch-locator`, `just deploy-record-launch-locator-history`, `just deploy-record-launch-locator-reconciliation-history`.
 - Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-point`, `just kube-rs-lease-record-history`, `just kube-rs-lease-record-reconciliation-history`.
-- `just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.
+- `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.
 - Scheduler heartbeat stays grouped under these operator flows:
 - Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.
 - Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`.

@@ -44,7 +44,7 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "Handoff flow: `just deploy-launch-handoff`, `just deploy-reconcile-launch-handoff`, `just deploy-record-launch-handoff-history`, `just deploy-record-launch-handoff-reconciliation-history`.",
         "Locator flow: `just deploy-point-launch-transport-locator`, `just deploy-record-launch-transport-locator-history`, `just deploy-reconcile-launch-transport-locator`, `just deploy-record-launch-transport-locator-reconciliation-history`, `just deploy-point-launch-locator`, `just deploy-reconcile-launch-locator`, `just deploy-record-launch-locator-history`, `just deploy-record-launch-locator-reconciliation-history`.",
         "Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-point`, `just kube-rs-lease-record-history`, `just kube-rs-lease-record-reconciliation-history`.",
-        "`just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.",
+        "`just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -103,7 +103,7 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "`kube_rs_gpu_lease_reconciliation_history.json`",
         "`kube_rs_gpu_lease_pointer.json`",
         "`kube_rs_gpu_lease_history.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),

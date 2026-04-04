@@ -61,7 +61,7 @@ unless they graduate into a clear operator intent.
   - `kube_rs_gpu_lease_reconciliation_history.json`
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
-  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-stack` for mechanical coverage.
+  - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.
   - Scheduler heartbeat family groups:
   - `gpu_scheduler_heartbeat*.json`
   - `gpu_scheduler_heartbeat_pointer*.json`
