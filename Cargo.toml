@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped source-and-lineage docs split narrowing [Runtime Infra]
-  - Goal: Keep `docs/workflows.md` grouped around source and lineage family entrypoints while moving any remaining exact artifact-heavy wording into `docs/reference.md` and tightening family-level docs coverage.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
-
 - Grouped deployment-verification wording tightening [Serving/Deployment Infra]
   - Goal: Keep the grouped deployment-verification workflow docs operator-centered by trimming any remaining wording that reads like an exhaustive artifact taxonomy instead of family-level operator guidance.
   - Kind: `mixed`
@@ -48,6 +41,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/cleanup_workflow_surface.rs`
+
+- Grouped drift docs wording tightening [Experimentation/Eval Infra]
+  - Goal: Keep the grouped drift workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/drift_workflow_surface.rs`
 
 - Grouped profiling docs wording tightening [Runtime Infra]
   - Goal: Keep the grouped profiling workflow docs concise and operator-centered by trimming any remaining wording that reads like artifact enumeration instead of family-level guidance.

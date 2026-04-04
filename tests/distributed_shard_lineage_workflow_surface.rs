@@ -48,16 +48,11 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Distributed shard lineage stays grouped under eight workflow entrypoints:",
-        "`just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.",
-        "`just distributed-shard-lineage-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.",
-        "`just distributed-shard-lineage-bundle-reconcile` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.",
-        "`just distributed-shard-lineage-bundle-history` writes `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.",
-        "`just distributed-shard-lineage-handoff` writes `distributed_shard_lineage_evidence_handoff.json`.",
-        "`just distributed-shard-lineage-handoff-reconcile` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.",
-        "`just distributed-shard-lineage-handoff-history <record|reconciliation>` covers `distributed_shard_lineage_evidence_handoff_history.json` and `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.",
-        "`just distributed-shard-lineage-locator <point|history>` covers `distributed_shard_lineage_locator_pointer.json` and `distributed_shard_lineage_locator_history.json`.",
-        "`just distributed-shard-lineage-locator-transport <point|reconcile|history>` covers `distributed_shard_lineage_transport_locator.json`, `distributed_shard_lineage_transport_locator_reconciliation.json`, and `distributed_shard_lineage_transport_locator_reconciliation_history.json`.",
+        "Distributed shard lineage stays grouped under these workflow families:",
+        "Receipt flow: `just distributed-shard-lineage-receipt`.",
+        "Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.",
+        "Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history <record|reconciliation>`.",
+        "Locator flow: `just distributed-shard-lineage-locator <point|history>`, `just distributed-shard-lineage-locator-transport <point|reconcile|history>`.",
         "`just workflow-surface-check-distributed-shard-lineage` keeps the grouped CLI and recipe surface checked.",
     ] {
         assert!(
@@ -69,6 +64,15 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
         "just distributed-shard-lineage-bundle-manage",
         "just distributed-shard-lineage-handoff-manage",
         "just distributed-shard-lineage-locator-manage",
+        "- `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.",
+        "- `just distributed-shard-lineage-bundle` writes `distributed_shard_lineage_evidence_bundle.json`.",
+        "- `just distributed-shard-lineage-bundle-reconcile` writes `distributed_shard_lineage_evidence_bundle_reconciliation.json`.",
+        "- `just distributed-shard-lineage-bundle-history` writes `distributed_shard_lineage_evidence_bundle_reconciliation_history.json`.",
+        "- `just distributed-shard-lineage-handoff` writes `distributed_shard_lineage_evidence_handoff.json`.",
+        "- `just distributed-shard-lineage-handoff-reconcile` writes `distributed_shard_lineage_evidence_handoff_reconciliation.json`.",
+        "- `just distributed-shard-lineage-handoff-history <record|reconciliation>` covers `distributed_shard_lineage_evidence_handoff_history.json` and `distributed_shard_lineage_evidence_handoff_reconciliation_history.json`.",
+        "- `just distributed-shard-lineage-locator <point|history>` covers `distributed_shard_lineage_locator_pointer.json` and `distributed_shard_lineage_locator_history.json`.",
+        "- `just distributed-shard-lineage-locator-transport <point|reconcile|history>` covers `distributed_shard_lineage_transport_locator.json`, `distributed_shard_lineage_transport_locator_reconciliation.json`, and `distributed_shard_lineage_transport_locator_reconciliation_history.json`.",
     ] {
         assert!(
             !workflows.contains(forbidden),

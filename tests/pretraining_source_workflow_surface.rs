@@ -30,9 +30,9 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Pretraining source stays grouped under two workflow entrypoints:",
-        "`just pretraining-source-approval` writes `pretraining_source_approval_receipt.json`.",
-        "`just pretraining-source-provenance <receipt|bundle>` covers `pretraining_source_provenance_receipt.json` and `pretraining_source_provenance_evidence_bundle.json`.",
+        "Pretraining source stays grouped under these workflow families:",
+        "Approval flow: `just pretraining-source-approval`.",
+        "Provenance flow: `just pretraining-source-provenance <receipt|bundle>`.",
         "`just workflow-surface-check-pretraining-source` keeps the grouped CLI and recipe surface checked.",
     ] {
         assert!(
@@ -45,6 +45,8 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
         "just pretraining-source-approval-receipt",
         "just pretraining-source-provenance-receipt",
         "just pretraining-source-provenance-evidence-bundle",
+        "- `just pretraining-source-approval` writes `pretraining_source_approval_receipt.json`.",
+        "- `just pretraining-source-provenance <receipt|bundle>` covers `pretraining_source_provenance_receipt.json` and `pretraining_source_provenance_evidence_bundle.json`.",
     ] {
         assert!(
             !workflows.contains(forbidden),
