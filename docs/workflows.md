@@ -76,6 +76,7 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 - `just queue-snapshot-check` validates that the stamped queue snapshot still matches the current active TODO block and either the current parent commit or the immediately previous parent commit, so a standalone queue-refresh commit stays valid under `jj`.
 - `just workflow-surface-check-deployment-verification` validates the deployment verification family stays surface-complete across CLI, `just`, fixtures, workflow docs, and the reference index.
 - `just workflow-surface-check-public-cli` keeps the admitted public CLI family set and grouped-path guard checked.
+- `just workflow-surface-check-operator-grammar` keeps the grouped nested operator grammar checked.
 - `just huggingface-publish` shells the provider-neutral publish request through the Hugging Face adapter.
 
 ## Deployment

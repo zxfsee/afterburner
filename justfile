@@ -529,3 +529,6 @@ workflow-surface-check-deployment-matrix:
 
 workflow-surface-check-public-cli:
     cargo nextest run --locked --test public_cli_admission_gate
+
+workflow-surface-check-operator-grammar:
+    cargo nextest run --locked --test operator_grammar_gate
