@@ -25,7 +25,7 @@ fn deployment_utility_family_stays_grouped_and_surface_complete() {
         "Scheduler/runtime simulation: `just scheduler-runtime-simulate`.",
         "Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.",
         "Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.",
-        "`just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.",
+        "`just workflow-surface-check-deployment-utility` guards the grouped deployment-utility workflow map and reference split.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -51,7 +51,7 @@ fn deployment_utility_family_stays_grouped_and_surface_complete() {
         "`burn_bpk_migration_surface_inventory.json`",
         "`distributed_load_profile.json`",
         "`huggingface_publish_receipt.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-deployment-utility` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-utility` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),

@@ -127,7 +127,7 @@ operator use case justifies promotion.
 - Burn migration inventory: `just burn-bpk-migration-surface-report`, `cargo nextest run --locked --test burn_stable_release_availability`.
 - Load and publish utilities: `just distributed-load-profile`, `afterburner deploy hf-publish --request <path>`.
 - `just workflow-surface-check-deployment-matrix` keeps the grouped deployment matrix wording checked across the main deployment section.
-- `just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.
+- `just workflow-surface-check-deployment-utility` guards the grouped deployment-utility workflow map and reference split.
 
 ## Rollout verification
 
