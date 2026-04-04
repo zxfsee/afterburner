@@ -56,13 +56,14 @@ fn artifact_cleanup_inventory_schema_and_workflow_are_explicit() {
         "justfile must expose the cleanup-inventory workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("artifact_cleanup_inventory.json"),
+        reference.contains("artifact_cleanup_inventory.json"),
         "workflow reference must mention the cleanup inventory artifact"
     );
     assert!(
-        readme.contains("just cleanup-inventory"),
+        workflows.contains("just cleanup-inventory"),
         "workflow reference must mention the cleanup inventory workflow"
     );
 }

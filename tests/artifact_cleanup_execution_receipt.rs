@@ -58,13 +58,14 @@ fn artifact_cleanup_execution_receipt_contract_is_documented() {
         );
     }
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("artifact_cleanup_execution_receipt.json"),
+        reference.contains("artifact_cleanup_execution_receipt.json"),
         "workflow reference must mention the cleanup execution receipt artifact"
     );
     assert!(
-        readme.contains("just cleanup-execute"),
+        workflows.contains("just cleanup-execute"),
         "workflow reference must mention the cleanup execution workflow"
     );
 }

@@ -159,11 +159,11 @@ operator use case justifies promotion.
 
 ## Cleanup
 
-- `just cleanup-inventory` writes `artifact_cleanup_inventory.json`.
-- `just cleanup-policy` writes `artifact_cleanup_policy.json`.
-- `just cleanup-dry-run` writes `artifact_cleanup_dry_run_receipt.json`.
-- `just cleanup-execute` writes `artifact_cleanup_execution_receipt.json`.
-- `just cleanup-evidence-bundle` writes `artifact_cleanup_evidence_bundle.json`.
+- Cleanup stays grouped under these workflow families:
+- Inventory and policy: `just cleanup-inventory`, `just cleanup-policy`.
+- Execution flow: `just cleanup-dry-run`, `just cleanup-execute`.
+- Evidence packaging: `just cleanup-evidence-bundle`.
+- `just workflow-surface-check-cleanup` keeps the grouped cleanup recipe and reference split checked.
 
 ## Drift
 

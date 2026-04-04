@@ -61,13 +61,14 @@ fn artifact_cleanup_evidence_bundle_schema_and_workflow_are_explicit() {
         "justfile must expose the cleanup-evidence-bundle workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("artifact_cleanup_evidence_bundle.json"),
+        reference.contains("artifact_cleanup_evidence_bundle.json"),
         "workflow reference must mention the cleanup evidence bundle artifact"
     );
     assert!(
-        readme.contains("just cleanup-evidence-bundle"),
+        workflows.contains("just cleanup-evidence-bundle"),
         "workflow reference must mention the cleanup evidence bundle workflow"
     );
 }

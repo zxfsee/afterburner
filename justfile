@@ -511,3 +511,6 @@ workflow-surface-check-pretraining-source:
 
 workflow-surface-check-drift:
     cargo nextest run --locked --test drift_workflow_surface
+
+workflow-surface-check-cleanup:
+    cargo nextest run --locked --test cleanup_workflow_surface

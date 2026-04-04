@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped cleanup docs surface consolidation [Serving/Deployment Infra]
-  - Goal: Keep `docs/workflows.md` focused on grouped cleanup entrypoints while moving exact cleanup artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
 - Grouped profiling docs surface consolidation [Runtime Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped profiling entrypoints while moving exact profiling artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
   - Kind: `mixed`
@@ -55,6 +48,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `ops`
   - Scope: `Cargo.toml`, `tests/queue_snapshot.rs`
+
+- Grouped deployment docs matrix consolidation [Serving/Deployment Infra]
+  - Goal: Keep the main deployment workflow matrix in `docs/workflows.md` grouped around operator-facing deploy families while leaving exact deployment-launch and lease artifact enumeration in `docs/reference.md`.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
 
 ## [Trunk]
 """

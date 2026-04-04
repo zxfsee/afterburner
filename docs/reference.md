@@ -101,6 +101,7 @@ unless they graduate into a clear operator intent.
   - `artifact_cleanup_dry_run_receipt.json`
   - `artifact_cleanup_execution_receipt.json`
   - `artifact_cleanup_evidence_bundle.json`
+  - Use [docs/workflows.md](./workflows.md) for the grouped entrypoint map and `workflow-surface-check-cleanup` for mechanical coverage.
 - Profiling:
   - `infer_hotspot_summary.json`
   - `profiling_environment_snapshot.json`

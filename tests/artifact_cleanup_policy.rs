@@ -55,13 +55,14 @@ fn artifact_cleanup_policy_schema_and_workflow_are_explicit() {
         "justfile must expose the cleanup-policy workflow"
     );
 
-    let readme = repo_file("docs/workflows.md");
+    let reference = repo_file("docs/reference.md");
+    let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("artifact_cleanup_policy.json"),
+        reference.contains("artifact_cleanup_policy.json"),
         "workflow reference must mention the cleanup policy artifact"
     );
     assert!(
-        readme.contains("just cleanup-policy"),
+        workflows.contains("just cleanup-policy"),
         "workflow reference must mention the cleanup policy workflow"
     );
 }
