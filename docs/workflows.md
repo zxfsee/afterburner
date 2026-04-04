@@ -154,13 +154,13 @@ operator use case justifies promotion.
 
 ## Drift
 
-- `just drift-receipt` writes `infer_output_drift_receipt.json`.
-- Drift stays grouped under these workflow families:
+- Drift stays grouped under these operator flows:
+- Signal capture: `just drift-receipt`.
 - Baseline setup: `just drift-baseline`, `just drift-approve-baseline`.
-- Approved baseline state: `just drift-point-approved-baseline`, `just drift-record-approved-baseline-history`, `just drift-checkpoint-baseline`.
-- Baseline exports: `just drift-export-baseline-bundle`, `just drift-export-baseline-handoff`, `just drift-point-baseline-transport-locator`.
+- State and checkpointing: `just drift-point-approved-baseline`, `just drift-record-approved-baseline-history`, `just drift-checkpoint-baseline`.
+- Exports and transport: `just drift-export-baseline-bundle`, `just drift-export-baseline-handoff`, `just drift-point-baseline-transport-locator`.
 - Baseline changes: `just drift-rollback-approved-baseline`, `just drift-supersede-baseline-approval`, `just drift-refresh-baseline`.
-- `just workflow-surface-check-drift` keeps the grouped drift recipe and reference split checked.
+- `just workflow-surface-check-drift` guards the grouped drift workflow map and reference split.
 
 ## Profiling
 
