@@ -13,6 +13,13 @@ header = """# Changelog
 
 ## TODO
 
+- Deployment verification operator grammar consolidation [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Replace grouped deployment verification `*-manage <taxonomy-heavy-action>` surfaces with fewer, stable, action-oriented operator segments so artifact/protocol detail stops dominating the visible command path.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`
+  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
+
 - Pretraining source grouped entrypoint extraction [Data Infra, Runtime Infra]
   - Goal: Collapse the pretraining source provenance noun-variant recipe expansion into grouped `just` entrypoints backed by typed helpers so the source family stops carrying its own hand-expanded command registry in `justfile`.
   - Kind: `mixed`
@@ -26,13 +33,6 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/`
-
-- Deployment verification operator grammar consolidation [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Replace grouped deployment verification `*-manage <taxonomy-heavy-action>` surfaces with fewer, stable, action-oriented operator segments so artifact/protocol detail stops dominating the visible command path.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`
-  - Scope: `justfile`, `src/`, `tests/`, `docs/workflows.md`, `docs/reference.md`
 
 - Grouped rollout docs surface consolidation [Serving/Deployment Infra]
   - Goal: Keep `docs/workflows.md` focused on grouped rollout entrypoints while moving exact rollout artifact enumeration into `docs/reference.md` and preserving coverage in family-level tests.
