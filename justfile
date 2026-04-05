@@ -329,10 +329,10 @@ deployment-verification-bundle-locator-reconcile locator pointer:
 deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify bundle locator reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_locator_reconciliation_history.json
 
-deployment-verification-bundle-rollback-locator current_pointer restored_pointer rolled_back_at_unix_ms:
+deployment-verification-bundle-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_locator_rollback.json
 
-deployment-verification-bundle-rollback-locator-history rollback event recorded_at_unix_ms:
+deployment-verification-bundle-rollback-pointer-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle locator-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_locator_rollback_history.json
 
 deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:
@@ -417,10 +417,10 @@ deployment-verification-receipt-locator-reconcile locator pointer:
 deployment-verification-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt locator reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_reconciliation_history.json
 
-deployment-verification-receipt-rollback current_pointer restored_pointer rolled_back_at_unix_ms:
+deployment-verification-receipt-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-receipt locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_rollback.json
 
-deployment-verification-receipt-rollback-history rollback event recorded_at_unix_ms:
+deployment-verification-receipt-rollback-pointer-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-receipt locator-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_rollback_history.json
 
 deployment-verification-receipt-rollback-reconcile rollback current_rollback:
