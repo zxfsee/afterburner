@@ -63,11 +63,11 @@ fn scheduler_heartbeat_family_stays_grouped_and_surface_complete() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Scheduler heartbeat stays grouped under these workflow families:",
+        "Scheduler heartbeat stays grouped under these operator flows:",
         "Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.",
         "Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession <history|reconcile|reconciliation-history>`.",
         "Pointer support flows: `just scheduler-heartbeat-pointer <history|reconcile|supersede|rollback>`, `just scheduler-heartbeat-pointer-supersession <history|reconcile|reconciliation-history>`, `just scheduler-heartbeat-pointer-rollback <history|reconcile|reconciliation-history|supersede>`, `just scheduler-heartbeat-pointer-rollback-supersession <history|reconcile|reconciliation-history>`.",
-        "`just workflow-surface-check-scheduler-heartbeat` keeps the exhaustive CLI, fixture, and grouped recipe surface checked.",
+        "`just workflow-surface-check-scheduler-heartbeat` keeps the grouped heartbeat workflow map and contract surface checked.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -91,11 +91,11 @@ fn scheduler_heartbeat_family_stays_grouped_and_surface_complete() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "Scheduler heartbeat family groups:",
+        "Scheduler heartbeat artifact groups:",
         "`gpu_scheduler_heartbeat*.json`",
         "`gpu_scheduler_heartbeat_pointer*.json`",
         "`gpu_scheduler_heartbeat_pointer_rollback*.json`",
-        "Use [docs/workflows.md](./workflows.md) for the grouped recipe map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.",
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.",
     ] {
         assert!(
             reference.contains(needle),
