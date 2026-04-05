@@ -10,25 +10,26 @@ fn repo_file(path: &str) -> String {
 fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-receipt-locator action +args:",
-        "deployment-verification-receipt-rollback action +args:",
+        "deployment-verification-receipt-locator-point locator:",
+        "deployment-verification-receipt-locator-history pointer event recorded_at_unix_ms:",
+        "deployment-verification-receipt-locator-reconcile locator pointer:",
+        "deployment-verification-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-receipt-rollback-locator current_pointer restored_pointer rolled_back_at_unix_ms:",
+        "deployment-verification-receipt-rollback-locator-history rollback event recorded_at_unix_ms:",
+        "deployment-verification-receipt-rollback-reconcile rollback current_rollback:",
+        "deployment-verification-receipt-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-receipt-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:",
+        "deployment-verification-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:",
+        "deployment-verification-receipt-rollback-supersession-reconcile supersession current_supersession:",
+        "deployment-verification-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
 
     for forbidden in [
-        "deployment-verification-record-receipt-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt-locator locator pointer:",
-        "deployment-verification-record-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-rollback-receipt-locator current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-record-receipt-locator-rollback-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt-rollback rollback current_rollback:",
-        "deployment-verification-record-receipt-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-supersede-receipt-rollback previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt-rollback-supersession supersession current_supersession:",
-        "deployment-verification-record-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-record-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:",
+        "deployment-verification-receipt-locator action +args:",
+        "deployment-verification-receipt-rollback action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

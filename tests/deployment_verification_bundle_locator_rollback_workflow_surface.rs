@@ -10,27 +10,28 @@ fn repo_file(path: &str) -> String {
 fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-bundle-locator action +args:",
-        "deployment-verification-bundle-rollback action +args:",
+        "deployment-verification-bundle-locator-point locator:",
+        "deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms:",
+        "deployment-verification-bundle-locator-reconcile locator pointer:",
+        "deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-locator current_pointer restored_pointer rolled_back_at_unix_ms:",
+        "deployment-verification-bundle-rollback-locator-history rollback event recorded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:",
+        "deployment-verification-bundle-rollback-history rollback event recorded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-reconcile rollback current_rollback:",
+        "deployment-verification-bundle-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:",
+        "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:",
+        "deployment-verification-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
 
     for forbidden in [
-        "deployment-verification-record-bundle-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-bundle-locator locator pointer:",
-        "deployment-verification-record-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-rollback-bundle-locator current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-record-bundle-locator-rollback-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-rollback-bundle current_bundle restored_bundle rolled_back_at_unix_ms:",
-        "deployment-verification-record-bundle-rollback-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-bundle-rollback rollback current_rollback:",
-        "deployment-verification-record-bundle-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-supersede-bundle-rollback previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-reconcile-bundle-rollback-supersession supersession current_supersession:",
-        "deployment-verification-record-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-record-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:",
+        "deployment-verification-bundle-locator action +args:",
+        "deployment-verification-bundle-rollback action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

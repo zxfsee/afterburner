@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Deployment-verification action bucket collapse [Serving/Deployment Infra, Runtime Infra]
-  - Goal: Remove the remaining deployment-verification `action +args` buckets from `justfile` and collapse the exposed operator grammar behind typed helpers so this family stops mirroring internal protocol structure.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_verification_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
-
 - Distributed-shard-lineage action bucket collapse [Distributed Training, Runtime Infra]
   - Goal: Remove the remaining distributed shard-lineage `action +args` buckets from `justfile` and collapse the operator-visible grammar behind intent-first typed helpers.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
   - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
+
+- Kube-lease family collapse [Serving/Deployment Infra]
+  - Goal: Reduce the remaining kube-lease recipe expansion in `justfile` by collapsing the lease-facing grammar and moving repeated lease semantics behind typed helpers.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
 
 ## [Trunk]
 """

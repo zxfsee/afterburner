@@ -11,22 +11,21 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-bundle receipt:",
-        "deployment-verification-bundle-history action +args:",
+        "deployment-verification-bundle-history-record bundle event recorded_at_unix_ms:",
+        "deployment-verification-bundle-history-reconciliation reconciliation event recorded_at_unix_ms:",
         "deployment-verification-bundle-reconcile receipt bundle:",
-        "deployment-verification-bundle-transport action +args:",
+        "deployment-verification-bundle-transport-point bundle:",
+        "deployment-verification-bundle-transport-history locator event recorded_at_unix_ms:",
+        "deployment-verification-bundle-transport-reconcile bundle locator:",
+        "deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
 
     for forbidden in [
-        "deployment-verification-record-bundle-history bundle event recorded_at_unix_ms:",
-        "deployment-verification-point-bundle-transport-locator bundle:",
-        "deployment-verification-record-bundle-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-bundle-transport-locator bundle locator:",
-        "deployment-verification-record-bundle-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-bundle receipt bundle:",
-        "deployment-verification-record-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle-history action +args:",
+        "deployment-verification-bundle-transport action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

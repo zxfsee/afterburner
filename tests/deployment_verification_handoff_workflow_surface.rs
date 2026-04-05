@@ -11,21 +11,20 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-handoff bundle:",
-        "deployment-verification-handoff-history action +args:",
+        "deployment-verification-handoff-history-record handoff event recorded_at_unix_ms:",
+        "deployment-verification-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport action +args:",
+        "deployment-verification-handoff-transport-point handoff:",
+        "deployment-verification-handoff-transport-history locator event recorded_at_unix_ms:",
+        "deployment-verification-handoff-transport-reconcile handoff locator:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
 
     for forbidden in [
-        "deployment-verification-record-handoff-history handoff event recorded_at_unix_ms:",
-        "deployment-verification-point-handoff-transport-locator handoff:",
-        "deployment-verification-record-handoff-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-handoff-transport-locator handoff locator:",
-        "deployment-verification-reconcile-handoff bundle handoff:",
-        "deployment-verification-record-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff-history action +args:",
+        "deployment-verification-handoff-transport action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

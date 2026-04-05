@@ -11,22 +11,21 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
-        "deployment-verification-receipt-history action +args:",
+        "deployment-verification-receipt-history-record receipt event recorded_at_unix_ms:",
+        "deployment-verification-receipt-history-reconciliation reconciliation event recorded_at_unix_ms:",
         "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:",
-        "deployment-verification-receipt-transport action +args:",
+        "deployment-verification-receipt-transport-point receipt:",
+        "deployment-verification-receipt-transport-history locator event recorded_at_unix_ms:",
+        "deployment-verification-receipt-transport-reconcile receipt locator:",
+        "deployment-verification-receipt-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
     }
 
     for forbidden in [
-        "deployment-verification-point-receipt-transport-locator receipt:",
-        "deployment-verification-record-receipt-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt-transport-locator receipt locator:",
-        "deployment-verification-record-receipt-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-record-receipt-history receipt event recorded_at_unix_ms:",
-        "deployment-verification-reconcile-receipt receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
-        "deployment-verification-record-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-receipt-history action +args:",
+        "deployment-verification-receipt-transport action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),
