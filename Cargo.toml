@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-stack transport/locator artifact split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack transport and locator artifact cluster so the grouped deployment-stack locator surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped deployment-stack check artifact split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with `deployment_stack_check.json` so the grouped deployment-stack check surface cannot drift unnoticed.
   - Kind: `gate`
@@ -43,6 +36,13 @@ header = """# Changelog
 
 - Grouped inference-side contract detail split validation gate alignment [Inference, Runtime Infra]
   - Goal: Keep the shared README/reference split validator aligned with the remaining inference-side contract details such as versioned artifact layout, manifest paths, calibration metadata, and observability path naming so the front-section reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped deployment-utility workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-utility workflow-link line so the grouped utility reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
