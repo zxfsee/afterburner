@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped rollout/reference validation wording alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared rollout/reference validation coverage aligned with the newer grouped operator-flow wording so rollout reference notes do not drift without a validation surface noticing.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`, `tests/promotion_orchestration.rs`
-
 - Grouped scheduler-heartbeat validation wording alignment [Serving/Deployment Infra]
   - Goal: Keep the shared scheduler-heartbeat validation surfaces aligned with the newer grouped operator-flow wording so matrix/reference checks no longer lag behind the family docs wording.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped source/lineage reference split validation gate alignment [Data Infra, Distributed Training]
   - Goal: Keep the shared README/reference split validator aligned with the newer source and lineage artifact-group wording so the reference index headings cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped rollout reference split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the newer rollout reference heading so the grouped rollout reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

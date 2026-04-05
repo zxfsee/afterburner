@@ -51,9 +51,13 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
     ];
 
     let expected_headings = [
+        "Rollout verification and pointer state:",
         "Pretraining source artifact groups:",
         "Distributed shard lineage artifact groups:",
     ];
+
+    let expected_rollout_link =
+        "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map.";
 
     for (recipe, link_line) in expected_links {
         assert!(
@@ -72,6 +76,11 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
             "reference index must keep the grouped source/lineage wording `{heading}`"
         );
     }
+
+    assert!(
+        reference.contains(expected_rollout_link),
+        "reference index must keep the grouped rollout workflow linkage `{expected_rollout_link}`"
+    );
 
     let referenced_checks = reference
         .lines()
