@@ -52,21 +52,10 @@ fn kube_rs_gpu_lease_history_schema_and_workflow_are_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("kube-rs-lease-history pointer event recorded_at_unix_ms:"),
-        "justfile must expose the kube-rs-lease-history workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("kube_rs_gpu_lease_history.json"),
         "workflow reference must mention the kube-rs lease history artifact"
-    );
-    assert!(
-        workflows.contains("just kube-rs-lease-history"),
-        "workflow reference must mention the kube-rs lease history workflow"
     );
 }
 

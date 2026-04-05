@@ -16,9 +16,6 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "deploy-launch-handoff bundle:",
         "deploy-launch-handoff-reconcile bundle handoff:",
         "kube-rs-lease-reconcile lease namespace resource_name:",
-        "kube-rs-lease-pointer reconciliation:",
-        "kube-rs-lease-history pointer event recorded_at_unix_ms:",
-        "kube-rs-lease-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-stack:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -31,7 +28,8 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "Bundle flow: `just deploy-launch-bundle`, `just deploy-launch-bundle-reconcile`.",
         "Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`.",
         "Launch support artifacts for history, locator, transport, and reconciliation stay grouped behind `afterburner deploy record-launch-...`, `afterburner deploy point-launch-...`, and `afterburner deploy reconcile-launch-...`.",
-        "Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-pointer`, `just kube-rs-lease-history`, `just kube-rs-lease-reconciliation-history`.",
+        "Kube lease flow: `just kube-rs-lease-reconcile`.",
+        "Kube lease pointer and history support artifacts stay behind `afterburner deploy point-kube-rs-lease` and `afterburner deploy record-kube-rs-lease-...`.",
         "`just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.",
     ] {
         assert!(
@@ -48,9 +46,6 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "- `just deploy-launch-handoff` writes `deployment_stack_launch_evidence_handoff.json`.",
         "- `just deploy-launch-handoff-reconcile` writes `deployment_stack_launch_evidence_handoff_reconciliation.json`.",
         "- `just kube-rs-lease-reconcile` writes `kube_rs_gpu_lease_reconciliation.json`.",
-        "- `just kube-rs-lease-pointer` writes `kube_rs_gpu_lease_pointer.json`.",
-        "- `just kube-rs-lease-history` writes `kube_rs_gpu_lease_history.json`.",
-        "- `just kube-rs-lease-reconciliation-history` writes `kube_rs_gpu_lease_reconciliation_history.json`.",
     ] {
         assert!(
             !workflows.contains(forbidden),

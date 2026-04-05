@@ -76,9 +76,6 @@ fn justfile_thinness_debt_stays_bounded() {
         "deploy-launch-bundle-reconcile receipt bundle".to_string(),
         "deploy-launch-handoff-reconcile bundle handoff".to_string(),
         "kube-rs-lease-reconcile lease namespace resource_name".to_string(),
-        "kube-rs-lease-pointer reconciliation".to_string(),
-        "kube-rs-lease-history pointer event recorded_at_unix_ms".to_string(),
-        "kube-rs-lease-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-reconcile receipt bundle".to_string(),
         "deployment-verification-handoff-reconcile bundle handoff".to_string(),
         "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources".to_string(),
@@ -92,9 +89,6 @@ fn justfile_thinness_debt_stays_bounded() {
         "distributed-shard-lineage-transport-locator handoff".to_string(),
         "distributed-shard-lineage-transport-locator-reconcile handoff locator".to_string(),
         "distributed-shard-lineage-transport-locator-history reconciliation event recorded_at_unix_ms".to_string(),
-        "drift-approved-baseline-history pointer event recorded_at_unix_ms".to_string(),
-        "drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms".to_string(),
-        "drift-approved-baseline-supersede previous_approval next_approval superseded_at_unix_ms".to_string(),
     ]);
     assert_eq!(
         expanded_recipes, allowed_expanded,

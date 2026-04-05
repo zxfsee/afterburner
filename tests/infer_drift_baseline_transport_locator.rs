@@ -46,21 +46,10 @@ fn infer_output_drift_baseline_transport_locator_schema_and_workflow_are_explici
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("drift-baseline-transport-locator handoff:"),
-        "justfile must expose the drift-baseline-transport-locator workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("infer_output_drift_baseline_transport_locator.json"),
         "workflow reference must mention the baseline transport locator artifact"
-    );
-    assert!(
-        workflows.contains("just drift-baseline-transport-locator"),
-        "workflow reference must mention the baseline transport locator workflow"
     );
 }
 

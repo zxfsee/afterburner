@@ -50,21 +50,10 @@ fn infer_output_drift_baseline_bundle_schema_and_workflow_are_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("drift-baseline-bundle pointer history:"),
-        "justfile must expose the drift-baseline-bundle workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("infer_output_drift_baseline_bundle.json"),
         "workflow reference must mention the baseline bundle artifact"
-    );
-    assert!(
-        workflows.contains("just drift-baseline-bundle"),
-        "workflow reference must mention the baseline bundle workflow"
     );
 }
 

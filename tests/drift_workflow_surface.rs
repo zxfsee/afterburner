@@ -12,14 +12,6 @@ fn drift_family_stays_grouped_and_surface_complete() {
         "drift-receipt candidate_summary current_summary policy:",
         "drift-baseline summary receipt:",
         "drift-approve-baseline baseline approved_by approval_ticket approved_at_unix_ms:",
-        "drift-approved-baseline-pointer approval:",
-        "drift-approved-baseline-history pointer event recorded_at_unix_ms:",
-        "drift-checkpoint-baseline pointer history:",
-        "drift-baseline-bundle pointer history:",
-        "drift-baseline-handoff bundle:",
-        "drift-baseline-transport-locator handoff:",
-        "drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms:",
-        "drift-approved-baseline-supersede previous_approval next_approval superseded_at_unix_ms:",
         "drift-refresh-baseline summary receipt current_baseline:",
         "workflow-surface-check-drift:",
     ] {
@@ -31,9 +23,8 @@ fn drift_family_stays_grouped_and_surface_complete() {
         "Drift stays grouped under these operator flows:",
         "Signal capture: `just drift-receipt`.",
         "Baseline setup: `just drift-baseline`, `just drift-approve-baseline`.",
-        "State and checkpointing: `just drift-approved-baseline-pointer`, `just drift-approved-baseline-history`, `just drift-checkpoint-baseline`.",
-        "Exports and transport: `just drift-baseline-bundle`, `just drift-baseline-handoff`, `just drift-baseline-transport-locator`.",
-        "Baseline changes: `just drift-approved-baseline-rollback`, `just drift-approved-baseline-supersede`, `just drift-refresh-baseline`.",
+        "Detailed baseline state, checkpointing, export, transport, rollback, and supersession artifacts stay behind `afterburner drift point-approved-baseline`, `record-approved-baseline-history`, `checkpoint-baseline`, `export-baseline-...`, `rollback-approved-baseline`, and `supersede-baseline-approval`.",
+        "Baseline refresh: `just drift-refresh-baseline`.",
         "`just workflow-surface-check-drift` guards the grouped drift workflow map and reference split.",
     ] {
         assert!(
@@ -45,14 +36,6 @@ fn drift_family_stays_grouped_and_surface_complete() {
     for forbidden in [
         "- `just drift-baseline` writes `infer_output_drift_baseline.json`.",
         "- `just drift-approve-baseline` writes `infer_output_drift_baseline_approval.json`.",
-        "- `just drift-approved-baseline-pointer` writes `infer_output_drift_baseline_pointer.json`.",
-        "- `just drift-approved-baseline-history` writes `infer_output_drift_baseline_history.json`.",
-        "- `just drift-checkpoint-baseline` writes `infer_output_drift_baseline_checkpoint.json`.",
-        "- `just drift-baseline-bundle` writes `infer_output_drift_baseline_bundle.json`.",
-        "- `just drift-baseline-handoff` writes `infer_output_drift_baseline_handoff.json`.",
-        "- `just drift-baseline-transport-locator` writes `infer_output_drift_baseline_transport_locator.json`.",
-        "- `just drift-approved-baseline-rollback` writes `infer_output_drift_baseline_rollback.json`.",
-        "- `just drift-approved-baseline-supersede` writes `infer_output_drift_baseline_supersession.json`.",
         "- `just drift-refresh-baseline` writes `infer_output_drift_baseline_refresh.json`.",
     ] {
         assert!(

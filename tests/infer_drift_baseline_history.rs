@@ -54,21 +54,10 @@ fn infer_output_drift_baseline_history_schema_and_workflow_are_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("drift-approved-baseline-history pointer event recorded_at_unix_ms:"),
-        "justfile must expose the drift-approved-baseline-history workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("infer_output_drift_baseline_history.json"),
         "workflow reference must mention the baseline history artifact"
-    );
-    assert!(
-        workflows.contains("just drift-approved-baseline-history"),
-        "workflow reference must mention the baseline history workflow"
     );
 }
 

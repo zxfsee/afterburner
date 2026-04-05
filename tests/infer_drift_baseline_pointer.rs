@@ -46,21 +46,10 @@ fn infer_output_drift_baseline_pointer_schema_and_workflow_are_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("drift-approved-baseline-pointer approval:"),
-        "justfile must expose the drift-approved-baseline-pointer workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("infer_output_drift_baseline_pointer.json"),
         "workflow reference must mention the baseline pointer artifact"
-    );
-    assert!(
-        workflows.contains("just drift-approved-baseline-pointer"),
-        "workflow reference must mention the baseline pointer workflow"
     );
 }
 

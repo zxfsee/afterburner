@@ -111,7 +111,8 @@ operator use case justifies promotion.
 - Bundle flow: `just deploy-launch-bundle`, `just deploy-launch-bundle-reconcile`.
 - Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`.
 - Launch support artifacts for history, locator, transport, and reconciliation stay grouped behind `afterburner deploy record-launch-...`, `afterburner deploy point-launch-...`, and `afterburner deploy reconcile-launch-...`.
-- Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-pointer`, `just kube-rs-lease-history`, `just kube-rs-lease-reconciliation-history`.
+- Kube lease flow: `just kube-rs-lease-reconcile`.
+- Kube lease pointer and history support artifacts stay behind `afterburner deploy point-kube-rs-lease` and `afterburner deploy record-kube-rs-lease-...`.
 - `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.
 - Scheduler heartbeat stays grouped under these operator flows:
 - Primary heartbeat flow: `just scheduler-heartbeat`.
@@ -153,9 +154,8 @@ operator use case justifies promotion.
 - Drift stays grouped under these operator flows:
 - Signal capture: `just drift-receipt`.
 - Baseline setup: `just drift-baseline`, `just drift-approve-baseline`.
-- State and checkpointing: `just drift-approved-baseline-pointer`, `just drift-approved-baseline-history`, `just drift-checkpoint-baseline`.
-- Exports and transport: `just drift-baseline-bundle`, `just drift-baseline-handoff`, `just drift-baseline-transport-locator`.
-- Baseline changes: `just drift-approved-baseline-rollback`, `just drift-approved-baseline-supersede`, `just drift-refresh-baseline`.
+- Detailed baseline state, checkpointing, export, transport, rollback, and supersession artifacts stay behind `afterburner drift point-approved-baseline`, `record-approved-baseline-history`, `checkpoint-baseline`, `export-baseline-...`, `rollback-approved-baseline`, and `supersede-baseline-approval`.
+- Baseline refresh: `just drift-refresh-baseline`.
 - `just workflow-surface-check-drift` guards the grouped drift workflow map and reference split.
 
 ## Profiling
