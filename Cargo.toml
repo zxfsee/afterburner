@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment section split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment section heading so the grouped deployment reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped profiling section split validation gate alignment [Runtime Infra]
   - Goal: Keep the shared README/reference split validator aligned with the profiling section heading and family artifacts so the grouped profiling reference surface cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped deployment-utility runtime/publish split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the remaining deployment-utility runtime, load, and publish artifacts so those grouped utility surfaces cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped kube-lease reference split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the kube-lease artifact cluster so the grouped deployment-stack lease surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

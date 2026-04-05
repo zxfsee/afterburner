@@ -32,6 +32,7 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
         );
     }
     for needle in [
+        "Deployment:",
         "artifact_upload_request.json",
         "Scheduler heartbeat artifact groups:",
         "Deployment stack artifact groups:",
