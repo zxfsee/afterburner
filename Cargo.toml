@@ -13,34 +13,12 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped training/inference contract split validation gate alignment [Inference, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the top training and inference contract surfaces so the reference index front section cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
-- Grouped inference-side contract detail split validation gate alignment [Inference, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the remaining inference-side contract details such as versioned artifact layout, manifest paths, calibration metadata, and observability path naming so the front-section reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped deployment-utility workflow-link split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-utility workflow-link line so the grouped utility reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
-
-- Grouped text-pretraining path split validation gate alignment [Pre-training, Inference]
-  - Goal: Keep the shared README/reference split validator aligned with the text-pretraining path references so the front-section text training and inference surfaces cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped capability summary split validation gate alignment [Runtime Infra, Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the capability and stance summary section so the repo-wide operating reference summary cannot drift unnoticed.
   - Kind: `gate`
@@ -48,8 +26,29 @@ header = """# Changelog
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped training-side artifact/event heading split validation gate alignment [Training, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the training-side artifact/event heading and event lines so that front-section training coverage cannot drift unnoticed.
+- Grouped deployment-stack workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack workflow-link line so the grouped deployment-stack reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped scheduler-heartbeat workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat workflow-link line so the grouped scheduler reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped deployment-verification workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-verification workflow-link line so the grouped verification reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped source/lineage workflow-link split validation gate alignment [Data Infra, Distributed Training]
+  - Goal: Keep the shared README/reference split validator aligned with the source and lineage workflow-link lines so the grouped source/lineage reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

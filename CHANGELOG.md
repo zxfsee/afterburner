@@ -2,34 +2,12 @@
 
 ## TODO
 
-- Grouped training/inference contract split validation gate alignment [Inference, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the top training and inference contract surfaces so the reference index front section cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
-- Grouped inference-side contract detail split validation gate alignment [Inference, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the remaining inference-side contract details such as versioned artifact layout, manifest paths, calibration metadata, and observability path naming so the front-section reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped deployment-utility workflow-link split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-utility workflow-link line so the grouped utility reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
-
-- Grouped text-pretraining path split validation gate alignment [Pre-training, Inference]
-  - Goal: Keep the shared README/reference split validator aligned with the text-pretraining path references so the front-section text training and inference surfaces cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped capability summary split validation gate alignment [Runtime Infra, Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the capability and stance summary section so the repo-wide operating reference summary cannot drift unnoticed.
   - Kind: `gate`
@@ -37,14 +15,35 @@
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped training-side artifact/event heading split validation gate alignment [Training, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the training-side artifact/event heading and event lines so that front-section training coverage cannot drift unnoticed.
+- Grouped deployment-stack workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack workflow-link line so the grouped deployment-stack reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-<!-- queue-snapshot: todo_sha256=75774d9ba48a8f726705795ced02349328079ee6f06d08efb934367cb9a4d7ba parent_commit=4db884c257ff3ccbb0b8a7fcb74d01c24a0b07ff -->
+- Grouped scheduler-heartbeat workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat workflow-link line so the grouped scheduler reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped deployment-verification workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-verification workflow-link line so the grouped verification reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped source/lineage workflow-link split validation gate alignment [Data Infra, Distributed Training]
+  - Goal: Keep the shared README/reference split validator aligned with the source and lineage workflow-link lines so the grouped source/lineage reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+<!-- queue-snapshot: todo_sha256=f69e9c63540e650fa0be06163907368b00242119d2e5705624fb9de6dac9acee parent_commit=a56c98695f2bd64f7eaf696db682183c6ec26fa5 -->
 
 ## [Trunk]
 
@@ -725,6 +724,7 @@
 - Align deployment-verification receipt and handoff artifacts ([45d80a9])
 - Align deployment-stack locator artifacts ([44d2883])
 - Align deployment-stack check artifact ([4db884c])
+- Align training-side artifact and event lines ([a56c986])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -1384,5 +1384,6 @@
 [45d80a9]: https://github.com/zxfsee/afterburner/commit/45d80a91164d32a3e7f93403d567ac209515cdec
 [44d2883]: https://github.com/zxfsee/afterburner/commit/44d2883b23aef0881fe31823f2e9970984b8e322
 [4db884c]: https://github.com/zxfsee/afterburner/commit/4db884c257ff3ccbb0b8a7fcb74d01c24a0b07ff
+[a56c986]: https://github.com/zxfsee/afterburner/commit/a56c98695f2bd64f7eaf696db682183c6ec26fa5
 
 <!-- generated by git-cliff -->
