@@ -133,12 +133,12 @@ operator use case justifies promotion.
 - Post-promotion verification: `just rollout-verify` delegates to `afterburner verify rollout`.
 - Rollback: `just rollout-rollback` delegates to `afterburner rollback current-pointer`.
 - Deployment verification stays grouped under these operator flows:
-- Receipt flow: `just deployment-verification-receipt`.
-- Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.
-- Bundle flow: `just deployment-verification-bundle`.
-- Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow.
-- Handoff flow: `just deployment-verification-handoff`.
-- Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow.
+- Receipt flow: `just deployment-verification-receipt`, `just deployment-verification-receipt-reconcile`.
+- Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow, but the detailed support artifacts stay behind `afterburner verify receipt ...` and `afterburner rollback verification-receipt ...`.
+- Bundle flow: `just deployment-verification-bundle`, `just deployment-verification-bundle-reconcile`.
+- Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow, but the detailed support artifacts stay behind `afterburner verify bundle ...` and `afterburner rollback verification-bundle ...`.
+- Handoff flow: `just deployment-verification-handoff`, `just deployment-verification-handoff-reconcile`.
+- Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow, but the detailed support artifacts stay behind `afterburner verify handoff ...`.
 - `just workflow-surface-check-deployment-verification` guards the grouped deployment-verification workflow map and contract surface.
 
 ## Cleanup

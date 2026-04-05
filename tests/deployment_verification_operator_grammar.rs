@@ -8,54 +8,16 @@ use support::repo_file;
 #[test]
 fn deployment_verification_canonical_surface_moves_past_manage_buckets() {
     let justfile = repo_file("justfile");
+    let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "deployment-verification-receipt-history receipt event recorded_at_unix_ms:",
-        "deployment-verification-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
         "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:",
-        "deployment-verification-receipt-transport-locator receipt:",
-        "deployment-verification-receipt-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-receipt-transport-locator-reconcile receipt locator:",
-        "deployment-verification-receipt-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-receipt-locator-pointer locator:",
-        "deployment-verification-receipt-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-receipt-locator-reconcile locator pointer:",
-        "deployment-verification-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-receipt-rollback-pointer-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-reconcile rollback current_rollback:",
-        "deployment-verification-receipt-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersession-reconcile supersession current_supersession:",
-        "deployment-verification-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-history bundle event recorded_at_unix_ms:",
-        "deployment-verification-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle receipt:",
         "deployment-verification-bundle-reconcile receipt bundle:",
-        "deployment-verification-bundle-transport-locator bundle:",
-        "deployment-verification-bundle-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-bundle-transport-locator-reconcile bundle locator:",
-        "deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-locator-pointer locator:",
-        "deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-bundle-locator-reconcile locator pointer:",
-        "deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-bundle-rollback-pointer-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-reconcile rollback current_rollback:",
-        "deployment-verification-bundle-rollback-apply-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersede previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersession-history supersession event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersession-reconcile supersession current_supersession:",
-        "deployment-verification-bundle-rollback-apply-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
-        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff bundle:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport-locator handoff:",
-        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
+        "workflow-surface-check-deployment-verification:",
     ] {
         assert!(
             justfile.contains(required),
@@ -63,7 +25,34 @@ fn deployment_verification_canonical_surface_moves_past_manage_buckets() {
         );
     }
 
+    for required in [
+        "\"verification-receipt\"",
+        "\"verification-bundle\"",
+        "\"verification-handoff\"",
+        "\"verification-receipt-locator\"",
+        "\"verification-bundle-locator\"",
+        "\"verification-bundle\"",
+        "\"verification-handoff\"",
+        "\"rollback-verification-receipt-locator\"",
+    ] {
+        assert!(
+            deploy_dispatch.contains(required),
+            "debug deploy taxonomy must keep grouped family-first dispatch `{required}`"
+        );
+    }
+
     for forbidden in [
+        "deployment-verification-receipt-history receipt event recorded_at_unix_ms:",
+        "deployment-verification-receipt-transport-locator receipt:",
+        "deployment-verification-receipt-locator-pointer locator:",
+        "deployment-verification-receipt-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
+        "deployment-verification-bundle-history bundle event recorded_at_unix_ms:",
+        "deployment-verification-bundle-transport-locator bundle:",
+        "deployment-verification-bundle-locator-pointer locator:",
+        "deployment-verification-bundle-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
+        "deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:",
+        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
+        "deployment-verification-handoff-transport-locator handoff:",
         "deployment-verification-receipt-history action +args:",
         "deployment-verification-receipt-transport action +args:",
         "deployment-verification-receipt-locator action +args:",

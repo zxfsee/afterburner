@@ -10,13 +10,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
-        "deployment-verification-receipt-history receipt event recorded_at_unix_ms:",
-        "deployment-verification-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:",
-        "deployment-verification-receipt-transport-locator receipt:",
-        "deployment-verification-receipt-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-receipt-transport-locator-reconcile receipt locator:",
-        "deployment-verification-receipt-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -34,8 +28,8 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Receipt flow: `just deployment-verification-receipt`.",
-        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.",
+        "Receipt flow: `just deployment-verification-receipt`, `just deployment-verification-receipt-reconcile`.",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow, but the detailed support artifacts stay behind `afterburner verify receipt ...` and `afterburner rollback verification-receipt ...`.",
     ] {
         assert!(
             workflows.contains(needle),

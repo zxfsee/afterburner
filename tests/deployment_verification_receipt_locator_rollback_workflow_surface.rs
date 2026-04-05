@@ -9,18 +9,8 @@ use support::repo_file;
 fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-receipt-locator-pointer locator:",
-        "deployment-verification-receipt-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-receipt-locator-reconcile locator pointer:",
-        "deployment-verification-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-receipt-rollback-pointer-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-reconcile rollback current_rollback:",
-        "deployment-verification-receipt-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersession-history supersession event recorded_at_unix_ms:",
-        "deployment-verification-receipt-rollback-supersession-reconcile supersession current_supersession:",
-        "deployment-verification-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:",
+        "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -38,7 +28,7 @@ fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() 
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow.",
+        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow, but the detailed support artifacts stay behind `afterburner verify receipt ...` and `afterburner rollback verification-receipt ...`.",
     ] {
         assert!(
             workflows.contains(needle),

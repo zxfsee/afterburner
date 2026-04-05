@@ -10,12 +10,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-handoff bundle:",
-        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
-        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport-locator handoff:",
-        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -33,8 +28,8 @@ fn deployment_verification_handoff_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Handoff flow: `just deployment-verification-handoff`.",
-        "Handoff support flows: history/reconciliation and transport-locator stay grouped under the handoff flow.",
+        "Handoff flow: `just deployment-verification-handoff`, `just deployment-verification-handoff-reconcile`.",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow, but the detailed support artifacts stay behind `afterburner verify handoff ...`.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -45,7 +40,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_evidence_handoff*.json`",
-        "Handoff support flows: history/reconciliation and transport-locator stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

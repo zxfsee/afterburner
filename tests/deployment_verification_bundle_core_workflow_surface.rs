@@ -10,13 +10,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-bundle receipt:",
-        "deployment-verification-bundle-history bundle event recorded_at_unix_ms:",
-        "deployment-verification-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-bundle-reconcile receipt bundle:",
-        "deployment-verification-bundle-transport-locator bundle:",
-        "deployment-verification-bundle-transport-locator-history locator event recorded_at_unix_ms:",
-        "deployment-verification-bundle-transport-locator-reconcile bundle locator:",
-        "deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -34,8 +28,8 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Bundle flow: `just deployment-verification-bundle`.",
-        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow.",
+        "Bundle flow: `just deployment-verification-bundle`, `just deployment-verification-bundle-reconcile`.",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow, but the detailed support artifacts stay behind `afterburner verify bundle ...` and `afterburner rollback verification-bundle ...`.",
     ] {
         assert!(
             workflows.contains(needle),

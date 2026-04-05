@@ -9,20 +9,8 @@ use support::repo_file;
 fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-bundle-locator-pointer locator:",
-        "deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms:",
-        "deployment-verification-bundle-locator-reconcile locator pointer:",
-        "deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-pointer current_pointer restored_pointer rolled_back_at_unix_ms:",
-        "deployment-verification-bundle-rollback-pointer-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-history rollback event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-reconcile rollback current_rollback:",
-        "deployment-verification-bundle-rollback-apply-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersede previous_rollback next_rollback superseded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersession-history supersession event recorded_at_unix_ms:",
-        "deployment-verification-bundle-rollback-apply-supersession-reconcile supersession current_supersession:",
-        "deployment-verification-bundle-rollback-apply-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle receipt:",
+        "deployment-verification-bundle-reconcile receipt bundle:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -40,7 +28,7 @@ fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
 
     let workflows = repo_file("docs/workflows.md");
     for needle in [
-        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow.",
+        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow, but the detailed support artifacts stay behind `afterburner verify bundle ...` and `afterburner rollback verification-bundle ...`.",
     ] {
         assert!(
             workflows.contains(needle),
