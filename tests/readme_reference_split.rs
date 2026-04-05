@@ -34,6 +34,10 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
     for needle in [
         "Deployment:",
         "artifact_upload_request.json",
+        "`kube_rs_gpu_lease_reconciliation.json`",
+        "`kube_rs_gpu_lease_reconciliation_history.json`",
+        "`kube_rs_gpu_lease_pointer.json`",
+        "`kube_rs_gpu_lease_history.json`",
         "Scheduler heartbeat artifact groups:",
         "Deployment stack artifact groups:",
         "Deployment verification artifact groups:",
