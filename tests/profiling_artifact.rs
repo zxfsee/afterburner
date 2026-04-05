@@ -4,11 +4,9 @@ use std::path::PathBuf;
 use afterburner::manifest::ArtifactManifest;
 use serde_json::{Value, json};
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 fn artifact_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

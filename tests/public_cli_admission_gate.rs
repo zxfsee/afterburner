@@ -3,10 +3,9 @@ use std::path::PathBuf;
 
 use assert_cmd::cargo::cargo_bin_cmd;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
+
+use support::repo_file;
 
 #[test]
 fn public_cli_surface_stays_within_admitted_grouped_families() {

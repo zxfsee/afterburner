@@ -2,12 +2,12 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
+mod support;
+
+use support::repo_file;
+
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-}
-
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(repo_root().join(path)).unwrap_or_else(|err| panic!("read {path}: {err}"))
 }
 
 fn tracked_doc_surface_reads(text: &str) -> bool {
@@ -40,6 +40,18 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "deployment_verification_bundle_core_workflow_surface.rs"
             | "deployment_verification_bundle_locator_rollback_workflow_surface.rs"
             | "deployment_verification_handoff_workflow_surface.rs"
+            | "deployment_verification_receipt.rs"
+            | "deployment_matrix_workflow_surface.rs"
+            | "deployment_stack_workflow_surface.rs"
+            | "deployment_utility_workflow_surface.rs"
+            | "cleanup_workflow_surface.rs"
+            | "drift_workflow_surface.rs"
+            | "profiling_workflow_surface.rs"
+            | "distributed_shard_lineage_workflow_surface.rs"
+            | "pretraining_source_workflow_surface.rs"
+            | "operator_grammar_gate.rs"
+            | "public_cli_admission_gate.rs"
+            | "reference_doc_validation.rs"
             | "scheduler_heartbeat_workflow_surface.rs"
             | "doc_test_admission.rs"
     )

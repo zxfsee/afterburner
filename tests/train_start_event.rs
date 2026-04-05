@@ -5,11 +5,9 @@ use afterburner::model::ModelConfig;
 use afterburner::train::{TrainingConfig, artifact_exported_event_line, train_start_event_line};
 use serde_json::{Value, json};
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn train_start_event_matches_fixture_contract() {

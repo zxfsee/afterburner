@@ -1,13 +1,6 @@
-use std::fs;
-use std::path::PathBuf;
+mod support;
 
-fn repo_root() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-}
-
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(repo_root().join(path)).unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+use support::repo_file;
 
 #[test]
 fn async_runtime_decision_record_is_linked_and_explicit() {

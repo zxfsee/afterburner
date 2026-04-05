@@ -1,10 +1,9 @@
 use std::fs;
 use std::path::PathBuf;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
+
+use support::repo_file;
 
 #[test]
 fn lineage_and_kube_lease_families_use_shared_command_input_helpers() {

@@ -6,11 +6,9 @@ use afterburner::train::{
 };
 use serde_json::{Value, json};
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn export_copies_calibration_sidecar_and_emits_calibration_fields() {

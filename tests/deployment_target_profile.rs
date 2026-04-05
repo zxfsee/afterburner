@@ -3,11 +3,9 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn deployment_target_profile_schema_and_adr_are_explicit() {

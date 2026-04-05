@@ -3,10 +3,9 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
+
+use support::repo_file;
 
 #[test]
 fn deploy_rs_baseline_consumes_profile_contract() {

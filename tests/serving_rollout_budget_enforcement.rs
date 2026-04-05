@@ -13,11 +13,9 @@ use serde_json::Value;
 #[path = "fixture_support.rs"]
 mod fixture_support;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 fn fixture_json(name: &str) -> Value {
     let text = fs::read_to_string(fixture_path(name)).expect("read json fixture");

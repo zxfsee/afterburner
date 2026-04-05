@@ -2,11 +2,9 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn serving_rollout_budget_schema_fixture_has_required_contract_fields() {

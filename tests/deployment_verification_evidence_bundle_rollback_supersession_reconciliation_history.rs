@@ -5,11 +5,9 @@ use std::path::PathBuf;
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn deployment_verification_evidence_bundle_rollback_supersession_reconciliation_history_schema_is_explicit()

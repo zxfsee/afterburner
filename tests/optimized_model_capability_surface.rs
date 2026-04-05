@@ -4,16 +4,9 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+use support::{fixture_path, repo_file};
 
 #[test]
 fn optimized_model_capability_surface_is_explicit() {

@@ -85,11 +85,9 @@ pub fn build_runtime_model_artifact() -> (tempfile::TempDir, PathBuf) {
     (artifact_dir, weights_path)
 }
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 fn read_f32(value: &toml::Value, field: &str) -> f32 {
     value

@@ -1,10 +1,9 @@
 use std::fs;
 use std::path::PathBuf;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
+
+use support::repo_file;
 
 fn recipe_block<'a>(justfile: &'a str, recipe: &str) -> &'a str {
     let anchor = format!("{recipe}:");

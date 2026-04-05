@@ -3,11 +3,9 @@ use std::path::PathBuf;
 
 use assert_cmd::Command;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn dashboard_snapshot_matches_fixture() {

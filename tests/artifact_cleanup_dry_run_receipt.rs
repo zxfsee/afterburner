@@ -4,16 +4,9 @@ use std::path::PathBuf;
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+use support::{fixture_path, repo_file};
 
 #[test]
 fn artifact_cleanup_dry_run_receipt_contract_is_documented() {

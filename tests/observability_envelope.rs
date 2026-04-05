@@ -5,11 +5,9 @@ use std::path::PathBuf;
 use afterburner::observability::event_line;
 use serde_json::json;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn event_line_matches_required_envelope_fixture_keys() {

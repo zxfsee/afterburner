@@ -27,11 +27,9 @@ fn write_runtime_model_artifact(artifact_dir: &Path) -> PathBuf {
     weights_path
 }
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 fn infer_stdout_success_fixture() -> Value {
     let fixture = fs::read_to_string(fixture_path("infer_stdout_success.fixture.json"))

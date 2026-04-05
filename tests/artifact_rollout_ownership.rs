@@ -4,11 +4,9 @@ use std::path::PathBuf;
 
 use serde_json::json;
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 #[test]
 fn artifact_rollout_ownership_schema_and_adr_are_explicit() {

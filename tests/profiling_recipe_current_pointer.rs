@@ -1,10 +1,9 @@
 use std::fs;
 use std::path::PathBuf;
 
-fn repo_file(path: &str) -> String {
-    fs::read_to_string(PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(path))
-        .unwrap_or_else(|err| panic!("read {path}: {err}"))
-}
+mod support;
+
+use support::repo_file;
 
 fn profile_infer_recipe(justfile: &str) -> &str {
     justfile
@@ -47,14 +46,13 @@ fn profiling_recipe_delegates_current_pointer_and_backend_resolution_to_native_c
         "profile-infer must not pin a fixed backend variable in justfile"
     );
 
-    let reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
-        readme.contains("afterburner profile infer"),
+        workflows.contains("afterburner profile infer"),
         "workflow reference should document the native profile infer command behind the stable just entrypoint"
     );
     assert!(
-        readme.contains("current pointer") && readme.contains("BACKEND"),
+        workflows.contains("current pointer") && workflows.contains("BACKEND"),
         "workflow reference should still explain the current pointer and backend contracts"
     );
 }

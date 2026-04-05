@@ -126,11 +126,9 @@ fn load_supported_pairs_from_fixture() -> Vec<(String, String)> {
         .collect()
 }
 
-fn fixture_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("fixtures")
-        .join(name)
-}
+mod support;
+
+use support::fixture_path;
 
 fn event_fixture(name: &str) -> Value {
     let text = fs::read_to_string(fixture_path(name)).expect("read event fixture");
