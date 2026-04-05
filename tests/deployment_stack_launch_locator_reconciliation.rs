@@ -55,8 +55,8 @@ fn deployment_stack_launch_locator_reconciliation_schema_and_workflow_are_explic
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-reconcile-launch-locator plan pointer:"),
-        "justfile must expose the deploy-reconcile-launch-locator workflow"
+        justfile.contains("deploy-launch-locator-reconcile plan pointer:"),
+        "justfile must expose the deploy-launch-locator-reconcile workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -66,7 +66,7 @@ fn deployment_stack_launch_locator_reconciliation_schema_and_workflow_are_explic
         "workflow reference must mention the deployment stack launch locator reconciliation artifact"
     );
     assert!(
-        workflows.contains("just deploy-reconcile-launch-locator"),
+        workflows.contains("just deploy-launch-locator-reconcile"),
         "workflow reference must mention the deployment stack launch locator reconciliation workflow"
     );
 }

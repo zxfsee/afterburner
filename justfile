@@ -156,46 +156,46 @@ deploy-launch-receipt plan port launched_at_unix_ms:
 deploy-launch-bundle receipt:
     cargo run --locked --bin afterburner -- deploy stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
 
-deploy-reconcile-launch-bundle receipt bundle:
+deploy-launch-bundle-reconcile receipt bundle:
     cargo run --locked --bin afterburner -- deploy reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
 
-deploy-record-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
+deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation_history.json
 
 deploy-launch-handoff bundle:
     cargo run --locked --bin afterburner -- deploy stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 
-deploy-reconcile-launch-handoff bundle handoff:
+deploy-launch-handoff-reconcile bundle handoff:
     cargo run --locked --bin afterburner -- deploy reconcile-launch-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
 
-deploy-record-launch-handoff-history handoff event recorded_at_unix_ms:
+deploy-launch-handoff-history handoff event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_history.json
 
-deploy-record-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
+deploy-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation_history.json
 
-deploy-point-launch-transport-locator handoff:
+deploy-launch-transport-locator handoff:
     cargo run --locked --bin afterburner -- deploy point-launch-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_transport_locator.json
 
-deploy-record-launch-transport-locator-history locator event recorded_at_unix_ms:
+deploy-launch-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_history.json
 
-deploy-record-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
+deploy-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation_history.json
 
-deploy-reconcile-launch-transport-locator handoff locator:
+deploy-launch-transport-locator-reconcile handoff locator:
     cargo run --locked --bin afterburner -- deploy reconcile-launch-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation.json
 
-deploy-point-launch-locator locator:
+deploy-launch-locator locator:
     cargo run --locked --bin afterburner -- deploy point-launch-locator --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_locator_pointer.json
 
-deploy-reconcile-launch-locator plan pointer:
+deploy-launch-locator-reconcile plan pointer:
     cargo run --locked --bin afterburner -- deploy reconcile-launch-locator --plan {{ plan }} --pointer {{ pointer }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation.json
 
-deploy-record-launch-locator-history pointer event recorded_at_unix_ms:
+deploy-launch-locator-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_history.json
 
-deploy-record-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
+deploy-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-launch-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation_history.json
 
 # validate a candidate artifact before promotion

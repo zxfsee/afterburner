@@ -57,8 +57,8 @@ fn deployment_stack_launch_handoff_reconciliation_schema_and_workflow_are_explic
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-reconcile-launch-handoff bundle handoff:"),
-        "justfile must expose the deploy-reconcile-launch-handoff workflow"
+        justfile.contains("deploy-launch-handoff-reconcile bundle handoff:"),
+        "justfile must expose the deploy-launch-handoff-reconcile workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -68,7 +68,7 @@ fn deployment_stack_launch_handoff_reconciliation_schema_and_workflow_are_explic
         "workflow reference must mention the deployment stack launch handoff reconciliation artifact"
     );
     assert!(
-        workflows.contains("just deploy-reconcile-launch-handoff"),
+        workflows.contains("just deploy-launch-handoff-reconcile"),
         "workflow reference must mention the deployment stack launch handoff reconciliation workflow"
     );
 }

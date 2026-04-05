@@ -61,9 +61,9 @@ fn deployment_stack_launch_locator_reconciliation_history_schema_and_workflow_ar
     let justfile = repo_file("justfile");
     assert!(
         justfile.contains(
-            "deploy-record-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:"
+            "deploy-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:"
         ),
-        "justfile must expose the deploy-record-launch-locator-reconciliation-history workflow"
+        "justfile must expose the deploy-launch-locator-reconciliation-history workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -73,7 +73,7 @@ fn deployment_stack_launch_locator_reconciliation_history_schema_and_workflow_ar
         "workflow reference must mention the deployment stack launch locator reconciliation history artifact"
     );
     assert!(
-        workflows.contains("just deploy-record-launch-locator-reconciliation-history"),
+        workflows.contains("just deploy-launch-locator-reconciliation-history"),
         "workflow reference must mention the deployment stack launch locator reconciliation history workflow"
     );
 }

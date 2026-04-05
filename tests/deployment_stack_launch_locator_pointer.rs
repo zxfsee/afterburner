@@ -54,8 +54,8 @@ fn deployment_stack_launch_locator_pointer_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-point-launch-locator locator:"),
-        "justfile must expose the deploy-point-launch-locator workflow"
+        justfile.contains("deploy-launch-locator locator:"),
+        "justfile must expose the deploy-launch-locator workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -65,7 +65,7 @@ fn deployment_stack_launch_locator_pointer_schema_and_workflow_are_explicit() {
         "workflow reference must mention the deployment stack launch locator pointer artifact"
     );
     assert!(
-        workflows.contains("just deploy-point-launch-locator"),
+        workflows.contains("just deploy-launch-locator"),
         "workflow reference must mention the deployment stack launch locator pointer workflow"
     );
 }

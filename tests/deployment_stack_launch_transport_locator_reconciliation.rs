@@ -57,8 +57,8 @@ fn deployment_stack_launch_transport_locator_reconciliation_schema_and_workflow_
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-reconcile-launch-transport-locator handoff locator:"),
-        "justfile must expose the deploy-reconcile-launch-transport-locator workflow"
+        justfile.contains("deploy-launch-transport-locator-reconcile handoff locator:"),
+        "justfile must expose the deploy-launch-transport-locator-reconcile workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -68,7 +68,7 @@ fn deployment_stack_launch_transport_locator_reconciliation_schema_and_workflow_
         "workflow reference must mention the deployment stack launch transport locator reconciliation artifact"
     );
     assert!(
-        workflows.contains("just deploy-reconcile-launch-transport-locator"),
+        workflows.contains("just deploy-launch-transport-locator-reconcile"),
         "workflow reference must mention the deployment stack launch transport locator reconciliation workflow"
     );
 }

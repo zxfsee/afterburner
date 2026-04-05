@@ -62,9 +62,9 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_history_schema_and_wor
     let justfile = repo_file("justfile");
     assert!(
         justfile.contains(
-            "deploy-record-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:"
+            "deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:"
         ),
-        "justfile must expose the deploy-record-launch-bundle-reconciliation-history workflow"
+        "justfile must expose the deploy-launch-bundle-reconciliation-history workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -74,7 +74,7 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_history_schema_and_wor
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation history artifact"
     );
     assert!(
-        workflows.contains("just deploy-record-launch-bundle-reconciliation-history"),
+        workflows.contains("just deploy-launch-bundle-reconciliation-history"),
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation history workflow"
     );
 }

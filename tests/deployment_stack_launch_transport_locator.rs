@@ -54,8 +54,8 @@ fn deployment_stack_launch_transport_locator_schema_and_workflow_are_explicit() 
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-point-launch-transport-locator handoff:"),
-        "justfile must expose the deploy-point-launch-transport-locator workflow"
+        justfile.contains("deploy-launch-transport-locator handoff:"),
+        "justfile must expose the deploy-launch-transport-locator workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -65,7 +65,7 @@ fn deployment_stack_launch_transport_locator_schema_and_workflow_are_explicit() 
         "workflow reference must mention the deployment stack launch transport locator artifact"
     );
     assert!(
-        workflows.contains("just deploy-point-launch-transport-locator"),
+        workflows.contains("just deploy-launch-transport-locator"),
         "workflow reference must mention the deployment stack launch transport locator workflow"
     );
 }

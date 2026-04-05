@@ -108,9 +108,9 @@ operator use case justifies promotion.
 - Contract check: `just deploy-check`.
 - Deployment stack launch and kube-rs lease stay grouped under these operator flows:
 - Launch planning: `just deploy-launch-plan`, `just deploy-launch-receipt`.
-- Bundle flow: `just deploy-launch-bundle`, `just deploy-reconcile-launch-bundle`, `just deploy-record-launch-bundle-reconciliation-history`.
-- Handoff flow: `just deploy-launch-handoff`, `just deploy-reconcile-launch-handoff`, `just deploy-record-launch-handoff-history`, `just deploy-record-launch-handoff-reconciliation-history`.
-- Locator flow: `just deploy-point-launch-transport-locator`, `just deploy-record-launch-transport-locator-history`, `just deploy-reconcile-launch-transport-locator`, `just deploy-record-launch-transport-locator-reconciliation-history`, `just deploy-point-launch-locator`, `just deploy-reconcile-launch-locator`, `just deploy-record-launch-locator-history`, `just deploy-record-launch-locator-reconciliation-history`.
+- Bundle flow: `just deploy-launch-bundle`, `just deploy-launch-bundle-reconcile`, `just deploy-launch-bundle-reconciliation-history`.
+- Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`, `just deploy-launch-handoff-history`, `just deploy-launch-handoff-reconciliation-history`.
+- Locator flow: `just deploy-launch-transport-locator`, `just deploy-launch-transport-locator-history`, `just deploy-launch-transport-locator-reconcile`, `just deploy-launch-transport-locator-reconciliation-history`, `just deploy-launch-locator`, `just deploy-launch-locator-reconcile`, `just deploy-launch-locator-history`, `just deploy-launch-locator-reconciliation-history`.
 - Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-point`, `just kube-rs-lease-record-history`, `just kube-rs-lease-record-reconciliation-history`.
 - `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.
 - Scheduler heartbeat stays grouped under these operator flows:

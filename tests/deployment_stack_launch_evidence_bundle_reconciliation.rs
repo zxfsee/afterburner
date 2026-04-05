@@ -57,8 +57,8 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_schema_and_workflow_ar
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy-reconcile-launch-bundle receipt bundle:"),
-        "justfile must expose the deploy-reconcile-launch-bundle workflow"
+        justfile.contains("deploy-launch-bundle-reconcile receipt bundle:"),
+        "justfile must expose the deploy-launch-bundle-reconcile workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -68,7 +68,7 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_schema_and_workflow_ar
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation artifact"
     );
     assert!(
-        workflows.contains("just deploy-reconcile-launch-bundle"),
+        workflows.contains("just deploy-launch-bundle-reconcile"),
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation workflow"
     );
 }

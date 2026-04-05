@@ -62,9 +62,8 @@ fn deployment_stack_launch_handoff_history_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile
-            .contains("deploy-record-launch-handoff-history handoff event recorded_at_unix_ms:"),
-        "justfile must expose the deploy-record-launch-handoff-history workflow"
+        justfile.contains("deploy-launch-handoff-history handoff event recorded_at_unix_ms:"),
+        "justfile must expose the deploy-launch-handoff-history workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -74,7 +73,7 @@ fn deployment_stack_launch_handoff_history_schema_and_workflow_are_explicit() {
         "workflow reference must mention the deployment stack launch handoff history artifact"
     );
     assert!(
-        workflows.contains("just deploy-record-launch-handoff-history"),
+        workflows.contains("just deploy-launch-handoff-history"),
         "workflow reference must mention the deployment stack launch handoff history workflow"
     );
 }
