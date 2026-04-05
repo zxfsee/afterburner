@@ -2,49 +2,49 @@
 
 ## TODO
 
-- Grouped reference intro validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared reference validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
-  - Kind: `gate`
+- Deployment-verification action bucket collapse [Serving/Deployment Infra, Runtime Infra]
+  - Goal: Remove the remaining deployment-verification `action +args` buckets from `justfile` and collapse the exposed operator grammar behind typed helpers so this family stops mirroring internal protocol structure.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_verification_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
 
-- Grouped command-entrypoint note validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared reference validator aligned with the command-entrypoint note so the docs handoff to workflows stays explicit.
-  - Kind: `gate`
+- Distributed-shard-lineage action bucket collapse [Distributed Training, Runtime Infra]
+  - Goal: Remove the remaining distributed shard-lineage `action +args` buckets from `justfile` and collapse the operator-visible grammar behind intent-first typed helpers.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/distributed_shard_lineage_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
 
-- Grouped capability summary distributed runtime validation gate alignment [Runtime Infra, Distributed Training]
-  - Goal: Keep the shared reference validator aligned with the distributed capability and runtime summary lines so the repo-wide runtime posture cannot drift unnoticed.
-  - Kind: `gate`
+- Scheduler-heartbeat action bucket collapse [Serving/Deployment Infra]
+  - Goal: Remove the remaining scheduler-heartbeat `action +args` buckets from `justfile` so the operator surface stays grouped without generic recipe-side dispatch buckets.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/scheduler_heartbeat_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
 
-- Grouped capability summary operator/runtime validation gate alignment [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep the shared reference validator aligned with the operator-surface and backend/runtime summary lines so the top-level runtime positioning cannot drift unnoticed.
-  - Kind: `gate`
+- Deployment-stack launch family collapse [Serving/Deployment Infra]
+  - Goal: Reduce deployment-stack launch recipe expansion by collapsing the operator-visible launch grammar and moving repeated launch-side semantics behind typed helpers.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
 
-- Grouped capability summary provenance validation gate alignment [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep the shared reference validator aligned with the profiling, provenance, and retention summary lines so those operating guarantees cannot drift unnoticed.
-  - Kind: `gate`
+- Drift baseline family collapse [Experimentation/Eval Infra, Runtime Infra]
+  - Goal: Reduce drift baseline recipe expansion by collapsing the operator-visible baseline grammar and moving repeated baseline-side semantics behind typed helpers.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/drift_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
 
-- Grouped capability summary horizon-reference validation gate alignment [Runtime Infra, Data Infra, Experimentation/Eval Infra]
-  - Goal: Keep the shared reference validator aligned with the longer-horizon reference points so the repo-wide strategy summary cannot drift unnoticed.
-  - Kind: `gate`
+- Pretraining-source provenance bucket collapse [Data Infra, Runtime Infra]
+  - Goal: Remove the remaining pretraining-source provenance bucketed dispatch from `justfile` so the operator surface is intent-first and no longer exposes generic provenance action routing.
+  - Kind: `mixed`
   - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
+  - Contracts: `cli`, `docs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
 
-<!-- queue-snapshot: todo_sha256=c5b9b92383fe34ff99834055b520ece04b0fa4901fdbb0b25b0e91337eb26fa1 parent_commit=bfd08d9dce4a3c2065e6d51ee8b9196321fbe4eb -->
+<!-- queue-snapshot: todo_sha256=809b81cd15a458a9b2d4e484a61de1131947172df5627e8b6b7f76c1cd070097 parent_commit=f485393186e0b06deb81eb5ce46f032e825701fa -->
 
 ## [Trunk]
 
@@ -632,6 +632,7 @@
 - Add shared-gate stale-top precheck ([cbe98b7])
 - Drop stale Burn inventory split gate ([3beb017])
 - Drop stale drift extended split gate ([46bb5d2])
+- Regroup top validator batch ([f485393])
 
 ### Fixed
 
@@ -1394,5 +1395,6 @@
 [f128ab0]: https://github.com/zxfsee/afterburner/commit/f128ab05589584fa9d0caee4cb1571306d977f7c
 [afe8f7b]: https://github.com/zxfsee/afterburner/commit/afe8f7bf9cb9bbbc7f5ccc3bf64c806bd20b3b82
 [bfd08d9]: https://github.com/zxfsee/afterburner/commit/bfd08d9dce4a3c2065e6d51ee8b9196321fbe4eb
+[f485393]: https://github.com/zxfsee/afterburner/commit/f485393186e0b06deb81eb5ce46f032e825701fa
 
 <!-- generated by git-cliff -->
