@@ -12,7 +12,7 @@ fn debug_deploy_surface_stays_family_first() {
     let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:",
+        "deployment-verification-bundle-rollback-apply-supersession-reconcile supersession current_supersession:",
         "deployment-verification-receipt-transport-locator-reconcile receipt locator:",
         "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
         "scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession:",

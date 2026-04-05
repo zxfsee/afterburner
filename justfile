@@ -338,25 +338,25 @@ deployment-verification-bundle-rollback-locator-history rollback event recorded_
 deployment-verification-bundle-rollback-apply current_bundle restored_bundle rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle apply --current-bundle {{ current_bundle }} --restored-bundle {{ restored_bundle }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback.json
 
-deployment-verification-bundle-rollback-history rollback event recorded_at_unix_ms:
+deployment-verification-bundle-rollback-apply-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback_history.json
 
-deployment-verification-bundle-rollback-reconcile rollback current_rollback:
+deployment-verification-bundle-rollback-apply-reconcile rollback current_rollback:
     cargo run --locked --bin afterburner -- rollback verification-bundle reconcile --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/deployment_verification_bundle_rollback_reconciliation.json
 
-deployment-verification-bundle-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
+deployment-verification-bundle-rollback-apply-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback_reconciliation_history.json
 
-deployment-verification-bundle-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:
+deployment-verification-bundle-rollback-apply-supersede previous_rollback next_rollback superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle supersede --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback_supersession.json
 
-deployment-verification-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:
+deployment-verification-bundle-rollback-apply-supersession-history supersession event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle supersession-history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback_supersession_history.json
 
-deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:
+deployment-verification-bundle-rollback-apply-supersession-reconcile supersession current_supersession:
     cargo run --locked --bin afterburner -- rollback verification-bundle supersession-reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/deployment_verification_bundle_rollback_supersession_reconciliation.json
 
-deployment-verification-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
+deployment-verification-bundle-rollback-apply-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-bundle supersession-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_rollback_supersession_reconciliation_history.json
 
 deployment-verification-handoff bundle:
