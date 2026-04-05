@@ -58,6 +58,7 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
         "`infer_output_drift_receipt.json`",
         "`infer_output_drift_baseline.json`",
         "`infer_output_drift_baseline_approval.json`",
+        "Source and lineage:",
         "Pretraining source artifact groups:",
         "Distributed shard lineage artifact groups:",
         "`deployment_verification_evidence_bundle*.json`",

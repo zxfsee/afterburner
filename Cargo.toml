@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped source/lineage section split validation gate alignment [Data Infra, Distributed Training]
-  - Goal: Keep the shared README/reference split validator aligned with the source and lineage section heading so the grouped source/lineage reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped cleanup section split validation gate alignment [Runtime Infra]
   - Goal: Keep the shared README/reference split validator aligned with the cleanup section heading so the grouped cleanup reference surface cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped deployment-utility reference split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-utility artifact family so utility artifacts cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped Burn inventory reference split validation gate alignment [Frameworks, Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the Burn migration inventory artifact so that explicit cutover-tracking coverage cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
