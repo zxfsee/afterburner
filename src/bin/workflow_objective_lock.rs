@@ -116,6 +116,10 @@ enum CommandSpec {
     CheckRepoLocks {
         repo_root: PathBuf,
     },
+    RepairRepoLocks {
+        repo_root: PathBuf,
+        stale_after_seconds: u64,
+    },
     Clear {
         lock_file: PathBuf,
     },
@@ -186,6 +190,10 @@ fn run(command: CommandSpec) -> Result<(), ObjectiveLockError> {
             validate_worktree_paths(&lock, &repo_root, &changed_paths)
         }
         CommandSpec::CheckRepoLocks { repo_root } => check_repo_locks(&repo_root),
+        CommandSpec::RepairRepoLocks {
+            repo_root,
+            stale_after_seconds,
+        } => repair_repo_locks(&repo_root, stale_after_seconds),
         CommandSpec::Clear { lock_file } => {
             if lock_file.exists() {
                 fs::remove_file(lock_file)?;
@@ -209,6 +217,7 @@ where
         "check-paths" => parse_check_paths_args(args),
         "check-worktree" => parse_check_worktree_args(args),
         "check-repo-locks" => parse_check_repo_locks_args(args),
+        "repair-repo-locks" => parse_repair_repo_locks_args(args),
         "clear" => parse_clear_args(args),
         "--help" | "-h" | "help" => Err(ObjectiveLockError::InvalidArg(usage().to_string())),
         _ => Err(ObjectiveLockError::InvalidArg(format!(
@@ -416,6 +425,54 @@ where
     }
 
     Ok(CommandSpec::CheckRepoLocks { repo_root })
+}
+
+fn parse_repair_repo_locks_args<I>(args: I) -> Result<CommandSpec, ObjectiveLockError>
+where
+    I: Iterator<Item = String>,
+{
+    let mut args = args.peekable();
+    let mut repo_root = PathBuf::from(".");
+    let mut stale_after_seconds = 300_u64;
+
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--repo-root" => repo_root = PathBuf::from(parse_value(&mut args, "--repo-root")?),
+            "--stale-after-seconds" => {
+                stale_after_seconds = parse_value(&mut args, "--stale-after-seconds")?
+                    .parse::<u64>()
+                    .map_err(|_| {
+                        ObjectiveLockError::InvalidArg(
+                            "`--stale-after-seconds` must be an unsigned integer".into(),
+                        )
+                    })?;
+            }
+            _ if arg.starts_with("--repo-root=") => {
+                repo_root = PathBuf::from(arg.trim_start_matches("--repo-root=").to_string())
+            }
+            _ if arg.starts_with("--stale-after-seconds=") => {
+                stale_after_seconds = arg
+                    .trim_start_matches("--stale-after-seconds=")
+                    .parse::<u64>()
+                    .map_err(|_| {
+                        ObjectiveLockError::InvalidArg(
+                            "`--stale-after-seconds` must be an unsigned integer".into(),
+                        )
+                    })?;
+            }
+            _ => {
+                return Err(ObjectiveLockError::InvalidArg(format!(
+                    "unknown argument `{arg}`\n{}",
+                    usage()
+                )));
+            }
+        }
+    }
+
+    Ok(CommandSpec::RepairRepoLocks {
+        repo_root,
+        stale_after_seconds,
+    })
 }
 
 fn parse_value<I>(args: &mut I, flag: &str) -> Result<String, ObjectiveLockError>
@@ -880,10 +937,47 @@ fn check_repo_locks(repo_root: &Path) -> Result<(), ObjectiveLockError> {
             ""
         };
         return Err(ObjectiveLockError::Parse(format!(
-            "repo metadata lock detected at `{}`{size_note}\nif no Git or jj process is still running, remove it and retry",
+            "repo metadata lock detected at `{}`{size_note}\nrun `just repo-lock-repair` to remove an aged stale lock, or inspect live Git/jj processes before retrying",
             index_lock.display()
         )));
     }
+    Ok(())
+}
+
+fn repair_repo_locks(repo_root: &Path, stale_after_seconds: u64) -> Result<(), ObjectiveLockError> {
+    let index_lock = repo_root.join(".git/index.lock");
+    if !index_lock.exists() {
+        return Ok(());
+    }
+
+    let metadata = fs::metadata(&index_lock)?;
+    let modified = metadata.modified().map_err(|err| {
+        ObjectiveLockError::Parse(format!(
+            "repo metadata lock detected at `{}` but its timestamp could not be read: {err}",
+            index_lock.display()
+        ))
+    })?;
+    let age = std::time::SystemTime::now()
+        .duration_since(modified)
+        .unwrap_or_else(|_| std::time::Duration::from_secs(0))
+        .as_secs();
+
+    if age < stale_after_seconds {
+        return Err(ObjectiveLockError::Parse(format!(
+            "repo metadata lock at `{}` is only {}s old; refusing automatic removal before the stale threshold of {}s\ninspect live Git/jj processes or retry later",
+            index_lock.display(),
+            age,
+            stale_after_seconds
+        )));
+    }
+
+    fs::remove_file(&index_lock)?;
+    eprintln!(
+        "removed stale repo metadata lock `{}` (age: {}s, threshold: {}s)",
+        index_lock.display(),
+        age,
+        stale_after_seconds
+    );
     Ok(())
 }
 
@@ -905,11 +999,12 @@ fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, Objec
 }
 
 fn usage() -> &'static str {
-    "usage: workflow_objective_lock <pin|check-paths|check-worktree|check-repo-locks|clear> [options]\n\
+    "usage: workflow_objective_lock <pin|check-paths|check-worktree|check-repo-locks|repair-repo-locks|clear> [options]\n\
 pin: --objective <queue-only|top-scope-fix|backlog-only|execute-top-item|docs-only|review-only> [--cargo-toml PATH] [--repo-root PATH] [--lock-file PATH] [--expected-action ACTION] [--allow-existing-path PATH...]\n\
 check-paths: [--lock-file PATH] [--action ACTION] --path PATH [--path PATH...]\n\
 check-worktree: [--lock-file PATH] [--repo-root PATH] [--action ACTION]\n\
 check-repo-locks: [--repo-root PATH]\n\
+repair-repo-locks: [--repo-root PATH] [--stale-after-seconds N]\n\
 clear: [--lock-file PATH]"
 }
 

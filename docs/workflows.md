@@ -63,7 +63,9 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 - `just objective-lock-check-worktree <action>` validates the current worktree paths against the pinned objective before commits or phase switches.
 - `just objective-lock-clear` clears the transient `.git/afterburner/objective-lock.json` record before repinning a different objective.
 - Queue state refresh and repair: `just queue-refresh`, `just queue-top-runnable-check`, `just queue-promote-next-runnable`, `just queue-snapshot-check`, `just queue-completion-boundary-check`.
-- `just queue-refresh`, `just queue-fix-top-scope`, and `just queue-execute-preflight` fail fast on a stale `.git/index.lock` before touching queue metadata or running `jj`-backed worktree checks. If no Git or `jj` process is still running, remove the lock and retry.
+- `just repo-lock-repair` is the typed stale-lock recovery path. It removes `.git/index.lock` only when the lock age is beyond the configured stale threshold.
+- `just queue-refresh`, `just queue-fix-top-scope`, and `just queue-promote-next-runnable` run `just repo-lock-repair` before checking repo locks, so aged stale index locks are repaired on the canonical queue-maintenance path.
+- `just queue-execute-preflight` still fails fast on a stale `.git/index.lock` before touching queue metadata or running `jj`-backed worktree checks.
 - Queue metadata repair: `just queue-fix-top-scope`, `just changelog-top-scope-fix`.
 - `just queue-fix-top-scope` preserves unchanged in-scope worktree paths from the current top TODO while regenerating `CHANGELOG.md` and restamping the queue snapshot.
 - Queue execution entry: `just queue-execute-preflight`, `just queue-execute-preflight --repair-stale-snapshot`, `just queue-resume`.

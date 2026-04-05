@@ -76,8 +76,13 @@ queue-top-runnable-check:
 objective-lock-clear:
     cargo run --locked --bin workflow_objective_lock -- clear
 
+# remove an aged stale repo metadata lock through the typed helper path
+repo-lock-repair stale_after_seconds='300':
+    cargo run --locked --bin workflow_objective_lock -- repair-repo-locks --repo-root . --stale-after-seconds {{ stale_after_seconds }}
+
 # refresh the active queue through the canonical queue-only guarded path
 queue-refresh:
+    just repo-lock-repair
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-queue
     just changelog
@@ -87,6 +92,7 @@ queue-refresh:
 
 # repair stale top TODO scope metadata through a dedicated queue-only path
 queue-fix-top-scope:
+    just repo-lock-repair
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-top-scope-fix
     just objective-lock-check-worktree top-scope-fix
@@ -97,6 +103,7 @@ queue-fix-top-scope:
 
 # promote the next runnable active TODO above a blocked top item through a queue-only repair path
 queue-promote-next-runnable:
+    just repo-lock-repair
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
     just objective-lock-pin-queue
     cargo run --locked --bin workflow_queue_snapshot -- promote-next-runnable --cargo-toml Cargo.toml
