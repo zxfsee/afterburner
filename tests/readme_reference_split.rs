@@ -33,6 +33,13 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
     }
     for needle in [
         "Deployment:",
+        "`training_scalability_contract.json`",
+        "`kernel_adoption_thresholds.json`",
+        "`artifacts/train/observability.jsonl`",
+        "`train_start`",
+        "`train_done`",
+        "`artifact_exported`",
+        "`artifact_exported` event fields: `backend`, `artifact_version`, `artifact_path`, `manifest_path`, `current_path`",
         "artifact_upload_request.json",
         "`kube_rs_gpu_lease_reconciliation.json`",
         "`kube_rs_gpu_lease_reconciliation_history.json`",
