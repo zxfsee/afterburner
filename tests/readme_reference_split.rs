@@ -33,6 +33,7 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
     }
     for needle in [
         "artifact_upload_request.json",
+        "Scheduler heartbeat artifact groups:",
         "Deployment verification artifact groups:",
         "Rollout verification and pointer state:",
         "Pretraining source artifact groups:",
