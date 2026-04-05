@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped rollout/reference docs wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the remaining rollout and orchestration reference wording concise and operator-centered by trimming leftover artifact-oriented phrasing in grouped workflow/reference notes.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`, `docs/workflows.md`, `tests/promotion_orchestration.rs`, `tests/reference_doc_validation.rs`
-
 - Grouped scheduler-heartbeat docs wording tightening [Serving/Deployment Infra]
   - Goal: Keep the scheduler-heartbeat workflow and reference docs concise and operator-centered by trimming remaining “workflow families” and “recipe map” phrasing from the grouped surface.
   - Kind: `mixed`
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `docs/reference.md`, `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
+
+- Grouped scheduler-heartbeat validation wording alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared scheduler-heartbeat validation surfaces aligned with the newer grouped operator-flow wording so matrix/reference checks no longer lag behind the family docs wording.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/deployment_matrix_workflow_surface.rs`, `tests/reference_doc_validation.rs`
 
 ## [Trunk]
 """

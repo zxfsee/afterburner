@@ -112,7 +112,7 @@ unless they graduate into a clear operator intent.
   - `profiling_provenance_receipt.json`
   - `profiling_provenance_evidence_bundle.json`
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-profiling` for mechanical coverage.
-- Rollout orchestration:
+- Rollout verification and pointer state:
   - `rollout_check.json`
   - `rollout_verify.json`
   - `inference_current_pointer_promotion.json`

@@ -108,7 +108,7 @@ fn promotion_orchestration_contract_is_documented_and_wired() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "Rollout orchestration:",
+        "Rollout verification and pointer state:",
         "`rollout_check.json`",
         "`rollout_verify.json`",
         "`inference_current_pointer_promotion.json`",
