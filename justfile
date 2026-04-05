@@ -208,13 +208,13 @@ huggingface-publish request:
 kube-rs-lease-reconcile lease namespace resource_name:
     cargo run --locked --bin afterburner -- deploy kube-rs-lease-reconcile --lease {{ lease }} --namespace {{ namespace }} --resource-name {{ resource_name }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation.json
 
-kube-rs-lease-point reconciliation:
+kube-rs-lease-pointer reconciliation:
     cargo run --locked --bin afterburner -- deploy point-kube-rs-lease --reconciliation {{ reconciliation }} --out artifacts/deploy/kube_rs_gpu_lease_pointer.json
 
-kube-rs-lease-record-history pointer event recorded_at_unix_ms:
+kube-rs-lease-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_history.json
 
-kube-rs-lease-record-reconciliation-history reconciliation event recorded_at_unix_ms:
+kube-rs-lease-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation_history.json
 
 single-node-scheduler job inventory:

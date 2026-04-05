@@ -56,8 +56,8 @@ fn kube_rs_gpu_lease_pointer_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("kube-rs-lease-point reconciliation:"),
-        "justfile must expose the kube-rs-lease-point workflow"
+        justfile.contains("kube-rs-lease-pointer reconciliation:"),
+        "justfile must expose the kube-rs-lease-pointer workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -67,7 +67,7 @@ fn kube_rs_gpu_lease_pointer_schema_and_workflow_are_explicit() {
         "workflow reference must mention the kube-rs lease pointer artifact"
     );
     assert!(
-        workflows.contains("just kube-rs-lease-point"),
+        workflows.contains("just kube-rs-lease-pointer"),
         "workflow reference must mention the kube-rs lease pointer workflow"
     );
 }

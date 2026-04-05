@@ -65,9 +65,9 @@ fn kube_rs_gpu_lease_reconciliation_history_schema_and_workflow_are_explicit() {
     let justfile = repo_file("justfile");
     assert!(
         justfile.contains(
-            "kube-rs-lease-record-reconciliation-history reconciliation event recorded_at_unix_ms:"
+            "kube-rs-lease-reconciliation-history reconciliation event recorded_at_unix_ms:"
         ),
-        "justfile must expose the kube-rs-lease-record-reconciliation-history workflow"
+        "justfile must expose the kube-rs-lease-reconciliation-history workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -77,7 +77,7 @@ fn kube_rs_gpu_lease_reconciliation_history_schema_and_workflow_are_explicit() {
         "workflow reference must mention the kube-rs lease reconciliation history artifact"
     );
     assert!(
-        workflows.contains("just kube-rs-lease-record-reconciliation-history"),
+        workflows.contains("just kube-rs-lease-reconciliation-history"),
         "workflow reference must mention the kube-rs lease reconciliation history workflow"
     );
 }

@@ -61,8 +61,8 @@ fn kube_rs_gpu_lease_history_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("kube-rs-lease-record-history pointer event recorded_at_unix_ms:"),
-        "justfile must expose the kube-rs-lease-record-history workflow"
+        justfile.contains("kube-rs-lease-history pointer event recorded_at_unix_ms:"),
+        "justfile must expose the kube-rs-lease-history workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -72,7 +72,7 @@ fn kube_rs_gpu_lease_history_schema_and_workflow_are_explicit() {
         "workflow reference must mention the kube-rs lease history artifact"
     );
     assert!(
-        workflows.contains("just kube-rs-lease-record-history"),
+        workflows.contains("just kube-rs-lease-history"),
         "workflow reference must mention the kube-rs lease history workflow"
     );
 }
