@@ -286,81 +286,56 @@ auto-versioning, embedded serving) are intentionally absent.
 - `docs/reference.md` owns the capability and fit catalog that grows faster than the core
   architecture boundaries. This file should stay focused on system shape, stable boundaries,
   architectural invariants, and the ADR index.
-
-#### Profiling and observability fits
-
-- Profiling keeps local identity fields (`artifact_version`, `backend`, `weights_artifact`,
-  `profile_command`) and remains adapter-only; `OpenTelemetry` fit stays parked.
-- `profiling_hotspot_summary.schema.json`, profiling provenance receipt, and profiling environment
-  provenance keep `host_os`, `host_arch`, `profiler_version`, and `profiler_path` explicit.
-- The profiling environment provenance contract remains anchored to
-  `profiling_hotspot_summary.schema.json`.
-- The profiling provenance receipt contract remains anchored to
-  `profiling_environment_snapshot.json`.
-- The hotspot taxonomy remains explicit: `execution`, `framework`, `compiler`, and `incidental`.
-
-#### Backend and optimization fits
-
-- Custom-kernel work stays evidence-gated; `CubeCL` and `CubeK` are the first candidates if the
-  threshold is crossed, and `cutile-rs` remains a later NVIDIA-specific backend-extension candidate.
-- On Apple hardware, `BACKEND=metal` is a Burn-aligned runtime choice; `wgpu` remains the default
-  until evidence justifies preferring Metal more broadly.
-- Burn dependency refresh stays on the latest stable line, currently `0.20.1`, and `.mpk` to
-  `.bpk` remains a separate contract decision.
-- The burn `.bpk` migration surface inventory report is the explicit prerequisite for that later
-  cutover: capture current `.mpk` touchpoints first, then change the contract in one pass when the
-  newer stable Burn line exists.
-- Model optimization and packaging remain a distinct post-training pipeline driven by explicit
-  artifact profiles and constraints.
-
-#### Distributed runtime and lineage fits
-
-- The multibillion target envelope stays contract-first through training scalability,
-  `distributed_shard_metadata`, manifest precision, rollout ownership, upload request, and
-  deployment target profile contracts.
-- The multibillion target envelope also stays anchored to `distributed_shard_metadata`.
-- The current training scalability contract is not a distributed strategy contract:
-  `worker_parallelism` is a local throughput knob and future topology stays explicit.
-- The current distributed runtime capability surface stays explicit:
-  `single-device execution only`, `First candidate expansion: DP`, and
-  `ZeRO-1/2/3`, `TP, PP, SP/CP, EP` remain unsupported.
-- Distributed runtime profile trials, benchmark-run artifacts, and the feasibility artifact remain
-  separate contract surfaces. `distributed runtime profile trials` stays anchored to
-  `distributed_runtime_profile.json`.
-- Future distributed execution topology stays explicit:
-  `training_scalability_contract.json` and `distributed_shard_metadata.schema.json` are
-  `not the topology source of truth`; topology must stay explicit through `world-size`
-  and `device-group` semantics.
-- Distributed checkpoint recovery remains explicit through the `checkpoint index`, anchored to
-  `distributed_shard_metadata`.
-- Distributed optimizer-state recovery remains an in-job concern and stays anchored to an
-  explicit `checkpoint_group`.
-- Distributed shard lineage receipt remains explicit and anchors to `checkpoint_group`.
-- The distributed shard lineage evidence provenance contract remains explicit and anchors to the
-  `distributed shard lineage receipt`.
-
-#### Data and artifact lifecycle fits
-
-- Artifact retention envelope, cleanup dry-run receipt, and cleanup execution receipt remain
-  explicit contract layers; `artifacts/profiling/` stays a prune-candidate domain.
-- The cleanup dry-run receipt remains anchored to `artifact_cleanup_inventory.json`.
-- The cleanup execution receipt remains anchored to `artifact_cleanup_dry_run_receipt.json`.
-- Deployment verification receipt and deployment verification evidence provenance remain explicit
-  contract layers.
-- The deployment verification receipt remains anchored to `artifact_version`.
-- Deployment verification evidence provenance remains anchored to the
-  `deployment verification receipt`.
-- Pretraining data keeps explicit `source` / `source_revision` identity, source registry,
-  source approval receipt, and source provenance receipt layers.
-- The source approval receipt remains anchored to `approval_status`.
-- The source provenance receipt remains anchored to `upstream_locator`.
-- The local-first text path remains explicit: `decoder-only language model`, `fineweb-edu/slice`,
-  `single-node, single-device execution`, `50M` to `300M` parameters,
-  `1024` token context length, `50M` to `200M` token budgets, `AdamW`,
-  tokenizer and packing surface, text inference profile sidecar, and
-  `text_pretraining_eval_summary.json`.
-- RL remains artifact-first through `rl_rollout_metadata.schema.json` and the vectorized
-  environment stance.
+- Keep only short architecture anchors here. Detailed capability matrices, fit catalogs,
+  workload envelopes, and contract-family inventories belong in `docs/reference.md` and the
+  corresponding ADRs.
+- Profiling and observability fits:
+  - `OpenTelemetry` remains parked, profiling stays adapter-only, and the current profiling
+    anchors remain `profiling_hotspot_summary.schema.json` and `profiling_environment_snapshot.json`.
+  - The profiling environment provenance contract remains explicit and anchored to
+    `profiling_hotspot_summary.schema.json`.
+  - The profiling provenance receipt contract remains explicit and anchored to
+    `profiling_environment_snapshot.json`.
+  - The hotspot taxonomy stays explicit: `execution`, `framework`, `compiler`, and `incidental`.
+  - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037 for the full fit
+    and contract detail.
+- Backend and optimization fits:
+  - `Parquet`, `DataFusion`, and `Ballista` remain fit decisions, not architecture boundaries.
+  - `CubeCL`, `CubeK`, `cutile-rs`, `BACKEND=metal`, Burn `0.20.1`, and the `.mpk` to `.bpk`
+    cutover remain explicit fit decisions rather than core system shape.
+  - Burn dependency refresh remains explicit through ADR-033 and the current Burn dependency refresh
+    pin at `0.20.1`.
+  - Model optimization and packaging remain a distinct post-training pipeline.
+  - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-040, ADR-053, ADR-057,
+    ADR-060, and ADR-063.
+- Distributed runtime and lineage fits:
+  - The multibillion target envelope stays anchored to `distributed_shard_metadata`.
+  - The current distributed runtime capability surface remains `single-device execution only`,
+    `First candidate expansion: DP`, while `ZeRO-1/2/3` and `TP, PP, SP/CP, EP` remain
+    unsupported.
+  - `distributed runtime profile trials`, the feasibility artifact, the `checkpoint index`,
+    `checkpoint_group`, the distributed shard lineage receipt, and distributed shard lineage
+    evidence provenance remain explicit contract anchors.
+  - Distributed optimizer-state recovery remains an explicit in-job contract anchored to
+    `checkpoint_group`; see ADR-061.
+  - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-035, ADR-038,
+    ADR-039, ADR-041, ADR-043, ADR-054, and ADR-058.
+- Data and artifact lifecycle fits:
+  - The artifact retention envelope remains explicit, and `artifacts/profiling/` stays a
+    prune-candidate domain.
+  - Deployment verification receipt remains anchored to `artifact_version`, and deployment
+    verification evidence provenance remains anchored to the deployment verification receipt.
+  - The deployment verification evidence provenance contract remains explicit; see ADR-027.
+  - Pretraining source registry, source approval receipt, and source provenance receipt remain
+    explicit, with `approval_status` and `upstream_locator` still visible contract anchors.
+  - The local-first text path remains explicit: `decoder-only language model`,
+    `fineweb-edu/slice`, `single-node, single-device execution`, `50M` to `300M` parameters,
+    `1024` token context length, `50M` to `200M` token budgets, `AdamW`, tokenizer and packing
+    surface, text inference profile sidecar, and `text_pretraining_eval_summary.json`.
+  - RL remains artifact-first through `rl_rollout_metadata.schema.json` and the vectorized
+    environment stance.
+  - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
+    ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-052, and ADR-059.
 
 ### Assumptions
 
