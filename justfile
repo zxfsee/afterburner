@@ -80,37 +80,24 @@ objective-lock-clear:
 repo-lock-repair stale_after_seconds='300':
     cargo run --locked --bin workflow_objective_lock -- repair-repo-locks --repo-root . --stale-after-seconds {{ stale_after_seconds }}
 
-# refresh the active queue through the canonical queue-only guarded path
-queue-refresh:
-    just repo-lock-repair
+# fail fast if the repo still carries a live metadata lock
+repo-lock-check:
     cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
-    just objective-lock-pin-queue
-    just changelog
-    just queue-top-runnable-check
-    just queue-snapshot-check
-    just objective-lock-clear
+
+# refresh the active queue through the canonical queue-only guarded path
+queue-refresh: repo-lock-repair repo-lock-check objective-lock-pin-queue changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear
 
 # repair stale top TODO scope metadata through a dedicated queue-only path
-queue-fix-top-scope:
-    just repo-lock-repair
-    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
-    just objective-lock-pin-top-scope-fix
-    just objective-lock-check-worktree top-scope-fix
-    just changelog-top-scope-fix
-    just queue-top-runnable-check
-    just queue-snapshot-check
-    just objective-lock-clear
+queue-fix-top-scope: repo-lock-repair repo-lock-check objective-lock-pin-top-scope-fix queue-top-scope-worktree-check changelog-top-scope-fix queue-top-runnable-check queue-snapshot-check objective-lock-clear
+
+queue-top-scope-worktree-check:
+    cargo run --locked --bin workflow_objective_lock -- check-worktree --action top-scope-fix
 
 # promote the next runnable active TODO above a blocked top item through a queue-only repair path
-queue-promote-next-runnable:
-    just repo-lock-repair
-    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
-    just objective-lock-pin-queue
+queue-promote-next-runnable: repo-lock-repair repo-lock-check objective-lock-pin-queue queue-promote-next-runnable-step changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear
+
+queue-promote-next-runnable-step:
     cargo run --locked --bin workflow_queue_snapshot -- promote-next-runnable --cargo-toml Cargo.toml
-    just changelog
-    just queue-top-runnable-check
-    just queue-snapshot-check
-    just objective-lock-clear
 
 # start top-item execution through the canonical execute-side guarded path
 queue-execute-preflight repair='':
@@ -350,8 +337,7 @@ workspace-gate:
     cargo test -p afterburner-core
 
 # run training by default
-run:
-    just train
+run: train
 
 # clean build + artifacts
 clean:

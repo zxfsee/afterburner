@@ -29,6 +29,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "objective-lock-check-worktree action:",
         "objective-lock-clear:",
         "repo-lock-repair stale_after_seconds='300':",
+        "repo-lock-check:",
         "queue-refresh:",
         "queue-resume:",
         "queue-completion-boundary-check:",
@@ -70,6 +71,16 @@ fn developer_workflows_are_repo_managed_and_documented() {
         justfile.contains("workflow_queue_snapshot -- execute-preflight"),
         "queue execute and resume surfaces must delegate branching to the typed execute-preflight helper"
     );
+    for dependency_chain in [
+        "queue-refresh: repo-lock-repair repo-lock-check objective-lock-pin-queue changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear",
+        "queue-fix-top-scope: repo-lock-repair repo-lock-check objective-lock-pin-top-scope-fix queue-top-scope-worktree-check changelog-top-scope-fix queue-top-runnable-check queue-snapshot-check objective-lock-clear",
+        "queue-promote-next-runnable: repo-lock-repair repo-lock-check objective-lock-pin-queue queue-promote-next-runnable-step changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear",
+    ] {
+        assert!(
+            justfile.contains(dependency_chain),
+            "queue maintenance recipes must chain static steps through dependencies: {dependency_chain}"
+        );
+    }
     let queue_snapshot = repo_file("src/bin/workflow_queue_snapshot.rs");
     assert!(
         queue_snapshot.contains("--allow-existing-path")
