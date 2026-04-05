@@ -33,14 +33,6 @@ fn distributed_shard_lineage_receipt_contract_is_documented() {
         architecture.contains("ADR-028"),
         "architecture decisions index must link ADR-028"
     );
-    assert!(
-        architecture.contains("distributed shard lineage receipt"),
-        "architecture must mention the distributed shard lineage receipt contract"
-    );
-    assert!(
-        architecture.contains("checkpoint_group"),
-        "architecture must anchor the lineage receipt to checkpoint_group"
-    );
 
     let adr = repo_file("docs/adr/028-distributed-shard-lineage-receipt.md");
     for needle in [
@@ -66,6 +58,14 @@ fn distributed_shard_lineage_receipt_contract_is_documented() {
         readme.contains("just distributed-shard-lineage-receipt"),
         "workflow reference must mention the distributed shard lineage receipt workflow"
     );
+
+    let reference = repo_file("docs/reference.md");
+    for needle in ["distributed shard lineage receipt", "checkpoint_group"] {
+        assert!(
+            reference.contains(needle),
+            "reference index must mention the distributed shard lineage receipt anchor `{needle}`"
+        );
+    }
 }
 
 #[test]

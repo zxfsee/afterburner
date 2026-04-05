@@ -68,10 +68,10 @@ fn text_pretraining_eval_summary_contract_is_documented() {
         "workflow reference must mention the text eval summary artifact"
     );
 
-    let architecture = repo_file("ARCHITECTURE.md");
+    let reference = repo_file("docs/reference.md");
     assert!(
-        architecture.contains("text_pretraining_eval_summary.json"),
-        "architecture must mention the text eval summary artifact"
+        reference.contains("text_pretraining_eval_summary.json"),
+        "reference index must mention the text eval summary artifact"
     );
 }
 

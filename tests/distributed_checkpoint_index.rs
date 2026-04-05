@@ -13,14 +13,6 @@ fn distributed_checkpoint_index_contract_is_documented() {
         architecture.contains("ADR-018"),
         "architecture decisions index must link ADR-018"
     );
-    assert!(
-        architecture.contains("checkpoint index"),
-        "architecture must mention the distributed checkpoint index contract"
-    );
-    assert!(
-        architecture.contains("distributed_shard_metadata"),
-        "architecture must anchor the checkpoint index to distributed shard metadata"
-    );
 
     let adr = repo_file("docs/adr/018-distributed-checkpoint-index.md");
     assert!(
@@ -41,8 +33,10 @@ fn distributed_checkpoint_index_contract_is_documented() {
     );
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("checkpoint index"),
-        "reference index must mention the distributed checkpoint index contract"
-    );
+    for needle in ["checkpoint index", "distributed_shard_metadata"] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the distributed checkpoint index anchor `{needle}`"
+        );
+    }
 }

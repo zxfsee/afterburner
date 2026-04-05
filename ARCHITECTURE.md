@@ -290,35 +290,14 @@ auto-versioning, embedded serving) are intentionally absent.
   workload envelopes, and contract-family inventories belong in `docs/reference.md` and the
   corresponding ADRs.
 - Profiling and observability fits:
-  - `OpenTelemetry` remains parked; profiling stays adapter-only.
-  - The hotspot taxonomy remains explicit: `execution`, `framework`, `compiler`, and `incidental`.
   - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037.
 - Backend and optimization fits:
-  - `CubeCL`, `CubeK`, `cutile-rs`, and `BACKEND=metal` remain fit decisions rather than
-    architecture boundaries.
-  - Burn dependency refresh and the burn `.bpk` migration surface inventory remain explicit
-    cutover prerequisites through ADR-033.
-  - Model optimization and packaging remain a distinct post-training pipeline.
   - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-040, ADR-053, ADR-057,
     ADR-060, and ADR-063.
 - Distributed runtime and lineage fits:
-  - The current distributed runtime capability surface, the multibillion target envelope,
-    `worker_parallelism`, the feasibility artifact, `distributed runtime profile trials`,
-    `distributed_shard_metadata`, `checkpoint index`, `checkpoint_group`, the distributed shard
-    lineage receipt, and distributed shard lineage evidence provenance remain explicit anchors.
   - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-035, ADR-038,
     ADR-039, ADR-041, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
-  - The artifact retention envelope remains explicit, and `artifacts/profiling/` stays a
-    prune-candidate domain.
-  - Deployment verification receipt remains anchored to `artifact_version`.
-  - Pretraining source registry, source approval receipt, and source provenance receipt remain
-    explicit anchors.
-  - The local-first text path remains explicit: `decoder-only language model`,
-    `fineweb-edu/slice`, `single-node, single-device execution`, `50M` to `300M` parameters,
-    `1024` token context length, `50M` to `200M` token budgets, `AdamW`, tokenizer and packing
-    surface, text inference profile sidecar, and `text_pretraining_eval_summary.json`.
-  - RL remains artifact-first through `rl_rollout_metadata.schema.json`.
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
     ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-052, and ADR-059.
 

@@ -74,10 +74,6 @@ fn text_tokenizer_packing_contract_is_documented() {
         architecture.contains("ADR-050"),
         "architecture decisions index must link ADR-050"
     );
-    assert!(
-        architecture.contains("tokenizer and packing surface"),
-        "architecture must mention the tokenizer/packing surface"
-    );
 
     let adr = repo_file("docs/adr/050-text-tokenizer-and-packing-contract.md");
     for needle in [
@@ -99,7 +95,7 @@ fn text_tokenizer_packing_contract_is_documented() {
 
     let readme = repo_file("docs/reference.md");
     assert!(
-        readme.contains("tokenizer and packing side"),
+        readme.contains("tokenizer and packing surface"),
         "reference index must mention the tokenizer/packing profile stance"
     );
 }

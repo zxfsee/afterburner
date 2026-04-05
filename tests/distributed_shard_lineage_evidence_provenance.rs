@@ -13,14 +13,6 @@ fn distributed_shard_lineage_evidence_provenance_is_documented() {
         architecture.contains("ADR-032"),
         "architecture decisions index must link ADR-032"
     );
-    assert!(
-        architecture.contains("distributed shard lineage evidence provenance"),
-        "architecture must mention the distributed shard lineage evidence provenance contract"
-    );
-    assert!(
-        architecture.contains("distributed shard lineage receipt"),
-        "architecture must anchor evidence provenance to the distributed shard lineage receipt"
-    );
 
     let adr = repo_file("docs/adr/032-distributed-shard-lineage-evidence-provenance.md");
     for needle in [
@@ -37,8 +29,13 @@ fn distributed_shard_lineage_evidence_provenance_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("lineage evidence provenance"),
-        "reference index must mention the distributed shard lineage evidence provenance contract"
-    );
+    for needle in [
+        "distributed shard lineage evidence provenance",
+        "distributed shard lineage receipt",
+    ] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the distributed shard lineage provenance anchor `{needle}`"
+        );
+    }
 }

@@ -55,10 +55,6 @@ fn text_model_artifact_and_inference_contract_is_documented() {
         architecture.contains("ADR-052"),
         "architecture decisions index must link ADR-052"
     );
-    assert!(
-        architecture.contains("text inference profile sidecar"),
-        "architecture must mention the text inference sidecar"
-    );
 
     let adr = repo_file("docs/adr/052-text-model-artifact-and-inference-contract.md");
     for needle in [
@@ -81,5 +77,9 @@ fn text_model_artifact_and_inference_contract_is_documented() {
             "Text-trained models should not reuse the current MNIST/logits infer surface"
         ),
         "reference index must mention the separate text inference surface"
+    );
+    assert!(
+        readme.contains("text inference profile sidecar"),
+        "reference index must mention the text inference sidecar"
     );
 }

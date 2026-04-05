@@ -13,14 +13,6 @@ fn distributed_shard_lineage_contract_is_documented() {
         architecture.contains("ADR-023"),
         "architecture decisions index must link ADR-023"
     );
-    assert!(
-        architecture.contains("distributed shard lineage"),
-        "architecture must mention the distributed shard lineage contract"
-    );
-    assert!(
-        architecture.contains("source_revision"),
-        "architecture must anchor shard lineage to source_revision"
-    );
 
     let adr = repo_file("docs/adr/023-distributed-shard-lineage.md");
     for needle in [
@@ -37,8 +29,13 @@ fn distributed_shard_lineage_contract_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("distributed shard lineage"),
-        "reference index must mention the distributed shard lineage contract"
-    );
+    for needle in [
+        "Distributed shard lineage artifact groups",
+        "source_revision",
+    ] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the distributed shard lineage anchor `{needle}`"
+        );
+    }
 }

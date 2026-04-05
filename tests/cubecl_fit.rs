@@ -13,14 +13,6 @@ fn cubecl_fit_decision_is_documented() {
         architecture.contains("ADR-012"),
         "architecture decisions index must link ADR-012"
     );
-    assert!(
-        architecture.contains("CubeCL"),
-        "architecture must mention the CubeCL fit decision"
-    );
-    assert!(
-        architecture.contains("CubeK"),
-        "architecture must mention the CubeK fit decision"
-    );
 
     let adr = repo_file("docs/adr/012-cubecl-fit.md");
     assert!(

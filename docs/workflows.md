@@ -179,6 +179,7 @@ operator use case justifies promotion.
 - `just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.
 - Distributed shard lineage stays grouped under these operator flows:
 - Receipt flow: `just distributed-shard-lineage-receipt`.
+- `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.
 - Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.
 - Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history`, `just distributed-shard-lineage-handoff-reconciliation-history`.
 - Locator flow: `just distributed-shard-lineage-locator-pointer`, `just distributed-shard-lineage-locator-history`, `just distributed-shard-lineage-transport-locator`, `just distributed-shard-lineage-transport-locator-reconcile`, `just distributed-shard-lineage-transport-locator-history`.

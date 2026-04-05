@@ -58,10 +58,6 @@ fn profiling_hotspot_taxonomy_is_documented() {
         architecture.contains("ADR-020"),
         "architecture decisions index must link ADR-020"
     );
-    assert!(
-        architecture.contains("hotspot taxonomy"),
-        "architecture must mention the profiling hotspot taxonomy"
-    );
 
     let adr = repo_file("docs/adr/020-profiling-hotspot-taxonomy.md");
     for needle in ["execution", "framework", "compiler", "incidental"] {

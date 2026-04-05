@@ -17,10 +17,6 @@ fn native_metal_backend_fit_is_documented_and_registered() {
         architecture.contains("ADR-040"),
         "architecture decisions index must link ADR-040"
     );
-    assert!(
-        architecture.contains("BACKEND=metal"),
-        "architecture must mention the explicit Metal backend choice"
-    );
 
     let adr = repo_file("docs/adr/040-native-metal-backend-fit.md");
     for needle in [

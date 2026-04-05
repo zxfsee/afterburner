@@ -13,10 +13,6 @@ fn cutile_backend_extension_fit_is_documented() {
         architecture.contains("ADR-057"),
         "architecture decisions index must link ADR-057"
     );
-    assert!(
-        architecture.contains("cutile-rs"),
-        "architecture must mention the cutile-rs fit stance"
-    );
 
     let adr = repo_file("docs/adr/057-cutile-backend-extension-fit.md");
     for needle in [
