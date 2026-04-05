@@ -290,44 +290,40 @@ auto-versioning, embedded serving) are intentionally absent.
   workload envelopes, and contract-family inventories belong in `docs/reference.md` and the
   corresponding ADRs.
 - Profiling and observability fits:
-  - `OpenTelemetry` remains parked, profiling stays adapter-only, and the current profiling
-    anchors remain `profiling_hotspot_summary.schema.json` and `profiling_environment_snapshot.json`.
-  - The profiling environment provenance contract remains explicit and anchored to
-    `profiling_hotspot_summary.schema.json`.
-  - The profiling provenance receipt contract remains explicit and anchored to
-    `profiling_environment_snapshot.json`.
-  - The hotspot taxonomy stays explicit: `execution`, `framework`, `compiler`, and `incidental`.
-  - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037 for the full fit
-    and contract detail.
+  - `OpenTelemetry` remains parked; profiling stays adapter-only.
+  - The profiling environment provenance contract stays anchored to
+    `profiling_hotspot_summary.schema.json`, and the profiling provenance receipt contract stays
+    anchored to `profiling_environment_snapshot.json`.
+  - The hotspot taxonomy remains explicit: `execution`, `framework`, `compiler`, and `incidental`.
+  - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037.
 - Backend and optimization fits:
-  - `Parquet`, `DataFusion`, and `Ballista` remain fit decisions, not architecture boundaries.
-  - `CubeCL`, `CubeK`, `cutile-rs`, `BACKEND=metal`, Burn `0.20.1`, and the `.mpk` to `.bpk`
-    cutover remain explicit fit decisions rather than core system shape.
-  - Burn dependency refresh remains explicit through ADR-033 and the current Burn dependency refresh
-    pin at `0.20.1`.
+  - `Parquet`, `DataFusion`, `Ballista`, `CubeCL`, `CubeK`, `cutile-rs`, and `BACKEND=metal`
+    remain fit decisions rather than architecture boundaries.
+  - Burn dependency refresh remains explicit through ADR-033, the current Burn dependency refresh
+    pin stays `0.20.1`, and the burn `.bpk` migration surface inventory remains the cutover
+    prerequisite.
   - Model optimization and packaging remain a distinct post-training pipeline.
   - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-040, ADR-053, ADR-057,
     ADR-060, and ADR-063.
 - Distributed runtime and lineage fits:
-  - The multibillion target envelope stays anchored to `distributed_shard_metadata`.
+  - The multibillion target envelope remains anchored to `distributed_shard_metadata`.
   - The current distributed runtime capability surface remains `single-device execution only`,
-    `First candidate expansion: DP`, while `ZeRO-1/2/3` and `TP, PP, SP/CP, EP` remain
-    unsupported.
+    `First candidate expansion: DP`; `ZeRO-1/2/3` and `TP, PP, SP/CP, EP` remain unsupported.
+  - `worker_parallelism` remains a local throughput knob, not a distributed strategy contract.
   - `distributed runtime profile trials`, the feasibility artifact, the `checkpoint index`,
     `checkpoint_group`, the distributed shard lineage receipt, and distributed shard lineage
-    evidence provenance remain explicit contract anchors.
-  - Distributed optimizer-state recovery remains an explicit in-job contract anchored to
-    `checkpoint_group`; see ADR-061.
+    evidence provenance remain explicit anchors; distributed optimizer-state recovery remains an
+    explicit in-job contract anchored to `checkpoint_group`.
   - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-035, ADR-038,
-    ADR-039, ADR-041, ADR-043, ADR-054, and ADR-058.
+    ADR-039, ADR-041, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
   - The artifact retention envelope remains explicit, and `artifacts/profiling/` stays a
     prune-candidate domain.
-  - Deployment verification receipt remains anchored to `artifact_version`, and deployment
+  - Deployment verification receipt remains anchored to `artifact_version`; deployment
     verification evidence provenance remains anchored to the deployment verification receipt.
-  - The deployment verification evidence provenance contract remains explicit; see ADR-027.
+  - The deployment verification evidence provenance contract remains explicit.
   - Pretraining source registry, source approval receipt, and source provenance receipt remain
-    explicit, with `approval_status` and `upstream_locator` still visible contract anchors.
+    explicit, with `approval_status` and `upstream_locator` as visible anchors.
   - The local-first text path remains explicit: `decoder-only language model`,
     `fineweb-edu/slice`, `single-node, single-device execution`, `50M` to `300M` parameters,
     `1024` token context length, `50M` to `200M` token budgets, `AdamW`, tokenizer and packing
