@@ -54,12 +54,20 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
         "Rollout verification and pointer state:",
         "Scheduler heartbeat artifact groups:",
         "Deployment stack artifact groups:",
+        "Deployment verification artifact groups:",
         "Pretraining source artifact groups:",
         "Distributed shard lineage artifact groups:",
     ];
 
     let expected_rollout_link =
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map.";
+    let expected_deployment_verification_flows = [
+        "Receipt support flows: history/reconciliation and transport stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).",
+        "Receipt support flows: locator, rollback, and rollback supersession stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).",
+        "Bundle support flows: history/reconciliation and transport stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
+        "Bundle support flows: locator, rollback, and rollback supersession stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
+        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
+    ];
 
     for (recipe, link_line) in expected_links {
         assert!(
@@ -83,6 +91,13 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
         reference.contains(expected_rollout_link),
         "reference index must keep the grouped rollout workflow linkage `{expected_rollout_link}`"
     );
+
+    for flow_line in expected_deployment_verification_flows {
+        assert!(
+            reference.contains(flow_line),
+            "reference index must keep the grouped deployment-verification support-flow wording `{flow_line}`"
+        );
+    }
 
     let referenced_checks = reference
         .lines()
