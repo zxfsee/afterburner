@@ -42,6 +42,8 @@ fn justfile_thinness_debt_stays_bounded() {
                     || recipe.starts_with("deployment-verification-handoff-transport-locator ")
                     || recipe.starts_with("deployment-verification-receipt-transport-locator ")
                     || recipe.starts_with("deployment-verification-receipt-locator-pointer ")
+                    || recipe.starts_with("deployment-verification-bundle-transport-locator ")
+                    || recipe.starts_with("deployment-verification-bundle-locator-pointer ")
                     || recipe.contains("-rollback")
                     || recipe.contains("-supersede")
                     || recipe.starts_with("kube-rs-lease-"))
@@ -111,14 +113,14 @@ fn justfile_thinness_debt_stays_bounded() {
         "scheduler-heartbeat-pointer-rollback-supersession-history supersession event recorded_at_unix_ms".to_string(),
         "scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession".to_string(),
         "scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
-        "deployment-verification-bundle-history-record bundle event recorded_at_unix_ms".to_string(),
-        "deployment-verification-bundle-history-reconciliation reconciliation event recorded_at_unix_ms".to_string(),
+        "deployment-verification-bundle-history bundle event recorded_at_unix_ms".to_string(),
+        "deployment-verification-bundle-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-reconcile receipt bundle".to_string(),
-        "deployment-verification-bundle-transport-point bundle".to_string(),
-        "deployment-verification-bundle-transport-history locator event recorded_at_unix_ms".to_string(),
-        "deployment-verification-bundle-transport-reconcile bundle locator".to_string(),
+        "deployment-verification-bundle-transport-locator bundle".to_string(),
+        "deployment-verification-bundle-transport-locator-history locator event recorded_at_unix_ms".to_string(),
+        "deployment-verification-bundle-transport-locator-reconcile bundle locator".to_string(),
         "deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
-        "deployment-verification-bundle-locator-point locator".to_string(),
+        "deployment-verification-bundle-locator-pointer locator".to_string(),
         "deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-locator-reconcile locator pointer".to_string(),
         "deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),

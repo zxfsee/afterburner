@@ -10,7 +10,7 @@ fn repo_file(path: &str) -> String {
 fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
-        "deployment-verification-bundle-locator-point locator:",
+        "deployment-verification-bundle-locator-pointer locator:",
         "deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms:",
         "deployment-verification-bundle-locator-reconcile locator pointer:",
         "deployment-verification-bundle-locator-reconciliation-history reconciliation event recorded_at_unix_ms:",

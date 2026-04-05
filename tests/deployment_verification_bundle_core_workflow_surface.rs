@@ -11,12 +11,12 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-bundle receipt:",
-        "deployment-verification-bundle-history-record bundle event recorded_at_unix_ms:",
-        "deployment-verification-bundle-history-reconciliation reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-bundle-history bundle event recorded_at_unix_ms:",
+        "deployment-verification-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-bundle-reconcile receipt bundle:",
-        "deployment-verification-bundle-transport-point bundle:",
-        "deployment-verification-bundle-transport-history locator event recorded_at_unix_ms:",
-        "deployment-verification-bundle-transport-reconcile bundle locator:",
+        "deployment-verification-bundle-transport-locator bundle:",
+        "deployment-verification-bundle-transport-locator-history locator event recorded_at_unix_ms:",
+        "deployment-verification-bundle-transport-locator-reconcile bundle locator:",
         "deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "workflow-surface-check-deployment-verification:",
     ] {

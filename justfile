@@ -296,28 +296,28 @@ distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_b
 deployment-verification-bundle receipt:
     cargo run --locked --bin afterburner -- verify bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_evidence_bundle.json
 
-deployment-verification-bundle-history-record bundle event recorded_at_unix_ms:
+deployment-verification-bundle-history bundle event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify bundle history record --bundle {{ bundle }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_history.json
 
-deployment-verification-bundle-history-reconciliation reconciliation event recorded_at_unix_ms:
+deployment-verification-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify bundle history reconciliation --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation_history.json
 
 deployment-verification-bundle-reconcile receipt bundle:
     cargo run --locked --bin afterburner -- verify bundle reconcile --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_evidence_bundle_reconciliation.json
 
-deployment-verification-bundle-transport-point bundle:
+deployment-verification-bundle-transport-locator bundle:
     cargo run --locked --bin afterburner -- verify bundle transport point --bundle {{ bundle }} --out artifacts/deploy/deployment_verification_bundle_transport_locator.json
 
-deployment-verification-bundle-transport-history locator event recorded_at_unix_ms:
+deployment-verification-bundle-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify bundle transport history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_transport_locator_history.json
 
-deployment-verification-bundle-transport-reconcile bundle locator:
+deployment-verification-bundle-transport-locator-reconcile bundle locator:
     cargo run --locked --bin afterburner -- verify bundle transport reconcile --bundle {{ bundle }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_bundle_transport_locator_reconciliation.json
 
 deployment-verification-bundle-transport-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify bundle transport reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_bundle_transport_locator_reconciliation_history.json
 
-deployment-verification-bundle-locator-point locator:
+deployment-verification-bundle-locator-pointer locator:
     cargo run --locked --bin afterburner -- verify bundle locator point --locator {{ locator }} --out artifacts/deploy/deployment_verification_bundle_locator_pointer.json
 
 deployment-verification-bundle-locator-history pointer event recorded_at_unix_ms:
