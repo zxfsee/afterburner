@@ -13,42 +13,43 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-utility workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-utility workflow-link line so the grouped utility reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-- Grouped capability summary split validation gate alignment [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the capability and stance summary section so the repo-wide operating reference summary cannot drift unnoticed.
+- Grouped reference intro split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped deployment-stack workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack workflow-link line so the grouped deployment-stack reference surface cannot drift unnoticed.
+- Grouped rollout workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the rollout workflow-link line so the grouped rollout reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped scheduler-heartbeat workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat workflow-link line so the grouped scheduler reference surface cannot drift unnoticed.
+- Grouped cleanup workflow-link split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the cleanup workflow-link line so the grouped cleanup reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped deployment-verification workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-verification workflow-link line so the grouped verification reference surface cannot drift unnoticed.
+- Grouped drift workflow-link split validation gate alignment [Experimentation/Eval Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the drift workflow-link line so the grouped drift reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped source/lineage workflow-link split validation gate alignment [Data Infra, Distributed Training]
-  - Goal: Keep the shared README/reference split validator aligned with the source and lineage workflow-link lines so the grouped source/lineage reference surface cannot drift unnoticed.
+- Grouped profiling workflow-link split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the profiling workflow-link line so the grouped profiling reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped command-entrypoint note split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the reference command-entrypoint note so the docs handoff to workflows stays explicit.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

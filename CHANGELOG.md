@@ -2,48 +2,49 @@
 
 ## TODO
 
-- Grouped deployment-utility workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-utility workflow-link line so the grouped utility reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-- Grouped capability summary split validation gate alignment [Runtime Infra, Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the capability and stance summary section so the repo-wide operating reference summary cannot drift unnoticed.
+- Grouped reference intro split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped deployment-stack workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack workflow-link line so the grouped deployment-stack reference surface cannot drift unnoticed.
+- Grouped rollout workflow-link split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the rollout workflow-link line so the grouped rollout reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped scheduler-heartbeat workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat workflow-link line so the grouped scheduler reference surface cannot drift unnoticed.
+- Grouped cleanup workflow-link split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the cleanup workflow-link line so the grouped cleanup reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped deployment-verification workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the deployment-verification workflow-link line so the grouped verification reference surface cannot drift unnoticed.
+- Grouped drift workflow-link split validation gate alignment [Experimentation/Eval Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the drift workflow-link line so the grouped drift reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-- Grouped source/lineage workflow-link split validation gate alignment [Data Infra, Distributed Training]
-  - Goal: Keep the shared README/reference split validator aligned with the source and lineage workflow-link lines so the grouped source/lineage reference surface cannot drift unnoticed.
+- Grouped profiling workflow-link split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the profiling workflow-link line so the grouped profiling reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/readme_reference_split.rs`
 
-<!-- queue-snapshot: todo_sha256=f69e9c63540e650fa0be06163907368b00242119d2e5705624fb9de6dac9acee parent_commit=ef20dd56e77f2833e66e5e1a3e391aef75a9db92 -->
+- Grouped command-entrypoint note split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the reference command-entrypoint note so the docs handoff to workflows stays explicit.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+<!-- queue-snapshot: todo_sha256=bd0790de477f5fc63b36322e8ae54f060583a9bba59c5b8a5ca1a6ad832b17c0 parent_commit=f128ab05589584fa9d0caee4cb1571306d977f7c -->
 
 ## [Trunk]
 
@@ -726,6 +727,7 @@
 - Align deployment-stack check artifact ([4db884c])
 - Align training-side artifact and event lines ([a56c986])
 - Batch front contract split assertions ([ef20dd5])
+- Batch front contract split assertions ([f128ab0])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -1387,5 +1389,6 @@
 [4db884c]: https://github.com/zxfsee/afterburner/commit/4db884c257ff3ccbb0b8a7fcb74d01c24a0b07ff
 [a56c986]: https://github.com/zxfsee/afterburner/commit/a56c98695f2bd64f7eaf696db682183c6ec26fa5
 [ef20dd5]: https://github.com/zxfsee/afterburner/commit/ef20dd56e77f2833e66e5e1a3e391aef75a9db92
+[f128ab0]: https://github.com/zxfsee/afterburner/commit/f128ab05589584fa9d0caee4cb1571306d977f7c
 
 <!-- generated by git-cliff -->
