@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped profiling reference split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the profiling reference family so profiling artifact groups cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped drift reference split validation gate alignment [Experimentation/Eval Infra]
   - Goal: Keep the shared README/reference split validator aligned with the drift reference family so drift artifact groups cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped profiling section split validation gate alignment [Runtime Infra]
   - Goal: Keep the shared README/reference split validator aligned with the profiling section heading and family artifacts so the grouped profiling reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped drift section split validation gate alignment [Experimentation/Eval Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the drift section heading and family artifacts so the grouped drift reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
