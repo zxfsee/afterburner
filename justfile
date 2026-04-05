@@ -417,10 +417,10 @@ deployment-verification-receipt-locator-reconcile locator pointer:
 deployment-verification-receipt-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt locator reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_reconciliation_history.json
 
-deployment-verification-receipt-rollback-locator current_pointer restored_pointer rolled_back_at_unix_ms:
+deployment-verification-receipt-rollback current_pointer restored_pointer rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-receipt locator --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_rollback.json
 
-deployment-verification-receipt-rollback-locator-history rollback event recorded_at_unix_ms:
+deployment-verification-receipt-rollback-history rollback event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- rollback verification-receipt locator-history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_locator_rollback_history.json
 
 deployment-verification-receipt-rollback-reconcile rollback current_rollback:
