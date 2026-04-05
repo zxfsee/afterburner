@@ -39,6 +39,7 @@ unless they graduate into a clear operator intent.
 ## Workflow and artifact families
 
 - Deployment:
+  - Deployment stack artifact groups:
   - `deployment_stack_check.json`
   - `deployment_stack_launch_plan.json`
   - `deployment_stack_launch_receipt.json`

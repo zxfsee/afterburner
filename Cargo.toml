@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-stack validation wording alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared deployment-matrix and reference validation surfaces aligned with the newer grouped operator-flow wording for deployment-stack notes so validation no longer lags behind the family docs phrasing.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/deployment_matrix_workflow_surface.rs`, `tests/reference_doc_validation.rs`
-
 - Grouped deployment-verification shared reference validation wording alignment [Serving/Deployment Infra]
   - Goal: Keep the shared reference validation surface aligned with the newer deployment-verification artifact-group and support-flow wording so the reference index cannot drift without the shared validator noticing.
   - Kind: `mixed`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped scheduler-heartbeat reference split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat artifact-group heading so the grouped scheduler reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped deployment-stack reference split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the deployment-stack artifact-group heading so the grouped deployment-stack reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

@@ -53,6 +53,7 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
     let expected_headings = [
         "Rollout verification and pointer state:",
         "Scheduler heartbeat artifact groups:",
+        "Deployment stack artifact groups:",
         "Pretraining source artifact groups:",
         "Distributed shard lineage artifact groups:",
     ];

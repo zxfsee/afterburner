@@ -45,6 +45,7 @@ fn deployment_workflow_matrix_stays_grouped_by_operator_family() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
+        "Deployment stack artifact groups:",
         "`deployment_stack_launch_plan.json`",
         "`kube_rs_gpu_lease_reconciliation.json`",
         "`scheduler_runtime_simulation_report.json`",
