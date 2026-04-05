@@ -51,12 +51,12 @@ fn deployment_verification_canonical_surface_moves_past_manage_buckets() {
         "deployment-verification-bundle-rollback-supersession-history supersession event recorded_at_unix_ms:",
         "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:",
         "deployment-verification-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
-        "deployment-verification-handoff-history-record handoff event recorded_at_unix_ms:",
-        "deployment-verification-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
+        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport-point handoff:",
-        "deployment-verification-handoff-transport-history locator event recorded_at_unix_ms:",
-        "deployment-verification-handoff-transport-reconcile handoff locator:",
+        "deployment-verification-handoff-transport-locator handoff:",
+        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms:",
+        "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
     ] {
         assert!(
             justfile.contains(required),

@@ -118,12 +118,12 @@ fn deployment_verification_family_stays_surface_complete() {
         "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:",
         "deployment-verification-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff bundle:",
-        "deployment-verification-handoff-history-record handoff event recorded_at_unix_ms:",
-        "deployment-verification-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
+        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport-point handoff:",
-        "deployment-verification-handoff-transport-history locator event recorded_at_unix_ms:",
-        "deployment-verification-handoff-transport-reconcile handoff locator:",
+        "deployment-verification-handoff-transport-locator handoff:",
+        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms:",
+        "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");

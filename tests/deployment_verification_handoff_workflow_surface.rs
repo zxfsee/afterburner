@@ -11,12 +11,12 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let justfile = repo_file("justfile");
     for recipe in [
         "deployment-verification-handoff bundle:",
-        "deployment-verification-handoff-history-record handoff event recorded_at_unix_ms:",
-        "deployment-verification-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:",
+        "deployment-verification-handoff-history handoff event recorded_at_unix_ms:",
+        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:",
         "deployment-verification-handoff-reconcile bundle handoff:",
-        "deployment-verification-handoff-transport-point handoff:",
-        "deployment-verification-handoff-transport-history locator event recorded_at_unix_ms:",
-        "deployment-verification-handoff-transport-reconcile handoff locator:",
+        "deployment-verification-handoff-transport-locator handoff:",
+        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms:",
+        "deployment-verification-handoff-transport-locator-reconcile handoff locator:",
         "workflow-surface-check-deployment-verification:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");

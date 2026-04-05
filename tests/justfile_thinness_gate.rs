@@ -39,6 +39,7 @@ fn justfile_thinness_debt_stays_bounded() {
                     || recipe.starts_with("deploy-launch-locator ")
                     || recipe.starts_with("distributed-shard-lineage-locator-pointer ")
                     || recipe.starts_with("distributed-shard-lineage-transport-locator ")
+                    || recipe.starts_with("deployment-verification-handoff-transport-locator ")
                     || recipe.contains("-rollback")
                     || recipe.contains("-supersede")
                     || recipe.starts_with("kube-rs-lease-"))
@@ -129,12 +130,12 @@ fn justfile_thinness_debt_stays_bounded() {
         "deployment-verification-bundle-rollback-supersession-history supersession event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession".to_string(),
         "deployment-verification-bundle-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
-        "deployment-verification-handoff-history-record handoff event recorded_at_unix_ms".to_string(),
-        "deployment-verification-handoff-history-reconciliation reconciliation event recorded_at_unix_ms".to_string(),
+        "deployment-verification-handoff-history handoff event recorded_at_unix_ms".to_string(),
+        "deployment-verification-handoff-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-handoff-reconcile bundle handoff".to_string(),
-        "deployment-verification-handoff-transport-point handoff".to_string(),
-        "deployment-verification-handoff-transport-history locator event recorded_at_unix_ms".to_string(),
-        "deployment-verification-handoff-transport-reconcile handoff locator".to_string(),
+        "deployment-verification-handoff-transport-locator handoff".to_string(),
+        "deployment-verification-handoff-transport-locator-history locator event recorded_at_unix_ms".to_string(),
+        "deployment-verification-handoff-transport-locator-reconcile handoff locator".to_string(),
         "deployment-verification-receipt-history-record receipt event recorded_at_unix_ms".to_string(),
         "deployment-verification-receipt-history-reconciliation reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources".to_string(),
