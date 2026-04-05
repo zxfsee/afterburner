@@ -2,49 +2,49 @@
 
 ## TODO
 
-- Grouped reference intro split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
+- Grouped reference intro validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared reference validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped rollout workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the rollout workflow-link line so the grouped rollout reference surface cannot drift unnoticed.
+- Grouped command-entrypoint note validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared reference validator aligned with the command-entrypoint note so the docs handoff to workflows stays explicit.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped cleanup workflow-link split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the cleanup workflow-link line so the grouped cleanup reference surface cannot drift unnoticed.
+- Grouped capability summary distributed runtime validation gate alignment [Runtime Infra, Distributed Training]
+  - Goal: Keep the shared reference validator aligned with the distributed capability and runtime summary lines so the repo-wide runtime posture cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped drift workflow-link split validation gate alignment [Experimentation/Eval Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the drift workflow-link line so the grouped drift reference surface cannot drift unnoticed.
+- Grouped capability summary operator/runtime validation gate alignment [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep the shared reference validator aligned with the operator-surface and backend/runtime summary lines so the top-level runtime positioning cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped profiling workflow-link split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the profiling workflow-link line so the grouped profiling reference surface cannot drift unnoticed.
+- Grouped capability summary provenance validation gate alignment [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep the shared reference validator aligned with the profiling, provenance, and retention summary lines so those operating guarantees cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped command-entrypoint note split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the reference command-entrypoint note so the docs handoff to workflows stays explicit.
+- Grouped capability summary horizon-reference validation gate alignment [Runtime Infra, Data Infra, Experimentation/Eval Infra]
+  - Goal: Keep the shared reference validator aligned with the longer-horizon reference points so the repo-wide strategy summary cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-<!-- queue-snapshot: todo_sha256=bd0790de477f5fc63b36322e8ae54f060583a9bba59c5b8a5ca1a6ad832b17c0 parent_commit=f128ab05589584fa9d0caee4cb1571306d977f7c -->
+<!-- queue-snapshot: todo_sha256=c5b9b92383fe34ff99834055b520ece04b0fa4901fdbb0b25b0e91337eb26fa1 parent_commit=bfd08d9dce4a3c2065e6d51ee8b9196321fbe4eb -->
 
 ## [Trunk]
 
@@ -728,6 +728,8 @@
 - Align training-side artifact and event lines ([a56c986])
 - Batch front contract split assertions ([ef20dd5])
 - Batch front contract split assertions ([f128ab0])
+- Batch shared workflow-link split gates ([afe8f7b])
+- Batch remaining split validator sibling gates ([bfd08d9])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -1390,5 +1392,7 @@
 [a56c986]: https://github.com/zxfsee/afterburner/commit/a56c98695f2bd64f7eaf696db682183c6ec26fa5
 [ef20dd5]: https://github.com/zxfsee/afterburner/commit/ef20dd56e77f2833e66e5e1a3e391aef75a9db92
 [f128ab0]: https://github.com/zxfsee/afterburner/commit/f128ab05589584fa9d0caee4cb1571306d977f7c
+[afe8f7b]: https://github.com/zxfsee/afterburner/commit/afe8f7bf9cb9bbbc7f5ccc3bf64c806bd20b3b82
+[bfd08d9]: https://github.com/zxfsee/afterburner/commit/bfd08d9dce4a3c2065e6d51ee8b9196321fbe4eb
 
 <!-- generated by git-cliff -->

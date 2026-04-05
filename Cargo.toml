@@ -13,47 +13,47 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped reference intro split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
+- Grouped reference intro validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared reference validator aligned with the reference-index intro and positioning lines so the top explanatory surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped rollout workflow-link split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the rollout workflow-link line so the grouped rollout reference surface cannot drift unnoticed.
+- Grouped command-entrypoint note validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared reference validator aligned with the command-entrypoint note so the docs handoff to workflows stays explicit.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped cleanup workflow-link split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the cleanup workflow-link line so the grouped cleanup reference surface cannot drift unnoticed.
+- Grouped capability summary distributed runtime validation gate alignment [Runtime Infra, Distributed Training]
+  - Goal: Keep the shared reference validator aligned with the distributed capability and runtime summary lines so the repo-wide runtime posture cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped drift workflow-link split validation gate alignment [Experimentation/Eval Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the drift workflow-link line so the grouped drift reference surface cannot drift unnoticed.
+- Grouped capability summary operator/runtime validation gate alignment [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep the shared reference validator aligned with the operator-surface and backend/runtime summary lines so the top-level runtime positioning cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped profiling workflow-link split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the profiling workflow-link line so the grouped profiling reference surface cannot drift unnoticed.
+- Grouped capability summary provenance validation gate alignment [Runtime Infra, Serving/Deployment Infra]
+  - Goal: Keep the shared reference validator aligned with the profiling, provenance, and retention summary lines so those operating guarantees cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
-- Grouped command-entrypoint note split validation gate alignment [Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the reference command-entrypoint note so the docs handoff to workflows stays explicit.
+- Grouped capability summary horizon-reference validation gate alignment [Runtime Infra, Data Infra, Experimentation/Eval Infra]
+  - Goal: Keep the shared reference validator aligned with the longer-horizon reference points so the repo-wide strategy summary cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
 ## [Trunk]
 """
