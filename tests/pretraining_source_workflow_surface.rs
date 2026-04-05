@@ -11,7 +11,8 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
     let justfile = repo_file("justfile");
     for recipe in [
         "pretraining-source-approval source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:",
-        "pretraining-source-provenance action +args:",
+        "pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:",
+        "pretraining-source-provenance-evidence-bundle provenance_receipt:",
         "workflow-surface-check-pretraining-source:",
     ] {
         assert!(justfile.contains(recipe), "justfile must expose `{recipe}`");
@@ -19,12 +20,11 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
 
     for forbidden in [
         "pretraining-source-approval-receipt source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:",
-        "pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:",
-        "pretraining-source-provenance-evidence-bundle provenance_receipt:",
+        "pretraining-source-provenance action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),
-            "justfile must not keep flat source recipe `{forbidden}` after grouping"
+            "justfile must not keep generic source bucket `{forbidden}` after collapse"
         );
     }
 
@@ -32,7 +32,7 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
     for needle in [
         "Pretraining source stays grouped under these operator flows:",
         "Approval flow: `just pretraining-source-approval`.",
-        "Provenance flow: `just pretraining-source-provenance <receipt|bundle>`.",
+        "Provenance flow: `just pretraining-source-provenance-receipt`, `just pretraining-source-provenance-evidence-bundle`.",
         "`just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.",
     ] {
         assert!(
@@ -43,10 +43,10 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
 
     for forbidden in [
         "just pretraining-source-approval-receipt",
-        "just pretraining-source-provenance-receipt",
-        "just pretraining-source-provenance-evidence-bundle",
+        "just pretraining-source-provenance <receipt|bundle>",
         "- `just pretraining-source-approval` writes `pretraining_source_approval_receipt.json`.",
-        "- `just pretraining-source-provenance <receipt|bundle>` covers `pretraining_source_provenance_receipt.json` and `pretraining_source_provenance_evidence_bundle.json`.",
+        "- `just pretraining-source-provenance-receipt` writes `pretraining_source_provenance_receipt.json`.",
+        "- `just pretraining-source-provenance-evidence-bundle` writes `pretraining_source_provenance_evidence_bundle.json`.",
     ] {
         assert!(
             !workflows.contains(forbidden),

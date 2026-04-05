@@ -61,8 +61,10 @@ fn pretraining_source_provenance_receipt_contract_is_documented() {
         "workflow reference must mention the pretraining source provenance receipt contract"
     );
     assert!(
-        readme.contains("just pretraining-source-provenance <receipt|bundle>"),
-        "workflow reference must mention the grouped pretraining source provenance workflow"
+        readme.contains(
+            "just pretraining-source-provenance-receipt`, `just pretraining-source-provenance-evidence-bundle"
+        ),
+        "workflow reference must mention the explicit pretraining source provenance workflows"
     );
 }
 

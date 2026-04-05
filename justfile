@@ -483,8 +483,11 @@ distributed-shard-lineage-locator-transport-history reconciliation event recorde
 pretraining-source-approval source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- source approval receipt --source {{ source }} --source-revision {{ source_revision }} --approval-status {{ approval_status }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }}
 
-pretraining-source-provenance action +args:
-    cargo run --locked --bin afterburner -- source provenance {{ action }} {{ args }}
+pretraining-source-provenance-receipt approval_receipt registry_entry_path upstream_locator reviewed_metadata_sha256:
+    cargo run --locked --bin afterburner -- source provenance receipt --approval-receipt {{ approval_receipt }} --registry-entry-path {{ registry_entry_path }} --upstream-locator {{ upstream_locator }} --reviewed-metadata-sha256 {{ reviewed_metadata_sha256 }}
+
+pretraining-source-provenance-evidence-bundle provenance_receipt:
+    cargo run --locked --bin afterburner -- source provenance bundle --provenance-receipt {{ provenance_receipt }}
 
 # inventory retained paths and clear prune candidates before planning cleanup
 cleanup-inventory:

@@ -173,7 +173,7 @@ operator use case justifies promotion.
 
 - Pretraining source stays grouped under these operator flows:
 - Approval flow: `just pretraining-source-approval`.
-- Provenance flow: `just pretraining-source-provenance <receipt|bundle>`.
+- Provenance flow: `just pretraining-source-provenance-receipt`, `just pretraining-source-provenance-evidence-bundle`.
 - The `source provenance receipt` captures reviewed source metadata over one approval receipt; `bundle` packages the approval and provenance evidence together.
 - `just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.
 - Distributed shard lineage stays grouped under these operator flows:

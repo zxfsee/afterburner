@@ -58,8 +58,7 @@ fn justfile_thinness_debt_stays_bounded() {
         "justfile control-flow branching must stay out of the canonical workflow surface"
     );
 
-    let allowed_action_args =
-        BTreeSet::from(["pretraining-source-provenance action +args".to_string()]);
+    let allowed_action_args = BTreeSet::new();
     assert_eq!(
         action_arg_recipes, allowed_action_args,
         "generic `action +args` buckets must stay bounded to the explicit allowlist until their families are removed end to end"
