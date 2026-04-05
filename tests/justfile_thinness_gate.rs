@@ -58,14 +58,8 @@ fn justfile_thinness_debt_stays_bounded() {
         "justfile control-flow branching must stay out of the canonical workflow surface"
     );
 
-    let allowed_action_args = BTreeSet::from([
-        "scheduler-heartbeat-supersession action +args".to_string(),
-        "scheduler-heartbeat-pointer action +args".to_string(),
-        "scheduler-heartbeat-pointer-supersession action +args".to_string(),
-        "scheduler-heartbeat-pointer-rollback action +args".to_string(),
-        "scheduler-heartbeat-pointer-rollback-supersession action +args".to_string(),
-        "pretraining-source-provenance action +args".to_string(),
-    ]);
+    let allowed_action_args =
+        BTreeSet::from(["pretraining-source-provenance action +args".to_string()]);
     assert_eq!(
         action_arg_recipes, allowed_action_args,
         "generic `action +args` buckets must stay bounded to the explicit allowlist until their families are removed end to end"
@@ -94,6 +88,23 @@ fn justfile_thinness_debt_stays_bounded() {
         "scheduler-heartbeat-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_unix_ms".to_string(),
         "scheduler-heartbeat-point heartbeat".to_string(),
+        "scheduler-heartbeat-supersession-history supersession event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-supersession-reconcile supersession current_supersession".to_string(),
+        "scheduler-heartbeat-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-history pointer event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-reconcile pointer current_pointer".to_string(),
+        "scheduler-heartbeat-pointer-supersede previous_pointer next_pointer superseded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-supersession-history supersession event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-supersession-reconcile supersession current_supersession".to_string(),
+        "scheduler-heartbeat-pointer-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback-history rollback event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback-reconcile rollback current_rollback".to_string(),
+        "scheduler-heartbeat-pointer-rollback-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback-supersession-history supersession event recorded_at_unix_ms".to_string(),
+        "scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession".to_string(),
+        "scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-history-record bundle event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-history-reconciliation reconciliation event recorded_at_unix_ms".to_string(),
         "deployment-verification-bundle-reconcile receipt bundle".to_string(),
@@ -170,6 +181,11 @@ fn justfile_thinness_debt_stays_bounded() {
         "distributed-shard-lineage-handoff-manage action +args:",
         "distributed-shard-lineage-locator-manage action +args:",
         "scheduler-heartbeat-manage action +args:",
+        "scheduler-heartbeat-supersession action +args:",
+        "scheduler-heartbeat-pointer action +args:",
+        "scheduler-heartbeat-pointer-supersession action +args:",
+        "scheduler-heartbeat-pointer-rollback action +args:",
+        "scheduler-heartbeat-pointer-rollback-supersession action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),

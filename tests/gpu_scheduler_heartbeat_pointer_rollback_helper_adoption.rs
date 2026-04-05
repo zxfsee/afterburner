@@ -72,7 +72,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback.rs",
             "gpu_scheduler_heartbeat_pointer_rolled_back",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "schema_version",
@@ -97,7 +99,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_history_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "event",
@@ -124,7 +128,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_reconcile.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_payload_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "current_pointer_path",
@@ -148,7 +154,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_reconciliation_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "event",
@@ -168,7 +176,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_superseded",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "schema_version",
@@ -195,7 +205,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_history_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "event",
@@ -222,7 +234,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_reconcile.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_payload_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "previous_rollback_path",
@@ -248,7 +262,9 @@ fn rollback_helper_rollout_keeps_variant_contracts_aligned() {
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.schema.json",
             "src/cmd_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.rs",
             "gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history_written",
-            Some("scheduler-heartbeat-pointer-rollback action +args:"),
+            Some(
+                "scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:",
+            ),
             schema_entry_required_set as fn(&Value) -> BTreeSet<String>,
             [
                 "event",

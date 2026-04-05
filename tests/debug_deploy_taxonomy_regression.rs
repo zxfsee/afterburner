@@ -12,10 +12,10 @@ fn debug_deploy_surface_stays_family_first() {
     let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "deployment-verification-bundle-rollback action +args:",
-        "deployment-verification-receipt-locator action +args:",
-        "deployment-verification-handoff-transport action +args:",
-        "scheduler-heartbeat-pointer-rollback-supersession action +args:",
+        "deployment-verification-bundle-rollback-supersession-reconcile supersession current_supersession:",
+        "deployment-verification-receipt-locator-reconcile locator pointer:",
+        "deployment-verification-handoff-transport-reconcile handoff locator:",
+        "scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession:",
         "fn regrouped_debug_deploy_subcommand(",
         "\"verification-bundle\"",
         "\"verification-receipt\"",
@@ -36,6 +36,7 @@ fn debug_deploy_surface_stays_family_first() {
         "-- debug deploy record-scheduler-heartbeat-pointer-rollback-history",
         "-- debug deploy scheduler-heartbeat-supersede",
         "scheduler-heartbeat-manage action +args:",
+        "scheduler-heartbeat-pointer-rollback-supersession action +args:",
     ] {
         assert!(
             !justfile.contains(forbidden),
