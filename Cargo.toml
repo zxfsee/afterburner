@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped scheduler-heartbeat artifact split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the scheduler-heartbeat artifact cluster so the grouped scheduler reference surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped deployment-stack launch artifact split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-stack launch artifact cluster so the grouped launch reference surface cannot drift unnoticed.
   - Kind: `gate`
@@ -43,6 +36,13 @@ header = """# Changelog
 
 - Grouped deployment-stack check artifact split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with `deployment_stack_check.json` so the grouped deployment-stack check surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped training/inference artifact and event split validation gate alignment [Inference, Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the top training and inference contract artifacts and events so the front-section reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
