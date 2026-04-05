@@ -48,7 +48,7 @@ fn deployment_verification_bundle_core_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_evidence_bundle*.json`",
-        "Bundle core history, reconciliation, and transport-locator flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).",
+        "Bundle support flows: history/reconciliation and transport stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

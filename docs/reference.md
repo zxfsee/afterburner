@@ -69,15 +69,15 @@ unless they graduate into a clear operator intent.
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-scheduler-heartbeat` for mechanical coverage.
   - `scheduler_runtime_simulation_report.json`
   - `burn_bpk_migration_surface_inventory.json`
-  - Deployment verification family groups:
+  - Deployment verification artifact groups:
   - `deployment_verification_receipt*.json`
-  - Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
-  - Receipt locator, locator rollback, and rollback supersession flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).
+  - Receipt support flows: history/reconciliation and transport stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).
+  - Receipt support flows: locator, rollback, and rollback supersession stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).
   - `deployment_verification_evidence_bundle*.json`
-  - Bundle core history, reconciliation, and transport-locator flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).
-  - Bundle locator, locator rollback, bundle rollback, and rollback supersession flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).
+  - Bundle support flows: history/reconciliation and transport stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).
+  - Bundle support flows: locator, rollback, and rollback supersession stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).
   - `deployment_verification_evidence_handoff*.json`
-  - Handoff history, transport-locator, and reconciliation flows stay grouped under the handoff entry surface in [docs/workflows.md](./workflows.md).
+  - Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-verification` for mechanical coverage.
   - `distributed_load_profile.json`
   - `artifact_upload_request.json`

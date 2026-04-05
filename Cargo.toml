@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-verification reference wording tightening [Serving/Deployment Infra]
-  - Goal: Keep the remaining deployment-verification reference wording concise and operator-centered by trimming leftover “entry surface” phrasing in grouped reference notes and family surface tests.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `docs/reference.md`
-
 - Grouped rollout/reference validation wording alignment [Serving/Deployment Infra]
   - Goal: Keep the shared rollout/reference validation coverage aligned with the newer grouped operator-flow wording so rollout reference notes do not drift without a validation surface noticing.
   - Kind: `mixed`
@@ -41,12 +34,12 @@ header = """# Changelog
   - Contracts: `docs`
   - Scope: `tests/deployment_matrix_workflow_surface.rs`, `tests/reference_doc_validation.rs`
 
-- Grouped deployment-verification validation wording alignment [Serving/Deployment Infra]
-  - Goal: Keep the deployment-verification family surface tests aligned with the newer grouped operator-flow wording so validation no longer lags behind the shared docs phrasing.
+- Grouped deployment-verification shared reference validation wording alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared reference validation surface aligned with the newer deployment-verification artifact-group and support-flow wording so the reference index cannot drift without the shared validator noticing.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
+  - Scope: `tests/reference_doc_validation.rs`
 
 - Grouped source/lineage validation wording gate alignment [Data Infra, Distributed Training]
   - Goal: Keep the source and lineage family surface tests aligned with the newer grouped operator-flow wording so validation no longer lags behind the updated reference headings.
@@ -54,6 +47,13 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
+
+- Grouped source/lineage reference split validation gate alignment [Data Infra, Distributed Training]
+  - Goal: Keep the shared README/reference split validator aligned with the newer source and lineage artifact-group wording so the reference index headings cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
 
 ## [Trunk]
 """

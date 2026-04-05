@@ -48,7 +48,7 @@ fn deployment_verification_receipt_core_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_receipt*.json`",
-        "Receipt core history, reconciliation, and transport-locator flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).",
+        "Receipt support flows: history/reconciliation and transport stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

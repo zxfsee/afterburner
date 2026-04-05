@@ -49,7 +49,7 @@ fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() 
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_receipt*.json`",
-        "Receipt locator, locator rollback, and rollback supersession flows stay grouped under the receipt entry surface in [docs/workflows.md](./workflows.md).",
+        "Receipt support flows: locator, rollback, and rollback supersession stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

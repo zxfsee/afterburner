@@ -219,7 +219,7 @@ fn deployment_verification_family_stays_surface_complete() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "Deployment verification family groups:",
+        "Deployment verification artifact groups:",
         "`deployment_verification_receipt*.json`",
         "`deployment_verification_evidence_bundle*.json`",
         "`deployment_verification_evidence_handoff*.json`",

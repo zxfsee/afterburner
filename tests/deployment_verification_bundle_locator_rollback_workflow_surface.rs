@@ -51,7 +51,7 @@ fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_evidence_bundle*.json`",
-        "Bundle locator, locator rollback, bundle rollback, and rollback supersession flows stay grouped under the bundle entry surface in [docs/workflows.md](./workflows.md).",
+        "Bundle support flows: locator, rollback, and rollback supersession stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),
