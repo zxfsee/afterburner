@@ -1,6 +1,7 @@
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn macbook_text_pretraining_fit_is_documented() {

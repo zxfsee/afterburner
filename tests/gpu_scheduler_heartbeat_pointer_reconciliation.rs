@@ -4,9 +4,10 @@ use std::fs;
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn gpu_scheduler_heartbeat_pointer_reconciliation_schema_and_workflow_are_explicit() {

@@ -2,9 +2,10 @@ use std::fs;
 
 use assert_cmd::Command;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn dashboard_snapshot_matches_fixture() {

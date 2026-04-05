@@ -1,9 +1,10 @@
 use std::collections::BTreeSet;
 use std::fs;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn calibration_artifact_schema_fixture_parses_and_validates_contract() {

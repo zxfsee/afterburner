@@ -1,8 +1,9 @@
 use std::path::PathBuf;
 
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 fn fixture_exists(path: &str) -> bool {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))

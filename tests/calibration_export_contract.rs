@@ -6,9 +6,10 @@ use afterburner::train::{
 };
 use serde_json::{Value, json};
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn export_copies_calibration_sidecar_and_emits_calibration_fields() {

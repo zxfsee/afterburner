@@ -3,9 +3,10 @@ use afterburner::data::{
 };
 use std::fs;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn pretraining_dataset_manifest_parses_valid_contract() {

@@ -1,6 +1,10 @@
-mod support;
+#[path = "support/markdown.rs"]
+mod markdown_test_support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use markdown_test_support::markdown_section;
+use repo_test_support::repo_file;
 
 #[test]
 fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
@@ -21,14 +25,6 @@ fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
         "## Training and inference contracts",
         "## Workflow and artifact families",
         "## Capability and stance summary",
-        "Text-pretraining path:",
-        "Deployment stack artifact groups:",
-        "Deployment verification artifact groups:",
-        "Source and lineage:",
-        "Distributed runtime and scheduler:",
-        "Operator surface and backend fit:",
-        "Profiling, provenance, and retention:",
-        "Longer-horizon anchors:",
     ] {
         assert!(
             reference.contains(heading),
@@ -36,26 +32,53 @@ fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
         );
     }
 
+    let training = markdown_section(&reference, "## Training and inference contracts");
     for needle in [
+        "Text-pretraining path:",
         "`training_scalability_contract.json`",
         "`manifest.toml`",
         "`artifacts/eval/text_pretraining_eval_summary.json`",
+    ] {
+        assert!(
+            training.contains(needle),
+            "training/inference section must keep the representative anchor `{needle}`"
+        );
+    }
+
+    let workflows = markdown_section(&reference, "## Workflow and artifact families");
+    for needle in [
+        "Deployment stack artifact groups:",
         "`deployment_stack_check.json`",
+        "Deployment verification artifact groups:",
         "`deployment_verification_receipt*.json`",
+        "Source and lineage:",
+        "`pretraining_source_approval_receipt.json`",
+        "`distributed_shard_lineage_receipt.json`",
         "`artifact_cleanup_inventory.json`",
         "`profiling_provenance_receipt.json`",
         "`infer_output_drift_summary.json`",
-        "`pretraining_source_approval_receipt.json`",
-        "`distributed_shard_lineage_receipt.json`",
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map.",
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
+    ] {
+        assert!(
+            workflows.contains(needle),
+            "workflow/artifact families section must keep the representative anchor `{needle}`"
+        );
+    }
+
+    let capability_summary = markdown_section(&reference, "## Capability and stance summary");
+    for needle in [
+        "Distributed runtime and scheduler:",
         "afterburner deploy <subcommand>",
+        "Operator surface and backend fit:",
+        "Profiling, provenance, and retention:",
         "artifact retention envelope",
+        "Longer-horizon anchors:",
         "remote locator contract",
     ] {
         assert!(
-            reference.contains(needle),
-            "reference index must keep the representative anchor `{needle}`"
+            capability_summary.contains(needle),
+            "capability summary must keep the representative anchor `{needle}`"
         );
     }
 }

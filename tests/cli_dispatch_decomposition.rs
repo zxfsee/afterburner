@@ -1,6 +1,7 @@
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn main_entrypoint_stays_thin_and_deploy_dispatch_lives_in_grouped_helper() {

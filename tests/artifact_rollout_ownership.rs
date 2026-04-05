@@ -4,9 +4,10 @@ use std::path::PathBuf;
 
 use serde_json::json;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn artifact_rollout_ownership_schema_and_adr_are_explicit() {

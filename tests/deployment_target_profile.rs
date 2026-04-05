@@ -3,9 +3,10 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn deployment_target_profile_schema_and_adr_are_explicit() {

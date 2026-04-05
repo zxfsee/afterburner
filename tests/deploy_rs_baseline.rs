@@ -1,8 +1,9 @@
 use serde_json::Value;
 
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn deploy_rs_baseline_consumes_profile_contract() {

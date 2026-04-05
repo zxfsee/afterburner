@@ -2,9 +2,10 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -23,6 +24,15 @@ fn brittle_doc_policing(text: &str) -> bool {
         || text.contains("README frontpage must")
         || text.contains("README must keep")
         || text.contains("README must point")
+        || text.contains("reference index must keep the ownership/navigation fragment")
+        || text.contains("training/inference section must keep the representative anchor")
+        || text.contains(
+            "workflow/artifact families section must keep the representative anchor",
+        )
+        || text.contains(
+            "workflow/artifact families section must keep the grouped deployment-verification fragment",
+        )
+        || text.contains("capability summary must keep the representative anchor")
 }
 
 fn grouped_doc_surface_allowlist(file_name: &str) -> bool {

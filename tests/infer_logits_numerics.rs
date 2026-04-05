@@ -27,9 +27,10 @@ fn write_runtime_model_artifact(artifact_dir: &Path) -> PathBuf {
     weights_path
 }
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 fn infer_stdout_success_fixture() -> Value {
     let fixture = fs::read_to_string(fixture_path("infer_stdout_success.fixture.json"))

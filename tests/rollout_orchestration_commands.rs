@@ -6,8 +6,6 @@ use serde_json::Value;
 #[path = "fixture_support.rs"]
 mod fixture_support;
 
-mod support;
-
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }

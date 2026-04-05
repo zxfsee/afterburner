@@ -85,9 +85,10 @@ pub fn build_runtime_model_artifact() -> (tempfile::TempDir, PathBuf) {
     (artifact_dir, weights_path)
 }
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 fn read_f32(value: &toml::Value, field: &str) -> f32 {
     value

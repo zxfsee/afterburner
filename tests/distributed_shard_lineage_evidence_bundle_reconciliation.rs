@@ -4,9 +4,13 @@ use std::fs;
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::{fixture_path, repo_file};
+use fixture_test_support::fixture_path;
+use repo_test_support::repo_file;
 
 #[test]
 fn distributed_shard_lineage_evidence_bundle_reconciliation_schema_and_workflow_are_explicit() {

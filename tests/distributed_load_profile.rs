@@ -10,9 +10,13 @@ use std::time::Duration;
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::{fixture_path, repo_file};
+use fixture_test_support::fixture_path;
+use repo_test_support::repo_file;
 
 fn reserve_port() -> Option<u16> {
     let listener = match TcpListener::bind("127.0.0.1:0") {

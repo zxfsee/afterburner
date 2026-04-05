@@ -5,9 +5,10 @@ use afterburner::model::ModelConfig;
 use afterburner::train::{TrainingConfig, artifact_exported_event_line, train_start_event_line};
 use serde_json::{Value, json};
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn train_start_event_matches_fixture_contract() {

@@ -1,6 +1,7 @@
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn burn_stable_release_availability_gate_is_documented_against_the_current_pin() {

@@ -3,9 +3,10 @@ use std::fs;
 use afterburner::manifest::ArtifactManifest;
 use serde_json::Value;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn profile_infer_command_writes_summary_and_environment_snapshot() {

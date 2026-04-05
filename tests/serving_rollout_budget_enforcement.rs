@@ -12,9 +12,10 @@ use serde_json::Value;
 #[path = "fixture_support.rs"]
 mod fixture_support;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 fn fixture_json(name: &str) -> Value {
     let text = fs::read_to_string(fixture_path(name)).expect("read json fixture");

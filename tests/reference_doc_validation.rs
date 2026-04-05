@@ -1,6 +1,10 @@
-mod support;
+#[path = "support/markdown.rs"]
+mod markdown_test_support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use markdown_test_support::markdown_section;
+use repo_test_support::repo_file;
 
 #[test]
 fn reference_doc_stays_grouped_and_navigation_first() {
@@ -18,17 +22,19 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         );
     }
 
-    for line in [
-        "Contract and capability detail lives here so [README.md](../README.md) can stay a frontpage and navigation document.",
-        "This index is broader than the public operator CLI.",
+    for fragment in [
+        "Contract and capability detail lives here",
+        "[README.md](../README.md)",
+        "broader than the public operator CLI",
         "For command entrypoints, use [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
-            reference.contains(line),
-            "reference index must keep the ownership/navigation line `{line}`"
+            reference.contains(fragment),
+            "reference index must keep the ownership/navigation fragment `{fragment}`"
         );
     }
 
+    let workflow_families = markdown_section(&reference, "## Workflow and artifact families");
     for heading in [
         "Deployment stack artifact groups:",
         "Scheduler heartbeat artifact groups:",
@@ -43,17 +49,21 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         );
     }
 
-    for line in [
-        "Receipt support flows: history/reconciliation and transport stay grouped under the receipt operator flow in [docs/workflows.md](./workflows.md).",
-        "Bundle support flows: locator, rollback, and rollback supersession stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
-        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
+    for fragment in [
+        "Receipt support flows:",
+        "receipt operator flow in [docs/workflows.md](./workflows.md).",
+        "Bundle support flows:",
+        "bundle operator flow in [docs/workflows.md](./workflows.md).",
+        "Handoff support flows:",
+        "handoff operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
-            reference.contains(line),
-            "reference index must keep the grouped deployment-verification flow note `{line}`"
+            workflow_families.contains(fragment),
+            "workflow/artifact families section must keep the grouped deployment-verification fragment `{fragment}`"
         );
     }
 
+    let capability_summary = markdown_section(&reference, "## Capability and stance summary");
     for line in [
         "Distributed runtime and scheduler:",
         "Operator surface and backend fit:",
@@ -61,7 +71,7 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         "Longer-horizon anchors:",
     ] {
         assert!(
-            reference.contains(line),
+            capability_summary.contains(line),
             "reference index must keep the grouped capability-summary heading `{line}`"
         );
     }

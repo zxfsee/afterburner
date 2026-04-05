@@ -1,8 +1,9 @@
 use assert_cmd::cargo::cargo_bin_cmd;
 
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn public_cli_surface_stays_within_admitted_grouped_families() {

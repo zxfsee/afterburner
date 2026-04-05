@@ -1,9 +1,10 @@
 use std::collections::BTreeSet;
 use std::fs;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn compiler_feature_matrix_schema_fixture_has_required_contract_fields() {

@@ -4,9 +4,10 @@ use std::fs;
 use afterburner::observability::event_line;
 use serde_json::json;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
 
-use support::fixture_path;
+use fixture_test_support::fixture_path;
 
 #[test]
 fn event_line_matches_required_envelope_fixture_keys() {

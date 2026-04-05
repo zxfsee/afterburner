@@ -1,9 +1,13 @@
 use std::collections::BTreeSet;
 use std::fs;
 
-mod support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::{fixture_path, repo_file};
+use fixture_test_support::fixture_path;
+use repo_test_support::repo_file;
 
 #[test]
 fn text_inference_profile_schema_is_explicit() {

@@ -1,6 +1,7 @@
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 fn recipe_block<'a>(justfile: &'a str, recipe: &str) -> &'a str {
     let anchor = format!("{recipe}:");

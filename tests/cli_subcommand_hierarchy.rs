@@ -1,8 +1,9 @@
 use assert_cmd::cargo::cargo_bin_cmd;
 
-mod support;
+#[path = "support/repo.rs"]
+mod repo_test_support;
 
-use support::repo_file;
+use repo_test_support::repo_file;
 
 #[test]
 fn cli_usage_and_docs_prefer_grouped_subcommands() {
