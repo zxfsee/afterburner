@@ -34,6 +34,8 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
     for needle in [
         "artifact_upload_request.json",
         "Deployment verification artifact groups:",
+        "Pretraining source artifact groups:",
+        "Distributed shard lineage artifact groups:",
         "`deployment_verification_evidence_bundle*.json`",
         "infer_output_drift_baseline_pointer.json",
         "profiling_provenance_evidence_bundle.json",
