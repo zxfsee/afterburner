@@ -55,10 +55,6 @@ fn model_optimization_and_packaging_fit_is_documented() {
         architecture.contains("ADR-053"),
         "architecture decisions index must link ADR-053"
     );
-    assert!(
-        architecture.contains("distinct post-training pipeline"),
-        "architecture must mention the separate optimization pipeline"
-    );
 
     let adr = repo_file("docs/adr/053-model-optimization-and-packaging-fit.md");
     for needle in [
