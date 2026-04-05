@@ -1,5 +1,4 @@
 use std::fs;
-use std::path::PathBuf;
 
 use afterburner::train::{
     TRAINING_SCALABILITY_CONTRACT_FILENAME, train_done_event_line,

@@ -1,6 +1,3 @@
-use std::fs;
-use std::path::PathBuf;
-
 mod support;
 
 use support::repo_file;

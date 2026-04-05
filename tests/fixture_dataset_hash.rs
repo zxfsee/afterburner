@@ -1,5 +1,4 @@
 use std::fmt::Write as _;
-use std::path::PathBuf;
 
 use sha2::{Digest, Sha256};
 

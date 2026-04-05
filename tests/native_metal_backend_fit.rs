@@ -1,6 +1,3 @@
-use std::fs;
-use std::path::PathBuf;
-
 #[allow(dead_code)]
 #[path = "../src/cmd_infer.rs"]
 mod cmd_infer;

@@ -8,8 +8,6 @@ mod fixture_support;
 
 mod support;
 
-use support::fixture_path;
-
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }

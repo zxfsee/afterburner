@@ -2,7 +2,6 @@ use afterburner::data::{
     PretrainingDatasetManifestError, PretrainingSplit, parse_pretraining_dataset_manifest,
 };
 use std::fs;
-use std::path::PathBuf;
 
 mod support;
 

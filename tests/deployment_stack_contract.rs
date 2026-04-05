@@ -1,6 +1,5 @@
 use std::collections::BTreeSet;
 use std::fs;
-use std::path::PathBuf;
 
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
@@ -69,7 +68,7 @@ fn deployment_stack_contract_is_explicit() {
     }
 
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
+    let _workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_profile.example.json"),
         "workflow reference must mention the deployment stack profile contract"

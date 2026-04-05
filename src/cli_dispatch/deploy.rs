@@ -653,7 +653,7 @@ where
     }
 }
 
-fn run_rollback_verification_bundle<I>(mut args: I) -> i32
+fn run_rollback_verification_bundle<I>(args: I) -> i32
 where
     I: Iterator<Item = String>,
 {

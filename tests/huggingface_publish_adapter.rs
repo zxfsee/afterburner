@@ -102,7 +102,7 @@ fn huggingface_publish_receipt_schema_and_docs_are_explicit() {
         );
     }
 
-    let reference = repo_file("docs/reference.md");
+    let _reference = repo_file("docs/reference.md");
     let workflows = repo_file("docs/workflows.md");
     assert!(
         workflows.contains("deploy hf-publish"),

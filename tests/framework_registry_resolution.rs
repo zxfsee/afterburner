@@ -1,6 +1,5 @@
 use std::fs;
 use std::path::Path;
-use std::path::PathBuf;
 
 use afterburner::manifest::{MANIFEST_FILENAME, compute_sha256_hex};
 use assert_cmd::cargo::cargo_bin_cmd;

@@ -1,6 +1,3 @@
-use std::fs;
-use std::path::PathBuf;
-
 use assert_cmd::cargo::cargo_bin_cmd;
 
 mod support;

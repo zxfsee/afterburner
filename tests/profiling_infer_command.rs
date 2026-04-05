@@ -1,5 +1,4 @@
 use std::fs;
-use std::path::PathBuf;
 
 use afterburner::manifest::ArtifactManifest;
 use serde_json::Value;

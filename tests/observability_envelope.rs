@@ -1,6 +1,5 @@
 use std::collections::BTreeSet;
 use std::fs;
-use std::path::PathBuf;
 
 use afterburner::observability::event_line;
 use serde_json::json;
