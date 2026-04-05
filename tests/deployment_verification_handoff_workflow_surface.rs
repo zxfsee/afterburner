@@ -35,7 +35,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Handoff flow: `just deployment-verification-handoff`.",
-        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff flow.",
+        "Handoff support flows: history/reconciliation and transport-locator stay grouped under the handoff flow.",
     ] {
         assert!(
             workflows.contains(needle),
@@ -46,7 +46,7 @@ fn deployment_verification_handoff_surface_stays_grouped() {
     let reference = repo_file("docs/reference.md");
     for needle in [
         "`deployment_verification_evidence_handoff*.json`",
-        "Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
+        "Handoff support flows: history/reconciliation and transport-locator stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
             reference.contains(needle),

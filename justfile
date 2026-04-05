@@ -384,28 +384,28 @@ deployment-verification-handoff-transport-locator-reconcile handoff locator:
 deployment-verification-receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2:
     cargo run --locked --bin afterburner -- verify receipt --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' --out artifacts/deploy/deployment_verification_receipt.json
 
-deployment-verification-receipt-history-record receipt event recorded_at_unix_ms:
+deployment-verification-receipt-history receipt event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt history record --receipt {{ receipt }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_history.json
 
-deployment-verification-receipt-history-reconciliation reconciliation event recorded_at_unix_ms:
+deployment-verification-receipt-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt history reconciliation --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_reconciliation_history.json
 
 deployment-verification-receipt-reconcile receipt artifact_version profile_name verification_status verified_at_unix_ms evidence evidence_source_1 evidence_source_2 +evidence_sources:
     cargo run --locked --bin afterburner -- verify receipt reconcile --receipt {{ receipt }} --artifact-version {{ artifact_version }} --profile-name {{ profile_name }} --verification-status {{ verification_status }} --verified-at-unix-ms {{ verified_at_unix_ms }} --evidence {{ evidence }} --evidence-source '{{ evidence_source_1 }}' --evidence-source '{{ evidence_source_2 }}' {{ evidence_sources }} --out artifacts/deploy/deployment_verification_receipt_reconciliation.json
 
-deployment-verification-receipt-transport-point receipt:
+deployment-verification-receipt-transport-locator receipt:
     cargo run --locked --bin afterburner -- verify receipt transport point --receipt {{ receipt }} --out artifacts/deploy/deployment_verification_receipt_transport_locator.json
 
-deployment-verification-receipt-transport-history locator event recorded_at_unix_ms:
+deployment-verification-receipt-transport-locator-history locator event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt transport history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_history.json
 
-deployment-verification-receipt-transport-reconcile receipt locator:
+deployment-verification-receipt-transport-locator-reconcile receipt locator:
     cargo run --locked --bin afterburner -- verify receipt transport reconcile --receipt {{ receipt }} --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation.json
 
 deployment-verification-receipt-transport-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- verify receipt transport reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_verification_receipt_transport_locator_reconciliation_history.json
 
-deployment-verification-receipt-locator-point locator:
+deployment-verification-receipt-locator-pointer locator:
     cargo run --locked --bin afterburner -- verify receipt locator point --locator {{ locator }} --out artifacts/deploy/deployment_verification_receipt_locator_pointer.json
 
 deployment-verification-receipt-locator-history pointer event recorded_at_unix_ms:
