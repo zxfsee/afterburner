@@ -33,15 +33,6 @@ fn pretraining_source_provenance_receipt_contract_is_documented() {
         architecture.contains("ADR-031"),
         "architecture decisions index must link ADR-031"
     );
-    assert!(
-        architecture.contains("source provenance receipt"),
-        "architecture must mention the pretraining source provenance receipt contract"
-    );
-    assert!(
-        architecture.contains("upstream_locator"),
-        "architecture must anchor the provenance receipt to upstream_locator"
-    );
-
     let adr = repo_file("docs/adr/031-pretraining-source-provenance-receipt.md");
     for needle in [
         "pretraining_source_approval_receipt.json",
@@ -66,6 +57,13 @@ fn pretraining_source_provenance_receipt_contract_is_documented() {
         ),
         "workflow reference must mention the explicit pretraining source provenance workflows"
     );
+    let reference = repo_file("docs/reference.md");
+    for needle in ["source provenance receipt", "upstream_locator"] {
+        assert!(
+            reference.contains(needle),
+            "reference index must mention the source provenance anchor `{needle}`"
+        );
+    }
 }
 
 #[test]

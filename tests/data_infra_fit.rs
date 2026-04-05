@@ -13,19 +13,6 @@ fn arrow_datafusion_ballista_parquet_fit_is_documented() {
         architecture.contains("ADR-011"),
         "architecture decisions index must link ADR-011"
     );
-    assert!(
-        architecture.contains("Parquet"),
-        "architecture must mention the Parquet fit decision"
-    );
-    assert!(
-        architecture.contains("DataFusion"),
-        "architecture must mention the DataFusion fit decision"
-    );
-    assert!(
-        architecture.contains("Ballista"),
-        "architecture must mention the Ballista fit decision"
-    );
-
     let adr = repo_file("docs/adr/011-data-infra-fit.md");
     assert!(
         adr.contains("Parquet"),
@@ -45,12 +32,10 @@ fn arrow_datafusion_ballista_parquet_fit_is_documented() {
     );
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("Parquet"),
-        "reference index must mention the current Parquet fit stance"
-    );
-    assert!(
-        readme.contains("DataFusion"),
-        "reference index must mention the current DataFusion fit stance"
-    );
+    for needle in ["Parquet", "DataFusion", "Ballista"] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the current data-infra fit stance `{needle}`"
+        );
+    }
 }

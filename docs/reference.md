@@ -26,6 +26,11 @@ unless they graduate into a clear operator intent.
   - bounded MacBook target
   - decoder-only language model
   - `fineweb-edu/slice`
+  - single-node, single-device execution
+  - `50M` to `300M` parameters
+  - `1024` token context length
+  - `50M` to `200M` token budgets
+  - `AdamW`
   - `text_token_cache.schema.json`
   - `artifacts/text_inference/<version>/`
   - `text_pretraining_run.json`
@@ -148,6 +153,8 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 - Current distributed capability surface remains single-device execution only while
   the runtime grows toward explicit data-parallel and later TP/PP/SP-CP/EP
   compositions.
+- First candidate expansion: DP.
+- `ZeRO-1/2/3` and `TP/PP/SP-CP/EP` remain unsupported.
 - The distributed-training roadmap still targets the minimum useful capability subset
   first rather than broad framework-parity work.
 - `world_size`, ranks, and `device_group` metadata stay explicit so shard topology is
@@ -156,8 +163,12 @@ For command entrypoints, use [docs/workflows.md](./workflows.md).
 - Scheduler/control plane: the distributed training runtime decides how one job uses GPUs; the scheduler decides who gets GPUs and when; the scheduler lifecycle boundary uses `START`, `STOP`, `KILL`, `READY`, `CHECKPOINTED`, `FAILED`, and `HEARTBEAT`; lease-owned resources and rank assignments stay explicit; supported preemption is cooperative checkpoint/resume; scheduler policy stays conservative with priority and queueing first, plus constrained GPU colocation for known low-saturation workloads.
 - Operator surfaces stay grouped under `afterburner deploy <subcommand>`, `afterburner verify <subcommand>`, `afterburner rollback <subcommand>`, `afterburner drift <subcommand>`, `afterburner cleanup <subcommand>`, `afterburner profile <subcommand>`, and `afterburner source <subcommand>`.
 - Backend/runtime evolution stays measured: `backend_performance_profile.json`, `CubeCL`, `CubeK`, `cutile-rs`, Burn 0.20.1, `.mpk` to `.bpk`, later NVIDIA-specific backend-extension candidate, explicit Metal backend option, `BACKEND=cpu|wgpu|metal`, `process-compose-flake`, and local process-compose fit.
+- `Parquet`, `DataFusion`, and `Ballista` remain data-infra fit decisions rather than active architecture boundaries.
 - The `.mpk` to `.bpk` cutover now has one explicit inventory artifact, `burn_bpk_migration_surface_inventory.json`, so the migration can proceed as one tracked contract change when Burn ships a newer stable line.
+- Burn dependency refresh remains explicit through ADR-033 and the current Burn dependency refresh pin stays `0.20.1`.
 - Burn stable release availability gate: ADR-033 records the checked latest stable Burn line and whether a newer stable release beyond `0.20.1` exists, and `burn_stable_release_availability` keeps that blocker explicit in-repo.
-- Profiling remains local-first and adapter-only: current pointer resolution, `BACKEND`, `xcrun xctrace version`, full Xcode, `XCTRACE=/usr/bin/xctrace`, `DEVELOPER_DIR`, `SDKROOT`, `AFTERBURNER_TRACEPARENT`, and parked OpenTelemetry fit.
-- Provenance and retention stay explicit: deployment verification evidence provenance, distributed shard lineage evidence provenance, profiling environment provenance, artifact retention envelope, profiling retention policy, profiling hotspot taxonomy, and `artifacts/profiling/`.
-- Longer-horizon reference points remain explicit: remote locator contract, separate post-training pipeline, distributed checkpoint index contract, distributed optimizer-state recovery, `checkpoint_group`, RL rollout metadata contract, `rl_rollout_metadata.schema.json`, vectorized-environment stance, multibillion-scale target envelope, shard metadata contract, `distributed_shard_metadata.schema.json`, `Parquet`, and `DataFusion`.
+- Profiling remains local-first and adapter-only: current pointer resolution, `BACKEND`, `xcrun xctrace version`, full Xcode, `XCTRACE=/usr/bin/xctrace`, `DEVELOPER_DIR`, `SDKROOT`, `AFTERBURNER_TRACEPARENT`, parked OpenTelemetry fit, `profiling environment provenance`, `profiling provenance receipt`, `profiling_hotspot_summary.schema.json`, and `profiling_environment_snapshot.json`.
+- Provenance and retention stay explicit: deployment verification evidence provenance, distributed shard lineage evidence provenance, profiling environment provenance, artifact retention envelope, profiling retention policy, `artifacts/inference/current`, and `artifacts/profiling/`.
+- Deployment verification evidence provenance remains anchored to the deployment verification receipt.
+- Longer-horizon reference points remain explicit: remote locator contract, separate post-training pipeline, distributed checkpoint index contract, distributed runtime profile trials, distributed optimizer-state recovery, `checkpoint_group`, RL rollout metadata contract, `rl_rollout_metadata.schema.json`, RL, vectorized-environment stance, multibillion-scale target envelope, shard metadata contract, `distributed_shard_metadata.schema.json`, `worker_parallelism`, and the note that it is not a distributed strategy contract.
+- Source/data reference points remain explicit: pretraining source registry contract, source approval receipt, source provenance receipt, `approval_status`, `upstream_locator`, `source_revision`, and `fineweb-edu/slice`.

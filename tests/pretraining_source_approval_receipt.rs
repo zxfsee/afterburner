@@ -33,15 +33,6 @@ fn pretraining_source_approval_receipt_contract_is_documented() {
         architecture.contains("ADR-026"),
         "architecture decisions index must link ADR-026"
     );
-    assert!(
-        architecture.contains("source approval receipt"),
-        "architecture must mention the pretraining source approval receipt contract"
-    );
-    assert!(
-        architecture.contains("approval_status"),
-        "architecture must anchor the receipt to approval_status"
-    );
-
     let adr = repo_file("docs/adr/026-pretraining-source-approval-receipt.md");
     for needle in [
         "pretraining_source_approval_receipt.json",
@@ -67,6 +58,13 @@ fn pretraining_source_approval_receipt_contract_is_documented() {
         readme.contains("just pretraining-source-approval"),
         "workflow reference must mention the grouped pretraining source approval workflow"
     );
+    let reference = repo_file("docs/reference.md");
+    for needle in ["source approval receipt", "approval_status"] {
+        assert!(
+            reference.contains(needle),
+            "reference index must mention the source approval anchor `{needle}`"
+        );
+    }
 }
 
 #[test]

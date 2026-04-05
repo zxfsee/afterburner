@@ -71,11 +71,6 @@ fn rl_rollout_schema_fixture_has_required_contract_fields() {
         architecture.contains("ADR-013"),
         "architecture decisions index must link ADR-013"
     );
-    assert!(
-        architecture.contains("RL"),
-        "architecture must mention the RL environment fit decision"
-    );
-
     let adr = repo_file("docs/adr/013-rl-environment-fit.md");
     assert!(
         adr.contains("single-environment"),
@@ -91,12 +86,10 @@ fn rl_rollout_schema_fixture_has_required_contract_fields() {
     );
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("rl_rollout_metadata.schema.json"),
-        "reference index must mention the RL rollout metadata contract"
-    );
-    assert!(
-        readme.contains("vectorized"),
-        "reference index must mention the vectorized-environment stance"
-    );
+    for needle in ["rl_rollout_metadata.schema.json", "vectorized", "RL"] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the RL fit detail `{needle}`"
+        );
+    }
 }

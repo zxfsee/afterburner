@@ -13,11 +13,6 @@ fn fineweb_edu_source_adoption_is_documented() {
         architecture.contains("ADR-049"),
         "architecture decisions index must link ADR-049"
     );
-    assert!(
-        architecture.contains("fineweb-edu/slice"),
-        "architecture must mention the FineWeb-Edu source family"
-    );
-
     let adr = repo_file("docs/adr/049-fineweb-edu-source-adoption.md");
     for needle in [
         "`fineweb-edu/slice`",

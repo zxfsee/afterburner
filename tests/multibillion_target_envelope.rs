@@ -13,15 +13,6 @@ fn multibillion_target_envelope_is_documented() {
         architecture.contains("ADR-015"),
         "architecture decisions index must link ADR-015"
     );
-    assert!(
-        architecture.contains("multibillion"),
-        "architecture must mention the multibillion-scale target envelope"
-    );
-    assert!(
-        architecture.contains("distributed_shard_metadata"),
-        "architecture must anchor the target envelope to distributed shard metadata"
-    );
-
     let adr = repo_file("docs/adr/015-multibillion-target-envelope.md");
     assert!(
         adr.contains("distributed_shard_metadata.schema.json"),
@@ -45,12 +36,10 @@ fn multibillion_target_envelope_is_documented() {
     );
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("multibillion"),
-        "reference index must mention the multibillion-scale target envelope"
-    );
-    assert!(
-        readme.contains("distributed_shard_metadata.schema.json"),
-        "reference index must mention the shard metadata contract"
-    );
+    for needle in ["multibillion", "distributed_shard_metadata.schema.json"] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the target-envelope anchor `{needle}`"
+        );
+    }
 }

@@ -13,15 +13,6 @@ fn distributed_optimizer_and_checkpoint_state_is_documented() {
         architecture.contains("ADR-061"),
         "architecture decisions index must link ADR-061"
     );
-    assert!(
-        architecture.contains("optimizer-state"),
-        "architecture must mention the distributed optimizer-state contract"
-    );
-    assert!(
-        architecture.contains("checkpoint_group"),
-        "architecture must anchor the contract to checkpoint_group"
-    );
-
     let adr = repo_file("docs/adr/061-distributed-optimizer-and-checkpoint-state.md");
     for needle in [
         "optimizer-state",
@@ -40,4 +31,11 @@ fn distributed_optimizer_and_checkpoint_state_is_documented() {
         readme.contains("checkpoint_group"),
         "README must mention the explicit checkpoint_group recovery anchor"
     );
+    let reference = repo_file("docs/reference.md");
+    for needle in ["distributed optimizer-state recovery", "checkpoint_group"] {
+        assert!(
+            reference.contains(needle),
+            "reference index must mention the optimizer/checkpoint anchor `{needle}`"
+        );
+    }
 }

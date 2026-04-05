@@ -13,15 +13,6 @@ fn pretraining_source_registry_contract_is_documented() {
         architecture.contains("ADR-021"),
         "architecture decisions index must link ADR-021"
     );
-    assert!(
-        architecture.contains("source registry"),
-        "architecture must mention the pretraining source registry contract"
-    );
-    assert!(
-        architecture.contains("source_revision"),
-        "architecture must anchor the source registry stance to source_revision"
-    );
-
     let adr = repo_file("docs/adr/021-pretraining-source-registry.md");
     assert!(
         adr.contains("pretraining_dataset_manifest.schema.json"),
@@ -41,8 +32,10 @@ fn pretraining_source_registry_contract_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("source registry"),
-        "reference index must mention the pretraining source registry contract"
-    );
+    for needle in ["source registry", "source_revision"] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the source registry anchor `{needle}`"
+        );
+    }
 }

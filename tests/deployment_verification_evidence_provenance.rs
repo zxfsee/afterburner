@@ -13,15 +13,6 @@ fn deployment_verification_evidence_provenance_is_documented() {
         architecture.contains("ADR-027"),
         "architecture decisions index must link ADR-027"
     );
-    assert!(
-        architecture.contains("deployment verification evidence provenance"),
-        "architecture must mention the deployment verification evidence provenance contract"
-    );
-    assert!(
-        architecture.contains("deployment verification receipt"),
-        "architecture must anchor evidence provenance to the deployment verification receipt"
-    );
-
     let adr = repo_file("docs/adr/027-deployment-verification-evidence-provenance.md");
     for needle in [
         "deployment_verification_receipt.json",
@@ -37,8 +28,13 @@ fn deployment_verification_evidence_provenance_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("evidence provenance"),
-        "reference index must mention the deployment verification evidence provenance contract"
-    );
+    for needle in [
+        "deployment verification evidence provenance",
+        "deployment verification receipt",
+    ] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the deployment verification provenance anchor `{needle}`"
+        );
+    }
 }

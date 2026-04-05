@@ -31,15 +31,6 @@ fn profiling_provenance_receipt_contract_is_documented() {
         architecture.contains("ADR-030"),
         "architecture decisions index must link ADR-030"
     );
-    assert!(
-        architecture.contains("profiling provenance receipt"),
-        "architecture must mention the profiling provenance receipt contract"
-    );
-    assert!(
-        architecture.contains("profiling_environment_snapshot.json"),
-        "architecture must anchor the receipt to the profiling environment snapshot"
-    );
-
     let adr = repo_file("docs/adr/030-profiling-provenance-receipt.md");
     for needle in [
         "profiling_provenance_receipt.json",
@@ -59,6 +50,10 @@ fn profiling_provenance_receipt_contract_is_documented() {
     assert!(
         reference.contains("profiling_provenance_receipt.json"),
         "workflow reference must mention the profiling provenance receipt artifact"
+    );
+    assert!(
+        reference.contains("profiling_environment_snapshot.json"),
+        "reference index must mention the profiling provenance receipt anchor"
     );
     assert!(
         workflows.contains("just profile-provenance-receipt"),

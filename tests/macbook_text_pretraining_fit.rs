@@ -13,20 +13,6 @@ fn macbook_text_pretraining_fit_is_documented() {
         architecture.contains("ADR-047"),
         "architecture decisions index must link ADR-047"
     );
-    for needle in [
-        "decoder-only language model",
-        "single-node, single-device execution",
-        "`50M` to `300M` parameters",
-        "`1024` token context length",
-        "`50M` to `200M` token budgets",
-        "`AdamW`",
-    ] {
-        assert!(
-            architecture.contains(needle),
-            "architecture must mention `{needle}` as part of the MacBook text-pretraining fit"
-        );
-    }
-
     let adr = repo_file("docs/adr/047-macbook-text-pretraining-fit.md");
     for needle in [
         "decoder-only language model",
@@ -44,8 +30,17 @@ fn macbook_text_pretraining_fit_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("decoder-only language model"),
-        "reference index must mention the bounded MacBook text-pretraining target"
-    );
+    for needle in [
+        "decoder-only language model",
+        "single-node, single-device execution",
+        "`50M` to `300M` parameters",
+        "`1024` token context length",
+        "`50M` to `200M` token budgets",
+        "`AdamW`",
+    ] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the bounded MacBook text-pretraining detail `{needle}`"
+        );
+    }
 }

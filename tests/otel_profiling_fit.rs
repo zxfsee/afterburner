@@ -36,11 +36,6 @@ fn otel_profiling_correlation_fit_is_documented() {
         architecture.contains("ADR-016"),
         "architecture decisions index must link ADR-016"
     );
-    assert!(
-        architecture.contains("OpenTelemetry"),
-        "architecture must mention the profiling/OpenTelemetry fit decision"
-    );
-
     let adr = repo_file("docs/adr/016-otel-profiling-fit.md");
     assert!(
         adr.contains("profiling_hotspot_summary.schema.json"),

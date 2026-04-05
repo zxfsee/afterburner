@@ -79,11 +79,6 @@ fn distributed_runtime_profile_schema_is_documented() {
         architecture.contains("ADR-043"),
         "architecture decisions index must link ADR-043"
     );
-    assert!(
-        architecture.contains("distributed runtime profile trials"),
-        "architecture must mention the distributed runtime profile artifact"
-    );
-
     let adr = repo_file("docs/adr/043-distributed-runtime-profile-schema.md");
     for needle in [
         "distributed_runtime_profile.schema.json",
@@ -115,6 +110,10 @@ fn distributed_runtime_profile_schema_is_documented() {
     assert!(
         readme.contains("distributed_runtime_profile.json"),
         "reference index must mention the distributed runtime profile artifact"
+    );
+    assert!(
+        readme.contains("distributed runtime profile trials"),
+        "reference index must mention the distributed runtime profile trials stance"
     );
 }
 

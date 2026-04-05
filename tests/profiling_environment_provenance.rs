@@ -13,15 +13,6 @@ fn profiling_environment_provenance_contract_is_documented() {
         architecture.contains("ADR-025"),
         "architecture decisions index must link ADR-025"
     );
-    assert!(
-        architecture.contains("profiling environment provenance"),
-        "architecture must mention the profiling environment provenance contract"
-    );
-    assert!(
-        architecture.contains("profiling_hotspot_summary.schema.json"),
-        "architecture must anchor provenance to the profiling summary contract"
-    );
-
     let adr = repo_file("docs/adr/025-profiling-environment-provenance.md");
     for needle in [
         "profiling_hotspot_summary.schema.json",
@@ -37,8 +28,13 @@ fn profiling_environment_provenance_contract_is_documented() {
     }
 
     let readme = repo_file("docs/reference.md");
-    assert!(
-        readme.contains("profiling environment provenance"),
-        "reference index must mention the profiling environment provenance contract"
-    );
+    for needle in [
+        "profiling environment provenance",
+        "profiling_hotspot_summary.schema.json",
+    ] {
+        assert!(
+            readme.contains(needle),
+            "reference index must mention the profiling environment provenance anchor `{needle}`"
+        );
+    }
 }
