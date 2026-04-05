@@ -55,8 +55,8 @@ fn infer_output_drift_baseline_pointer_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("drift-point-approved-baseline approval:"),
-        "justfile must expose the drift-point-approved-baseline workflow"
+        justfile.contains("drift-approved-baseline-pointer approval:"),
+        "justfile must expose the drift-approved-baseline-pointer workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -66,7 +66,7 @@ fn infer_output_drift_baseline_pointer_schema_and_workflow_are_explicit() {
         "workflow reference must mention the baseline pointer artifact"
     );
     assert!(
-        workflows.contains("just drift-point-approved-baseline"),
+        workflows.contains("just drift-approved-baseline-pointer"),
         "workflow reference must mention the baseline pointer workflow"
     );
 }

@@ -162,11 +162,9 @@ fn justfile_thinness_debt_stays_bounded() {
         "distributed-shard-lineage-locator-transport-point handoff".to_string(),
         "distributed-shard-lineage-locator-transport-reconcile handoff locator".to_string(),
         "distributed-shard-lineage-locator-transport-history reconciliation event recorded_at_unix_ms".to_string(),
-        "drift-point-approved-baseline approval".to_string(),
-        "drift-record-approved-baseline-history pointer event recorded_at_unix_ms".to_string(),
-        "drift-point-baseline-transport-locator handoff".to_string(),
-        "drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms".to_string(),
-        "drift-supersede-baseline-approval previous_approval next_approval superseded_at_unix_ms".to_string(),
+        "drift-approved-baseline-history pointer event recorded_at_unix_ms".to_string(),
+        "drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms".to_string(),
+        "drift-approved-baseline-supersede previous_approval next_approval superseded_at_unix_ms".to_string(),
     ]);
     assert_eq!(
         expanded_recipes, allowed_expanded,

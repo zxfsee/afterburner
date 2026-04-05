@@ -522,11 +522,11 @@ drift-approve-baseline baseline approved_by approval_ticket approved_at_unix_ms:
     cargo run --locked --bin afterburner -- drift approve-baseline --baseline {{ baseline }} --approved-by {{ approved_by }} --approval-ticket {{ approval_ticket }} --approved-at-unix-ms {{ approved_at_unix_ms }} --out artifacts/eval/infer_output_drift_baseline_approval.json
 
 # point rollout tooling at the currently approved baseline approval record
-drift-point-approved-baseline approval:
+drift-approved-baseline-pointer approval:
     cargo run --locked --bin afterburner -- drift point-approved-baseline --approval {{ approval }} --out artifacts/eval/infer_output_drift_baseline_pointer.json
 
 # append one approved-baseline pointer change to the compact history artifact
-drift-record-approved-baseline-history pointer event recorded_at_unix_ms:
+drift-approved-baseline-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- drift record-approved-baseline-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/eval/infer_output_drift_baseline_history.json
 
 # capture a compact checkpoint of the current approved-baseline pointer plus recent history
@@ -534,23 +534,23 @@ drift-checkpoint-baseline pointer history:
     cargo run --locked --bin afterburner -- drift checkpoint-baseline --pointer {{ pointer }} --history {{ history }} --out artifacts/eval/infer_output_drift_baseline_checkpoint.json
 
 # export one packaged baseline bundle for deployment-side consumers
-drift-export-baseline-bundle pointer history:
+drift-baseline-bundle pointer history:
     cargo run --locked --bin afterburner -- drift export-baseline-bundle --pointer {{ pointer }} --history {{ history }} --out artifacts/eval/infer_output_drift_baseline_bundle.json
 
 # export a stable handoff manifest from the approved baseline bundle
-drift-export-baseline-handoff bundle:
+drift-baseline-handoff bundle:
     cargo run --locked --bin afterburner -- drift export-baseline-handoff --bundle {{ bundle }} --out artifacts/eval/infer_output_drift_baseline_handoff.json
 
 # point transport-facing workflows at the current baseline handoff manifest
-drift-point-baseline-transport-locator handoff:
+drift-baseline-transport-locator handoff:
     cargo run --locked --bin afterburner -- drift point-baseline-transport-locator --handoff {{ handoff }} --out artifacts/eval/infer_output_drift_baseline_transport_locator.json
 
 # restore the approved baseline pointer to a previous approval and write a rollback record
-drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms:
+drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms:
     cargo run --locked --bin afterburner -- drift rollback-approved-baseline --current-pointer {{ current_pointer }} --restored-approval {{ restored_approval }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/eval/infer_output_drift_baseline_pointer.json --out-record artifacts/eval/infer_output_drift_baseline_rollback.json
 
 # supersede an older baseline approval with a newer approved baseline
-drift-supersede-baseline-approval previous_approval next_approval superseded_at_unix_ms:
+drift-approved-baseline-supersede previous_approval next_approval superseded_at_unix_ms:
     cargo run --locked --bin afterburner -- drift supersede-baseline-approval --previous-approval {{ previous_approval }} --next-approval {{ next_approval }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/eval/infer_output_drift_baseline_supersession.json
 
 # refresh the approved drift baseline, archiving the old one and writing a refresh receipt

@@ -55,8 +55,8 @@ fn infer_output_drift_baseline_transport_locator_schema_and_workflow_are_explici
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("drift-point-baseline-transport-locator handoff:"),
-        "justfile must expose the drift-point-baseline-transport-locator workflow"
+        justfile.contains("drift-baseline-transport-locator handoff:"),
+        "justfile must expose the drift-baseline-transport-locator workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -66,7 +66,7 @@ fn infer_output_drift_baseline_transport_locator_schema_and_workflow_are_explici
         "workflow reference must mention the baseline transport locator artifact"
     );
     assert!(
-        workflows.contains("just drift-point-baseline-transport-locator"),
+        workflows.contains("just drift-baseline-transport-locator"),
         "workflow reference must mention the baseline transport locator workflow"
     );
 }

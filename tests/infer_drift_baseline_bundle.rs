@@ -59,8 +59,8 @@ fn infer_output_drift_baseline_bundle_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("drift-export-baseline-bundle pointer history:"),
-        "justfile must expose the drift-export-baseline-bundle workflow"
+        justfile.contains("drift-baseline-bundle pointer history:"),
+        "justfile must expose the drift-baseline-bundle workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -70,7 +70,7 @@ fn infer_output_drift_baseline_bundle_schema_and_workflow_are_explicit() {
         "workflow reference must mention the baseline bundle artifact"
     );
     assert!(
-        workflows.contains("just drift-export-baseline-bundle"),
+        workflows.contains("just drift-baseline-bundle"),
         "workflow reference must mention the baseline bundle workflow"
     );
 }

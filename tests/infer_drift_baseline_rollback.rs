@@ -57,8 +57,8 @@ fn infer_output_drift_baseline_rollback_schema_and_workflow_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("drift-rollback-approved-baseline current_pointer restored_approval rolled_back_at_unix_ms:"),
-        "justfile must expose the drift-rollback-approved-baseline workflow"
+        justfile.contains("drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms:"),
+        "justfile must expose the drift-approved-baseline-rollback workflow"
     );
 
     let reference = repo_file("docs/reference.md");
@@ -68,7 +68,7 @@ fn infer_output_drift_baseline_rollback_schema_and_workflow_are_explicit() {
         "workflow reference must mention the baseline rollback artifact"
     );
     assert!(
-        workflows.contains("just drift-rollback-approved-baseline"),
+        workflows.contains("just drift-approved-baseline-rollback"),
         "workflow reference must mention the baseline rollback workflow"
     );
 }
