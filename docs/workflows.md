@@ -179,6 +179,6 @@ operator use case justifies promotion.
 - Distributed shard lineage stays grouped under these operator flows:
 - Receipt flow: `just distributed-shard-lineage-receipt`.
 - Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.
-- Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history <record|reconciliation>`.
-- Locator flow: `just distributed-shard-lineage-locator <point|history>`, `just distributed-shard-lineage-locator-transport <point|reconcile|history>`.
+- Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history`, `just distributed-shard-lineage-handoff-reconciliation-history`.
+- Locator flow: `just distributed-shard-lineage-locator-pointer`, `just distributed-shard-lineage-locator-history`, `just distributed-shard-lineage-transport-locator`, `just distributed-shard-lineage-transport-locator-reconcile`, `just distributed-shard-lineage-transport-locator-history`.
 - `just workflow-surface-check-distributed-shard-lineage` guards the grouped lineage workflow map and recipe surface.

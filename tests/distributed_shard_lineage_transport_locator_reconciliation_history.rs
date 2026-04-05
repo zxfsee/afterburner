@@ -62,9 +62,9 @@ fn distributed_shard_lineage_transport_locator_reconciliation_history_schema_and
     let justfile = repo_file("justfile");
     assert!(
         justfile.contains(
-            "distributed-shard-lineage-locator-transport-history reconciliation event recorded_at_unix_ms:"
+            "distributed-shard-lineage-transport-locator-history reconciliation event recorded_at_unix_ms:"
         ),
-        "justfile must expose the grouped distributed-shard-lineage-locator-transport history workflow"
+        "justfile must expose the grouped distributed-shard-lineage-transport-locator history workflow"
     );
 }
 

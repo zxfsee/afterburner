@@ -62,9 +62,9 @@ fn distributed_shard_lineage_handoff_history_schema_and_workflow_are_explicit() 
     let justfile = repo_file("justfile");
     assert!(
         justfile.contains(
-            "distributed-shard-lineage-handoff-history-record handoff event recorded_at_unix_ms:"
+            "distributed-shard-lineage-handoff-history handoff event recorded_at_unix_ms:"
         ) && justfile.contains(
-            "distributed-shard-lineage-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:"
+            "distributed-shard-lineage-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:"
         ),
         "justfile must expose the grouped distributed-shard-lineage-handoff-history workflows"
     );

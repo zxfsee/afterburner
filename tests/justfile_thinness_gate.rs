@@ -37,6 +37,8 @@ fn justfile_thinness_debt_stays_bounded() {
                     || recipe.contains("-point ")
                     || recipe.starts_with("deploy-launch-transport-locator ")
                     || recipe.starts_with("deploy-launch-locator ")
+                    || recipe.starts_with("distributed-shard-lineage-locator-pointer ")
+                    || recipe.starts_with("distributed-shard-lineage-transport-locator ")
                     || recipe.contains("-rollback")
                     || recipe.contains("-supersede")
                     || recipe.starts_with("kube-rs-lease-"))
@@ -154,14 +156,14 @@ fn justfile_thinness_debt_stays_bounded() {
         "deployment-verification-receipt-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "distributed-shard-lineage-bundle-history reconciliation event recorded_at_unix_ms".to_string(),
         "distributed-shard-lineage-bundle-reconcile receipt bundle".to_string(),
-        "distributed-shard-lineage-handoff-history-record handoff event recorded_at_unix_ms".to_string(),
-        "distributed-shard-lineage-handoff-history-reconciliation reconciliation event recorded_at_unix_ms".to_string(),
+        "distributed-shard-lineage-handoff-history handoff event recorded_at_unix_ms".to_string(),
+        "distributed-shard-lineage-handoff-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "distributed-shard-lineage-handoff-reconcile bundle handoff".to_string(),
-        "distributed-shard-lineage-locator-point locator".to_string(),
+        "distributed-shard-lineage-locator-pointer locator".to_string(),
         "distributed-shard-lineage-locator-history pointer event recorded_at_unix_ms".to_string(),
-        "distributed-shard-lineage-locator-transport-point handoff".to_string(),
-        "distributed-shard-lineage-locator-transport-reconcile handoff locator".to_string(),
-        "distributed-shard-lineage-locator-transport-history reconciliation event recorded_at_unix_ms".to_string(),
+        "distributed-shard-lineage-transport-locator handoff".to_string(),
+        "distributed-shard-lineage-transport-locator-reconcile handoff locator".to_string(),
+        "distributed-shard-lineage-transport-locator-history reconciliation event recorded_at_unix_ms".to_string(),
         "drift-approved-baseline-history pointer event recorded_at_unix_ms".to_string(),
         "drift-approved-baseline-rollback current_pointer restored_approval rolled_back_at_unix_ms".to_string(),
         "drift-approved-baseline-supersede previous_approval next_approval superseded_at_unix_ms".to_string(),

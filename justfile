@@ -459,25 +459,25 @@ distributed-shard-lineage-handoff bundle:
 distributed-shard-lineage-handoff-reconcile bundle handoff:
     cargo run --locked --bin afterburner -- lineage handoff reconcile --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_reconciliation.json
 
-distributed-shard-lineage-handoff-history-record handoff event recorded_at_unix_ms:
+distributed-shard-lineage-handoff-history handoff event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage handoff history record --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_history.json
 
-distributed-shard-lineage-handoff-history-reconciliation reconciliation event recorded_at_unix_ms:
+distributed-shard-lineage-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage handoff history reconciliation --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_evidence_handoff_reconciliation_history.json
 
-distributed-shard-lineage-locator-point locator:
+distributed-shard-lineage-locator-pointer locator:
     cargo run --locked --bin afterburner -- lineage locator point --locator {{ locator }} --out artifacts/train/distributed_shard_lineage_locator_pointer.json
 
 distributed-shard-lineage-locator-history pointer event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage locator history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_locator_history.json
 
-distributed-shard-lineage-locator-transport-point handoff:
+distributed-shard-lineage-transport-locator handoff:
     cargo run --locked --bin afterburner -- lineage locator transport point --handoff {{ handoff }} --out artifacts/train/distributed_shard_lineage_transport_locator.json
 
-distributed-shard-lineage-locator-transport-reconcile handoff locator:
+distributed-shard-lineage-transport-locator-reconcile handoff locator:
     cargo run --locked --bin afterburner -- lineage locator transport reconcile --handoff {{ handoff }} --locator {{ locator }} --out artifacts/train/distributed_shard_lineage_transport_locator_reconciliation.json
 
-distributed-shard-lineage-locator-transport-history reconciliation event recorded_at_unix_ms:
+distributed-shard-lineage-transport-locator-history reconciliation event recorded_at_unix_ms:
     cargo run --locked --bin afterburner -- lineage locator transport history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/train/distributed_shard_lineage_transport_locator_reconciliation_history.json
 
 pretraining-source-approval source source_revision approval_status approved_by approval_ticket approved_at_unix_ms:
