@@ -3,6 +3,8 @@ set dotenv-load := true
 
 profile-infer-flamegraph := "artifacts/profiling/infer_flamegraph.svg"
 profile-infer-summary := "artifacts/profiling/infer_hotspot_summary.json"
+afterburner-deploy := "cargo run --locked --bin afterburner -- deploy"
+afterburner-debug-deploy := "cargo run --locked --bin afterburner -- debug deploy"
 
 # build the project via nix (reproducible)
 build:
@@ -143,154 +145,154 @@ backend-profile-gate:
 
 # validate deploy-rs baseline deployment definitions
 deploy-check:
-    cargo run --locked --bin afterburner -- deploy stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --out artifacts/deploy/deployment_stack_check.json
+    {{ afterburner-deploy }} stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --out artifacts/deploy/deployment_stack_check.json
     nix eval .#checks.aarch64-darwin.deploy-activate.drvPath
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 
 deploy-launch-plan target_profile stack_profile:
-    cargo run --locked --bin afterburner -- deploy stack-launch-plan --target-profile {{ target_profile }} --stack-profile {{ stack_profile }} --out artifacts/deploy/deployment_stack_launch_plan.json
+    {{ afterburner-deploy }} stack-launch-plan --target-profile {{ target_profile }} --stack-profile {{ stack_profile }} --out artifacts/deploy/deployment_stack_launch_plan.json
 
 deploy-launch-receipt plan port launched_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy stack-launch-receipt --plan {{ plan }} --port {{ port }} --launched-at-unix-ms {{ launched_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_receipt.json
+    {{ afterburner-deploy }} stack-launch-receipt --plan {{ plan }} --port {{ port }} --launched-at-unix-ms {{ launched_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_receipt.json
 
 deploy-launch-bundle receipt:
-    cargo run --locked --bin afterburner -- deploy stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
+    {{ afterburner-deploy }} stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
 
 deploy-launch-bundle-reconcile receipt bundle:
-    cargo run --locked --bin afterburner -- deploy reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
+    {{ afterburner-deploy }} reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
 
 deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation_history.json
+    {{ afterburner-deploy }} record-launch-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation_history.json
 
 deploy-launch-handoff bundle:
-    cargo run --locked --bin afterburner -- deploy stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
+    {{ afterburner-deploy }} stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 
 deploy-launch-handoff-reconcile bundle handoff:
-    cargo run --locked --bin afterburner -- deploy reconcile-launch-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
+    {{ afterburner-deploy }} reconcile-launch-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
 
 deploy-launch-handoff-history handoff event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_history.json
+    {{ afterburner-deploy }} record-launch-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_history.json
 
 deploy-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation_history.json
+    {{ afterburner-deploy }} record-launch-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation_history.json
 
 deploy-launch-transport-locator handoff:
-    cargo run --locked --bin afterburner -- deploy point-launch-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_transport_locator.json
+    {{ afterburner-deploy }} point-launch-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_transport_locator.json
 
 deploy-launch-transport-locator-history locator event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_history.json
+    {{ afterburner-deploy }} record-launch-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_history.json
 
 deploy-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation_history.json
+    {{ afterburner-deploy }} record-launch-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation_history.json
 
 deploy-launch-transport-locator-reconcile handoff locator:
-    cargo run --locked --bin afterburner -- deploy reconcile-launch-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation.json
+    {{ afterburner-deploy }} reconcile-launch-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation.json
 
 deploy-launch-locator locator:
-    cargo run --locked --bin afterburner -- deploy point-launch-locator --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_locator_pointer.json
+    {{ afterburner-deploy }} point-launch-locator --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_locator_pointer.json
 
 deploy-launch-locator-reconcile plan pointer:
-    cargo run --locked --bin afterburner -- deploy reconcile-launch-locator --plan {{ plan }} --pointer {{ pointer }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation.json
+    {{ afterburner-deploy }} reconcile-launch-locator --plan {{ plan }} --pointer {{ pointer }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation.json
 
 deploy-launch-locator-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_history.json
+    {{ afterburner-deploy }} record-launch-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_history.json
 
 deploy-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-launch-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation_history.json
+    {{ afterburner-deploy }} record-launch-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation_history.json
 
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:
     cargo run --locked --bin afterburner -- deploy rollout-check --artifact {{ candidate_artifact }} --manifest {{ candidate_manifest }} --ownership {{ ownership }} --provider {{ provider }} --destination {{ destination }} --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json --eval-out artifacts/eval/mnist_eval_summary.json --upload-out artifacts/deploy/candidate_upload_request.json --stack-check-out artifacts/deploy/deployment_stack_check.json --out-record artifacts/deploy/rollout_check.json
 
 huggingface-publish request:
-    cargo run --locked --bin afterburner -- deploy hf-publish --request {{ request }}
+    {{ afterburner-deploy }} hf-publish --request {{ request }}
 
 kube-rs-lease-reconcile lease namespace resource_name:
-    cargo run --locked --bin afterburner -- deploy kube-rs-lease-reconcile --lease {{ lease }} --namespace {{ namespace }} --resource-name {{ resource_name }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation.json
+    {{ afterburner-deploy }} kube-rs-lease-reconcile --lease {{ lease }} --namespace {{ namespace }} --resource-name {{ resource_name }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation.json
 
 kube-rs-lease-pointer reconciliation:
-    cargo run --locked --bin afterburner -- deploy point-kube-rs-lease --reconciliation {{ reconciliation }} --out artifacts/deploy/kube_rs_gpu_lease_pointer.json
+    {{ afterburner-deploy }} point-kube-rs-lease --reconciliation {{ reconciliation }} --out artifacts/deploy/kube_rs_gpu_lease_pointer.json
 
 kube-rs-lease-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_history.json
+    {{ afterburner-deploy }} record-kube-rs-lease-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_history.json
 
 kube-rs-lease-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy record-kube-rs-lease-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation_history.json
+    {{ afterburner-deploy }} record-kube-rs-lease-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/kube_rs_gpu_lease_reconciliation_history.json
 
 single-node-scheduler job inventory:
-    cargo run --locked --bin afterburner -- deploy single-node-scheduler --job {{ job }} --inventory {{ inventory }} --out-lease artifacts/deploy/gpu_scheduler_lease.json --out-unit artifacts/deploy/afterburner-job.service
+    {{ afterburner-deploy }} single-node-scheduler --job {{ job }} --inventory {{ inventory }} --out-lease artifacts/deploy/gpu_scheduler_lease.json --out-unit artifacts/deploy/afterburner-job.service
 
 scheduler-heartbeat job_id lease_id worker_id state observed_at_unix_ms:
-    cargo run --locked --bin afterburner -- deploy scheduler-heartbeat --job-id {{ job_id }} --lease-id {{ lease_id }} --worker-id {{ worker_id }} --state {{ state }} --observed-at-unix-ms {{ observed_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat.json
+    {{ afterburner-deploy }} scheduler-heartbeat --job-id {{ job_id }} --lease-id {{ lease_id }} --worker-id {{ worker_id }} --state {{ state }} --observed-at-unix-ms {{ observed_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat.json
 
 scheduler-heartbeat-point heartbeat:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat point --heartbeat {{ heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat point --heartbeat {{ heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer.json
 
 scheduler-heartbeat-history heartbeat event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat history --heartbeat {{ heartbeat }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_history.json
 
 scheduler-heartbeat-reconcile heartbeat current_heartbeat:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat reconcile --heartbeat {{ heartbeat }} --current-heartbeat {{ current_heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat reconcile --heartbeat {{ heartbeat }} --current-heartbeat {{ current_heartbeat }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation.json
 
 scheduler-heartbeat-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_reconciliation_history.json
 
 scheduler-heartbeat-supersede previous_heartbeat next_heartbeat superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat supersede --previous-heartbeat {{ previous_heartbeat }} --next-heartbeat {{ next_heartbeat }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat supersede --previous-heartbeat {{ previous_heartbeat }} --next-heartbeat {{ next_heartbeat }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession.json
 
 scheduler-heartbeat-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_history.json
 
 scheduler-heartbeat-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation.json
 
 scheduler-heartbeat-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_supersession_reconciliation_history.json
 
 scheduler-heartbeat-pointer-history pointer event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_history.json
 
 scheduler-heartbeat-pointer-reconcile pointer current_pointer:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer reconcile --pointer {{ pointer }} --current-pointer {{ current_pointer }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer reconcile --pointer {{ pointer }} --current-pointer {{ current_pointer }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_reconciliation.json
 
 scheduler-heartbeat-pointer-supersede previous_pointer next_pointer superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer supersede --previous-pointer {{ previous_pointer }} --next-pointer {{ next_pointer }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer supersede --previous-pointer {{ previous_pointer }} --next-pointer {{ next_pointer }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession.json
 
 scheduler-heartbeat-pointer-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_history.json
 
 scheduler-heartbeat-pointer-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation.json
 
 scheduler-heartbeat-pointer-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_supersession_reconciliation_history.json
 
 scheduler-heartbeat-pointer-rollback current_pointer restored_pointer rolled_back_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/gpu_scheduler_heartbeat_pointer.json --out-record artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback --current-pointer {{ current_pointer }} --restored-pointer {{ restored_pointer }} --rolled-back-at-unix-ms {{ rolled_back_at_unix_ms }} --out-pointer artifacts/deploy/gpu_scheduler_heartbeat_pointer.json --out-record artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback.json
 
 scheduler-heartbeat-pointer-rollback-history rollback event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback history --rollback {{ rollback }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_history.json
 
 scheduler-heartbeat-pointer-rollback-reconcile rollback current_rollback:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback reconcile --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback reconcile --rollback {{ rollback }} --current-rollback {{ current_rollback }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation.json
 
 scheduler-heartbeat-pointer-rollback-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_reconciliation_history.json
 
 scheduler-heartbeat-pointer-rollback-supersede previous_rollback next_rollback superseded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback supersede --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback supersede --previous-rollback {{ previous_rollback }} --next-rollback {{ next_rollback }} --superseded-at-unix-ms {{ superseded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession.json
 
 scheduler-heartbeat-pointer-rollback-supersession-history supersession event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback supersession history --supersession {{ supersession }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_history.json
 
 scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback supersession reconcile --supersession {{ supersession }} --current-supersession {{ current_supersession }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation.json
 
 scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history reconciliation event recorded_at_unix_ms:
-    cargo run --locked --bin afterburner -- debug deploy scheduler-heartbeat pointer rollback supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json
+    {{ afterburner-debug-deploy }} scheduler-heartbeat pointer rollback supersession reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/gpu_scheduler_heartbeat_pointer_rollback_supersession_reconciliation_history.json
 
 distributed-load-profile addr requests concurrency latency_budget_ms_p99 error_budget_ratio:
-    cargo run --locked --bin afterburner -- deploy load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
+    {{ afterburner-deploy }} load-profile --addr {{ addr }} --requests {{ requests }} --concurrency {{ concurrency }} --latency-budget-ms-p99 {{ latency_budget_ms_p99 }} --error-budget-ratio {{ error_budget_ratio }} --out artifacts/deploy/distributed_load_profile.json
 
 # package receipt-referenced deployment verification evidence into one bundle artifact
 deployment-verification-bundle receipt:
