@@ -57,8 +57,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_schema_and_workflo
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-locator-transport action +args:"),
-        "justfile must expose the grouped distributed-shard-lineage-locator-transport workflow"
+        justfile.contains("distributed-shard-lineage-locator-transport-reconcile handoff locator:"),
+        "justfile must expose the grouped distributed-shard-lineage-locator-transport reconcile workflow"
     );
 }
 

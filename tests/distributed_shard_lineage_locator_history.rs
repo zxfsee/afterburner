@@ -60,8 +60,10 @@ fn distributed_shard_lineage_locator_history_schema_and_workflow_are_explicit() 
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-locator action +args:"),
-        "justfile must expose the grouped distributed-shard-lineage-locator workflow"
+        justfile.contains(
+            "distributed-shard-lineage-locator-history pointer event recorded_at_unix_ms:"
+        ),
+        "justfile must expose the grouped distributed-shard-lineage-locator history workflow"
     );
 }
 
