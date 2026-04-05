@@ -56,7 +56,7 @@ fn pretraining_source_family_stays_grouped_and_surface_complete() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "Pretraining source family groups:",
+        "Pretraining source artifact groups:",
         "`pretraining_source_approval_receipt.json`",
         "`pretraining_source_provenance_receipt.json`",
         "`pretraining_source_provenance_evidence_bundle.json`",

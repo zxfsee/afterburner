@@ -82,7 +82,7 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "Distributed shard lineage family groups:",
+        "Distributed shard lineage artifact groups:",
         "`distributed_shard_lineage_receipt.json`",
         "`distributed_shard_lineage_evidence_bundle.json`",
         "`distributed_shard_lineage_evidence_bundle_reconciliation.json`",

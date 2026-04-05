@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped source/lineage validation wording gate alignment [Data Infra, Distributed Training]
-  - Goal: Keep the source and lineage family surface tests aligned with the newer grouped operator-flow wording so validation no longer lags behind the updated reference headings.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/pretraining_source_workflow_surface.rs`, `tests/distributed_shard_lineage_workflow_surface.rs`
-
 - Grouped source/lineage reference split validation gate alignment [Data Infra, Distributed Training]
   - Goal: Keep the shared README/reference split validator aligned with the newer source and lineage artifact-group wording so the reference index headings cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped deployment-verification reference split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-verification artifact-group and support-flow wording so the grouped deployment-verification reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped cleanup reference split validation gate alignment [Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the cleanup reference family so cleanup artifact groups cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
