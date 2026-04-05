@@ -97,7 +97,7 @@ row is fully implemented yet.
 | Verify | `afterburner verify <resource> ...` | May resolve the current deployed or promoted artifact/profile by default; must report the evidence inputs it selected. | Public command may emit receipts, bundles, reconciliation artifacts, and history underneath. |
 | Rollback | `afterburner rollback <resource> ...` | May restore the current active pointer or previous rollout target by default; must report the source it restored from. | Public command may emit rollback records, pointer updates, supersession artifacts, and history underneath. |
 | Inspect | `afterburner inspect <resource> ...` | Should prefer read-only inspection over mutation and default to the current active resource when unambiguous. | Read-only operator surface over existing artifacts and pointers. |
-| Heartbeat | `afterburner deploy scheduler-heartbeat ...` | May default output location or current lease/job context only when the source is explicit and inspectable; must report assumptions. | Writes the primary heartbeat artifact while history/reconciliation/supersession helpers stay behind `just` or `debug`. |
+| Heartbeat | `afterburner deploy scheduler-heartbeat ...` | May default output location or current lease/job context only when the source is explicit and inspectable; must report assumptions. | Writes the primary heartbeat artifact while history/reconciliation/supersession/pointer helpers stay behind `afterburner debug deploy scheduler-heartbeat ...`. |
 | Debug | `afterburner debug <domain> <action> ...` | No hidden orchestration by default; prefer explicit low-level inputs. | Low-level artifact writers, reconciliation builders, history appenders, pointer mutations, and fixture/debug helpers. |
 
 Use this matrix as the admission check for new public commands: if a candidate command does not fit
@@ -114,9 +114,8 @@ operator use case justifies promotion.
 - Kube lease flow: `just kube-rs-lease-reconcile`, `just kube-rs-lease-pointer`, `just kube-rs-lease-history`, `just kube-rs-lease-reconciliation-history`.
 - `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.
 - Scheduler heartbeat stays grouped under these operator flows:
-- Primary heartbeat flow: `just scheduler-heartbeat`, `just scheduler-heartbeat-point`.
-- Heartbeat support flows: `just scheduler-heartbeat-history`, `just scheduler-heartbeat-reconcile`, `just scheduler-heartbeat-reconciliation-history`, `just scheduler-heartbeat-supersede`, `just scheduler-heartbeat-supersession-history`, `just scheduler-heartbeat-supersession-reconcile`, `just scheduler-heartbeat-supersession-reconciliation-history`.
-- Pointer support flows: `just scheduler-heartbeat-pointer-history`, `just scheduler-heartbeat-pointer-reconcile`, `just scheduler-heartbeat-pointer-supersede`, `just scheduler-heartbeat-pointer-supersession-history`, `just scheduler-heartbeat-pointer-supersession-reconcile`, `just scheduler-heartbeat-pointer-supersession-reconciliation-history`, `just scheduler-heartbeat-pointer-rollback`, `just scheduler-heartbeat-pointer-rollback-history`, `just scheduler-heartbeat-pointer-rollback-reconcile`, `just scheduler-heartbeat-pointer-rollback-reconciliation-history`, `just scheduler-heartbeat-pointer-rollback-supersede`, `just scheduler-heartbeat-pointer-rollback-supersession-history`, `just scheduler-heartbeat-pointer-rollback-supersession-reconcile`, `just scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history`.
+- Primary heartbeat flow: `just scheduler-heartbeat`.
+- Detailed heartbeat history, reconciliation, supersession, pointer, and rollback support artifacts stay behind `afterburner debug deploy scheduler-heartbeat ...`.
 - `just workflow-surface-check-scheduler-heartbeat` keeps the grouped heartbeat workflow map and contract surface checked.
 - Deployment utility stays grouped under these operator flows:
 - Scheduler/runtime simulation: `just scheduler-runtime-simulate`.

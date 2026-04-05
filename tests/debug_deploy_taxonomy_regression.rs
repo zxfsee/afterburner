@@ -11,7 +11,6 @@ fn debug_deploy_surface_stays_family_first() {
     let deploy_dispatch = repo_file("src/cli_dispatch/deploy.rs");
 
     for required in [
-        "scheduler-heartbeat-pointer-rollback-supersession-reconcile supersession current_supersession:",
         "fn regrouped_debug_deploy_subcommand(",
         "\"verification-bundle\"",
         "\"verification-receipt\"",
