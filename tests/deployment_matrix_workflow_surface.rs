@@ -21,9 +21,9 @@ fn deployment_workflow_matrix_stays_grouped_by_operator_family() {
         "Deployment stack launch and kube-rs lease stay grouped under these operator flows:",
         "Scheduler heartbeat stays grouped under these operator flows:",
         "Deployment utility stays grouped under these operator flows:",
-        "`just workflow-surface-check-deployment-stack` keeps the grouped deployment-stack recipe and reference split checked.",
+        "`just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.",
         "`just workflow-surface-check-scheduler-heartbeat` keeps the grouped heartbeat workflow map and contract surface checked.",
-        "`just workflow-surface-check-deployment-utility` keeps the grouped deployment-utility recipe and reference split checked.",
+        "`just workflow-surface-check-deployment-utility` guards the grouped deployment-utility workflow map and reference split.",
     ] {
         assert!(
             workflows.contains(needle),

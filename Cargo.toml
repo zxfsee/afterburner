@@ -13,20 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped reference validation wording alignment [Runtime Infra]
-  - Goal: Keep the cross-family reference validation gate aligned with the newer grouped operator-flow wording so it checks current docs intent instead of stale “entrypoint map” and “recipe map” phrases.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/reference_doc_validation.rs`
-
-- Grouped deployment matrix validation wording alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared deployment-matrix validation aligned with the current grouped operator-flow wording so the matrix gate no longer lags behind the family-level docs phrasing.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/deployment_matrix_workflow_surface.rs`
-
 - Grouped source/lineage reference wording tightening [Data Infra, Distributed Training]
   - Goal: Keep the remaining source and lineage reference wording concise and operator-centered by trimming leftover “entrypoint map” phrasing in grouped reference notes.
   - Kind: `mixed`
@@ -39,7 +25,7 @@ header = """# Changelog
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
-  - Scope: `docs/reference.md`, `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
+  - Scope: `docs/reference.md`
 
 - Grouped rollout/reference validation wording alignment [Serving/Deployment Infra]
   - Goal: Keep the shared rollout/reference validation coverage aligned with the newer grouped operator-flow wording so rollout reference notes do not drift without a validation surface noticing.
@@ -54,6 +40,20 @@ header = """# Changelog
   - Boundary: `repo-workflow`
   - Contracts: `docs`
   - Scope: `tests/deployment_matrix_workflow_surface.rs`, `tests/reference_doc_validation.rs`
+
+- Grouped deployment-stack validation wording alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared deployment-matrix and reference validation surfaces aligned with the newer grouped operator-flow wording for deployment-stack notes so validation no longer lags behind the family docs phrasing.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/deployment_matrix_workflow_surface.rs`, `tests/reference_doc_validation.rs`
+
+- Grouped deployment-verification validation wording alignment [Serving/Deployment Infra]
+  - Goal: Keep the deployment-verification family surface tests aligned with the newer grouped operator-flow wording so validation no longer lags behind the shared docs phrasing.
+  - Kind: `mixed`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/deployment_verification_receipt_core_workflow_surface.rs`, `tests/deployment_verification_receipt_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_bundle_core_workflow_surface.rs`, `tests/deployment_verification_bundle_locator_rollback_workflow_surface.rs`, `tests/deployment_verification_handoff_workflow_surface.rs`
 
 ## [Trunk]
 """
