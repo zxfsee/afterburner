@@ -50,6 +50,11 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
         ),
     ];
 
+    let expected_headings = [
+        "Pretraining source artifact groups:",
+        "Distributed shard lineage artifact groups:",
+    ];
+
     for (recipe, link_line) in expected_links {
         assert!(
             justfile.contains(recipe),
@@ -58,6 +63,13 @@ fn reference_doc_keeps_family_level_workflow_links_in_sync() {
         assert!(
             reference.contains(link_line),
             "reference index must keep the workflow linkage `{link_line}`"
+        );
+    }
+
+    for heading in expected_headings {
+        assert!(
+            reference.contains(heading),
+            "reference index must keep the grouped source/lineage wording `{heading}`"
         );
     }
 
