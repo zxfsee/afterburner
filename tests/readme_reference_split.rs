@@ -43,6 +43,7 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
         "`gpu_scheduler_heartbeat_pointer*.json`",
         "`gpu_scheduler_heartbeat_pointer_rollback*.json`",
         "Deployment stack artifact groups:",
+        "`deployment_stack_check.json`",
         "`deployment_stack_launch_plan.json`",
         "`deployment_stack_launch_receipt.json`",
         "`deployment_stack_launch_evidence_bundle.json`",

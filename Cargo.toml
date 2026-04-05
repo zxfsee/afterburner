@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped deployment-stack check artifact split validation gate alignment [Serving/Deployment Infra]
-  - Goal: Keep the shared README/reference split validator aligned with `deployment_stack_check.json` so the grouped deployment-stack check surface cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped training/inference artifact and event split validation gate alignment [Inference, Runtime Infra]
   - Goal: Keep the shared README/reference split validator aligned with the top training and inference contract artifacts and events so the front-section reference surface cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped text-pretraining path split validation gate alignment [Pre-training, Inference]
   - Goal: Keep the shared README/reference split validator aligned with the text-pretraining path references so the front-section text training and inference surfaces cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped training-side artifact/event heading split validation gate alignment [Training, Runtime Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the training-side artifact/event heading and event lines so that front-section training coverage cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`
