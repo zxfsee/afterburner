@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Grouped Burn inventory reference split validation gate alignment [Frameworks, Runtime Infra]
-  - Goal: Keep the shared README/reference split validator aligned with the Burn migration inventory artifact so that explicit cutover-tracking coverage cannot drift unnoticed.
-  - Kind: `gate`
-  - Boundary: `repo-workflow`
-  - Contracts: `docs`
-  - Scope: `tests/readme_reference_split.rs`
-
 - Grouped kube-lease reference split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the kube-lease artifact cluster so the grouped deployment-stack lease surface cannot drift unnoticed.
   - Kind: `gate`
@@ -50,6 +43,13 @@ header = """# Changelog
 
 - Grouped deployment-stack launch artifact split validation gate alignment [Serving/Deployment Infra]
   - Goal: Keep the shared README/reference split validator aligned with the deployment-stack launch artifact cluster so the grouped launch reference surface cannot drift unnoticed.
+  - Kind: `gate`
+  - Boundary: `repo-workflow`
+  - Contracts: `docs`
+  - Scope: `tests/readme_reference_split.rs`
+
+- Grouped deployment-verification receipt and handoff artifact split validation gate alignment [Serving/Deployment Infra]
+  - Goal: Keep the shared README/reference split validator aligned with the remaining deployment-verification receipt and handoff artifact cluster so the grouped verification reference surface cannot drift unnoticed.
   - Kind: `gate`
   - Boundary: `repo-workflow`
   - Contracts: `docs`

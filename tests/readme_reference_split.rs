@@ -43,6 +43,7 @@ fn readme_points_to_reference_docs_and_stays_navigation_first() {
         "Bundle support flows: locator, rollback, and rollback supersession stay grouped under the bundle operator flow in [docs/workflows.md](./workflows.md).",
         "Handoff support flows: history/reconciliation and transport stay grouped under the handoff operator flow in [docs/workflows.md](./workflows.md).",
         "`scheduler_runtime_simulation_report.json`",
+        "`burn_bpk_migration_surface_inventory.json`",
         "`distributed_load_profile.json`",
         "`huggingface_publish_receipt.json`",
         "Rollout verification and pointer state:",
