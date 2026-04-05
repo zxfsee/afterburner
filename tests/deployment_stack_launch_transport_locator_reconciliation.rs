@@ -48,21 +48,10 @@ fn deployment_stack_launch_transport_locator_reconciliation_schema_and_workflow_
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("deploy-launch-transport-locator-reconcile handoff locator:"),
-        "justfile must expose the deploy-launch-transport-locator-reconcile workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_launch_transport_locator_reconciliation.json"),
         "workflow reference must mention the deployment stack launch transport locator reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deploy-launch-transport-locator-reconcile"),
-        "workflow reference must mention the deployment stack launch transport locator reconciliation workflow"
     );
 }
 

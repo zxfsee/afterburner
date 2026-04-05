@@ -52,23 +52,10 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_history_schema_and_wor
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains(
-            "deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:"
-        ),
-        "justfile must expose the deploy-launch-bundle-reconciliation-history workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_launch_evidence_bundle_reconciliation_history.json"),
         "workflow reference must mention the deployment stack launch evidence bundle reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains("just deploy-launch-bundle-reconciliation-history"),
-        "workflow reference must mention the deployment stack launch evidence bundle reconciliation history workflow"
     );
 }
 

@@ -74,18 +74,7 @@ fn justfile_thinness_debt_stays_bounded() {
 
     let allowed_expanded = BTreeSet::from([
         "deploy-launch-bundle-reconcile receipt bundle".to_string(),
-        "deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "deploy-launch-handoff-reconcile bundle handoff".to_string(),
-        "deploy-launch-handoff-history handoff event recorded_at_unix_ms".to_string(),
-        "deploy-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
-        "deploy-launch-transport-locator handoff".to_string(),
-        "deploy-launch-transport-locator-history locator event recorded_at_unix_ms".to_string(),
-        "deploy-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
-        "deploy-launch-transport-locator-reconcile handoff locator".to_string(),
-        "deploy-launch-locator locator".to_string(),
-        "deploy-launch-locator-reconcile plan pointer".to_string(),
-        "deploy-launch-locator-history pointer event recorded_at_unix_ms".to_string(),
-        "deploy-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms".to_string(),
         "kube-rs-lease-reconcile lease namespace resource_name".to_string(),
         "kube-rs-lease-pointer reconciliation".to_string(),
         "kube-rs-lease-history pointer event recorded_at_unix_ms".to_string(),

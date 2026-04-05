@@ -53,21 +53,10 @@ fn deployment_stack_launch_handoff_history_schema_and_workflow_are_explicit() {
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("deploy-launch-handoff-history handoff event recorded_at_unix_ms:"),
-        "justfile must expose the deploy-launch-handoff-history workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_launch_evidence_handoff_history.json"),
         "workflow reference must mention the deployment stack launch handoff history artifact"
-    );
-    assert!(
-        workflows.contains("just deploy-launch-handoff-history"),
-        "workflow reference must mention the deployment stack launch handoff history workflow"
     );
 }
 

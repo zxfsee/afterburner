@@ -161,44 +161,11 @@ deploy-launch-bundle receipt:
 deploy-launch-bundle-reconcile receipt bundle:
     {{ afterburner-deploy }} reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
 
-deploy-launch-bundle-reconciliation-history reconciliation event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-bundle-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation_history.json
-
 deploy-launch-handoff bundle:
     {{ afterburner-deploy }} stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 
 deploy-launch-handoff-reconcile bundle handoff:
     {{ afterburner-deploy }} reconcile-launch-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
-
-deploy-launch-handoff-history handoff event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-handoff-history --handoff {{ handoff }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_history.json
-
-deploy-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-handoff-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation_history.json
-
-deploy-launch-transport-locator handoff:
-    {{ afterburner-deploy }} point-launch-transport-locator --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_transport_locator.json
-
-deploy-launch-transport-locator-history locator event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-transport-locator-history --locator {{ locator }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_history.json
-
-deploy-launch-transport-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-transport-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation_history.json
-
-deploy-launch-transport-locator-reconcile handoff locator:
-    {{ afterburner-deploy }} reconcile-launch-transport-locator --handoff {{ handoff }} --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_transport_locator_reconciliation.json
-
-deploy-launch-locator locator:
-    {{ afterburner-deploy }} point-launch-locator --locator {{ locator }} --out artifacts/deploy/deployment_stack_launch_locator_pointer.json
-
-deploy-launch-locator-reconcile plan pointer:
-    {{ afterburner-deploy }} reconcile-launch-locator --plan {{ plan }} --pointer {{ pointer }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation.json
-
-deploy-launch-locator-history pointer event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-locator-history --pointer {{ pointer }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_history.json
-
-deploy-launch-locator-reconciliation-history reconciliation event recorded_at_unix_ms:
-    {{ afterburner-deploy }} record-launch-locator-reconciliation-history --reconciliation {{ reconciliation }} --event {{ event }} --recorded-at-unix-ms {{ recorded_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_locator_reconciliation_history.json
 
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:

@@ -46,21 +46,10 @@ fn deployment_stack_launch_locator_reconciliation_schema_and_workflow_are_explic
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains("deploy-launch-locator-reconcile plan pointer:"),
-        "justfile must expose the deploy-launch-locator-reconcile workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_launch_locator_reconciliation.json"),
         "workflow reference must mention the deployment stack launch locator reconciliation artifact"
-    );
-    assert!(
-        workflows.contains("just deploy-launch-locator-reconcile"),
-        "workflow reference must mention the deployment stack launch locator reconciliation workflow"
     );
 }
 

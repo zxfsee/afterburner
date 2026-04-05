@@ -51,23 +51,10 @@ fn deployment_stack_launch_handoff_reconciliation_history_schema_and_workflow_ar
     .collect::<BTreeSet<_>>();
     assert_eq!(required, expected);
 
-    let justfile = repo_file("justfile");
-    assert!(
-        justfile.contains(
-            "deploy-launch-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:"
-        ),
-        "justfile must expose the deploy-launch-handoff-reconciliation-history workflow"
-    );
-
     let reference = repo_file("docs/reference.md");
-    let workflows = repo_file("docs/workflows.md");
     assert!(
         reference.contains("deployment_stack_launch_evidence_handoff_reconciliation_history.json"),
         "workflow reference must mention the deployment stack launch handoff reconciliation history artifact"
-    );
-    assert!(
-        workflows.contains("just deploy-launch-handoff-reconciliation-history"),
-        "workflow reference must mention the deployment stack launch handoff reconciliation history workflow"
     );
 }
 
