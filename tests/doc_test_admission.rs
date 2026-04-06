@@ -59,6 +59,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "profiling_workflow_surface.rs"
             | "distributed_shard_lineage_workflow_surface.rs"
             | "pretraining_source_workflow_surface.rs"
+            | "runtime_platform_fit_catalog.rs"
             | "operator_grammar_gate.rs"
             | "public_cli_admission_gate.rs"
             | "reference_doc_validation.rs"

@@ -10,9 +10,6 @@ tests/burn_dependency_refresh.rs
 tests/burn_stable_release_availability.rs
 tests/capnproto_wire_format_fit.rs
 tests/cli_subcommand_hierarchy.rs
-tests/cubecl_fit.rs
-tests/cutile_backend_extension_fit.rs
-tests/data_infra_fit.rs
 tests/deployment_stack_contract.rs
 tests/deployment_stack_launch_evidence_bundle.rs
 tests/deployment_stack_launch_evidence_bundle_reconciliation.rs
