@@ -19,5 +19,6 @@ pub mod workflow_objective_lock_cli;
 pub mod workflow_objective_lock_core;
 pub mod workflow_process;
 pub mod workflow_queue_snapshot_cli;
+pub mod workflow_queue_snapshot_core;
 
 pub const RUNTIME_SUPPORTED_BACKENDS: &[&str] = &["cpu", "wgpu", "metal"];

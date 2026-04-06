@@ -87,7 +87,7 @@ fn developer_workflows_are_repo_managed_and_documented() {
             "queue maintenance recipes must chain static steps through dependencies: {dependency_chain}"
         );
     }
-    let queue_snapshot = repo_file("src/bin/workflow_queue_snapshot.rs");
+    let queue_snapshot = repo_file("src/workflow_queue_snapshot_core.rs");
     assert!(
         queue_snapshot.contains("--allow-existing-path")
             && queue_snapshot.contains("\"Cargo.toml\"")
