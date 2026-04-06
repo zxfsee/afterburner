@@ -380,7 +380,7 @@ fn load_support_files(
     }
 
     let optimized_artifact_path = read_string(object, "optimized_artifact_path")?;
-    if PathBuf::from(&optimized_artifact_path) != artifact_path {
+    if Path::new(&optimized_artifact_path) != artifact_path {
         return Err(UploadError::Ownership(format!(
             "package contract optimized_artifact_path `{optimized_artifact_path}` must match upload artifact `{}`",
             artifact_path.display()

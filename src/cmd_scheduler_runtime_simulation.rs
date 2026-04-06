@@ -441,11 +441,14 @@ fn lifecycle_report(scenario: &SimulationScenario) -> Value {
         .iter()
         .enumerate()
         .map(|(step_index, message)| {
-            let accepted = match (message.direction.as_str(), message.kind.as_str()) {
-                ("scheduler_to_runtime", "START" | "STOP" | "KILL") => true,
-                ("runtime_to_scheduler", "READY" | "CHECKPOINTED" | "FAILED" | "HEARTBEAT") => true,
-                _ => false,
-            };
+            let accepted = matches!(
+                (message.direction.as_str(), message.kind.as_str()),
+                ("scheduler_to_runtime", "START" | "STOP" | "KILL")
+                    | (
+                        "runtime_to_scheduler",
+                        "READY" | "CHECKPOINTED" | "FAILED" | "HEARTBEAT"
+                    )
+            );
             json!({
                 "step_index": step_index as u64,
                 "direction": message.direction,
