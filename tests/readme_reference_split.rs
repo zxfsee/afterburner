@@ -3,6 +3,7 @@ mod markdown_test_support;
 #[path = "support/repo.rs"]
 mod repo_test_support;
 
+use markdown_test_support::markdown_contains;
 use markdown_test_support::markdown_section;
 use repo_test_support::repo_file;
 
@@ -40,7 +41,7 @@ fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
         "`artifacts/eval/text_pretraining_eval_summary.json`",
     ] {
         assert!(
-            training.contains(needle),
+            markdown_contains(training, needle),
             "training/inference section must keep the representative anchor `{needle}`"
         );
     }
@@ -61,7 +62,7 @@ fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
     ] {
         assert!(
-            workflows.contains(needle),
+            markdown_contains(workflows, needle),
             "workflow/artifact families section must keep the representative anchor `{needle}`"
         );
     }
@@ -77,7 +78,7 @@ fn readme_points_to_reference_docs_and_keeps_reference_grouped() {
         "remote locator contract",
     ] {
         assert!(
-            capability_summary.contains(needle),
+            markdown_contains(capability_summary, needle),
             "capability summary must keep the representative anchor `{needle}`"
         );
     }

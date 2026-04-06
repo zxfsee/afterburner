@@ -3,6 +3,7 @@ mod markdown_test_support;
 #[path = "support/repo.rs"]
 mod repo_test_support;
 
+use markdown_test_support::markdown_contains;
 use markdown_test_support::markdown_section;
 use repo_test_support::repo_file;
 
@@ -29,7 +30,7 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         "For command entrypoints, use [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
-            reference.contains(fragment),
+            markdown_contains(&reference, fragment),
             "reference index must keep the ownership/navigation fragment `{fragment}`"
         );
     }
@@ -58,7 +59,7 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         "handoff operator flow in [docs/workflows.md](./workflows.md).",
     ] {
         assert!(
-            workflow_families.contains(fragment),
+            markdown_contains(workflow_families, fragment),
             "workflow/artifact families section must keep the grouped deployment-verification fragment `{fragment}`"
         );
     }
@@ -71,7 +72,7 @@ fn reference_doc_stays_grouped_and_navigation_first() {
         "Longer-horizon anchors:",
     ] {
         assert!(
-            capability_summary.contains(line),
+            markdown_contains(capability_summary, line),
             "reference index must keep the grouped capability-summary heading `{line}`"
         );
     }
