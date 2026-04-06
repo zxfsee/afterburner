@@ -294,7 +294,7 @@ auto-versioning, embedded serving) are intentionally absent.
 - Backend and optimization fits:
   - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, and ADR-033.
 - Distributed runtime and lineage fits:
-  - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-034,
+  - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-034, ADR-056,
     ADR-039, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
@@ -353,11 +353,9 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
-- [ADR-062: kube-rs GPU Scheduler Placement Fit](./docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md)
-- [ADR-064: LWS Cluster Workload Fit](./docs/adr/064-lws-cluster-workload-fit.md)
 - [ADR-065: Gateway API Inference Extension Fit](./docs/adr/065-gateway-api-inference-extension-fit.md)
 - [ADR-051: Artifact Contract And Serialization Strategy](./docs/adr/051-artifact-contract-and-serialization-strategy.md)
-- [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
+- [ADR-056: Cluster Scheduling Strategy And Adapter Boundary](./docs/adr/056-cluster-scheduling-strategy-and-adapter-boundary.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-058: Distributed Runtime Benchmark Harness](./docs/adr/058-distributed-runtime-benchmark-harness.md)

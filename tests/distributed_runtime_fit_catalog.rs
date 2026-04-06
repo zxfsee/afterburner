@@ -123,7 +123,7 @@ fn distributed_runtime_growth_model_documents_burn_strategy_alignment() {
 }
 
 #[test]
-fn gpu_colocation_fit_is_documented() {
+fn cluster_scheduling_strategy_and_adapter_boundary_are_documented() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
         architecture.contains("ADR-056"),
@@ -134,56 +134,28 @@ fn gpu_colocation_fit_is_documented() {
         "low-saturation",
         "interference",
         "not the default",
+        "kube-rs",
+        "node inventory",
+        "topology-aware placement",
+        "lease ownership",
+        "job lifecycle reconciliation",
+        "lws",
+        "kube-rs-compatible",
+        "adapter target",
     ] {
         assert!(
             architecture.contains(needle),
-            "architecture must mention `{needle}` as part of the colocation stance"
+            "architecture must mention `{needle}` as part of the cluster scheduling stance"
         );
     }
 
-    let adr = repo_file("docs/adr/056-gpu-colocation-fit.md");
+    let adr = repo_file("docs/adr/056-cluster-scheduling-strategy-and-adapter-boundary.md");
     for needle in [
         "low-saturation",
         "latency regression",
         "throughput regression",
         "memory pressure",
         "default scheduler",
-    ] {
-        assert!(
-            adr.contains(needle),
-            "ADR-056 must mention `{needle}` as part of the colocation fit decision"
-        );
-    }
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("low-saturation workloads"),
-        "reference index must mention the constrained colocation stance"
-    );
-}
-
-#[test]
-fn kube_rs_gpu_scheduler_placement_fit_is_documented() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-062"),
-        "architecture decisions index must link ADR-062"
-    );
-    for needle in [
-        "kube-rs",
-        "node inventory",
-        "topology-aware placement",
-        "lease ownership",
-        "job lifecycle reconciliation",
-    ] {
-        assert!(
-            architecture.contains(needle),
-            "architecture must mention `{needle}` as part of the kube-rs placement fit"
-        );
-    }
-
-    let adr = repo_file("docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md");
-    for needle in [
         "kube-rs",
         "node inventory",
         "queue admission",
@@ -191,36 +163,6 @@ fn kube_rs_gpu_scheduler_placement_fit_is_documented() {
         "lease ownership",
         "job lifecycle reconciliation",
         "single-node scheduler",
-    ] {
-        assert!(
-            adr.contains(needle),
-            "ADR-062 must mention `{needle}` as part of the cluster-path fit decision"
-        );
-    }
-
-    let readme = repo_file("README.md");
-    assert!(
-        readme.contains("kube-rs-compatible"),
-        "README must mention the kube-rs-compatible cluster path"
-    );
-}
-
-#[test]
-fn lws_cluster_workload_fit_is_documented() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-064"),
-        "architecture decisions index must link ADR-064"
-    );
-    for needle in ["lws", "kube-rs-compatible", "adapter target"] {
-        assert!(
-            architecture.contains(needle),
-            "architecture must mention `{needle}` as part of the lws fit decision"
-        );
-    }
-
-    let adr = repo_file("docs/adr/064-lws-cluster-workload-fit.md");
-    for needle in [
         "Do not adopt `lws` now.",
         "kube-rs-compatible",
         "workload-management reference",
@@ -229,13 +171,18 @@ fn lws_cluster_workload_fit_is_documented() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-064 must mention `{needle}` as part of the lws fit decision"
+            "ADR-056 must mention `{needle}` as part of the cluster scheduling decision"
         );
     }
 
+    let reference = repo_file("docs/reference.md");
+    assert!(
+        reference.contains("low-saturation workloads"),
+        "reference index must mention the constrained colocation stance"
+    );
     let readme = repo_file("README.md");
     assert!(
-        readme.contains("lws"),
-        "README must mention the current lws fit stance"
+        readme.contains("kube-rs-compatible") && readme.contains("lws"),
+        "README must mention the current cluster-path and lws stance"
     );
 }
