@@ -15,4 +15,5 @@ pub mod rollout_current_pointer;
 pub mod scheduler_heartbeat_pointer_rollback_helpers;
 pub mod text_pretrain;
 pub mod train;
+pub mod workflow_objective_lock_cli;
 pub mod workflow_process;
