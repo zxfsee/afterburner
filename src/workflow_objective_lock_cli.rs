@@ -151,7 +151,7 @@ where
     }
 
     let objective =
-        objective.ok_or_else(|| format!("missing value for --objective\n{}", usage()))?;
+        objective.ok_or_else(|| format!("missing required flag --objective\n{}", usage()))?;
 
     Ok(CommandSpec::Pin {
         objective,
@@ -322,4 +322,50 @@ where
 {
     args.next()
         .ok_or_else(|| format!("missing value for {flag}\n{}", usage()))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{CommandSpec, Objective, parse_args};
+    use std::path::PathBuf;
+
+    #[test]
+    fn objective_lock_cli_rejects_missing_required_objective_flag() {
+        let err = parse_args(["pin"].into_iter().map(str::to_string)).expect_err("missing flag");
+        assert!(
+            err.contains("missing required flag --objective"),
+            "expected missing required objective error: {err}"
+        );
+    }
+
+    #[test]
+    fn objective_lock_cli_distinguishes_missing_objective_value() {
+        let err = parse_args(["pin", "--objective"].into_iter().map(str::to_string))
+            .expect_err("missing value");
+        assert!(
+            err.contains("missing value for --objective"),
+            "expected missing objective value error: {err}"
+        );
+    }
+
+    #[test]
+    fn objective_lock_cli_parses_pin_with_defaults() {
+        let command = parse_args(
+            ["pin", "--objective", "queue-only"]
+                .into_iter()
+                .map(str::to_string),
+        )
+        .expect("parse");
+        assert_eq!(
+            command,
+            CommandSpec::Pin {
+                objective: Objective::QueueOnly,
+                cargo_toml: PathBuf::from("Cargo.toml"),
+                repo_root: PathBuf::from("."),
+                lock_file: PathBuf::from(".git/afterburner/objective-lock.json"),
+                expected_action: None,
+                allow_existing_paths: Vec::new(),
+            }
+        );
+    }
 }

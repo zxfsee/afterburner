@@ -217,8 +217,8 @@ where
         }
     }
 
-    let parent_commit =
-        parent_commit.ok_or_else(|| format!("missing value for --parent-commit\n{}", usage()))?;
+    let parent_commit = parent_commit
+        .ok_or_else(|| format!("missing required flag --parent-commit\n{}", usage()))?;
 
     Ok(if stamp {
         QueueSnapshotCommand::Stamp {
@@ -358,8 +358,22 @@ mod tests {
     fn queue_snapshot_cli_rejects_verify_without_parent_commit() {
         let err = parse_args(["verify"].into_iter().map(str::to_string)).expect_err("missing arg");
         assert!(
+            err.contains("missing required flag --parent-commit"),
+            "expected missing required parent-commit error: {err}"
+        );
+    }
+
+    #[test]
+    fn queue_snapshot_cli_distinguishes_missing_parent_commit_value() {
+        let err = parse_args(
+            ["verify", "--parent-commit"]
+                .into_iter()
+                .map(str::to_string),
+        )
+        .expect_err("missing value");
+        assert!(
             err.contains("missing value for --parent-commit"),
-            "expected missing parent-commit error: {err}"
+            "expected missing value error: {err}"
         );
     }
 
