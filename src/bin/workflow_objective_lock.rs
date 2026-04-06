@@ -1,12 +1,12 @@
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use afterburner::queue_workflow_metadata::{
     QueueWorkflowMetadataError, extract_backtick_values, extract_marked_section, first_todo_item,
     is_allowed_path, normalize_candidate_path,
 };
+use afterburner::workflow_process::{WorkflowProcessError, jj_output_lines};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
@@ -68,7 +68,6 @@ enum ObjectiveLockError {
     Io(std::io::Error),
     Json(serde_json::Error),
     Parse(String),
-    Process(String),
 }
 
 impl std::fmt::Display for ObjectiveLockError {
@@ -78,7 +77,6 @@ impl std::fmt::Display for ObjectiveLockError {
             Self::Io(err) => write!(f, "io error: {err}"),
             Self::Json(err) => write!(f, "json error: {err}"),
             Self::Parse(msg) => write!(f, "{msg}"),
-            Self::Process(msg) => write!(f, "{msg}"),
         }
     }
 }
@@ -94,6 +92,15 @@ impl From<std::io::Error> for ObjectiveLockError {
 impl From<serde_json::Error> for ObjectiveLockError {
     fn from(value: serde_json::Error) -> Self {
         Self::Json(value)
+    }
+}
+
+impl From<WorkflowProcessError> for ObjectiveLockError {
+    fn from(value: WorkflowProcessError) -> Self {
+        match value {
+            WorkflowProcessError::Io(err) => Self::Io(err),
+            other => Self::Parse(other.to_string()),
+        }
     }
 }
 
@@ -923,23 +930,6 @@ fn repair_repo_locks(repo_root: &Path, stale_after_seconds: u64) -> Result<(), O
         stale_after_seconds
     );
     Ok(())
-}
-
-fn jj_output_lines(repo_root: &Path, args: &[&str]) -> Result<Vec<String>, ObjectiveLockError> {
-    let output = Command::new("jj")
-        .current_dir(repo_root)
-        .args(args)
-        .output()?;
-    if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-        return Err(ObjectiveLockError::Process(format!(
-            "jj {} failed: {stderr}",
-            args.join(" ")
-        )));
-    }
-    let stdout = String::from_utf8(output.stdout)
-        .map_err(|err| ObjectiveLockError::Parse(format!("jj output is not utf8: {err}")))?;
-    Ok(stdout.lines().map(ToString::to_string).collect())
 }
 
 fn usage() -> &'static str {

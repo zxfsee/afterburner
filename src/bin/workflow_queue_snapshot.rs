@@ -1,12 +1,14 @@
 use std::fs;
 use std::path::PathBuf;
-use std::process::Command as ProcessCommand;
 
 use afterburner::queue_workflow_metadata::{
     QueueTextItem, QueueWorkflowMetadataError, extract_backtick_values, extract_marked_section,
-    first_todo_item, is_allowed_path, normalize_candidate_path, normalize_scope_path,
-    normalized_marked_section_block, rebuild_item_block, split_items_after_marker,
-    split_marked_items,
+    first_todo_item, is_allowed_path, normalize_scope_path, normalized_marked_section_block,
+    rebuild_item_block, split_items_after_marker, split_marked_items,
+};
+use afterburner::workflow_process::{
+    WorkflowProcessError, jj_changed_paths_between, jj_commit_id, jj_optional_commit_id,
+    run_binary_command, run_command, sibling_binary_path,
 };
 use sha2::{Digest, Sha256};
 
@@ -43,6 +45,15 @@ impl std::error::Error for QueueSnapshotError {}
 impl From<std::io::Error> for QueueSnapshotError {
     fn from(value: std::io::Error) -> Self {
         Self::Io(value)
+    }
+}
+
+impl From<WorkflowProcessError> for QueueSnapshotError {
+    fn from(value: WorkflowProcessError) -> Self {
+        match value {
+            WorkflowProcessError::Io(err) => Self::Io(err),
+            other => Self::Parse(other.to_string()),
+        }
     }
 }
 
@@ -346,7 +357,7 @@ fn execute_preflight(
     repo_root: PathBuf,
     repair_stale_snapshot: bool,
 ) -> Result<(), QueueSnapshotError> {
-    let objective_lock_bin = workflow_objective_lock_binary()?;
+    let objective_lock_bin = sibling_binary_path("workflow_objective_lock")?;
     run_binary_command(
         repo_root.as_path(),
         &objective_lock_bin,
@@ -409,7 +420,7 @@ fn refresh_queue_snapshot(
     changelog: &PathBuf,
     repo_root: &PathBuf,
 ) -> Result<(), QueueSnapshotError> {
-    let objective_lock_bin = workflow_objective_lock_binary()?;
+    let objective_lock_bin = sibling_binary_path("workflow_objective_lock")?;
     run_binary_command(
         repo_root.as_path(),
         &objective_lock_bin,
@@ -454,126 +465,6 @@ fn refresh_queue_snapshot(
     )?;
     run_binary_command(repo_root.as_path(), &objective_lock_bin, &["clear"])?;
     Ok(())
-}
-
-fn run_command(
-    repo_root: &std::path::Path,
-    program: &str,
-    args: &[&str],
-) -> Result<(), QueueSnapshotError> {
-    let output = ProcessCommand::new(program)
-        .current_dir(repo_root)
-        .args(args)
-        .output()?;
-    if output.status.success() {
-        return Ok(());
-    }
-    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let details = if stderr.is_empty() { stdout } else { stderr };
-    Err(QueueSnapshotError::Parse(format!(
-        "{program} {} failed: {details}",
-        args.join(" ")
-    )))
-}
-
-fn run_binary_command(
-    repo_root: &std::path::Path,
-    program: &PathBuf,
-    args: &[&str],
-) -> Result<(), QueueSnapshotError> {
-    let output = ProcessCommand::new(program)
-        .current_dir(repo_root)
-        .args(args)
-        .output()?;
-    if output.status.success() {
-        return Ok(());
-    }
-    let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let details = if stderr.is_empty() { stdout } else { stderr };
-    Err(QueueSnapshotError::Parse(format!(
-        "{} {} failed: {details}",
-        program.display(),
-        args.join(" ")
-    )))
-}
-
-fn workflow_objective_lock_binary() -> Result<PathBuf, QueueSnapshotError> {
-    let current_exe = std::env::current_exe()?;
-    let sibling = current_exe
-        .parent()
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("current executable has no parent directory".into())
-        })?
-        .join("workflow_objective_lock");
-    if sibling.exists() {
-        Ok(sibling)
-    } else {
-        Err(QueueSnapshotError::Parse(format!(
-            "workflow objective lock helper binary is missing at `{}`; build the repo before running queue execute preflight",
-            sibling.display()
-        )))
-    }
-}
-
-fn jj_commit_id(repo_root: &PathBuf, revset: &str) -> Result<String, QueueSnapshotError> {
-    let output = ProcessCommand::new("jj")
-        .current_dir(repo_root)
-        .args([
-            "log",
-            "--ignore-working-copy",
-            "-r",
-            revset,
-            "--no-graph",
-            "-T",
-            "commit_id",
-        ])
-        .output()?;
-    if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-        return Err(QueueSnapshotError::Parse(format!(
-            "jj log for revset `{revset}` failed: {stderr}"
-        )));
-    }
-    let stdout = String::from_utf8(output.stdout)
-        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
-    let commit = stdout.trim().to_string();
-    if commit.is_empty() {
-        return Err(QueueSnapshotError::Parse(format!(
-            "jj log for revset `{revset}` returned no commit id"
-        )));
-    }
-    Ok(commit)
-}
-
-fn jj_optional_commit_id(
-    repo_root: &PathBuf,
-    revset: &str,
-) -> Result<Option<String>, QueueSnapshotError> {
-    let output = ProcessCommand::new("jj")
-        .current_dir(repo_root)
-        .args([
-            "log",
-            "--ignore-working-copy",
-            "-r",
-            revset,
-            "--no-graph",
-            "-T",
-            "commit_id",
-        ])
-        .output()?;
-    if !output.status.success() {
-        return Ok(None);
-    }
-    let stdout = String::from_utf8(output.stdout)
-        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
-    let commit = stdout.trim().to_string();
-    if commit.is_empty() {
-        Ok(None)
-    } else {
-        Ok(Some(commit))
-    }
 }
 
 fn parse_args<I>(args: I) -> Result<Command, QueueSnapshotError>
@@ -996,30 +887,6 @@ fn is_docs_family_shared_overlap_only(todo: &TodoScope, changed_paths: &[String]
             }
         })
     })
-}
-
-fn jj_changed_paths_between(
-    repo_root: &PathBuf,
-    from_rev: &str,
-    to_rev: &str,
-) -> Result<Vec<String>, QueueSnapshotError> {
-    let output = ProcessCommand::new("jj")
-        .current_dir(repo_root)
-        .args(["diff", "--from", from_rev, "--to", to_rev, "--name-only"])
-        .output()?;
-    if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-        return Err(QueueSnapshotError::Parse(format!(
-            "jj diff for completion boundary failed: {stderr}"
-        )));
-    }
-    let stdout = String::from_utf8(output.stdout)
-        .map_err(|err| QueueSnapshotError::Parse(format!("jj output is not utf8: {err}")))?;
-    Ok(stdout
-        .lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(normalize_candidate_path)
-        .collect())
 }
 
 fn snapshot_comment(snapshot: &QueueSnapshot) -> String {
