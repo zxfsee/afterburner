@@ -6,8 +6,10 @@ use assert_cmd::cargo::cargo_bin_cmd;
 use predicates::prelude::*;
 use serde_json::{Value, json};
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/fixture.rs"]
+mod fixture_test_support;
+#[path = "support/manifest_template.rs"]
+mod manifest_template_support;
 
 #[test]
 fn infer_allows_each_supported_backend_artifact_version_pair_from_fixture_metadata() {
@@ -125,9 +127,6 @@ fn load_supported_pairs_from_fixture() -> Vec<(String, String)> {
         .collect()
 }
 
-#[path = "support/fixture.rs"]
-mod fixture_test_support;
-
 use fixture_test_support::fixture_path;
 
 fn event_fixture(name: &str) -> Value {
@@ -154,7 +153,7 @@ fn normalize_adapter_registry_invalid_event(detail: String) -> Value {
 
 fn manifest_with(weights_path: &Path, artifact_version: &str) -> String {
     let checksum = compute_sha256_hex(weights_path).expect("compute checksum");
-    fixture_support::load_manifest_fixture()
+    manifest_template_support::load_manifest_fixture()
         .replace(
             r#"artifact_version = "0.1.0""#,
             &format!(r#"artifact_version = "{artifact_version}""#),

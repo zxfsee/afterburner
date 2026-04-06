@@ -4,8 +4,8 @@ use std::thread;
 
 use afterburner::manifest::compute_sha256_hex;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 fn run_infer_once(artifact_path: PathBuf) {
     let status = Command::new(assert_cmd::cargo::cargo_bin!("afterburner"))
@@ -19,7 +19,7 @@ fn run_infer_once(artifact_path: PathBuf) {
 
 #[test]
 fn concurrent_readers_do_not_mutate_pinned_artifact() {
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let before = compute_sha256_hex(&artifact).expect("compute pre-run checksum");
 
     let worker_a_artifact = artifact.clone();

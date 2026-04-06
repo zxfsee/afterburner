@@ -3,9 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-#[allow(dead_code)]
-#[path = "../src/cmd_infer.rs"]
-mod cmd_infer;
+use afterburner::RUNTIME_SUPPORTED_BACKENDS;
 
 fn cargo_manifest_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml")
@@ -70,7 +68,7 @@ fn compiler_feature_matrix_fixture_matches_effective_burn_features() {
         }
     }
 
-    let expected_backends = cmd_infer::runtime_supported_backends()
+    let expected_backends = RUNTIME_SUPPORTED_BACKENDS
         .iter()
         .copied()
         .collect::<BTreeSet<_>>();

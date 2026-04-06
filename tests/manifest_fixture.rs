@@ -4,13 +4,13 @@ use afterburner::manifest::{
     WEIGHTS_DTYPE,
 };
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/manifest_paths.rs"]
+mod manifest_path_support;
 
 #[test]
 fn manifest_fixture_parses_and_validates() {
-    let manifest_path = fixture_support::fixture_manifest_path();
-    let weights = fixture_support::fixture_model_path();
+    let manifest_path = manifest_path_support::fixture_manifest_path();
+    let weights = manifest_path_support::fixture_model_path();
     let parsed = ArtifactManifest::load_from_path(&manifest_path).expect("parse manifest");
     assert_eq!(parsed.artifact_version, "0.1.0");
     assert_eq!(parsed.signature.scheme, SIGNATURE_SCHEME_PLACEHOLDER);

@@ -9,8 +9,8 @@ use std::time::{Duration, Instant};
 
 use serde_json::Value;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 #[path = "support/fixture.rs"]
 mod fixture_test_support;
@@ -133,7 +133,7 @@ fn serving_rollout_budget_enforces_latency_error_admission_policy() {
     let Some(port) = reserve_port() else {
         return;
     };
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(weights_path)
         .env("BACKEND", "cpu")
@@ -336,7 +336,7 @@ fn serving_rollout_budget_schema_typed_metadata_enables_admission_policy() {
     let Some(port) = reserve_port() else {
         return;
     };
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(weights_path)
         .env("BACKEND", "cpu")

@@ -5,8 +5,8 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::path::PathBuf;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 fn eval_output_or_skip(cmd: &mut assert_cmd::Command) -> Option<std::process::Output> {
     let output = cmd.output().expect("run eval command");
@@ -70,7 +70,7 @@ fn eval_default_artifact_path_uses_current_version_pointer() {
 
 #[test]
 fn eval_emits_artifact_version_and_matches_infer_resolution() {
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let summary_path = tmp.path().join("eval_summary.json");
 
@@ -119,7 +119,7 @@ fn eval_emits_artifact_version_and_matches_infer_resolution() {
 
 #[test]
 fn eval_emits_monitoring_contract_event_and_summary_fields() {
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let summary_path = tmp.path().join("eval_summary.json");
 
@@ -404,7 +404,7 @@ fn architecture_documents_adapter_only_semconv_alignment() {
 #[test]
 fn eval_checked_in_summary_matches_monitoring_schema_contract() {
     let schema = fixture_json("eval_pipeline_monitoring_artifact.schema.json");
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let summary_path = tmp.path().join("eval_summary.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
@@ -488,7 +488,7 @@ fn eval_checked_in_summary_matches_monitoring_schema_contract() {
 #[test]
 fn eval_summary_success_fixture_pins_top_level_contract() {
     let fixture = fixture_json("eval_summary_success.fixture.json");
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let summary_path = tmp.path().join("eval_summary.json");
     let mut cmd = cargo_bin_cmd!("afterburner");

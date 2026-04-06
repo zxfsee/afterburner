@@ -2,8 +2,8 @@ use std::fs;
 
 use afterburner::manifest::{MANIFEST_FILENAME, compute_sha256_hex};
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/manifest_template.rs"]
+mod manifest_template_support;
 
 #[test]
 fn infer_fails_fast_on_manifest_mismatch() {
@@ -12,7 +12,7 @@ fn infer_fails_fast_on_manifest_mismatch() {
     let weights = dir.join("model.mpk");
     fs::write(&weights, "").expect("write weights");
     let checksum = compute_sha256_hex(&weights).expect("checksum");
-    let manifest_fixture = fixture_support::load_manifest_fixture();
+    let manifest_fixture = manifest_template_support::load_manifest_fixture();
     let bad_checksum = format!("{checksum}00");
     let manifest = manifest_fixture.replace(
         &format!("artifact_sha256 = \"{checksum}\""),
@@ -48,7 +48,7 @@ fn infer_fails_fast_on_unsupported_quantized_manifest() {
     let weights = dir.join("model.mpk");
     fs::write(&weights, "").expect("write weights");
     let checksum = compute_sha256_hex(&weights).expect("checksum");
-    let manifest = fixture_support::load_manifest_fixture()
+    let manifest = manifest_template_support::load_manifest_fixture()
         .replace(
             r#"artifact_sha256 = "b3b57b1fea16e57389145b129a3330998bf3c3bc1e412c46779b3e1827fdd55b""#,
             &format!(r#"artifact_sha256 = "{checksum}""#),

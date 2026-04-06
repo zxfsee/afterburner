@@ -3,8 +3,8 @@ use std::fs;
 
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 #[path = "support/fixture.rs"]
 mod fixture_test_support;
@@ -67,7 +67,7 @@ fn infer_output_drift_summary_schema_is_explicit() {
 
 #[test]
 fn infer_writes_output_drift_summary_and_event() {
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
     let tmp = tempfile::tempdir().expect("tempdir");
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.current_dir(tmp.path())

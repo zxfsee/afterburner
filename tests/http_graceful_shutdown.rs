@@ -10,8 +10,8 @@ use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 fn reserve_port() -> Option<u16> {
     let listener = match TcpListener::bind("127.0.0.1:0") {
@@ -270,7 +270,7 @@ fn in_flight_infer_completes_on_sigint() {
     let Some(port) = reserve_port() else {
         return;
     };
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(&weights_path)
         .env("BACKEND", "cpu")
@@ -357,7 +357,7 @@ fn single_item_infer_response_matches_single_success_fixture() {
     let Some(port) = reserve_port() else {
         return;
     };
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(&weights_path)
         .env("BACKEND", "cpu")
@@ -434,7 +434,7 @@ fn single_item_http_infer_done_event_matches_fixture() {
     let Some(port) = reserve_port() else {
         return;
     };
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let mut child = Command::new(assert_cmd::cargo::cargo_bin!("afterburner-http"))
         .arg(&weights_path)
         .env("BACKEND", "cpu")

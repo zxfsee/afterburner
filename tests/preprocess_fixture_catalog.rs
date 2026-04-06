@@ -7,10 +7,10 @@ use sha2::{Digest, Sha256};
 use afterburner::data::training_preprocess_mnist_image;
 use afterburner::preprocess::{MNIST_MEAN, MNIST_STD, mnist_image_to_tensor};
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
 #[path = "support/fixture.rs"]
 mod fixture_test_support;
+#[path = "support/mnist_fixture.rs"]
+mod mnist_fixture;
 
 use fixture_test_support::fixture_path;
 
@@ -42,7 +42,7 @@ fn preprocess_shape_and_finiteness() {
 #[test]
 fn preprocess_values_are_finite_and_denormalize_to_unit_interval() {
     let device = <B as Backend>::Device::default();
-    let image = fixture_support::load_fixture_image();
+    let image = mnist_fixture::load_fixture_image();
     let tensor = mnist_image_to_tensor::<B>(image, &device);
     let values: Vec<f32> = tensor.to_data().iter().collect();
 
@@ -63,7 +63,7 @@ fn preprocess_values_are_finite_and_denormalize_to_unit_interval() {
 #[test]
 fn preprocess_parity_between_training_and_infer_paths() {
     let device = <B as Backend>::Device::default();
-    let image = fixture_support::load_fixture_image();
+    let image = mnist_fixture::load_fixture_image();
 
     let infer_tensor = mnist_image_to_tensor::<B>(image, &device);
     let train_tensor = training_preprocess_mnist_image::<B>(image, &device);
@@ -84,8 +84,8 @@ fn preprocess_parity_between_training_and_infer_paths() {
 #[test]
 fn mnist_fixture_normalization_summary_matches() {
     let device = <B as Backend>::Device::default();
-    let image = fixture_support::load_fixture_image();
-    let expected = fixture_support::load_fixture_summary();
+    let image = mnist_fixture::load_fixture_image();
+    let expected = mnist_fixture::load_fixture_summary();
 
     let tensor = mnist_image_to_tensor::<B>(image, &device);
     let flat = tensor.reshape([784]);

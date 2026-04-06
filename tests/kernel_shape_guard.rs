@@ -15,8 +15,8 @@ use serde_json::Value;
 type CpuBackend = NdArray<f32>;
 type GpuBackend = Wgpu<f32, i32>;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 #[path = "support/fixture.rs"]
 mod fixture_test_support;
@@ -42,7 +42,7 @@ fn assert_logits_shape_for_backend<B: Backend>(batch_size: usize)
 where
     B::Device: Default,
 {
-    let (_artifact_dir, artifact_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact_path) = runtime_model_artifact::build_runtime_model_artifact();
     let device = B::Device::default();
     let model = load_model::<B>(&artifact_path, &device).expect("load model");
     let input = Tensor::<B, 4>::zeros([batch_size, 1, 28, 28], &device);

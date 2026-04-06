@@ -4,8 +4,8 @@ use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 #[test]
 fn infer_fails_fast_on_missing_artifact() {
@@ -21,7 +21,7 @@ fn infer_fails_fast_on_missing_artifact() {
 
 #[test]
 fn infer_done_event_matches_fixture_contract() {
-    let (_artifact_dir, artifact) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, artifact) = runtime_model_artifact::build_runtime_model_artifact();
 
     let mut cmd = cargo_bin_cmd!("afterburner");
     cmd.arg("infer").arg(&artifact).env("BACKEND", "cpu");

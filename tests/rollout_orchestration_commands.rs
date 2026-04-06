@@ -3,8 +3,8 @@ use std::path::PathBuf;
 
 use serde_json::Value;
 
-#[path = "fixture_support.rs"]
-mod fixture_support;
+#[path = "support/runtime_model_artifact.rs"]
+mod runtime_model_artifact;
 
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -20,7 +20,7 @@ fn write_ownership(path: &PathBuf) {
 
 #[test]
 fn deploy_rollout_check_and_verify_rollout_write_orchestration_records() {
-    let (_artifact_dir, weights_path) = fixture_support::build_runtime_model_artifact();
+    let (_artifact_dir, weights_path) = runtime_model_artifact::build_runtime_model_artifact();
     let manifest_path = weights_path
         .parent()
         .expect("artifact dir")
