@@ -32,7 +32,6 @@ tests/distributed_runtime_profile_schema.rs
 tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
 tests/distributed_tracing_correlation_contract.rs
-tests/distributed_world_rank_topology.rs
 tests/gpu_scheduler_lifecycle_message.rs
 tests/huggingface_publish_adapter.rs
 tests/infer_drift_baseline.rs
@@ -67,8 +66,6 @@ tests/profiling_provenance_receipt.rs
 tests/profiling_recipe_current_pointer.rs
 tests/promotion_orchestration.rs
 tests/readme_reference_split.rs
-tests/runtime_decision_record.rs
-tests/scheduler_preemption_and_colocation.rs
 tests/scheduler_runtime_simulation.rs
 tests/text_model_artifact_inference_contract.rs
 tests/text_pretraining_adapter.rs

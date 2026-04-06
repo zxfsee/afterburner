@@ -60,7 +60,6 @@ tests/profiling_hotspot_taxonomy.rs
 tests/profiling_provenance_evidence_bundle.rs
 tests/profiling_provenance_receipt.rs
 tests/readme_reference_split.rs
-tests/runtime_decision_record.rs
 tests/scheduler_runtime_simulation.rs
 tests/text_model_artifact_inference_contract.rs
 tests/text_pretraining_adapter.rs

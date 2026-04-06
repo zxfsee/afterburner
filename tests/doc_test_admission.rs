@@ -53,6 +53,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "distributed_runtime_fit_catalog.rs"
             | "runtime_platform_fit_catalog.rs"
             | "workload_boundary_fit_catalog.rs"
+            | "runtime_deployment_boundary_catalog.rs"
             | "contract_anchor_catalog.rs"
             | "cli_surface_catalog.rs"
             | "reference_doc_validation.rs"
