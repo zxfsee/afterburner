@@ -3,26 +3,21 @@ use std::path::{Path, PathBuf};
 
 use crate::queue_workflow_metadata::{
     QueueTextItem, QueueWorkflowMetadataError, extract_backtick_values, extract_marked_section,
-    first_todo_item, is_allowed_path, normalize_scope_path, normalized_marked_section_block,
-    rebuild_item_block, split_items_after_marker, split_marked_items,
+    first_todo_item, is_allowed_path, normalize_scope_path, rebuild_item_block,
+    split_items_after_marker, split_marked_items,
 };
 use crate::workflow_process::{
     WorkflowProcessError, jj_changed_paths_between, jj_commit_id, jj_optional_commit_id,
     run_binary_command, run_command, sibling_binary_path,
 };
 use crate::workflow_queue_snapshot_cli::QueueSnapshotCommand as Command;
-use sha2::{Digest, Sha256};
+use crate::workflow_queue_snapshot_lineage::{
+    QueueSnapshotLineageError, stamp_snapshot_files, verify_snapshot_files,
+};
 
 const TODO_START: &str = "## TODO";
-const TODO_END: &str = "## [Trunk]";
+const TRUNK_MARKER: &str = "## [Trunk]";
 const BACKLOG_ITEMS_START: &str = "## Items";
-const SNAPSHOT_PREFIX: &str = "<!-- queue-snapshot:";
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct QueueSnapshot {
-    todo_sha256: String,
-    parent_commit: String,
-}
 
 #[derive(Debug)]
 pub enum QueueSnapshotError {
@@ -56,6 +51,15 @@ impl From<WorkflowProcessError> for QueueSnapshotError {
     }
 }
 
+impl From<QueueSnapshotLineageError> for QueueSnapshotError {
+    fn from(value: QueueSnapshotLineageError) -> Self {
+        match value {
+            QueueSnapshotLineageError::Io(err) => Self::Io(err),
+            QueueSnapshotLineageError::Parse(msg) => Self::Parse(msg),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct TodoScope {
     title: String,
@@ -70,21 +74,27 @@ pub fn run(command: Command) -> Result<(), QueueSnapshotError> {
             cargo_toml,
             changelog,
             parent_commit,
-        } => stamp_snapshot(cargo_toml, changelog, parent_commit),
+        } => stamp_snapshot_files(&cargo_toml, &changelog, parent_commit).map_err(Into::into),
         Command::StampCurrentParent {
             cargo_toml,
             changelog,
             repo_root,
         } => {
             let parent_commit = jj_commit_id(&repo_root, "@-")?;
-            stamp_snapshot(cargo_toml, changelog, parent_commit)
+            stamp_snapshot_files(&cargo_toml, &changelog, parent_commit).map_err(Into::into)
         }
         Command::Verify {
             cargo_toml,
             changelog,
             parent_commit,
             previous_parent_commit,
-        } => verify_snapshot(cargo_toml, changelog, parent_commit, previous_parent_commit),
+        } => verify_snapshot_files(
+            &cargo_toml,
+            &changelog,
+            parent_commit,
+            previous_parent_commit,
+        )
+        .map_err(Into::into),
         Command::VerifyCurrentLineage {
             cargo_toml,
             changelog,
@@ -92,7 +102,13 @@ pub fn run(command: Command) -> Result<(), QueueSnapshotError> {
         } => {
             let parent_commit = jj_commit_id(&repo_root, "@-")?;
             let previous_parent_commit = jj_optional_commit_id(&repo_root, "@--")?;
-            verify_snapshot(cargo_toml, changelog, parent_commit, previous_parent_commit)
+            verify_snapshot_files(
+                &cargo_toml,
+                &changelog,
+                parent_commit,
+                previous_parent_commit,
+            )
+            .map_err(Into::into)
         }
         Command::CheckCompletionBoundary {
             cargo_toml,
@@ -113,57 +129,6 @@ pub fn run(command: Command) -> Result<(), QueueSnapshotError> {
             repair_stale_snapshot,
         } => execute_preflight(cargo_toml, changelog, repo_root, repair_stale_snapshot),
     }
-}
-
-fn stamp_snapshot(
-    cargo_toml: PathBuf,
-    changelog: PathBuf,
-    parent_commit: String,
-) -> Result<(), QueueSnapshotError> {
-    let cargo_text = fs::read_to_string(&cargo_toml)?;
-    let todo_block = normalized_todo_block(&cargo_text)?;
-    let snapshot = QueueSnapshot {
-        todo_sha256: sha256_hex(todo_block.as_bytes()),
-        parent_commit,
-    };
-    let changelog_text = fs::read_to_string(&changelog)?;
-    let updated = upsert_snapshot_comment(&changelog_text, &snapshot)?;
-    fs::write(&changelog, updated)?;
-    Ok(())
-}
-
-fn verify_snapshot(
-    cargo_toml: PathBuf,
-    changelog: PathBuf,
-    parent_commit: String,
-    previous_parent_commit: Option<String>,
-) -> Result<(), QueueSnapshotError> {
-    let cargo_text = fs::read_to_string(&cargo_toml)?;
-    let todo_block = normalized_todo_block(&cargo_text)?;
-    let expected_sha = sha256_hex(todo_block.as_bytes());
-    let changelog_text = fs::read_to_string(&changelog)?;
-    let snapshot = parse_snapshot_comment(&changelog_text)?;
-    if snapshot.todo_sha256 != expected_sha {
-        return Err(QueueSnapshotError::Parse(format!(
-            "queue snapshot hash mismatch: changelog has `{}`, current todo block is `{expected_sha}`",
-            snapshot.todo_sha256
-        )));
-    }
-    let matches_current_parent = snapshot.parent_commit == parent_commit;
-    let matches_previous_parent = previous_parent_commit
-        .as_deref()
-        .is_some_and(|previous| snapshot.parent_commit == previous);
-    if !matches_current_parent && !matches_previous_parent {
-        let accepted = previous_parent_commit
-            .as_ref()
-            .map(|previous| format!("`{parent_commit}` or `{previous}`"))
-            .unwrap_or_else(|| format!("`{parent_commit}`"));
-        return Err(QueueSnapshotError::Parse(format!(
-            "queue snapshot lineage is stale: changelog has `{}`, expected {accepted}\nrun `just queue-resume` to repair and continue, or `just queue-refresh` if you only want to refresh the queue snapshot",
-            snapshot.parent_commit
-        )));
-    }
-    Ok(())
 }
 
 fn check_completion_boundary(
@@ -315,9 +280,9 @@ fn execute_preflight(
     check_completion_boundary(cargo_toml.clone(), repo_root.clone())?;
     let parent_commit = jj_commit_id(&repo_root, "@-")?;
     let previous_parent_commit = jj_optional_commit_id(&repo_root, "@--")?;
-    verify_snapshot(
-        cargo_toml.clone(),
-        changelog.clone(),
+    verify_snapshot_files(
+        &cargo_toml,
+        &changelog,
         parent_commit,
         previous_parent_commit,
     )?;
@@ -389,18 +354,14 @@ fn refresh_queue_snapshot(
         .ok_or_else(|| QueueSnapshotError::Parse("changelog path is not utf8".into()))?;
     run_command(repo_root, "git-cliff", &["-o", changelog_str])?;
     let parent_commit = jj_commit_id(repo_root, "@-")?;
-    stamp_snapshot(
-        cargo_toml.to_path_buf(),
-        changelog.to_path_buf(),
-        parent_commit,
-    )?;
+    stamp_snapshot_files(cargo_toml, changelog, parent_commit)?;
     let backlog = repo_root.join("docs/backlog.md");
     check_top_runnable(cargo_toml.to_path_buf(), backlog)?;
     let previous_parent_commit = jj_optional_commit_id(repo_root, "@--")?;
     let current_parent_commit = jj_commit_id(repo_root, "@-")?;
-    verify_snapshot(
-        cargo_toml.to_path_buf(),
-        changelog.to_path_buf(),
+    verify_snapshot_files(
+        cargo_toml,
+        changelog,
         current_parent_commit,
         previous_parent_commit,
     )?;
@@ -408,16 +369,10 @@ fn refresh_queue_snapshot(
     Ok(())
 }
 
-fn normalized_todo_block(cargo_toml: &str) -> Result<String, QueueSnapshotError> {
-    normalized_marked_section_block(cargo_toml, TODO_START, TODO_END).map_err(|_| {
-        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-    })
-}
-
 fn split_todo_items(
     cargo_toml: &str,
 ) -> Result<(String, String, Vec<QueueTextItem>), QueueSnapshotError> {
-    split_marked_items(cargo_toml, TODO_START, TODO_END).map_err(|err| {
+    split_marked_items(cargo_toml, TODO_START, TRUNK_MARKER).map_err(|err| {
         QueueSnapshotError::Parse(match err {
             QueueWorkflowMetadataError::MissingMarkedSection { .. } => {
                 "Cargo.toml changelog template missing TODO section".into()
@@ -447,7 +402,7 @@ fn split_backlog_items(
 }
 
 fn todo_items(cargo_toml: &str) -> Result<Vec<QueueTextItem>, QueueSnapshotError> {
-    let section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+    let section = extract_marked_section(cargo_toml, TODO_START, TRUNK_MARKER).map_err(|_| {
         QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
     })?;
     crate::queue_workflow_metadata::parse_item_section(section, true).map_err(|err| match err {
@@ -481,9 +436,10 @@ fn first_runnable_backlog_item(
 }
 
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
-    let todo_section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
-        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-    })?;
+    let todo_section =
+        extract_marked_section(cargo_toml, TODO_START, TRUNK_MARKER).map_err(|_| {
+            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+        })?;
     let item = first_todo_item(todo_section).map_err(|_| {
         QueueSnapshotError::Parse("Cargo.toml TODO section does not contain any item".into())
     })?;
@@ -569,136 +525,4 @@ fn is_docs_family_shared_overlap_only(todo: &TodoScope, changed_paths: &[String]
             }
         })
     })
-}
-
-fn snapshot_comment(snapshot: &QueueSnapshot) -> String {
-    format!(
-        "<!-- queue-snapshot: todo_sha256={} parent_commit={} -->",
-        snapshot.todo_sha256, snapshot.parent_commit
-    )
-}
-
-fn upsert_snapshot_comment(
-    changelog: &str,
-    snapshot: &QueueSnapshot,
-) -> Result<String, QueueSnapshotError> {
-    let comment = snapshot_comment(snapshot);
-    if changelog.contains(SNAPSHOT_PREFIX) {
-        let mut lines: Vec<String> = Vec::new();
-        for line in changelog.lines() {
-            if line.trim_start().starts_with(SNAPSHOT_PREFIX) {
-                if matches!(lines.last(), Some(last) if !last.is_empty()) {
-                    lines.push(String::new());
-                }
-                lines.push(comment.clone());
-            } else {
-                lines.push(line.to_string());
-            }
-        }
-        return Ok(lines.join("\n"));
-    }
-
-    let marker = format!("\n{TODO_END}");
-    let pos = changelog.find(&marker).ok_or_else(|| {
-        QueueSnapshotError::Parse("CHANGELOG.md missing `## [Trunk]` marker".into())
-    })?;
-    let mut out = String::new();
-    out.push_str(&changelog[..pos]);
-    if !out.ends_with("\n\n") {
-        if !out.ends_with('\n') {
-            out.push('\n');
-        }
-        out.push('\n');
-    }
-    out.push_str(&comment);
-    out.push('\n');
-    out.push_str(&changelog[pos..]);
-    Ok(out)
-}
-
-fn parse_snapshot_comment(changelog: &str) -> Result<QueueSnapshot, QueueSnapshotError> {
-    let line = changelog
-        .lines()
-        .find(|line| line.trim_start().starts_with(SNAPSHOT_PREFIX))
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("CHANGELOG.md missing queue snapshot comment".into())
-        })?;
-
-    let trimmed = line
-        .trim()
-        .trim_start_matches("<!--")
-        .trim_end_matches("-->")
-        .trim();
-    let payload = trimmed
-        .strip_prefix("queue-snapshot:")
-        .ok_or_else(|| QueueSnapshotError::Parse("invalid queue snapshot comment prefix".into()))?
-        .trim();
-
-    let mut todo_sha256 = None::<String>;
-    let mut parent_commit = None::<String>;
-    for part in payload.split_whitespace() {
-        if let Some(value) = part.strip_prefix("todo_sha256=") {
-            todo_sha256 = Some(value.to_string());
-        } else if let Some(value) = part.strip_prefix("parent_commit=") {
-            parent_commit = Some(value.to_string());
-        }
-    }
-
-    Ok(QueueSnapshot {
-        todo_sha256: todo_sha256.ok_or_else(|| {
-            QueueSnapshotError::Parse("queue snapshot missing todo_sha256".into())
-        })?,
-        parent_commit: parent_commit.ok_or_else(|| {
-            QueueSnapshotError::Parse("queue snapshot missing parent_commit".into())
-        })?,
-    })
-}
-
-fn sha256_hex(bytes: &[u8]) -> String {
-    let digest = Sha256::digest(bytes);
-    format!("{digest:x}")
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{
-        QueueSnapshot, normalized_todo_block, parse_snapshot_comment, sha256_hex,
-        upsert_snapshot_comment,
-    };
-
-    #[test]
-    fn normalized_todo_block_extracts_only_active_horizon() {
-        let cargo = "prefix\n## TODO\n- a\n  - Goal: x  \n## [Trunk]\nrest";
-        let block = normalized_todo_block(cargo).expect("todo block");
-        assert_eq!(block, "- a\n  - Goal: x");
-    }
-
-    #[test]
-    fn upsert_snapshot_comment_inserts_and_replaces() {
-        let changelog = "# Changelog\n\n## TODO\n- a\n\n## [Trunk]\n";
-        let snapshot = QueueSnapshot {
-            todo_sha256: sha256_hex(b"todo"),
-            parent_commit: "abc123".to_string(),
-        };
-        let stamped = upsert_snapshot_comment(changelog, &snapshot).expect("stamp");
-        assert!(stamped.contains("queue-snapshot:"));
-        let replaced = upsert_snapshot_comment(
-            &stamped,
-            &QueueSnapshot {
-                todo_sha256: "def".to_string(),
-                parent_commit: "fed".to_string(),
-            },
-        )
-        .expect("replace");
-        assert!(replaced.contains("todo_sha256=def parent_commit=fed"));
-    }
-
-    #[test]
-    fn parse_snapshot_comment_reads_embedded_values() {
-        let changelog =
-            "# Changelog\n<!-- queue-snapshot: todo_sha256=abc parent_commit=def -->\n## [Trunk]\n";
-        let snapshot = parse_snapshot_comment(changelog).expect("snapshot");
-        assert_eq!(snapshot.todo_sha256, "abc");
-        assert_eq!(snapshot.parent_commit, "def");
-    }
 }
