@@ -3,6 +3,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
+use afterburner::queue_workflow_metadata::{
+    extract_backtick_values, extract_marked_section, first_todo_item, is_allowed_path,
+    normalize_candidate_path,
+};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 
@@ -772,99 +776,32 @@ fn validate_worktree_paths(
     validate_paths(lock, &filtered)
 }
 
-fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
-    allowed_paths.iter().any(|allowed| {
-        let allowed = normalize_scope_path(allowed);
-        if allowed.ends_with('/') {
-            candidate == allowed.trim_end_matches('/') || candidate.starts_with(&allowed)
-        } else {
-            candidate == allowed
-        }
-    })
-}
-
-fn normalize_scope_path(path: &str) -> String {
-    let mut normalized = path.replace('\\', "/");
-    while normalized.starts_with("./") {
-        normalized = normalized.trim_start_matches("./").to_string();
-    }
-    let is_dir = normalized.ends_with('/');
-    let normalized = normalized.trim_matches('/').to_string();
-    if is_dir && !normalized.is_empty() {
-        format!("{normalized}/")
-    } else {
-        normalized
-    }
-}
-
-fn normalize_candidate_path(path: &str) -> String {
-    let mut normalized = path.replace('\\', "/");
-    while normalized.starts_with("./") {
-        normalized = normalized.trim_start_matches("./").to_string();
-    }
-    normalized.trim_matches('/').to_string()
-}
-
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, ObjectiveLockError> {
-    let todo_section = cargo_toml
-        .split(TODO_START)
-        .nth(1)
-        .and_then(|rest| rest.split(TODO_END).next())
-        .ok_or_else(|| {
-            ObjectiveLockError::Parse("Cargo.toml changelog template missing TODO section".into())
-        })?;
-
-    let mut lines = todo_section.lines();
-    let title = lines
-        .by_ref()
-        .find_map(|line| {
-            line.strip_prefix("- ")
-                .map(|title| title.trim().to_string())
-        })
-        .ok_or_else(|| {
-            ObjectiveLockError::Parse("Cargo.toml TODO section does not contain any item".into())
-        })?;
-    let mut current_lines = Vec::new();
-    for line in lines {
-        if line.starts_with("- ") {
-            break;
-        }
-        current_lines.push(line.trim().to_string());
-    }
-    let scope_line = current_lines
+    let todo_section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+        ObjectiveLockError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })?;
+    let item = first_todo_item(todo_section).map_err(|_| {
+        ObjectiveLockError::Parse("Cargo.toml TODO section does not contain any item".into())
+    })?;
+    let scope_line = item
+        .lines
         .iter()
         .find(|line| line.contains("Scope:"))
-        .ok_or_else(|| ObjectiveLockError::Parse(format!("TODO `{title}` is missing `Scope:`")))?;
+        .ok_or_else(|| {
+            ObjectiveLockError::Parse(format!("TODO `{}` is missing `Scope:`", item.title))
+        })?;
     let scope = extract_backtick_values(scope_line);
     if scope.is_empty() {
         return Err(ObjectiveLockError::Parse(format!(
-            "TODO `{title}` must declare at least one backtick-quoted scope path"
+            "TODO `{}` must declare at least one backtick-quoted scope path",
+            item.title
         )));
     }
 
-    Ok(TodoScope { title, scope })
-}
-
-fn extract_backtick_values(line: &str) -> Vec<String> {
-    let mut values = Vec::new();
-    let mut current = String::new();
-    let mut in_tick = false;
-
-    for ch in line.chars() {
-        if ch == '`' {
-            if in_tick && !current.is_empty() {
-                values.push(normalize_scope_path(&current));
-                current.clear();
-            }
-            in_tick = !in_tick;
-            continue;
-        }
-        if in_tick {
-            current.push(ch);
-        }
-    }
-
-    values
+    Ok(TodoScope {
+        title: item.title,
+        scope,
+    })
 }
 
 fn jj_changed_paths(repo_root: &Path) -> Result<Vec<String>, ObjectiveLockError> {

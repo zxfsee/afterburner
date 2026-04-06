@@ -2,6 +2,10 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command as ProcessCommand;
 
+use afterburner::queue_workflow_metadata::{
+    extract_backtick_values, extract_marked_section, first_todo_item, is_allowed_path,
+    normalize_candidate_path, normalize_scope_path, normalized_marked_section_block,
+};
 use sha2::{Digest, Sha256};
 
 const TODO_START: &str = "## TODO";
@@ -836,16 +840,9 @@ where
 }
 
 fn normalized_todo_block(cargo_toml: &str) -> Result<String, QueueSnapshotError> {
-    let section = cargo_toml
-        .split(TODO_START)
-        .nth(1)
-        .and_then(|rest| rest.split(TODO_END).next())
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-        })?;
-
-    let normalized_lines = section.lines().map(str::trim_end).collect::<Vec<_>>();
-    Ok(normalized_lines.join("\n").trim().to_string())
+    normalized_marked_section_block(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })
 }
 
 fn split_todo_items(
@@ -883,13 +880,9 @@ fn split_backlog_items(
 }
 
 fn todo_items(cargo_toml: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
-    let section = cargo_toml
-        .split(TODO_START)
-        .nth(1)
-        .and_then(|rest| rest.split(TODO_END).next())
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-        })?;
+    let section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })?;
     parse_item_section(section, true)
 }
 
@@ -988,51 +981,38 @@ fn first_runnable_backlog_item(backlog: &PathBuf) -> Result<Option<TodoItem>, Qu
 }
 
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
-    let todo_section = cargo_toml
-        .split(TODO_START)
-        .nth(1)
-        .and_then(|rest| rest.split(TODO_END).next())
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-        })?;
-
-    let mut lines = todo_section.lines();
-    let title = lines
-        .by_ref()
-        .find_map(|line| {
-            line.strip_prefix("- ")
-                .map(|title| title.trim().to_string())
-        })
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse("Cargo.toml TODO section does not contain any item".into())
-        })?;
-    let mut current_lines = Vec::new();
-    for line in lines {
-        if line.starts_with("- ") {
-            break;
-        }
-        current_lines.push(line.trim().to_string());
-    }
-    let scope_line = current_lines
+    let todo_section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })?;
+    let item = first_todo_item(todo_section).map_err(|_| {
+        QueueSnapshotError::Parse("Cargo.toml TODO section does not contain any item".into())
+    })?;
+    let scope_line = item
+        .lines
         .iter()
         .find(|line| line.contains("Scope:"))
-        .ok_or_else(|| QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Scope:`")))?;
-    let boundary_line = current_lines
+        .ok_or_else(|| {
+            QueueSnapshotError::Parse(format!("TODO `{}` is missing `Scope:`", item.title))
+        })?;
+    let boundary_line = item
+        .lines
         .iter()
         .find(|line| line.contains("Boundary:"))
         .ok_or_else(|| {
-            QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Boundary:`"))
+            QueueSnapshotError::Parse(format!("TODO `{}` is missing `Boundary:`", item.title))
         })?;
-    let contracts_line = current_lines
+    let contracts_line = item
+        .lines
         .iter()
         .find(|line| line.contains("Contracts:"))
         .ok_or_else(|| {
-            QueueSnapshotError::Parse(format!("TODO `{title}` is missing `Contracts:`"))
+            QueueSnapshotError::Parse(format!("TODO `{}` is missing `Contracts:`", item.title))
         })?;
     let scope = extract_backtick_values(scope_line);
     if scope.is_empty() {
         return Err(QueueSnapshotError::Parse(format!(
-            "TODO `{title}` must declare at least one backtick-quoted scope path"
+            "TODO `{}` must declare at least one backtick-quoted scope path",
+            item.title
         )));
     }
     let boundary = extract_backtick_values(boundary_line)
@@ -1040,76 +1020,23 @@ fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, QueueSnapshotError> {
         .next()
         .ok_or_else(|| {
             QueueSnapshotError::Parse(format!(
-                "TODO `{title}` must declare one backtick-quoted boundary value"
+                "TODO `{}` must declare one backtick-quoted boundary value",
+                item.title
             ))
         })?;
     let contracts = extract_backtick_values(contracts_line);
     if contracts.is_empty() {
         return Err(QueueSnapshotError::Parse(format!(
-            "TODO `{title}` must declare at least one backtick-quoted contract value"
+            "TODO `{}` must declare at least one backtick-quoted contract value",
+            item.title
         )));
     }
 
     Ok(TodoScope {
-        title,
+        title: item.title,
         scope,
         boundary,
         contracts,
-    })
-}
-
-fn extract_backtick_values(line: &str) -> Vec<String> {
-    let mut values = Vec::new();
-    let mut current = String::new();
-    let mut in_tick = false;
-
-    for ch in line.chars() {
-        if ch == '`' {
-            if in_tick && !current.is_empty() {
-                values.push(normalize_scope_path(&current));
-                current.clear();
-            }
-            in_tick = !in_tick;
-            continue;
-        }
-        if in_tick {
-            current.push(ch);
-        }
-    }
-
-    values
-}
-
-fn normalize_scope_path(path: &str) -> String {
-    let mut normalized = path.replace('\\', "/");
-    while normalized.starts_with("./") {
-        normalized = normalized.trim_start_matches("./").to_string();
-    }
-    let is_dir = normalized.ends_with('/');
-    let normalized = normalized.trim_matches('/').to_string();
-    if is_dir && !normalized.is_empty() {
-        format!("{normalized}/")
-    } else {
-        normalized
-    }
-}
-
-fn normalize_candidate_path(path: &str) -> String {
-    let mut normalized = path.replace('\\', "/");
-    while normalized.starts_with("./") {
-        normalized = normalized.trim_start_matches("./").to_string();
-    }
-    normalized.trim_matches('/').to_string()
-}
-
-fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
-    allowed_paths.iter().any(|allowed| {
-        let allowed = normalize_scope_path(allowed);
-        if allowed.ends_with('/') {
-            candidate == allowed.trim_end_matches('/') || candidate.starts_with(&allowed)
-        } else {
-            candidate == allowed
-        }
     })
 }
 
