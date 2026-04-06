@@ -61,11 +61,11 @@ fn text_token_cache_contract_and_adapter_are_documented() {
 
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
-        architecture.contains("ADR-059"),
-        "architecture decisions index must link ADR-059"
+        architecture.contains("ADR-047"),
+        "architecture decisions index must link ADR-047"
     );
 
-    let adr = repo_file("docs/adr/059-macbook-text-pretraining-adapter.md");
+    let adr = repo_file("docs/adr/047-macbook-text-pretraining-strategy.md");
     for needle in [
         "afterburner train --task text",
         "text_token_cache.schema.json",
@@ -75,7 +75,7 @@ fn text_token_cache_contract_and_adapter_are_documented() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-059 must mention `{needle}` as part of the text adapter decision"
+            "ADR-047 must mention `{needle}` as part of the text-pretraining strategy"
         );
     }
 

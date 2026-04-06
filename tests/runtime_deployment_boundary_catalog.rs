@@ -84,7 +84,7 @@ fn deploy_rs_baseline_consumes_profile_contract() {
         "architecture must document the deploy-rs baseline"
     );
 
-    let adr = repo_file("docs/adr/010-deploy-rs-baseline.md");
+    let adr = repo_file("docs/adr/010-deployment-baseline-and-local-orchestration-substrate.md");
     assert!(
         adr.contains("deploy-rs"),
         "ADR-010 must describe the deploy-rs baseline"
@@ -92,6 +92,10 @@ fn deploy_rs_baseline_consumes_profile_contract() {
     assert!(
         adr.contains("activate.custom"),
         "ADR-010 must explain the custom activation choice"
+    );
+    assert!(
+        adr.contains("process-compose-flake"),
+        "ADR-010 must also capture the local orchestration substrate choice"
     );
 }
 

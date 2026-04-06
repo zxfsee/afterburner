@@ -298,7 +298,7 @@ auto-versioning, embedded serving) are intentionally absent.
     ADR-039, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
-    ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-051, ADR-052, and ADR-059.
+    ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-051, and ADR-052.
 
 ### Assumptions
 
@@ -315,7 +315,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-007: Async Runtime Decision](./docs/adr/007-async-runtime-decision.md)
 - [ADR-008: Deployment Target Profile](./docs/adr/008-deployment-target-profile.md)
 - [ADR-009: Artifact Rollout Ownership](./docs/adr/009-artifact-rollout-ownership.md)
-- [ADR-010: Deploy-rs Baseline](./docs/adr/010-deploy-rs-baseline.md)
+- [ADR-010: Deployment Baseline And Local Orchestration Substrate](./docs/adr/010-deployment-baseline-and-local-orchestration-substrate.md)
 - [ADR-011: Arrow/DataFusion/Ballista/Parquet Fit](./docs/adr/011-data-infra-fit.md)
 - [ADR-012: Training And Inference Runtime Backend Strategy](./docs/adr/012-runtime-backend-strategy.md)
 - [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)
@@ -347,11 +347,10 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
 - [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
 - [ADR-046: Single-Node GPU Lease And Systemd Adapter](./docs/adr/046-single-node-gpu-lease-systemd-adapter.md)
-- [ADR-047: MacBook Text Pretraining Fit](./docs/adr/047-macbook-text-pretraining-fit.md)
+- [ADR-047: MacBook Text Pretraining Strategy](./docs/adr/047-macbook-text-pretraining-strategy.md)
 - [ADR-049: FineWeb-Edu Source Adoption](./docs/adr/049-fineweb-edu-source-adoption.md)
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
-- [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-065: Gateway API Inference Extension Fit](./docs/adr/065-gateway-api-inference-extension-fit.md)
 - [ADR-051: Artifact Contract And Serialization Strategy](./docs/adr/051-artifact-contract-and-serialization-strategy.md)
@@ -359,5 +358,4 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-058: Distributed Runtime Benchmark Harness](./docs/adr/058-distributed-runtime-benchmark-harness.md)
-- [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

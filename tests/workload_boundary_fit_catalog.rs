@@ -84,7 +84,7 @@ fn macbook_text_pretraining_fit_is_documented() {
         architecture.contains("ADR-047"),
         "architecture decisions index must link ADR-047"
     );
-    let adr = repo_file("docs/adr/047-macbook-text-pretraining-fit.md");
+    let adr = repo_file("docs/adr/047-macbook-text-pretraining-strategy.md");
     for needle in [
         "decoder-only language model",
         "`50M` to `300M`",
@@ -96,7 +96,7 @@ fn macbook_text_pretraining_fit_is_documented() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-047 must mention `{needle}` as part of the workload envelope"
+            "ADR-047 must mention `{needle}` as part of the text-pretraining strategy"
         );
     }
 
