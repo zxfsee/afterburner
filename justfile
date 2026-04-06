@@ -332,8 +332,7 @@ dashboard:
 
 # validate workspace/core dependency boundaries
 workspace-gate:
-    cargo test --test workspace_dependency_gate
-    cargo test --test build_graph_guard
+    cargo test --test repo_structure_catalog
     cargo test -p afterburner-core
 
 # run training by default
@@ -373,11 +372,11 @@ test-queue-gates:
 
 # grouped deploy/workflow-family guards
 test-deploy-family:
-    cargo nextest run --locked --test deployment_verification_workflow_surface --test deployment_stack_workflow_surface --test deployment_utility_workflow_surface --test deployment_matrix_workflow_surface --test distributed_load_profile
+    cargo nextest run --locked --test deployment_verification_workflow_surface_catalog --test deployment_surface_catalog --test distributed_load_profile
 
 # grouped drift/workflow-family guards
 test-drift-family:
-    cargo nextest run --locked --test drift_workflow_surface --test infer_drift_receipt --test infer_drift_baseline --test infer_drift_baseline_approval --test infer_drift_baseline_refresh
+    cargo nextest run --locked --test workflow_family_surface_catalog --test infer_drift_receipt --test infer_drift_baseline --test infer_drift_baseline_approval --test infer_drift_baseline_refresh
 
 # regenerate CHANGELOG.md from git history
 changelog:
@@ -394,43 +393,43 @@ queue-snapshot-check:
     cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 workflow-surface-check-deployment-verification:
-    cargo nextest run --locked --test deployment_verification_workflow_surface
+    cargo nextest run --locked --test deployment_verification_workflow_surface_catalog
 
 workflow-surface-check-routing-orchestration:
-    cargo nextest run --locked --test routing_orchestration_semantic_regression --test cli_dispatch_decomposition --test routing_orchestration_workflow_surface
+    cargo nextest run --locked --test rollout_orchestration_catalog
 
 workflow-surface-check-scheduler-heartbeat:
-    cargo nextest run --locked --test scheduler_heartbeat_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-distributed-shard-lineage:
-    cargo nextest run --locked --test distributed_shard_lineage_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-pretraining-source:
-    cargo nextest run --locked --test pretraining_source_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-drift:
-    cargo nextest run --locked --test drift_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-cleanup:
-    cargo nextest run --locked --test cleanup_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-profiling:
-    cargo nextest run --locked --test profiling_workflow_surface
+    cargo nextest run --locked --test workflow_family_surface_catalog
 
 workflow-surface-check-deployment-stack:
-    cargo nextest run --locked --test deployment_stack_workflow_surface
+    cargo nextest run --locked --test deployment_surface_catalog
 
 workflow-surface-check-deployment-utility:
-    cargo nextest run --locked --test deployment_utility_workflow_surface
+    cargo nextest run --locked --test deployment_surface_catalog
 
 workflow-surface-check-deployment-matrix:
-    cargo nextest run --locked --test deployment_matrix_workflow_surface
+    cargo nextest run --locked --test deployment_surface_catalog
 
 workflow-surface-check-public-cli:
-    cargo nextest run --locked --test public_cli_admission_gate
+    cargo nextest run --locked --test cli_surface_catalog
 
 workflow-surface-check-operator-grammar:
-    cargo nextest run --locked --test operator_grammar_gate
+    cargo nextest run --locked --test cli_surface_catalog
 
 workflow-surface-check-justfile-thinness:
     cargo nextest run --locked --test justfile_thinness_gate
