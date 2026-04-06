@@ -5,85 +5,29 @@ use afterburner::RUNTIME_SUPPORTED_BACKENDS;
 use repo_test_support::repo_file;
 
 #[test]
-fn cubecl_fit_decision_is_documented() {
+fn runtime_backend_strategy_is_documented_and_registered() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
         architecture.contains("ADR-012"),
         "architecture decisions index must link ADR-012"
     );
 
-    let adr = repo_file("docs/adr/012-cubecl-fit.md");
-    assert!(
-        adr.contains("CubeCL"),
-        "ADR-012 must describe the CubeCL decision"
-    );
-    assert!(
-        adr.contains("CubeK"),
-        "ADR-012 must describe the CubeK decision"
-    );
-    assert!(
-        adr.contains("transitive"),
-        "ADR-012 must make the transitive-dependency stance explicit"
-    );
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("CubeCL"),
-        "reference index must mention the CubeCL fit stance"
-    );
-    assert!(
-        reference.contains("CubeK"),
-        "reference index must mention the CubeK fit stance"
-    );
-}
-
-#[test]
-fn cutile_backend_extension_fit_is_documented() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-057"),
-        "architecture decisions index must link ADR-057"
-    );
-
-    let adr = repo_file("docs/adr/057-cutile-backend-extension-fit.md");
+    let adr = repo_file("docs/adr/012-runtime-backend-strategy.md");
     for needle in [
-        "`cutile-rs`",
-        "CubeCL/CubeK",
-        "NVIDIA/CUDA-oriented",
-        "not the preferred current path",
-    ] {
-        assert!(
-            adr.contains(needle),
-            "ADR-057 must mention `{needle}` as part of the fit decision"
-        );
-    }
-
-    let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("later NVIDIA-specific backend-extension candidate"),
-        "reference index must mention the cutile-rs fit stance"
-    );
-}
-
-#[test]
-fn native_metal_backend_fit_is_documented_and_registered() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-040"),
-        "architecture decisions index must link ADR-040"
-    );
-
-    let adr = repo_file("docs/adr/040-native-metal-backend-fit.md");
-    for needle in [
-        "BACKEND=metal",
+        "Burn-aligned",
+        "BACKEND=cpu|wgpu|metal",
         "burn::backend::wgpu::Metal",
+        "`wgpu` as the default",
+        "CubeCL",
+        "CubeK",
+        "`cutile-rs`",
         "compiler feature matrix",
         "framework adapter registry",
-        "`wgpu` as the default",
+        "NVIDIA/CUDA",
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-040 must mention `{needle}` as part of the Metal fit decision"
+            "ADR-012 must mention `{needle}` as part of the runtime backend strategy"
         );
     }
 
@@ -109,6 +53,18 @@ fn native_metal_backend_fit_is_documented_and_registered() {
     assert!(
         supported.contains(&"metal"),
         "runtime_supported_backends must include metal"
+    );
+    assert!(
+        reference.contains("CubeCL"),
+        "reference index must mention the CubeCL fit stance"
+    );
+    assert!(
+        reference.contains("CubeK"),
+        "reference index must mention the CubeK fit stance"
+    );
+    assert!(
+        reference.contains("later NVIDIA-specific backend-extension candidate"),
+        "reference index must mention the cutile-rs fit stance"
     );
 }
 

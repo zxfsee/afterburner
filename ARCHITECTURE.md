@@ -292,7 +292,7 @@ auto-versioning, embedded serving) are intentionally absent.
 - Profiling and observability fits:
   - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037.
 - Backend and optimization fits:
-  - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-040, ADR-053, ADR-057,
+  - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-053,
     ADR-060, and ADR-063.
 - Distributed runtime and lineage fits:
   - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-035, ADR-038,
@@ -318,7 +318,7 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-009: Artifact Rollout Ownership](./docs/adr/009-artifact-rollout-ownership.md)
 - [ADR-010: Deploy-rs Baseline](./docs/adr/010-deploy-rs-baseline.md)
 - [ADR-011: Arrow/DataFusion/Ballista/Parquet Fit](./docs/adr/011-data-infra-fit.md)
-- [ADR-012: CubeCL/CubeK Fit](./docs/adr/012-cubecl-fit.md)
+- [ADR-012: Training And Inference Runtime Backend Strategy](./docs/adr/012-runtime-backend-strategy.md)
 - [ADR-013: RL Environment Fit](./docs/adr/013-rl-environment-fit.md)
 - [ADR-014: Artifact Upload Adapter Contract](./docs/adr/014-artifact-upload-adapter.md)
 - [ADR-015: Multibillion-Scale Target Envelope](./docs/adr/015-multibillion-target-envelope.md)
@@ -346,7 +346,6 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)
 - [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
-- [ADR-040: Native Metal Backend Fit](./docs/adr/040-native-metal-backend-fit.md)
 - [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
 - [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md)
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
@@ -369,6 +368,5 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-058: Distributed Runtime Benchmark Harness](./docs/adr/058-distributed-runtime-benchmark-harness.md)
 - [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
-- [ADR-057: `cutile-rs` Backend Extension Fit](./docs/adr/057-cutile-backend-extension-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

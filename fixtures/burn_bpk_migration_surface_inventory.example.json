@@ -56,7 +56,7 @@
       ]
     },
     {
-      "path": "docs/adr/040-native-metal-backend-fit.md",
+      "path": "docs/adr/012-runtime-backend-strategy.md",
       "tags": [
         "burn_current_version"
       ]
