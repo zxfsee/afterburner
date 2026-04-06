@@ -1,10 +1,7 @@
-#[allow(dead_code)]
-#[path = "../src/cmd_infer.rs"]
-mod cmd_infer;
-
 #[path = "support/repo.rs"]
 mod repo_test_support;
 
+use afterburner::RUNTIME_SUPPORTED_BACKENDS;
 use repo_test_support::repo_file;
 
 #[test]
@@ -108,7 +105,7 @@ fn native_metal_backend_fit_is_documented_and_registered() {
         "framework adapter registry fixture must declare the metal adapter"
     );
 
-    let supported = cmd_infer::runtime_supported_backends();
+    let supported = RUNTIME_SUPPORTED_BACKENDS;
     assert!(
         supported.contains(&"metal"),
         "runtime_supported_backends must include metal"

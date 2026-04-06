@@ -3,6 +3,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+use afterburner::RUNTIME_SUPPORTED_BACKENDS;
 use afterburner::infer::{
     CalibrationMetadata, CalibrationMetadataLoadError, InferError,
     ensure_calibration_metadata_compatible, load_calibration_metadata, load_model,
@@ -27,7 +28,6 @@ type CpuBackend = NdArray<f32>;
 const BACKEND_CPU: &str = "cpu";
 const BACKEND_METAL: &str = "metal";
 const BACKEND_WGPU: &str = "wgpu";
-const RUNTIME_SUPPORTED_BACKENDS: [&str; 3] = [BACKEND_CPU, BACKEND_WGPU, BACKEND_METAL];
 const INFER_OUTPUT_DRIFT_SUMMARY_PATH: &str = "artifacts/eval/infer_output_drift_summary.json";
 
 const ADAPTER_REGISTRY_SCHEMA_FIXTURE: &str =
@@ -191,7 +191,7 @@ pub(crate) fn resolve_backend() -> String {
 }
 
 pub(crate) fn runtime_supported_backends() -> &'static [&'static str] {
-    &RUNTIME_SUPPORTED_BACKENDS
+    RUNTIME_SUPPORTED_BACKENDS
 }
 
 fn load_artifact_manifest(weights_path: &Path) -> Result<ArtifactManifest, InferError> {
