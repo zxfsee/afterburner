@@ -4,44 +4,7 @@ mod repo_test_support;
 use repo_test_support::repo_file;
 
 #[test]
-fn distributed_runtime_capability_surface_is_documented() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-041"),
-        "architecture decisions index must link ADR-041"
-    );
-    let adr = repo_file("docs/adr/041-distributed-runtime-capability-surface.md");
-    for needle in [
-        "single-device execution only",
-        "data parallel execution",
-        "ZeRO-1/2/3",
-        "tensor parallelism",
-        "pipeline parallelism",
-        "sequence/context parallelism",
-        "expert parallelism",
-    ] {
-        assert!(
-            adr.contains(needle),
-            "ADR-041 must mention `{needle}` as part of the capability surface decision"
-        );
-    }
-
-    let reference = repo_file("docs/reference.md");
-    for needle in [
-        "single-device execution",
-        "First candidate expansion: DP",
-        "ZeRO-1/2/3",
-        "TP/PP/SP-CP/EP",
-    ] {
-        assert!(
-            reference.contains(needle),
-            "reference index must document the current capability surface `{needle}`"
-        );
-    }
-}
-
-#[test]
-fn distributed_runtime_scheduler_platform_separation_is_documented() {
+fn distributed_runtime_growth_model_and_boundaries_are_documented() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
         architecture.contains("ADR-034"),
@@ -61,7 +24,7 @@ fn distributed_runtime_scheduler_platform_separation_is_documented() {
         );
     }
 
-    let adr = repo_file("docs/adr/034-distributed-runtime-scheduler-platform-separation.md");
+    let adr = repo_file("docs/adr/034-distributed-runtime-growth-model-and-boundaries.md");
     for needle in [
         "distributed training runtime",
         "GPU scheduler / allocator",
@@ -73,26 +36,39 @@ fn distributed_runtime_scheduler_platform_separation_is_documented() {
         "`CHECKPOINTED`",
         "`FAILED`",
         "`HEARTBEAT`",
+        "capability-subset work",
+        "framework-parity work",
+        "DeepSpeed-class systems",
+        "worker_parallelism",
+        "single-device execution only",
+        "data parallel execution",
+        "ZeRO-1/2/3",
+        "tensor parallelism",
+        "pipeline parallelism",
+        "sequence/context parallelism",
+        "expert parallelism",
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-034 must mention `{needle}` as part of the layer separation decision"
+            "ADR-034 must mention `{needle}` as part of the distributed runtime growth decision"
         );
     }
 
     let reference = repo_file("docs/reference.md");
+    for needle in [
+        "single-device execution",
+        "First candidate expansion: DP",
+        "ZeRO-1/2/3",
+        "TP/PP/SP-CP/EP",
+    ] {
+        assert!(
+            reference.contains(needle),
+            "reference index must document the current capability surface `{needle}`"
+        );
+    }
     assert!(
         reference.contains("Scheduler/control plane keeps the lifecycle boundary explicit"),
         "reference index must mention the scheduler/runtime/platform separation"
-    );
-}
-
-#[test]
-fn distributed_training_capability_subset_scope_is_documented() {
-    let architecture = repo_file("ARCHITECTURE.md");
-    assert!(
-        architecture.contains("ADR-035"),
-        "architecture decisions index must link ADR-035"
     );
     for needle in [
         "capability-subset work",
@@ -105,31 +81,45 @@ fn distributed_training_capability_subset_scope_is_documented() {
             "architecture must mention `{needle}` as part of the distributed-training scope rule"
         );
     }
+    assert!(
+        reference.contains("minimum useful capability subset"),
+        "reference index must mention the workload-driven distributed-training subset stance"
+    );
+}
 
-    let adr = repo_file("docs/adr/035-distributed-training-capability-subset-scope.md");
+#[test]
+fn distributed_runtime_growth_model_documents_burn_strategy_alignment() {
+    let architecture = repo_file("ARCHITECTURE.md");
+    assert!(
+        architecture.contains("ADR-034"),
+        "architecture decisions index must link ADR-034"
+    );
+    let adr = repo_file("docs/adr/034-distributed-runtime-growth-model-and-boundaries.md");
     for needle in [
-        "capability-subset work",
-        "framework-parity work",
-        "DeepSpeed-class systems",
-        "Phase 1",
-        "Phase 2",
-        "Phase 3",
-        "DP",
-        "ZeRO-1",
+        "worker_parallelism",
+        "Burn-aligned",
+        "data parallel execution",
+        "first distributed expansion target: `DP`",
+        "ZeRO",
         "TP",
         "PP",
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-035 must mention `{needle}` as part of the subset-scope decision"
+            "ADR-034 must mention `{needle}` as part of the distributed runtime growth decision"
         );
     }
 
     let reference = repo_file("docs/reference.md");
-    assert!(
-        reference.contains("minimum useful capability subset"),
-        "reference index must mention the workload-driven distributed-training subset stance"
-    );
+    for needle in [
+        "worker_parallelism",
+        "Distributed runtime remains workload-driven DP-first growth",
+    ] {
+        assert!(
+            reference.contains(needle),
+            "reference index must document the Burn distributed-learning stance `{needle}`"
+        );
+    }
 }
 
 #[test]

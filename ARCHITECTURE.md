@@ -295,8 +295,8 @@ auto-versioning, embedded serving) are intentionally absent.
   - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-053,
     ADR-060, and ADR-063.
 - Distributed runtime and lineage fits:
-  - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-035, ADR-038,
-    ADR-039, ADR-041, ADR-043, ADR-054, ADR-058, and ADR-061.
+  - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-034,
+    ADR-039, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
     ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-052, and ADR-059.
@@ -340,13 +340,10 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-031: Pretraining Source Provenance Receipt](./docs/adr/031-pretraining-source-provenance-receipt.md)
 - [ADR-032: Distributed Shard Lineage Evidence Provenance](./docs/adr/032-distributed-shard-lineage-evidence-provenance.md)
 - [ADR-033: Burn Dependency Refresh](./docs/adr/033-burn-dependency-refresh.md)
-- [ADR-034: Distributed Runtime, Scheduler, And Platform Separation](./docs/adr/034-distributed-runtime-scheduler-platform-separation.md)
-- [ADR-035: Distributed Training Capability Subset Scope](./docs/adr/035-distributed-training-capability-subset-scope.md)
+- [ADR-034: Distributed Runtime Growth Model And Boundaries](./docs/adr/034-distributed-runtime-growth-model-and-boundaries.md)
 - [ADR-036: Deployment Stack Contract](./docs/adr/036-deployment-stack-contract.md)
 - [ADR-037: Distributed Tracing Correlation Contract](./docs/adr/037-distributed-tracing-correlation-contract.md)
-- [ADR-038: Burn Distributed Learning Strategy Fit](./docs/adr/038-burn-distributed-learning-strategy-fit.md)
 - [ADR-039: Distributed World And Rank Topology](./docs/adr/039-distributed-world-rank-topology.md)
-- [ADR-041: Distributed Runtime Capability Surface](./docs/adr/041-distributed-runtime-capability-surface.md)
 - [ADR-043: Distributed Runtime Profile Schema](./docs/adr/043-distributed-runtime-profile-schema.md)
 - [ADR-042: Scheduler Preemption And Colocation](./docs/adr/042-scheduler-preemption-and-colocation.md)
 - [ADR-045: GPU Scheduler Boundary And Lifecycle](./docs/adr/045-gpu-scheduler-boundary-and-lifecycle.md)
