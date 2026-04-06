@@ -28,12 +28,6 @@ impl std::fmt::Display for QueueWorkflowMetadataError {
 impl std::error::Error for QueueWorkflowMetadataError {}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct FirstTodoItem {
-    pub title: String,
-    pub lines: Vec<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct QueueTextItem {
     pub title: String,
     pub lines: Vec<String>,
@@ -64,7 +58,7 @@ pub fn normalized_marked_section_block(
     Ok(normalized_lines.join("\n").trim().to_string())
 }
 
-pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, QueueWorkflowMetadataError> {
+pub fn first_todo_item(section: &str) -> Result<QueueTextItem, QueueWorkflowMetadataError> {
     let mut lines = section.lines();
     let title = lines
         .by_ref()
@@ -80,9 +74,15 @@ pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, QueueWorkflowMeta
         }
         current_lines.push(line.trim().to_string());
     }
-    Ok(FirstTodoItem {
+    let blocked_by = current_lines.iter().find_map(|line| {
+        line.trim()
+            .strip_prefix("- Blocked-by:")
+            .map(|value| value.trim().to_string())
+    });
+    Ok(QueueTextItem {
         title,
         lines: current_lines,
+        blocked_by,
     })
 }
 
