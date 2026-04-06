@@ -38,12 +38,10 @@ fn brittle_doc_policing(text: &str) -> bool {
 fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
     matches!(
         file_name,
-        "readme_frontpage.rs"
+        "docs_surface_catalog.rs"
             | "readme_reference_split.rs"
             | "workflow_reference.rs"
             | "canonical_just_surface.rs"
-            | "architecture_reference_ownership.rs"
-            | "docs_ownership_separation.rs"
             | "deployment_verification_workflow_surface.rs"
             | "deployment_verification_workflow_surface_catalog.rs"
             | "deployment_verification_receipt.rs"

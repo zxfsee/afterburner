@@ -30,7 +30,6 @@ tests/distributed_runtime_layout_feasibility.rs
 tests/distributed_runtime_profile_schema.rs
 tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
-tests/docs_ownership_separation.rs
 tests/huggingface_publish_adapter.rs
 tests/infer_drift_baseline.rs
 tests/infer_drift_baseline_approval.rs
@@ -61,7 +60,6 @@ tests/profiling_environment_snapshot_refresh.rs
 tests/profiling_hotspot_taxonomy.rs
 tests/profiling_provenance_evidence_bundle.rs
 tests/profiling_provenance_receipt.rs
-tests/readme_frontpage.rs
 tests/readme_reference_split.rs
 tests/runtime_decision_record.rs
 tests/scheduler_runtime_simulation.rs

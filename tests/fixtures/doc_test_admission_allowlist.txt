@@ -1,4 +1,3 @@
-tests/architecture_reference_ownership.rs
 tests/artifact_cleanup_dry_run_receipt.rs
 tests/artifact_cleanup_evidence_bundle.rs
 tests/artifact_cleanup_execution_receipt.rs
@@ -35,7 +34,6 @@ tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
 tests/distributed_tracing_correlation_contract.rs
 tests/distributed_world_rank_topology.rs
-tests/docs_ownership_separation.rs
 tests/gpu_scheduler_lifecycle_message.rs
 tests/huggingface_publish_adapter.rs
 tests/infer_drift_baseline.rs
