@@ -17,6 +17,7 @@ pub mod text_pretrain;
 pub mod train;
 pub mod workflow_objective_lock_cli;
 pub mod workflow_objective_lock_core;
+mod workflow_objective_lock_state;
 pub mod workflow_process;
 pub mod workflow_queue_snapshot_cli;
 pub mod workflow_queue_snapshot_core;
