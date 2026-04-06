@@ -4,8 +4,9 @@ use std::collections::BTreeSet;
 use std::fs;
 use std::io::{ErrorKind, Read, Write};
 use std::net::TcpListener;
+use std::sync::mpsc;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use assert_cmd::cargo::cargo_bin_cmd;
 use serde_json::Value;
@@ -18,27 +19,41 @@ mod repo_test_support;
 use fixture_test_support::fixture_path;
 use repo_test_support::repo_file;
 
-fn reserve_port() -> Option<u16> {
+fn start_stub_server(
+    expected_requests: usize,
+    timeout: Duration,
+) -> Option<(u16, thread::JoinHandle<()>)> {
     let listener = match TcpListener::bind("127.0.0.1:0") {
         Ok(listener) => listener,
         Err(err) if err.kind() == ErrorKind::PermissionDenied => return None,
         Err(err) => panic!("bind ephemeral port: {err}"),
     };
     let port = listener.local_addr().expect("listener addr").port();
-    drop(listener);
-    Some(port)
-}
-
-fn start_stub_server(port: u16, expected_requests: usize) -> thread::JoinHandle<()> {
-    thread::spawn(move || {
-        let listener = TcpListener::bind(("127.0.0.1", port)).expect("bind stub server");
+    let (ready_tx, ready_rx) = mpsc::channel();
+    let handle = thread::spawn(move || {
+        listener
+            .set_nonblocking(true)
+            .expect("set nonblocking listener");
+        ready_tx.send(()).expect("send stub-server ready signal");
         let response_body = br#"{"batch_size":1,"logits":[]}"#;
         let response = format!(
             "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nConnection: close\r\nContent-Length: {}\r\n\r\n",
             response_body.len()
         );
-        for _ in 0..expected_requests {
-            let (mut stream, _) = listener.accept().expect("accept client");
+        let deadline = Instant::now() + timeout;
+        let mut served = 0usize;
+        while served < expected_requests {
+            if Instant::now() >= deadline {
+                panic!("stub server timed out after serving {served}/{expected_requests} requests");
+            }
+            let (mut stream, _) = match listener.accept() {
+                Ok(pair) => pair,
+                Err(err) if err.kind() == ErrorKind::WouldBlock => {
+                    thread::sleep(Duration::from_millis(10));
+                    continue;
+                }
+                Err(err) => panic!("accept client: {err}"),
+            };
             let mut buf = [0u8; 4096];
             let _ = stream.read(&mut buf).expect("read request");
             thread::sleep(Duration::from_millis(10));
@@ -49,8 +64,13 @@ fn start_stub_server(port: u16, expected_requests: usize) -> thread::JoinHandle<
                 .write_all(response_body)
                 .expect("write response body");
             stream.flush().expect("flush response");
+            served += 1;
         }
-    })
+    });
+    ready_rx
+        .recv_timeout(timeout)
+        .expect("receive stub-server ready signal within timeout");
+    Some((port, handle))
 }
 
 #[test]
@@ -122,10 +142,9 @@ fn distributed_load_profile_schema_and_workflow_are_explicit() {
 
 #[test]
 fn distributed_load_profile_writes_profile_and_event() {
-    let Some(port) = reserve_port() else {
+    let Some((port, server)) = start_stub_server(6, Duration::from_secs(5)) else {
         return;
     };
-    let _server = start_stub_server(port, 6);
     let out_dir = tempfile::tempdir().expect("tempdir");
     let out = out_dir.path().join("distributed_load_profile.json");
 
@@ -246,6 +265,7 @@ fn distributed_load_profile_writes_profile_and_event() {
         fields.get("trace_id").and_then(Value::as_str),
         object.get("trace_id").and_then(Value::as_str)
     );
+    server.join().expect("join stub server thread");
 }
 
 fn stderr_event(stderr: &str, event_name: &str) -> Value {

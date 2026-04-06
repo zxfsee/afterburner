@@ -359,6 +359,26 @@ test:
 test-cargo:
     cargo test
 
+# fast compile-only smoke for integration tests after broad helper/layout changes
+test-compile-smoke:
+    cargo test --tests --locked --no-run --quiet
+
+# grouped docs/reference validators
+test-doc-gates:
+    cargo nextest run --locked --test doc_test_admission --test readme_reference_split --test reference_doc_validation --test workflow_reference
+
+# grouped queue/workflow guards
+test-queue-gates:
+    cargo nextest run --locked --test objective_lock --test queue_snapshot --test developer_workflows
+
+# grouped deploy/workflow-family guards
+test-deploy-family:
+    cargo nextest run --locked --test deployment_verification_workflow_surface --test deployment_stack_workflow_surface --test deployment_utility_workflow_surface --test deployment_matrix_workflow_surface --test distributed_load_profile
+
+# grouped drift/workflow-family guards
+test-drift-family:
+    cargo nextest run --locked --test drift_workflow_surface --test infer_drift_receipt --test infer_drift_baseline --test infer_drift_baseline_approval --test infer_drift_baseline_refresh
+
 # regenerate CHANGELOG.md from git history
 changelog:
     cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md

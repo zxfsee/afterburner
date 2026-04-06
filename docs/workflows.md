@@ -57,6 +57,11 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 ## Validation and hygiene
 
 - `just workspace-gate` validates the workspace/core dependency boundaries.
+- `just test-compile-smoke` is the compile-only integration-test smoke path for broad helper/layout changes.
+- `just test-doc-gates` runs the shared docs/reference validators.
+- `just test-queue-gates` runs the queue/objective-lock workflow guards.
+- `just test-deploy-family` runs the grouped deploy-family workflow guards.
+- `just test-drift-family` runs the grouped drift-family workflow guards.
 - `just objective-lock-pin-execute-top-item` verifies the queue snapshot, then pins the current top TODO scope into `.git/afterburner/objective-lock.json` before implementation work starts.
 - `just objective-lock-pin-top-scope-fix` pins the narrow metadata-repair objective that allows only `Cargo.toml` and `CHANGELOG.md`.
 - `just objective-lock-pin-queue`, `just objective-lock-pin-backlog`, `just objective-lock-pin-docs`, and `just objective-lock-pin-review` pin the non-execution objective classes before queue, backlog, docs, or review-only passes.
