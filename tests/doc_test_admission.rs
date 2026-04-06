@@ -56,6 +56,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "deployment_utility_workflow_surface.rs"
             | "cleanup_workflow_surface.rs"
             | "drift_workflow_surface.rs"
+            | "format_dependency_fit_catalog.rs"
             | "profiling_workflow_surface.rs"
             | "distributed_shard_lineage_workflow_surface.rs"
             | "distributed_runtime_fit_catalog.rs"
