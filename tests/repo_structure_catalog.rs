@@ -17,6 +17,69 @@ fn collect_rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
 }
 
 #[test]
+fn train_module_is_split_into_responsibility_files() {
+    let repo = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+
+    assert!(
+        !repo.join("src/train.rs").exists(),
+        "legacy src/train.rs should be removed once train responsibilities are split"
+    );
+
+    for path in [
+        "src/train/mod.rs",
+        "src/train/runtime.rs",
+        "src/train/artifacts.rs",
+        "src/train/distributed_metadata.rs",
+        "src/train/observability.rs",
+        "src/train/contracts.rs",
+    ] {
+        assert!(
+            repo.join(path).is_file(),
+            "missing split train module file `{path}`"
+        );
+    }
+
+    let architecture = fs::read_to_string(repo.join("ARCHITECTURE.md"))
+        .unwrap_or_else(|err| panic!("read ARCHITECTURE.md: {err}"));
+    assert!(
+        architecture.contains("train module should stay split by responsibility"),
+        "architecture must mention the split train-module responsibility rule"
+    );
+}
+
+#[test]
+fn workspace_declares_core_crate_and_adapter_dependency_gate() {
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let root_manifest =
+        fs::read_to_string(repo_root.join("Cargo.toml")).expect("read root Cargo.toml");
+    assert!(
+        root_manifest.contains("[workspace]"),
+        "root manifest must declare a cargo workspace"
+    );
+    assert!(
+        root_manifest.contains("afterburner-core = { path = \"crates/afterburner-core\" }"),
+        "root manifest must depend on the core crate via path dependency"
+    );
+
+    let core_manifest_path = repo_root
+        .join("crates")
+        .join("afterburner-core")
+        .join("Cargo.toml");
+    let core_manifest =
+        fs::read_to_string(&core_manifest_path).expect("read crates/afterburner-core/Cargo.toml");
+    assert!(
+        core_manifest.contains("name = \"afterburner-core\""),
+        "core crate manifest must declare the afterburner-core package"
+    );
+    for forbidden in ["tiny_http", "ctrlc", "ratatui"] {
+        assert!(
+            !core_manifest.contains(forbidden),
+            "core crate manifest must not depend on adapter-only crate `{forbidden}`"
+        );
+    }
+}
+
+#[test]
 fn core_crate_does_not_depend_on_transport_only_crates() {
     let core_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("crates")
