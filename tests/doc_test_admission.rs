@@ -62,6 +62,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "distributed_runtime_fit_catalog.rs"
             | "pretraining_source_workflow_surface.rs"
             | "runtime_platform_fit_catalog.rs"
+            | "workload_boundary_fit_catalog.rs"
             | "contract_anchor_catalog.rs"
             | "operator_grammar_gate.rs"
             | "public_cli_admission_gate.rs"

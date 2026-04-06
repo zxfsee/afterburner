@@ -31,8 +31,6 @@ tests/distributed_runtime_profile_schema.rs
 tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
 tests/docs_ownership_separation.rs
-tests/fineweb_edu_source_adoption.rs
-tests/gateway_api_inference_extension_fit.rs
 tests/huggingface_publish_adapter.rs
 tests/infer_drift_baseline.rs
 tests/infer_drift_baseline_approval.rs
@@ -51,13 +49,10 @@ tests/kube_rs_gpu_lease_history.rs
 tests/kube_rs_gpu_lease_pointer.rs
 tests/kube_rs_gpu_lease_reconciliation.rs
 tests/kube_rs_gpu_lease_reconciliation_history.rs
-tests/macbook_text_pretraining_fit.rs
 tests/model_optimization_profile.rs
-tests/multibillion_target_envelope.rs
 tests/optimized_model_capability_surface.rs
 tests/optimized_model_local_profile.rs
 tests/optimized_model_package_contract.rs
-tests/otel_profiling_fit.rs
 tests/pretraining_source_approval_receipt.rs
 tests/pretraining_source_provenance_evidence_bundle.rs
 tests/pretraining_source_provenance_receipt.rs
@@ -68,7 +63,6 @@ tests/profiling_provenance_evidence_bundle.rs
 tests/profiling_provenance_receipt.rs
 tests/readme_frontpage.rs
 tests/readme_reference_split.rs
-tests/rl_rollout_schema.rs
 tests/runtime_decision_record.rs
 tests/scheduler_runtime_simulation.rs
 tests/text_model_artifact_inference_contract.rs
