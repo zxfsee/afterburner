@@ -5,6 +5,7 @@ profile-infer-flamegraph := "artifacts/profiling/infer_flamegraph.svg"
 profile-infer-summary := "artifacts/profiling/infer_hotspot_summary.json"
 afterburner-deploy := "cargo run --locked --bin afterburner -- deploy"
 afterburner-debug-deploy := "cargo run --locked --bin afterburner -- debug deploy"
+afterburner_repo_workflow := "cargo run --locked -p afterburner-repo-workflow --bin"
 
 # build the project via nix (reproducible)
 build:
@@ -36,53 +37,53 @@ burn-bpk-migration-surface-report:
 
 # pin the current queue-maintenance objective before editing queue files
 objective-lock-pin-queue:
-    cargo run --locked --bin workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective queue-only --expected-action queue-refresh
 
 # pin the top-scope-repair objective before fixing stale top TODO scope metadata
 objective-lock-pin-top-scope-fix:
-    cargo run --locked --bin workflow_objective_lock -- pin --objective top-scope-fix --expected-action top-scope-fix
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective top-scope-fix --expected-action top-scope-fix
 
 # pin the current backlog-maintenance objective before editing docs/backlog.md
 objective-lock-pin-backlog:
-    cargo run --locked --bin workflow_objective_lock -- pin --objective backlog-only --expected-action backlog-edit
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective backlog-only --expected-action backlog-edit
 
 # pin the current docs-only objective before editing docs/reference surfaces
 objective-lock-pin-docs:
-    cargo run --locked --bin workflow_objective_lock -- pin --objective docs-only --expected-action docs-edit
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective docs-only --expected-action docs-edit
 
 # pin the current review-only objective; any repo mutation will fail the guard
 objective-lock-pin-review:
-    cargo run --locked --bin workflow_objective_lock -- pin --objective review-only --expected-action review-pass
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective review-only --expected-action review-pass
 
 # validate queue freshness, then pin the top active TODO scope as the current execute objective
 objective-lock-pin-execute-top-item:
-    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
-    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
-    cargo run --locked --bin workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- pin --objective execute-top-item --cargo-toml Cargo.toml --expected-action execute-top-item
 
 # verify current repo mutations against the active objective lock
 objective-lock-check-worktree action:
-    cargo run --locked --bin workflow_objective_lock -- check-worktree --action {{ action }}
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- check-worktree --action {{ action }}
 
 # detect if the current top TODO appears landed without queue advancement
 queue-completion-boundary-check:
-    cargo run --locked --bin workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- check-completion-boundary --cargo-toml Cargo.toml --repo-root .
 
 # fail if the current top active TODO is blocked and report the next runnable item
 queue-top-runnable-check:
-    cargo run --locked --bin workflow_queue_snapshot -- check-top-runnable --cargo-toml Cargo.toml
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- check-top-runnable --cargo-toml Cargo.toml
 
 # clear the current objective lock before switching objective classes
 objective-lock-clear:
-    cargo run --locked --bin workflow_objective_lock -- clear
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- clear
 
 # remove an aged stale repo metadata lock through the typed helper path
 repo-lock-repair stale_after_seconds='300':
-    cargo run --locked --bin workflow_objective_lock -- repair-repo-locks --repo-root . --stale-after-seconds {{ stale_after_seconds }}
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- repair-repo-locks --repo-root . --stale-after-seconds {{ stale_after_seconds }}
 
 # fail fast if the repo still carries a live metadata lock
 repo-lock-check:
-    cargo run --locked --bin workflow_objective_lock -- check-repo-locks --repo-root .
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- check-repo-locks --repo-root .
 
 # refresh the active queue through the canonical queue-only guarded path
 queue-refresh: repo-lock-repair repo-lock-check objective-lock-pin-queue changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear
@@ -91,21 +92,21 @@ queue-refresh: repo-lock-repair repo-lock-check objective-lock-pin-queue changel
 queue-fix-top-scope: repo-lock-repair repo-lock-check objective-lock-pin-top-scope-fix queue-top-scope-worktree-check changelog-top-scope-fix queue-top-runnable-check queue-snapshot-check objective-lock-clear
 
 queue-top-scope-worktree-check:
-    cargo run --locked --bin workflow_objective_lock -- check-worktree --action top-scope-fix
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- check-worktree --action top-scope-fix
 
 # promote the next runnable active TODO above a blocked top item through a queue-only repair path
 queue-promote-next-runnable: repo-lock-repair repo-lock-check objective-lock-pin-queue queue-promote-next-runnable-step changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear
 
 queue-promote-next-runnable-step:
-    cargo run --locked --bin workflow_queue_snapshot -- promote-next-runnable --cargo-toml Cargo.toml
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- promote-next-runnable --cargo-toml Cargo.toml
 
 # start top-item execution through the canonical execute-side guarded path
 queue-execute-preflight repair='':
-    cargo run --locked --bin workflow_queue_snapshot -- execute-preflight --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root . {{ repair }}
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- execute-preflight --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root . {{ repair }}
 
 # explicitly repair stale queue snapshot lineage and resume execute preflight
 queue-resume:
-    cargo run --locked --bin workflow_queue_snapshot -- execute-preflight --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root . --repair-stale-snapshot
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- execute-preflight --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root . --repair-stale-snapshot
 
 # format rust + toml + nix
 fmt:
@@ -368,7 +369,7 @@ test-doc-gates:
 
 # grouped queue/workflow guards
 test-queue-gates:
-    cargo nextest run --locked --test objective_lock --test queue_snapshot --test developer_workflows
+    cargo nextest run --locked -p afterburner-repo-workflow -p afterburner --test objective_lock --test queue_snapshot --test developer_workflows
 
 # grouped deploy/workflow-family guards
 test-deploy-family:
@@ -380,17 +381,17 @@ test-drift-family:
 
 # regenerate CHANGELOG.md from git history
 changelog:
-    cargo run --locked --bin workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- check-paths --action queue-refresh --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
-    cargo run --locked --bin workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 changelog-top-scope-fix:
-    cargo run --locked --bin workflow_objective_lock -- check-paths --action top-scope-fix --path CHANGELOG.md
+    {{ afterburner_repo_workflow }} workflow_objective_lock -- check-paths --action top-scope-fix --path CHANGELOG.md
     git-cliff -o CHANGELOG.md
-    cargo run --locked --bin workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- stamp-current-parent --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 queue-snapshot-check:
-    cargo run --locked --bin workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
+    {{ afterburner_repo_workflow }} workflow_queue_snapshot -- verify-current-lineage --cargo-toml Cargo.toml --changelog CHANGELOG.md --repo-root .
 
 workflow-surface-check-deployment-verification:
     cargo nextest run --locked --test deployment_verification_workflow_surface_catalog

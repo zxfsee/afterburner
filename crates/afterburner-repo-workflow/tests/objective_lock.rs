@@ -1,4 +1,4 @@
-#[path = "objective_lock_support.rs"]
+#[path = "support/objective_lock.rs"]
 mod objective_lock_support;
 
 #[path = "objective_lock_cases/carried_paths.rs"]

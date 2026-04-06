@@ -5,7 +5,7 @@ edition = "2024"
 license = "MIT"
 
 [workspace]
-members = [".", "crates/afterburner-core"]
+members = [".", "crates/afterburner-core", "crates/afterburner-repo-workflow"]
 resolver = "2"
 
 [package.metadata.git-cliff.changelog]

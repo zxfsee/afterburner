@@ -1,5 +1,5 @@
-use afterburner::workflow_queue_snapshot_cli::parse_args;
-use afterburner::workflow_queue_snapshot_core::run;
+use afterburner_repo_workflow::workflow_queue_snapshot_cli::parse_args;
+use afterburner_repo_workflow::workflow_queue_snapshot_core::run;
 
 fn main() {
     let code = match parse_args(std::env::args().skip(1)) {

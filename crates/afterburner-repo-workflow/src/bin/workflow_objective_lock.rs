@@ -1,7 +1,7 @@
 use std::fs;
 
-use afterburner::workflow_objective_lock_cli::{CommandSpec, parse_args};
-use afterburner::workflow_objective_lock_core::{
+use afterburner_repo_workflow::workflow_objective_lock_cli::{CommandSpec, parse_args};
+use afterburner_repo_workflow::workflow_objective_lock_core::{
     ObjectiveLockError, build_lock, check_repo_locks, jj_changed_paths, read_lock,
     repair_repo_locks, validate_action, validate_paths, validate_worktree_paths, write_lock,
 };

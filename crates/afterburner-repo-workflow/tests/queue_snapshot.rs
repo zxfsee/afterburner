@@ -1,4 +1,4 @@
-#[path = "queue_snapshot_support.rs"]
+#[path = "support/queue_snapshot.rs"]
 mod queue_snapshot_support;
 
 #[path = "queue_snapshot_cases/boundary.rs"]

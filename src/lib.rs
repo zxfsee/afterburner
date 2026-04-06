@@ -10,18 +10,9 @@ pub mod manifest;
 pub mod model;
 pub mod observability;
 pub mod profiling_summary;
-pub mod queue_workflow_metadata;
 pub mod rollout_current_pointer;
 pub mod scheduler_heartbeat_pointer_rollback_helpers;
 pub mod text_pretrain;
 pub mod train;
-pub mod workflow_objective_lock_cli;
-pub mod workflow_objective_lock_core;
-mod workflow_objective_lock_state;
-pub mod workflow_process;
-mod workflow_queue_order;
-pub mod workflow_queue_snapshot_cli;
-pub mod workflow_queue_snapshot_core;
-pub mod workflow_queue_snapshot_lineage;
 
 pub const RUNTIME_SUPPORTED_BACKENDS: &[&str] = &["cpu", "wgpu", "metal"];

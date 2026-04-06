@@ -1,0 +1,13 @@
+[package]
+name = "afterburner-repo-workflow"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+serde_json = "1.0"
+sha2 = "0.10"
+
+[dev-dependencies]
+assert_cmd = "2.1.1"
+tempfile = "3.23.0"
