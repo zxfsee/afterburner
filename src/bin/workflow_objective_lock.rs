@@ -4,8 +4,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use afterburner::queue_workflow_metadata::{
-    extract_backtick_values, extract_marked_section, first_todo_item, is_allowed_path,
-    normalize_candidate_path,
+    QueueWorkflowMetadataError, extract_backtick_values, extract_marked_section, first_todo_item,
+    is_allowed_path, normalize_candidate_path,
 };
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -777,11 +777,18 @@ fn validate_worktree_paths(
 }
 
 fn top_todo_scope(cargo_toml: &str) -> Result<TodoScope, ObjectiveLockError> {
-    let todo_section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
-        ObjectiveLockError::Parse("Cargo.toml changelog template missing TODO section".into())
-    })?;
-    let item = first_todo_item(todo_section).map_err(|_| {
-        ObjectiveLockError::Parse("Cargo.toml TODO section does not contain any item".into())
+    let todo_section =
+        extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|err| match err {
+            QueueWorkflowMetadataError::MissingMarkedSection { .. } => ObjectiveLockError::Parse(
+                "Cargo.toml changelog template missing TODO section".into(),
+            ),
+            other => ObjectiveLockError::Parse(other.to_string()),
+        })?;
+    let item = first_todo_item(todo_section).map_err(|err| match err {
+        QueueWorkflowMetadataError::MissingItem => {
+            ObjectiveLockError::Parse("Cargo.toml TODO section does not contain any item".into())
+        }
+        other => ObjectiveLockError::Parse(other.to_string()),
     })?;
     let scope_line = item
         .lines

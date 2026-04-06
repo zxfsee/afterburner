@@ -1,4 +1,33 @@
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub enum QueueWorkflowMetadataError {
+    MissingMarkedSection {
+        start_marker: String,
+        end_marker: String,
+    },
+    MissingMarker {
+        marker: String,
+    },
+    MissingItem,
+    MissingItemTitle,
+}
+
+impl std::fmt::Display for QueueWorkflowMetadataError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::MissingMarkedSection {
+                start_marker,
+                end_marker,
+            } => write!(f, "missing `{start_marker}`..`{end_marker}` section"),
+            Self::MissingMarker { marker } => write!(f, "missing `{marker}` marker"),
+            Self::MissingItem => write!(f, "TODO section does not contain any item"),
+            Self::MissingItemTitle => write!(f, "TODO item missing title"),
+        }
+    }
+}
+
+impl std::error::Error for QueueWorkflowMetadataError {}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FirstTodoItem {
     pub title: String,
     pub lines: Vec<String>,
@@ -15,24 +44,27 @@ pub fn extract_marked_section<'a>(
     text: &'a str,
     start_marker: &str,
     end_marker: &str,
-) -> Result<&'a str, String> {
+) -> Result<&'a str, QueueWorkflowMetadataError> {
     text.split(start_marker)
         .nth(1)
         .and_then(|rest| rest.split(end_marker).next())
-        .ok_or_else(|| format!("missing `{start_marker}`..`{end_marker}` section"))
+        .ok_or_else(|| QueueWorkflowMetadataError::MissingMarkedSection {
+            start_marker: start_marker.to_string(),
+            end_marker: end_marker.to_string(),
+        })
 }
 
 pub fn normalized_marked_section_block(
     text: &str,
     start_marker: &str,
     end_marker: &str,
-) -> Result<String, String> {
+) -> Result<String, QueueWorkflowMetadataError> {
     let section = extract_marked_section(text, start_marker, end_marker)?;
     let normalized_lines = section.lines().map(str::trim_end).collect::<Vec<_>>();
     Ok(normalized_lines.join("\n").trim().to_string())
 }
 
-pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, String> {
+pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, QueueWorkflowMetadataError> {
     let mut lines = section.lines();
     let title = lines
         .by_ref()
@@ -40,7 +72,7 @@ pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, String> {
             line.strip_prefix("- ")
                 .map(|title| title.trim().to_string())
         })
-        .ok_or_else(|| "TODO section does not contain any item".to_string())?;
+        .ok_or(QueueWorkflowMetadataError::MissingItem)?;
     let mut current_lines = Vec::new();
     for line in lines {
         if line.starts_with("- ") {
@@ -58,14 +90,19 @@ pub fn split_marked_items(
     text: &str,
     start_marker: &str,
     end_marker: &str,
-) -> Result<(String, String, Vec<QueueTextItem>), String> {
-    let start = text
-        .find(start_marker)
-        .ok_or_else(|| format!("missing `{start_marker}` section"))?;
+) -> Result<(String, String, Vec<QueueTextItem>), QueueWorkflowMetadataError> {
+    let start = text.find(start_marker).ok_or_else(|| {
+        QueueWorkflowMetadataError::MissingMarkedSection {
+            start_marker: start_marker.to_string(),
+            end_marker: end_marker.to_string(),
+        }
+    })?;
     let suffix_start = text[start..]
         .find(end_marker)
         .map(|offset| start + offset)
-        .ok_or_else(|| format!("missing `{end_marker}` marker"))?;
+        .ok_or_else(|| QueueWorkflowMetadataError::MissingMarker {
+            marker: end_marker.to_string(),
+        })?;
     let prefix_end = start + start_marker.len();
     let prefix = text[..prefix_end].to_string();
     let section = text[prefix_end..suffix_start].to_string();
@@ -76,10 +113,12 @@ pub fn split_marked_items(
 pub fn split_items_after_marker(
     text: &str,
     start_marker: &str,
-) -> Result<(String, String, Vec<QueueTextItem>), String> {
-    let start = text
-        .find(start_marker)
-        .ok_or_else(|| format!("missing `{start_marker}` section"))?;
+) -> Result<(String, String, Vec<QueueTextItem>), QueueWorkflowMetadataError> {
+    let start =
+        text.find(start_marker)
+            .ok_or_else(|| QueueWorkflowMetadataError::MissingMarker {
+                marker: start_marker.to_string(),
+            })?;
     let prefix_end = start + start_marker.len();
     let prefix = text[..prefix_end].to_string();
     let section = text[prefix_end..].to_string();
@@ -89,7 +128,7 @@ pub fn split_items_after_marker(
 pub fn parse_item_section(
     section: &str,
     require_non_empty: bool,
-) -> Result<Vec<QueueTextItem>, String> {
+) -> Result<Vec<QueueTextItem>, QueueWorkflowMetadataError> {
     let mut items = Vec::new();
     let mut current = Vec::<String>::new();
 
@@ -109,7 +148,7 @@ pub fn parse_item_section(
     }
 
     if require_non_empty && items.is_empty() {
-        return Err("TODO section does not contain any item".into());
+        return Err(QueueWorkflowMetadataError::MissingItem);
     }
     Ok(items)
 }
@@ -135,12 +174,12 @@ pub fn rebuild_item_block(prefix: &str, items: &[QueueTextItem], suffix: &str) -
     out
 }
 
-fn parse_text_item(lines: &[String]) -> Result<QueueTextItem, String> {
+fn parse_text_item(lines: &[String]) -> Result<QueueTextItem, QueueWorkflowMetadataError> {
     let title = lines[0]
         .strip_prefix("- ")
         .map(str::trim)
         .filter(|title| !title.is_empty())
-        .ok_or_else(|| "TODO item missing title".to_string())?
+        .ok_or(QueueWorkflowMetadataError::MissingItemTitle)?
         .to_string();
     let blocked_by = lines.iter().find_map(|line| {
         line.trim()

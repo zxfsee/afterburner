@@ -3,8 +3,8 @@ use std::path::PathBuf;
 use std::process::Command as ProcessCommand;
 
 use afterburner::queue_workflow_metadata::{
-    QueueTextItem, extract_backtick_values, extract_marked_section, first_todo_item,
-    is_allowed_path, normalize_candidate_path, normalize_scope_path,
+    QueueTextItem, QueueWorkflowMetadataError, extract_backtick_values, extract_marked_section,
+    first_todo_item, is_allowed_path, normalize_candidate_path, normalize_scope_path,
     normalized_marked_section_block, rebuild_item_block, split_items_after_marker,
     split_marked_items,
 };
@@ -844,17 +844,17 @@ fn split_todo_items(
     cargo_toml: &str,
 ) -> Result<(String, String, Vec<QueueTextItem>), QueueSnapshotError> {
     split_marked_items(cargo_toml, TODO_START, TODO_END).map_err(|err| {
-        QueueSnapshotError::Parse(match err.as_str() {
-            "missing `## TODO` section" => {
+        QueueSnapshotError::Parse(match err {
+            QueueWorkflowMetadataError::MissingMarkedSection { .. } => {
                 "Cargo.toml changelog template missing TODO section".into()
             }
-            "missing `## [Trunk]` marker" => {
+            QueueWorkflowMetadataError::MissingMarker { .. } => {
                 "Cargo.toml changelog template missing `## [Trunk]` marker".into()
             }
-            "TODO section does not contain any item" => {
+            QueueWorkflowMetadataError::MissingItem => {
                 "Cargo.toml TODO section does not contain any item".into()
             }
-            _ => err,
+            other => other.to_string(),
         })
     })
 }
@@ -863,9 +863,11 @@ fn split_backlog_items(
     backlog_text: &str,
 ) -> Result<(String, String, Vec<QueueTextItem>), QueueSnapshotError> {
     split_items_after_marker(backlog_text, BACKLOG_ITEMS_START).map_err(|err| {
-        QueueSnapshotError::Parse(match err.as_str() {
-            "missing `## Items` section" => "docs/backlog.md missing `## Items` section".into(),
-            _ => err,
+        QueueSnapshotError::Parse(match err {
+            QueueWorkflowMetadataError::MissingMarker { .. } => {
+                "docs/backlog.md missing `## Items` section".into()
+            }
+            other => other.to_string(),
         })
     })
 }
@@ -874,8 +876,13 @@ fn todo_items(cargo_toml: &str) -> Result<Vec<QueueTextItem>, QueueSnapshotError
     let section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
         QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
     })?;
-    afterburner::queue_workflow_metadata::parse_item_section(section, true)
-        .map_err(QueueSnapshotError::Parse)
+    afterburner::queue_workflow_metadata::parse_item_section(section, true).map_err(|err| match err
+    {
+        QueueWorkflowMetadataError::MissingItem => {
+            QueueSnapshotError::Parse("Cargo.toml TODO section does not contain any item".into())
+        }
+        other => QueueSnapshotError::Parse(other.to_string()),
+    })
 }
 
 fn rebuild_todo_block(prefix: &str, items: &[QueueTextItem], suffix: &str) -> String {
