@@ -57,6 +57,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "event_contract_catalog.rs"
             | "contract_anchor_catalog.rs"
             | "cli_surface_catalog.rs"
+            | "rollout_orchestration_catalog.rs"
             | "reference_doc_validation.rs"
             | "doc_test_admission.rs"
     )
