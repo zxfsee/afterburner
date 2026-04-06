@@ -31,7 +31,6 @@ tests/distributed_runtime_layout_feasibility.rs
 tests/distributed_runtime_profile_schema.rs
 tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
-tests/distributed_tracing_correlation_contract.rs
 tests/gpu_scheduler_lifecycle_message.rs
 tests/huggingface_publish_adapter.rs
 tests/infer_drift_baseline.rs

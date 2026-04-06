@@ -65,5 +65,4 @@ tests/text_model_artifact_inference_contract.rs
 tests/text_pretraining_adapter.rs
 tests/text_pretraining_smoke.rs
 tests/text_tokenizer_packing_profile.rs
-tests/train_start_event.rs
 tests/workflow_reference.rs
