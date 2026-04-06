@@ -3,8 +3,10 @@ use std::path::PathBuf;
 use std::process::Command as ProcessCommand;
 
 use afterburner::queue_workflow_metadata::{
-    extract_backtick_values, extract_marked_section, first_todo_item, is_allowed_path,
-    normalize_candidate_path, normalize_scope_path, normalized_marked_section_block,
+    QueueTextItem, extract_backtick_values, extract_marked_section, first_todo_item,
+    is_allowed_path, normalize_candidate_path, normalize_scope_path,
+    normalized_marked_section_block, rebuild_item_block, split_items_after_marker,
+    split_marked_items,
 };
 use sha2::{Digest, Sha256};
 
@@ -216,13 +218,6 @@ struct TodoScope {
     contracts: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct TodoItem {
-    title: String,
-    lines: Vec<String>,
-    blocked_by: Option<String>,
-}
-
 fn check_completion_boundary(
     cargo_toml: PathBuf,
     repo_root: PathBuf,
@@ -314,7 +309,7 @@ fn promote_from_backlog(
     backlog: PathBuf,
     prefix: String,
     suffix: String,
-    mut active_items: Vec<TodoItem>,
+    mut active_items: Vec<QueueTextItem>,
 ) -> Result<(), QueueSnapshotError> {
     let Some(backlog_text) = read_optional_file(&backlog)? else {
         return Err(QueueSnapshotError::Parse(
@@ -847,121 +842,44 @@ fn normalized_todo_block(cargo_toml: &str) -> Result<String, QueueSnapshotError>
 
 fn split_todo_items(
     cargo_toml: &str,
-) -> Result<(String, String, Vec<TodoItem>), QueueSnapshotError> {
-    let start = cargo_toml.find(TODO_START).ok_or_else(|| {
-        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-    })?;
-    let suffix_start = cargo_toml[start..]
-        .find(TODO_END)
-        .map(|offset| start + offset)
-        .ok_or_else(|| {
-            QueueSnapshotError::Parse(
-                "Cargo.toml changelog template missing `## [Trunk]` marker".into(),
-            )
-        })?;
-    let prefix_end = start + TODO_START.len();
-    let prefix = cargo_toml[..prefix_end].to_string();
-    let section = cargo_toml[prefix_end..suffix_start].to_string();
-    let suffix = cargo_toml[suffix_start..].to_string();
-    Ok((prefix, suffix, parse_todo_items_section(&section)?))
+) -> Result<(String, String, Vec<QueueTextItem>), QueueSnapshotError> {
+    split_marked_items(cargo_toml, TODO_START, TODO_END).map_err(|err| {
+        QueueSnapshotError::Parse(match err.as_str() {
+            "missing `## TODO` section" => {
+                "Cargo.toml changelog template missing TODO section".into()
+            }
+            "missing `## [Trunk]` marker" => {
+                "Cargo.toml changelog template missing `## [Trunk]` marker".into()
+            }
+            "TODO section does not contain any item" => {
+                "Cargo.toml TODO section does not contain any item".into()
+            }
+            _ => err,
+        })
+    })
 }
 
 fn split_backlog_items(
     backlog_text: &str,
-) -> Result<(String, String, Vec<TodoItem>), QueueSnapshotError> {
-    let start = backlog_text.find(BACKLOG_ITEMS_START).ok_or_else(|| {
-        QueueSnapshotError::Parse("docs/backlog.md missing `## Items` section".into())
-    })?;
-    let prefix_end = start + BACKLOG_ITEMS_START.len();
-    let prefix = backlog_text[..prefix_end].to_string();
-    let section = backlog_text[prefix_end..].to_string();
-    let items = parse_item_section(&section, false)?;
-    Ok((prefix, String::new(), items))
-}
-
-fn todo_items(cargo_toml: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
-    let section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
-        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
-    })?;
-    parse_item_section(section, true)
-}
-
-fn parse_todo_items_section(section: &str) -> Result<Vec<TodoItem>, QueueSnapshotError> {
-    parse_item_section(section, true)
-}
-
-fn parse_item_section(
-    section: &str,
-    require_non_empty: bool,
-) -> Result<Vec<TodoItem>, QueueSnapshotError> {
-    let mut items = Vec::new();
-    let mut current = Vec::<String>::new();
-
-    for line in section.lines() {
-        if line.starts_with("- ") {
-            if !current.is_empty() {
-                items.push(parse_todo_item(&current)?);
-            }
-            current = vec![line.to_string()];
-        } else if !current.is_empty() {
-            current.push(line.to_string());
-        }
-    }
-
-    if !current.is_empty() {
-        items.push(parse_todo_item(&current)?);
-    }
-
-    if require_non_empty && items.is_empty() {
-        return Err(QueueSnapshotError::Parse(
-            "Cargo.toml TODO section does not contain any item".into(),
-        ));
-    }
-    Ok(items)
-}
-
-fn parse_todo_item(lines: &[String]) -> Result<TodoItem, QueueSnapshotError> {
-    let title = lines[0]
-        .strip_prefix("- ")
-        .map(str::trim)
-        .filter(|title| !title.is_empty())
-        .ok_or_else(|| QueueSnapshotError::Parse("TODO item missing title".into()))?
-        .to_string();
-    let blocked_by = lines.iter().find_map(|line| {
-        line.trim()
-            .strip_prefix("- Blocked-by:")
-            .map(|value| value.trim().to_string())
-    });
-    Ok(TodoItem {
-        title,
-        lines: lines.to_vec(),
-        blocked_by,
+) -> Result<(String, String, Vec<QueueTextItem>), QueueSnapshotError> {
+    split_items_after_marker(backlog_text, BACKLOG_ITEMS_START).map_err(|err| {
+        QueueSnapshotError::Parse(match err.as_str() {
+            "missing `## Items` section" => "docs/backlog.md missing `## Items` section".into(),
+            _ => err,
+        })
     })
 }
 
-fn rebuild_todo_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String {
-    rebuild_item_block(prefix, items, suffix)
+fn todo_items(cargo_toml: &str) -> Result<Vec<QueueTextItem>, QueueSnapshotError> {
+    let section = extract_marked_section(cargo_toml, TODO_START, TODO_END).map_err(|_| {
+        QueueSnapshotError::Parse("Cargo.toml changelog template missing TODO section".into())
+    })?;
+    afterburner::queue_workflow_metadata::parse_item_section(section, true)
+        .map_err(QueueSnapshotError::Parse)
 }
 
-fn rebuild_item_block(prefix: &str, items: &[TodoItem], suffix: &str) -> String {
-    let mut out = String::new();
-    out.push_str(prefix);
-    out.push('\n');
-    out.push('\n');
-    for (index, item) in items.iter().enumerate() {
-        if index > 0 {
-            out.push('\n');
-        }
-        for line in &item.lines {
-            out.push_str(line);
-            out.push('\n');
-        }
-    }
-    if !suffix.starts_with('\n') {
-        out.push('\n');
-    }
-    out.push_str(suffix);
-    out
+fn rebuild_todo_block(prefix: &str, items: &[QueueTextItem], suffix: &str) -> String {
+    rebuild_item_block(prefix, items, suffix)
 }
 
 fn read_optional_file(path: &PathBuf) -> Result<Option<String>, QueueSnapshotError> {
@@ -972,7 +890,9 @@ fn read_optional_file(path: &PathBuf) -> Result<Option<String>, QueueSnapshotErr
     }
 }
 
-fn first_runnable_backlog_item(backlog: &PathBuf) -> Result<Option<TodoItem>, QueueSnapshotError> {
+fn first_runnable_backlog_item(
+    backlog: &PathBuf,
+) -> Result<Option<QueueTextItem>, QueueSnapshotError> {
     let Some(backlog_text) = read_optional_file(backlog)? else {
         return Ok(None);
     };

@@ -4,6 +4,13 @@ pub struct FirstTodoItem {
     pub lines: Vec<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QueueTextItem {
+    pub title: String,
+    pub lines: Vec<String>,
+    pub blocked_by: Option<String>,
+}
+
 pub fn extract_marked_section<'a>(
     text: &'a str,
     start_marker: &str,
@@ -44,6 +51,106 @@ pub fn first_todo_item(section: &str) -> Result<FirstTodoItem, String> {
     Ok(FirstTodoItem {
         title,
         lines: current_lines,
+    })
+}
+
+pub fn split_marked_items(
+    text: &str,
+    start_marker: &str,
+    end_marker: &str,
+) -> Result<(String, String, Vec<QueueTextItem>), String> {
+    let start = text
+        .find(start_marker)
+        .ok_or_else(|| format!("missing `{start_marker}` section"))?;
+    let suffix_start = text[start..]
+        .find(end_marker)
+        .map(|offset| start + offset)
+        .ok_or_else(|| format!("missing `{end_marker}` marker"))?;
+    let prefix_end = start + start_marker.len();
+    let prefix = text[..prefix_end].to_string();
+    let section = text[prefix_end..suffix_start].to_string();
+    let suffix = text[suffix_start..].to_string();
+    Ok((prefix, suffix, parse_item_section(&section, true)?))
+}
+
+pub fn split_items_after_marker(
+    text: &str,
+    start_marker: &str,
+) -> Result<(String, String, Vec<QueueTextItem>), String> {
+    let start = text
+        .find(start_marker)
+        .ok_or_else(|| format!("missing `{start_marker}` section"))?;
+    let prefix_end = start + start_marker.len();
+    let prefix = text[..prefix_end].to_string();
+    let section = text[prefix_end..].to_string();
+    Ok((prefix, String::new(), parse_item_section(&section, false)?))
+}
+
+pub fn parse_item_section(
+    section: &str,
+    require_non_empty: bool,
+) -> Result<Vec<QueueTextItem>, String> {
+    let mut items = Vec::new();
+    let mut current = Vec::<String>::new();
+
+    for line in section.lines() {
+        if line.starts_with("- ") {
+            if !current.is_empty() {
+                items.push(parse_text_item(&current)?);
+            }
+            current = vec![line.to_string()];
+        } else if !current.is_empty() {
+            current.push(line.to_string());
+        }
+    }
+
+    if !current.is_empty() {
+        items.push(parse_text_item(&current)?);
+    }
+
+    if require_non_empty && items.is_empty() {
+        return Err("TODO section does not contain any item".into());
+    }
+    Ok(items)
+}
+
+pub fn rebuild_item_block(prefix: &str, items: &[QueueTextItem], suffix: &str) -> String {
+    let mut out = String::new();
+    out.push_str(prefix);
+    out.push('\n');
+    out.push('\n');
+    for (index, item) in items.iter().enumerate() {
+        if index > 0 {
+            out.push('\n');
+        }
+        for line in &item.lines {
+            out.push_str(line);
+            out.push('\n');
+        }
+    }
+    if !suffix.starts_with('\n') {
+        out.push('\n');
+    }
+    out.push_str(suffix);
+    out
+}
+
+fn parse_text_item(lines: &[String]) -> Result<QueueTextItem, String> {
+    let title = lines[0]
+        .strip_prefix("- ")
+        .map(str::trim)
+        .filter(|title| !title.is_empty())
+        .ok_or_else(|| "TODO item missing title".to_string())?
+        .to_string();
+    let blocked_by = lines.iter().find_map(|line| {
+        line.trim()
+            .strip_prefix("- Blocked-by:")
+            .map(|value| value.trim().to_string())
+    });
+    Ok(QueueTextItem {
+        title,
+        lines: lines.to_vec(),
+        blocked_by,
     })
 }
 
@@ -106,7 +213,8 @@ pub fn is_allowed_path(allowed_paths: &[String], candidate: &str) -> bool {
 mod tests {
     use super::{
         extract_backtick_values, extract_marked_section, first_todo_item, is_allowed_path,
-        normalized_marked_section_block,
+        normalized_marked_section_block, parse_item_section, rebuild_item_block,
+        split_items_after_marker, split_marked_items,
     };
 
     #[test]
@@ -137,5 +245,39 @@ mod tests {
         assert!(is_allowed_path(&["Cargo.toml".into()], "Cargo.toml"));
         assert!(is_allowed_path(&["src/".into()], "src/bin/lock.rs"));
         assert!(!is_allowed_path(&["src/".into()], "tests/lock.rs"));
+    }
+
+    #[test]
+    fn split_marked_items_extracts_prefix_suffix_and_items() {
+        let text = "prefix\n## TODO\n\n- A\n  - Scope: `src/`\n\n- B\n  - Scope: `docs/`\n\n## [Trunk]\nsuffix\n";
+        let (prefix, suffix, items) =
+            split_marked_items(text, "## TODO", "## [Trunk]").expect("items");
+        assert_eq!(prefix, "prefix\n## TODO");
+        assert_eq!(suffix, "## [Trunk]\nsuffix\n");
+        assert_eq!(items.len(), 2);
+        assert_eq!(items[0].title, "A");
+        assert_eq!(items[1].title, "B");
+    }
+
+    #[test]
+    fn split_items_after_marker_extracts_backlog_items() {
+        let text = "prefix\n## Items\n\n- A\n  - Goal: x\n";
+        let (prefix, suffix, items) = split_items_after_marker(text, "## Items").expect("items");
+        assert_eq!(prefix, "prefix\n## Items");
+        assert!(suffix.is_empty());
+        assert_eq!(items.len(), 1);
+        assert_eq!(items[0].title, "A");
+    }
+
+    #[test]
+    fn parse_and_rebuild_item_section_round_trips() {
+        let section = "\n\n- A\n  - Goal: x\n  - Blocked-by: wait\n\n- B\n  - Goal: y\n";
+        let items = parse_item_section(section, true).expect("items");
+        assert_eq!(items.len(), 2);
+        assert_eq!(items[0].blocked_by.as_deref(), Some("wait"));
+        let rebuilt = rebuild_item_block("## TODO", &items, "## [Trunk]");
+        assert!(rebuilt.contains("- A"));
+        assert!(rebuilt.contains("- B"));
+        assert!(rebuilt.contains("## [Trunk]"));
     }
 }
