@@ -285,3 +285,95 @@ where
     args.next()
         .ok_or_else(|| format!("missing value for {flag}\n{}", usage()))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{QueueSnapshotCommand, parse_args};
+    use std::path::PathBuf;
+
+    #[test]
+    fn queue_snapshot_cli_parses_lineage_defaults() {
+        let command =
+            parse_args(["stamp-current-parent"].into_iter().map(str::to_string)).expect("parse");
+        assert_eq!(
+            command,
+            QueueSnapshotCommand::StampCurrentParent {
+                cargo_toml: PathBuf::from("Cargo.toml"),
+                changelog: PathBuf::from("CHANGELOG.md"),
+                repo_root: PathBuf::from("."),
+            }
+        );
+    }
+
+    #[test]
+    fn queue_snapshot_cli_parses_top_runnable_flags() {
+        let command = parse_args(
+            [
+                "promote-next-runnable",
+                "--cargo-toml",
+                "Custom.toml",
+                "--backlog=docs/custom-backlog.md",
+            ]
+            .into_iter()
+            .map(str::to_string),
+        )
+        .expect("parse");
+        assert_eq!(
+            command,
+            QueueSnapshotCommand::PromoteNextRunnable {
+                cargo_toml: PathBuf::from("Custom.toml"),
+                backlog: PathBuf::from("docs/custom-backlog.md"),
+            }
+        );
+    }
+
+    #[test]
+    fn queue_snapshot_cli_parses_execute_preflight_repair_flag() {
+        let command = parse_args(
+            [
+                "execute-preflight",
+                "--cargo-toml=Queue.toml",
+                "--changelog",
+                "Queue.md",
+                "--repo-root",
+                "/tmp/repo",
+                "--repair-stale-snapshot",
+            ]
+            .into_iter()
+            .map(str::to_string),
+        )
+        .expect("parse");
+        assert_eq!(
+            command,
+            QueueSnapshotCommand::ExecutePreflight {
+                cargo_toml: PathBuf::from("Queue.toml"),
+                changelog: PathBuf::from("Queue.md"),
+                repo_root: PathBuf::from("/tmp/repo"),
+                repair_stale_snapshot: true,
+            }
+        );
+    }
+
+    #[test]
+    fn queue_snapshot_cli_rejects_verify_without_parent_commit() {
+        let err = parse_args(["verify"].into_iter().map(str::to_string)).expect_err("missing arg");
+        assert!(
+            err.contains("missing value for --parent-commit"),
+            "expected missing parent-commit error: {err}"
+        );
+    }
+
+    #[test]
+    fn queue_snapshot_cli_rejects_unknown_argument() {
+        let err = parse_args(
+            ["check-top-runnable", "--bogus"]
+                .into_iter()
+                .map(str::to_string),
+        )
+        .expect_err("unknown flag");
+        assert!(
+            err.contains("unknown argument `--bogus`"),
+            "expected unknown argument error: {err}"
+        );
+    }
+}
