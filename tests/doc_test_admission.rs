@@ -54,8 +54,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "runtime_platform_fit_catalog.rs"
             | "workload_boundary_fit_catalog.rs"
             | "contract_anchor_catalog.rs"
-            | "operator_grammar_gate.rs"
-            | "public_cli_admission_gate.rs"
+            | "cli_surface_catalog.rs"
             | "reference_doc_validation.rs"
             | "doc_test_admission.rs"
     )

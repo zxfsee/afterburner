@@ -6,7 +6,6 @@ tests/artifact_cleanup_policy.rs
 tests/artifact_upload_adapter.rs
 tests/burn_bpk_migration_surface_inventory.rs
 tests/canonical_just_surface.rs
-tests/cli_subcommand_hierarchy.rs
 tests/deployment_stack_contract.rs
 tests/deployment_stack_launch_evidence_bundle.rs
 tests/deployment_stack_launch_evidence_bundle_reconciliation.rs
