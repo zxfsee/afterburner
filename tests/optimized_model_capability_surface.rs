@@ -143,7 +143,7 @@ fn optimized_model_capability_surface_example_and_docs_match_repo_contracts() {
         );
     }
 
-    let adr_053 = repo_file("docs/adr/053-model-optimization-and-packaging-fit.md");
+    let adr_051 = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     for needle in [
         "optimized_model_capability_surface.schema.json",
         "planning-only",
@@ -151,8 +151,8 @@ fn optimized_model_capability_surface_example_and_docs_match_repo_contracts() {
         "packaging",
     ] {
         assert!(
-            adr_053.contains(needle),
-            "ADR-053 must mention `{needle}` as part of the optimized model capability surface"
+            adr_051.contains(needle),
+            "ADR-051 must mention `{needle}` as part of the optimized model capability surface"
         );
     }
 }

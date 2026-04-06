@@ -48,11 +48,11 @@ fn model_optimization_profile_schema_is_explicit() {
 fn model_optimization_and_packaging_fit_is_documented() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
-        architecture.contains("ADR-053"),
-        "architecture decisions index must link ADR-053"
+        architecture.contains("ADR-051"),
+        "architecture decisions index must link ADR-051"
     );
 
-    let adr = repo_file("docs/adr/053-model-optimization-and-packaging-fit.md");
+    let adr = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     for needle in [
         "model_optimization_profile.schema.json",
         "quantization",
@@ -63,7 +63,7 @@ fn model_optimization_and_packaging_fit_is_documented() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-053 must mention `{needle}` as part of the optimization fit decision"
+            "ADR-051 must mention `{needle}` as part of the optimization fit decision"
         );
     }
 

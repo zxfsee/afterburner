@@ -71,11 +71,11 @@ fn burn_stable_release_availability_gate_is_documented_against_the_current_pin()
 }
 
 #[test]
-fn capnproto_wire_format_fit_is_documented() {
+fn artifact_serialization_strategy_keeps_capnproto_out_of_scope() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
-        architecture.contains("ADR-063"),
-        "architecture decisions index must link ADR-063"
+        architecture.contains("ADR-051"),
+        "architecture decisions index must link ADR-051"
     );
     assert!(
         architecture.contains("capnproto-rust"),
@@ -86,22 +86,22 @@ fn capnproto_wire_format_fit_is_documented() {
         "architecture must keep the current JSON/TOML stance explicit"
     );
 
-    let adr = repo_file("docs/adr/063-capnproto-wire-format-fit.md");
+    let adr = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     assert!(
-        adr.contains("Do not adopt `capnproto-rust` now."),
-        "ADR-063 must make the current no-adoption decision explicit"
+        adr.contains("Do not adopt `capnproto-rust` now or add a parallel Cap'n Proto contract"),
+        "ADR-051 must make the current no-adoption decision explicit"
     );
     assert!(
-        adr.contains("Do not add a `capnproto-rust` dependency"),
-        "ADR-063 must keep the current no-dependency stance explicit"
+        adr.contains("parallel Cap'n Proto contract"),
+        "ADR-051 must keep the current no-adoption stance explicit"
     );
     assert!(
         adr.contains("JSON"),
-        "ADR-063 must anchor the existing JSON artifact/event stance"
+        "ADR-051 must anchor the existing JSON artifact/event stance"
     );
     assert!(
         adr.contains("TOML"),
-        "ADR-063 must anchor the existing TOML manifest stance"
+        "ADR-051 must anchor the existing TOML manifest stance"
     );
 
     let readme = repo_file("README.md");
@@ -112,11 +112,11 @@ fn capnproto_wire_format_fit_is_documented() {
 }
 
 #[test]
-fn json_over_ron_fit_is_documented() {
+fn artifact_serialization_strategy_keeps_json_as_the_default() {
     let architecture = repo_file("ARCHITECTURE.md");
     assert!(
-        architecture.contains("ADR-060"),
-        "architecture decisions index must link ADR-060"
+        architecture.contains("ADR-051"),
+        "architecture decisions index must link ADR-051"
     );
     assert!(
         architecture.contains("Structured artifact and event contracts stay on JSON"),
@@ -127,7 +127,7 @@ fn json_over_ron_fit_is_documented() {
         "architecture must keep the manifest format distinction explicit"
     );
 
-    let adr = repo_file("docs/adr/060-json-over-ron-fit.md");
+    let adr = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     for needle in [
         "JSON",
         "RON",
@@ -136,7 +136,7 @@ fn json_over_ron_fit_is_documented() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-060 must mention `{needle}` as part of the format-fit decision"
+            "ADR-051 must mention `{needle}` as part of the format strategy"
         );
     }
 
@@ -188,7 +188,7 @@ fn remote_model_save_load_fit_is_documented() {
         "architecture must mention the provider-neutral remote locator stance"
     );
 
-    let adr = repo_file("docs/adr/051-remote-model-save-load-fit.md");
+    let adr = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     for needle in ["provider", "locator", "mode", "storage SDK"] {
         assert!(
             adr.contains(needle),

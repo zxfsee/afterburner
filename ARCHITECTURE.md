@@ -292,14 +292,13 @@ auto-versioning, embedded serving) are intentionally absent.
 - Profiling and observability fits:
   - See `docs/reference.md` plus ADR-016, ADR-020, ADR-025, ADR-030, and ADR-037.
 - Backend and optimization fits:
-  - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, ADR-033, ADR-053,
-    ADR-060, and ADR-063.
+  - See `docs/reference.md` plus ADR-005, ADR-011, ADR-012, and ADR-033.
 - Distributed runtime and lineage fits:
   - See `docs/reference.md` plus ADR-015, ADR-018, ADR-023, ADR-028, ADR-032, ADR-034,
     ADR-039, ADR-043, ADR-054, ADR-058, and ADR-061.
 - Data and artifact lifecycle fits:
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
-    ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-052, and ADR-059.
+    ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-051, ADR-052, and ADR-059.
 
 ### Assumptions
 
@@ -353,17 +352,14 @@ The same artifact contract applies to non-image domains (e.g. sequence or graph 
 - [ADR-050: Text Tokenizer And Packing Contract](./docs/adr/050-text-tokenizer-and-packing-contract.md)
 - [ADR-052: Text Model Artifact And Inference Contract](./docs/adr/052-text-model-artifact-and-inference-contract.md)
 - [ADR-059: MacBook Text Pretraining Adapter](./docs/adr/059-macbook-text-pretraining-adapter.md)
-- [ADR-060: JSON Over RON Fit](./docs/adr/060-json-over-ron-fit.md)
-- [ADR-063: Capnproto-Rust Wire-Format Fit](./docs/adr/063-capnproto-wire-format-fit.md)
 - [ADR-061: Distributed Optimizer And Checkpoint State](./docs/adr/061-distributed-optimizer-and-checkpoint-state.md)
 - [ADR-062: kube-rs GPU Scheduler Placement Fit](./docs/adr/062-kube-rs-gpu-scheduler-placement-fit.md)
 - [ADR-064: LWS Cluster Workload Fit](./docs/adr/064-lws-cluster-workload-fit.md)
 - [ADR-065: Gateway API Inference Extension Fit](./docs/adr/065-gateway-api-inference-extension-fit.md)
-- [ADR-051: Remote Model Save/Load Fit](./docs/adr/051-remote-model-save-load-fit.md)
+- [ADR-051: Artifact Contract And Serialization Strategy](./docs/adr/051-artifact-contract-and-serialization-strategy.md)
 - [ADR-056: GPU Colocation Fit](./docs/adr/056-gpu-colocation-fit.md)
 - [ADR-055: Hugging Face Publish Adapter](./docs/adr/055-hugging-face-publish-adapter.md)
 - [ADR-054: Distributed Runtime Layout Feasibility](./docs/adr/054-distributed-runtime-layout-feasibility.md)
 - [ADR-058: Distributed Runtime Benchmark Harness](./docs/adr/058-distributed-runtime-benchmark-harness.md)
-- [ADR-053: Model Optimization And Packaging Fit](./docs/adr/053-model-optimization-and-packaging-fit.md)
 - [ADR-048: process-compose-flake Local Substrate Fit](./docs/adr/048-process-compose-local-substrate-fit.md)
 - [ADR-044: Deploy CLI Grouping](./docs/adr/044-deploy-cli-grouping.md)

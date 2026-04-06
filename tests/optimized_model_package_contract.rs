@@ -129,7 +129,7 @@ fn optimized_model_package_contract_example_and_docs_are_explicit() {
         );
     }
 
-    let adr = repo_file("docs/adr/053-model-optimization-and-packaging-fit.md");
+    let adr = repo_file("docs/adr/051-artifact-contract-and-serialization-strategy.md");
     for needle in [
         "optimized_model_package_contract.schema.json",
         "export_format",
@@ -138,7 +138,7 @@ fn optimized_model_package_contract_example_and_docs_are_explicit() {
     ] {
         assert!(
             adr.contains(needle),
-            "ADR-053 must mention `{needle}` as part of the optimized packaging contract"
+            "ADR-051 must mention `{needle}` as part of the optimized packaging contract"
         );
     }
 }
