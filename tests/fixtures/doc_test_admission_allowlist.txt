@@ -4,7 +4,6 @@ tests/artifact_cleanup_evidence_bundle.rs
 tests/artifact_cleanup_execution_receipt.rs
 tests/artifact_cleanup_inventory.rs
 tests/artifact_cleanup_policy.rs
-tests/artifact_retention_envelope.rs
 tests/artifact_upload_adapter.rs
 tests/burn_bpk_migration_surface_inventory.rs
 tests/burn_dependency_refresh.rs
@@ -31,17 +30,13 @@ tests/deployment_stack_launch_transport_locator.rs
 tests/deployment_stack_launch_transport_locator_history.rs
 tests/deployment_stack_launch_transport_locator_reconciliation.rs
 tests/deployment_stack_launch_transport_locator_reconciliation_history.rs
-tests/deployment_verification_evidence_provenance.rs
 tests/developer_workflows.rs
-tests/distributed_checkpoint_index.rs
 tests/distributed_load_profile.rs
-tests/distributed_optimizer_checkpoint_state.rs
 tests/distributed_runtime_benchmark_harness.rs
 tests/distributed_runtime_capability_surface.rs
 tests/distributed_runtime_layout_feasibility.rs
 tests/distributed_runtime_profile_schema.rs
 tests/distributed_runtime_scheduler_platform_separation.rs
-tests/distributed_shard_lineage.rs
 tests/distributed_shard_lineage_evidence_provenance.rs
 tests/distributed_shard_lineage_receipt.rs
 tests/distributed_tracing_correlation_contract.rs
@@ -83,8 +78,6 @@ tests/otel_profiling_fit.rs
 tests/pretraining_source_approval_receipt.rs
 tests/pretraining_source_provenance_evidence_bundle.rs
 tests/pretraining_source_provenance_receipt.rs
-tests/pretraining_source_registry.rs
-tests/profiling_environment_provenance.rs
 tests/profiling_environment_snapshot.rs
 tests/profiling_environment_snapshot_refresh.rs
 tests/profiling_hotspot_taxonomy.rs
