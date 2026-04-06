@@ -58,6 +58,7 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
             | "drift_workflow_surface.rs"
             | "profiling_workflow_surface.rs"
             | "distributed_shard_lineage_workflow_surface.rs"
+            | "distributed_runtime_fit_catalog.rs"
             | "pretraining_source_workflow_surface.rs"
             | "runtime_platform_fit_catalog.rs"
             | "contract_anchor_catalog.rs"
