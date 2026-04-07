@@ -236,5 +236,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift supersede-baseline-approval --previous-approval PATH --next-approval PATH --superseded-at-unix-ms N [--out PATH]"
+    "usage: afterburner debug drift baseline supersede --previous-approval PATH --next-approval PATH --superseded-at-unix-ms N [--out PATH]"
 }

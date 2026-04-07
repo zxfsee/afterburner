@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Drift baseline family collapse [Experimentation/Eval Infra, Runtime Infra]
-  - Goal: Reduce drift baseline recipe expansion by collapsing the operator-visible baseline grammar and moving repeated baseline-side semantics behind typed helpers.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/infer_drift_*.rs`, `tests/workflow_family_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
-
 - Pretraining-source provenance bucket collapse [Data Infra, Runtime Infra]
   - Goal: Remove the remaining pretraining-source provenance bucketed dispatch from `justfile` so the operator surface is intent-first and no longer exposes generic provenance action routing.
   - Kind: `mixed`

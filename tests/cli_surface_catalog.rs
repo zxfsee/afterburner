@@ -146,6 +146,7 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
         ("verify", "handoff", "reconcile"),
         ("rollback", "verification-receipt", "supersession-reconcile"),
         ("rollback", "verification-bundle", "apply"),
+        ("debug", "drift", "baseline"),
         ("source", "approval", "receipt"),
         ("source", "provenance", "bundle"),
     ];
@@ -158,6 +159,13 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
             .assert()
             .success();
     }
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("drift")
+        .arg("--help")
+        .assert()
+        .success();
 }
 
 #[test]
@@ -247,6 +255,25 @@ fn deployment_verification_operator_surface_uses_intent_families() {
         .arg("deploy")
         .arg("launch")
         .arg("locator")
+        .arg("point")
+        .arg("--help")
+        .assert()
+        .success();
+
+    cargo_bin_cmd!("afterburner")
+        .arg("drift")
+        .arg("point-approved-baseline")
+        .arg("--help")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains(
+            "use `afterburner debug drift baseline point ...`",
+        ));
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("drift")
+        .arg("baseline")
         .arg("point")
         .arg("--help")
         .assert()

@@ -212,5 +212,5 @@ where
 afterburner::define_command_input_json_kind_helpers!(DriftBaselineBundleError, "pointer");
 
 fn usage() -> &'static str {
-    "usage: afterburner drift export-baseline-bundle --pointer PATH --history PATH [--out PATH]"
+    "usage: afterburner debug drift baseline export bundle --pointer PATH --history PATH [--out PATH]"
 }

@@ -77,8 +77,10 @@ fn drift_rollback_approved_baseline_writes_pointer_and_rollback_record() {
     let out_pointer = tmp.path().join("pointer-restored.json");
     let out_record = tmp.path().join("rollback.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift")
-        .arg("rollback-approved-baseline")
+    cmd.arg("debug")
+        .arg("drift")
+        .arg("baseline")
+        .arg("rollback")
         .arg("--current-pointer")
         .arg(&current_pointer)
         .arg("--restored-approval")

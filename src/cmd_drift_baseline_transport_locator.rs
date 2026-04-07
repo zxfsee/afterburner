@@ -168,5 +168,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift point-baseline-transport-locator --handoff PATH [--out PATH]"
+    "usage: afterburner debug drift baseline transport point --handoff PATH [--out PATH]"
 }

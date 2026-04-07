@@ -209,5 +209,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift record-approved-baseline-history --pointer PATH --event NAME --recorded-at-unix-ms N [--out PATH]"
+    "usage: afterburner debug drift baseline history --pointer PATH --event NAME --recorded-at-unix-ms N [--out PATH]"
 }

@@ -104,6 +104,7 @@ unless they graduate into a clear operator intent.
   - `infer_output_drift_baseline_rollback.json`
   - `infer_output_drift_baseline_supersession.json`
   - `infer_output_drift_baseline_refresh.json`
+  - Low-level baseline writers stay behind `afterburner debug drift baseline ...`; use the grouped `just drift-*` recipes for operator-facing drift flows.
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-drift` for mechanical coverage.
 - Cleanup:
   - `artifact_cleanup_inventory.json`

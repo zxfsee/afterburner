@@ -159,5 +159,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift export-baseline-handoff --bundle PATH [--out PATH]"
+    "usage: afterburner debug drift baseline export handoff --bundle PATH [--out PATH]"
 }

@@ -70,8 +70,11 @@ fn drift_export_baseline_handoff_writes_manifest_and_event() {
 
     let out = tmp.path().join("handoff.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift")
-        .arg("export-baseline-handoff")
+    cmd.arg("debug")
+        .arg("drift")
+        .arg("baseline")
+        .arg("export")
+        .arg("handoff")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--out")

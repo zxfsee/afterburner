@@ -160,5 +160,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift point-approved-baseline --approval PATH [--out PATH]"
+    "usage: afterburner debug drift baseline point --approval PATH [--out PATH]"
 }

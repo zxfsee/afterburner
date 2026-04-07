@@ -76,8 +76,10 @@ fn drift_record_approved_baseline_history_appends_entry_and_event() {
     let out = tmp.path().join("history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift")
-        .arg("record-approved-baseline-history")
+    cmd.arg("debug")
+        .arg("drift")
+        .arg("baseline")
+        .arg("history")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--event")

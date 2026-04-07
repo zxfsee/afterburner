@@ -252,5 +252,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner drift rollback-approved-baseline --current-pointer PATH --restored-approval PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
+    "usage: afterburner debug drift baseline rollback --current-pointer PATH --restored-approval PATH --rolled-back-at-unix-ms N [--out-pointer PATH] [--out-record PATH]"
 }

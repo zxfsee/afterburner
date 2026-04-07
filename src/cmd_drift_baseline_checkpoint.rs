@@ -186,5 +186,5 @@ where
 afterburner::define_command_input_json_kind_helpers!(DriftBaselineCheckpointError, "pointer");
 
 fn usage() -> &'static str {
-    "usage: afterburner drift checkpoint-baseline --pointer PATH --history PATH [--out PATH]"
+    "usage: afterburner debug drift baseline checkpoint --pointer PATH --history PATH [--out PATH]"
 }

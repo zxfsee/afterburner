@@ -76,8 +76,10 @@ fn drift_checkpoint_baseline_writes_checkpoint_and_event() {
 
     let out = tmp.path().join("checkpoint.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("drift")
-        .arg("checkpoint-baseline")
+    cmd.arg("debug")
+        .arg("drift")
+        .arg("baseline")
+        .arg("checkpoint")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--history")

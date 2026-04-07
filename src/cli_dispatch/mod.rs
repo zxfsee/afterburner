@@ -52,6 +52,7 @@ where
 
     match group.as_str() {
         "deploy" => deploy::run_debug_deploy(args),
+        "drift" => run_debug_drift(args),
         "lineage" => run_lineage(args),
         "inventory-burn-bpk-surface" => crate::cmd_burn_bpk_migration_surface_inventory::run(args),
         "simulate-scheduler-runtime" => crate::cmd_scheduler_runtime_simulation::run(args),
@@ -342,20 +343,17 @@ where
         eprintln!("{}", usage());
         return 2;
     };
+    if let Some(target) = legacy_debug_drift_target(&subcommand) {
+        eprintln!(
+            "drift subcommand `{subcommand}` moved to `{target}`; use `afterburner debug drift {target} ...`"
+        );
+        eprintln!("{}", usage());
+        return 2;
+    }
     match subcommand.as_str() {
         "baseline" => crate::cmd_drift_baseline::run(args),
         "approve-baseline" => crate::cmd_drift_baseline_approval::run(args),
-        "export-baseline-bundle" => crate::cmd_drift_baseline_bundle::run(args),
-        "export-baseline-handoff" => crate::cmd_drift_baseline_handoff::run(args),
-        "checkpoint-baseline" => crate::cmd_drift_baseline_checkpoint::run(args),
-        "record-approved-baseline-history" => crate::cmd_drift_baseline_history::run(args),
-        "point-baseline-transport-locator" => {
-            crate::cmd_drift_baseline_transport_locator::run(args)
-        }
-        "point-approved-baseline" => crate::cmd_drift_baseline_pointer::run(args),
-        "rollback-approved-baseline" => crate::cmd_drift_baseline_rollback::run(args),
         "refresh-baseline" => crate::cmd_drift_baseline_refresh::run(args),
-        "supersede-baseline-approval" => crate::cmd_drift_baseline_supersession::run(args),
         "receipt" => crate::cmd_drift_receipt::run(args),
         _ => {
             eprintln!("unknown drift subcommand: {subcommand}");
@@ -365,6 +363,119 @@ where
     }
 }
 
+fn run_debug_drift<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(group) = args.next() else {
+        eprintln!("missing debug drift subcommand");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if group == "--help" || group == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
+    match group.as_str() {
+        "baseline" => run_debug_drift_baseline(args),
+        _ => {
+            eprintln!("unknown debug drift subcommand: {group}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_debug_drift_baseline<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug drift baseline action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
+    match action.as_str() {
+        "checkpoint" => crate::cmd_drift_baseline_checkpoint::run(args),
+        "export" => run_debug_drift_baseline_export(args),
+        "history" => crate::cmd_drift_baseline_history::run(args),
+        "point" => crate::cmd_drift_baseline_pointer::run(args),
+        "rollback" => crate::cmd_drift_baseline_rollback::run(args),
+        "supersede" => crate::cmd_drift_baseline_supersession::run(args),
+        "transport" => run_debug_drift_baseline_transport(args),
+        _ => {
+            eprintln!("unknown debug drift baseline action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_debug_drift_baseline_export<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug drift baseline export action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
+    match action.as_str() {
+        "bundle" => crate::cmd_drift_baseline_bundle::run(args),
+        "handoff" => crate::cmd_drift_baseline_handoff::run(args),
+        _ => {
+            eprintln!("unknown debug drift baseline export action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn run_debug_drift_baseline_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug drift baseline transport action");
+        eprintln!("{}", usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => crate::cmd_drift_baseline_transport_locator::run(args),
+        _ => {
+            eprintln!("unknown debug drift baseline transport action: {action}");
+            eprintln!("{}", usage());
+            2
+        }
+    }
+}
+
+fn legacy_debug_drift_target(subcommand: &str) -> Option<&'static str> {
+    Some(match subcommand {
+        "checkpoint-baseline" => "baseline checkpoint",
+        "export-baseline-bundle" => "baseline export bundle",
+        "export-baseline-handoff" => "baseline export handoff",
+        "record-approved-baseline-history" => "baseline history",
+        "point-baseline-transport-locator" => "baseline transport point",
+        "point-approved-baseline" => "baseline point",
+        "rollback-approved-baseline" => "baseline rollback",
+        "supersede-baseline-approval" => "baseline supersede",
+        _ => return None,
+    })
+}
+
 pub fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|source <...>|debug <deploy <...>|lineage <...>|simulate-scheduler-runtime <...>>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|source <...>|debug <deploy <...>|drift <...>|lineage <...>|simulate-scheduler-runtime <...>>> [args]"
 }

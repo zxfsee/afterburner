@@ -88,7 +88,7 @@ fn drift_family_stays_grouped_and_surface_complete() {
         "Drift stays grouped under these operator flows:",
         "Signal capture: `just drift-receipt`.",
         "Baseline setup: `just drift-baseline`, `just drift-approve-baseline`.",
-        "Detailed baseline state, checkpointing, export, transport, rollback, and supersession artifacts stay behind `afterburner drift point-approved-baseline`, `record-approved-baseline-history`, `checkpoint-baseline`, `export-baseline-...`, `rollback-approved-baseline`, and `supersede-baseline-approval`.",
+        "Detailed baseline state, checkpointing, export, transport, rollback, and supersession artifacts stay behind `afterburner debug drift baseline ...`; the grouped `just drift-*` recipes remain the operator-facing drift entrypoint.",
         "Baseline refresh: `just drift-refresh-baseline`.",
         "`just workflow-surface-check-drift` guards the grouped drift workflow map and reference split.",
     ] {
@@ -125,6 +125,7 @@ fn drift_family_stays_grouped_and_surface_complete() {
         "`infer_output_drift_baseline_rollback.json`",
         "`infer_output_drift_baseline_supersession.json`",
         "`infer_output_drift_baseline_refresh.json`",
+        "Low-level baseline writers stay behind `afterburner debug drift baseline ...`; use the grouped `just drift-*` recipes for operator-facing drift flows.",
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-drift` for mechanical coverage.",
     ] {
         assert!(
