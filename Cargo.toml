@@ -13,12 +13,13 @@ header = """# Changelog
 
 ## TODO
 
-- Single-node DP runtime path [Distributed Training, Runtime Infra]
-  - Goal: Execute one real single-node data-parallel training run with explicit `world_size`, `rank`, and `device_group` semantics, where multiple participants actually run and training behavior depends on DP execution rather than single-device fallback or metadata-only shaping.
+- Distinct-device execution proof for single-node DP path [Distributed Training, Runtime Infra]
+  - Goal: Run one real single-node data-parallel training execution on a host or runner with at least 2 concrete adapters and capture proof evidence that multiple distinct participants actually execute under the guarded DP runtime path.
   - Kind: `mixed`
   - Boundary: `distributed-runtime`
   - Contracts: `cli`, `artifact`, `event`
-  - Scope: `src/cmd_train.rs`, `src/train/runtime.rs`, `src/train/distributed_metadata.rs`, `tests/distributed_runtime_layout_feasibility.rs`, `tests/distributed_runtime_fit_catalog.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+  - Scope: `src/cmd_train.rs`, `src/train/runtime.rs`, `src/train/distributed_metadata.rs`, `tests/distributed_runtime_execution_contract.rs`, `tests/distributed_runtime_fit_catalog.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+  - Blocked-by: Host or runner with >=2 concrete adapters for one distinct-device DP execution proof
 
 - DP checkpoint and optimizer resume path [Distributed Training, Runtime Infra]
   - Goal: Make `checkpoint_group`-anchored checkpoint and optimizer resume executable for the first DP runtime path instead of leaving recovery at the contract-only layer.
@@ -33,6 +34,7 @@ header = """# Changelog
   - Boundary: `distributed-runtime`
   - Contracts: `cli`, `artifact`, `event`
   - Scope: `src/cmd_distributed_runtime_benchmark.rs`, `src/cmd_distributed_runtime_profile.rs`, `src/cmd_train.rs`, `tests/distributed_runtime_benchmark_harness.rs`, `tests/distributed_runtime_profile_schema.rs`, `docs/adr/058-distributed-runtime-benchmark-harness.md`, `docs/adr/043-distributed-runtime-profile-schema.md`, `docs/reference.md`
+  - Blocked-by: Distinct-device execution proof for single-node DP path
 
 - Scheduler/runtime rank assignment handoff [Distributed Training, Runtime Infra]
   - Goal: Feed explicit `world_size`, `rank_assignments`, and `device_group` semantics from the scheduler/control-plane boundary into the first DP runtime path without widening scheduler policy.
@@ -47,6 +49,7 @@ header = """# Changelog
   - Boundary: `distributed-runtime`
   - Contracts: `cli`, `artifact`, `event`
   - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `README.md`, `docs/reference.md`
+  - Blocked-by: Distinct-device execution proof for single-node DP path
 
 - Text model deploy and verification vertical [Pre-training, Serving/Deployment Infra]
   - Goal: Run one bounded text model from training artifact through inference, HTTP serving, rollout verification, and deployment-facing evidence so the text path is demonstrable end to end after the DP runtime slices land.
@@ -54,6 +57,7 @@ header = """# Changelog
   - Boundary: `runtime-deploy`
   - Contracts: `cli`, `artifact`, `event`, `http`
   - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `tests/http_graceful_shutdown.rs`, `tests/deployment_verification_workflow_surface_catalog.rs`, `README.md`, `docs/reference.md`
+  - Blocked-by: Text DP smoke vertical
 
 ## [Trunk]
 """
