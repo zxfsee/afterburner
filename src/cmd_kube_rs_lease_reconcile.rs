@@ -138,7 +138,7 @@ where
             }
             _ => {
                 return Err(KubeRsLeaseReconcileError::InvalidArg(format!(
-                    "unknown argument for deploy kube-rs-lease-reconcile: {arg}\n{}",
+                    "unknown argument for debug deploy lease reconcile: {arg}\n{}",
                     usage()
                 )));
             }
@@ -184,5 +184,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy kube-rs-lease-reconcile --lease PATH --namespace NAME --resource-name NAME [--out PATH]"
+    "usage: afterburner debug deploy lease reconcile --lease PATH --namespace NAME --resource-name NAME [--out PATH]"
 }

@@ -74,8 +74,10 @@ fn kube_rs_gpu_lease_history_writes_history_and_event() {
     let out = tmp.path().join("kube_rs_gpu_lease_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-kube-rs-lease-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("lease")
+        .arg("history")
         .arg("--pointer")
         .arg(&pointer)
         .arg("--event")

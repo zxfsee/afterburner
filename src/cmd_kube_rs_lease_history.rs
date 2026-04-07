@@ -167,7 +167,7 @@ where
             }
             _ => {
                 return Err(KubeRsLeaseHistoryError::InvalidArg(format!(
-                    "unknown argument for deploy record-kube-rs-lease-history: {arg}\n{}",
+                    "unknown argument for debug deploy lease history: {arg}\n{}",
                     usage()
                 )));
             }
@@ -211,5 +211,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-kube-rs-lease-history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy lease history --pointer PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Kube-lease family collapse [Serving/Deployment Infra]
-  - Goal: Reduce the remaining kube-lease recipe expansion in `justfile` by collapsing the lease-facing grammar and moving repeated lease semantics behind typed helpers.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/kube_rs_gpu_lease_*.rs`, `tests/deployment_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
-
 ## [Trunk]
 """
 body = """

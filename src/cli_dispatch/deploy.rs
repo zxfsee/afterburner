@@ -34,6 +34,9 @@ where
     if group == "launch" {
         return run_debug_launch(args);
     }
+    if group == "lease" {
+        return run_debug_lease(args);
+    }
     if let Some(target) = legacy_debug_deploy_target(&group) {
         eprintln!(
             "debug deploy subcommand `{group}` moved to `{target}`; use `afterburner debug deploy {target} ...`"
@@ -54,6 +57,35 @@ where
         return 2;
     };
     dispatch_deploy(subcommand, args)
+}
+
+fn run_debug_lease<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy lease action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "reconcile" => dispatch_deploy("kube-rs-lease-reconcile".to_string(), args),
+        "point" => dispatch_deploy("point-kube-rs-lease".to_string(), args),
+        "history" => dispatch_deploy("record-kube-rs-lease-history".to_string(), args),
+        "reconciliation-history" => dispatch_deploy(
+            "record-kube-rs-lease-reconciliation-history".to_string(),
+            args,
+        ),
+        _ => {
+            eprintln!("unknown debug deploy lease action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
 }
 
 fn run_debug_launch<I>(mut args: I) -> i32
@@ -861,6 +893,10 @@ fn legacy_debug_deploy_target(subcommand: &str) -> Option<String> {
 
     let target = match subcommand {
         "launch" => "launch",
+        "kube-rs-lease-reconcile" => "lease reconcile",
+        "point-kube-rs-lease" => "lease point",
+        "record-kube-rs-lease-history" => "lease history",
+        "record-kube-rs-lease-reconciliation-history" => "lease reconciliation-history",
         "point-scheduler-heartbeat" => "scheduler-heartbeat point",
         "record-scheduler-heartbeat-pointer-history" => "scheduler-heartbeat pointer history",
         "reconcile-scheduler-heartbeat-pointer" => "scheduler-heartbeat pointer reconcile",

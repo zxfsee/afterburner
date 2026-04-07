@@ -44,9 +44,15 @@ pub(crate) struct TodoScope {
 
 pub fn check_top_runnable(cargo_toml: &Path, backlog: &Path) -> Result<(), QueueOrderError> {
     let cargo_text = fs::read_to_string(cargo_toml)?;
-    let items = todo_items(&cargo_text)?;
+    let items = todo_items_allow_empty(&cargo_text)?;
     let Some(top) = items.first() else {
-        return Ok(());
+        return match first_runnable_backlog_item(backlog)? {
+            Some(next) => Err(QueueOrderError::Parse(format!(
+                "active TODO queue is empty\nnext runnable backlog item: `{}`\nrun `just queue-promote-next-runnable` to promote it into the active queue",
+                next.title
+            ))),
+            None => Ok(()),
+        };
     };
     let Some(blocked_by) = &top.blocked_by else {
         return Ok(());
@@ -249,16 +255,12 @@ fn split_backlog_items(
     })
 }
 
-fn todo_items(cargo_toml: &str) -> Result<Vec<QueueTextItem>, QueueOrderError> {
+fn todo_items_allow_empty(cargo_toml: &str) -> Result<Vec<QueueTextItem>, QueueOrderError> {
     let section = extract_marked_section(cargo_toml, TODO_START, TRUNK_MARKER).map_err(|_| {
         QueueOrderError::Parse("Cargo.toml changelog template missing TODO section".into())
     })?;
-    crate::queue_workflow_metadata::parse_item_section(section, true).map_err(|err| match err {
-        QueueWorkflowMetadataError::MissingItem => {
-            QueueOrderError::Parse("Cargo.toml TODO section does not contain any item".into())
-        }
-        other => QueueOrderError::Parse(other.to_string()),
-    })
+    crate::queue_workflow_metadata::parse_item_section(section, false)
+        .map_err(|other| QueueOrderError::Parse(other.to_string()))
 }
 
 fn rebuild_todo_block(prefix: &str, items: &[QueueTextItem], suffix: &str) -> String {

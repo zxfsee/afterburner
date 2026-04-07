@@ -79,6 +79,7 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 - Queue execution entry: `just queue-execute-preflight`, `just queue-execute-preflight --repair-stale-snapshot`, `just queue-resume`.
 - `just queue-execute-preflight` delegates queue freshness checks, optional stale-snapshot repair, execute pinning, and worktree validation to the typed queue preflight helper, carrying unchanged `Cargo.toml` and `CHANGELOG.md` forward when a top-scope repair already updated them.
 - If `just queue-top-runnable-check` reports a blocked top active TODO, run `just queue-promote-next-runnable` before execution so the highest-priority runnable item becomes the active top slot.
+- If the active queue is empty and no runnable backlog item exists, `just queue-top-runnable-check` succeeds and `just queue-refresh` simply restamps the empty queue horizon.
 - If `just queue-execute-preflight` fails because `Cargo.toml` and `CHANGELOG.md` are the only rejected paths, treat that as stale top TODO scope metadata and run `just queue-fix-top-scope` before repinning execute.
 - If queue snapshot lineage is behind because queue work resumed after backlog-only or maintenance commits, run `just queue-execute-preflight --repair-stale-snapshot` to repair and continue, `just queue-resume` to do the same repair explicitly, or `just queue-refresh` if you only want to refresh the queue snapshot.
 - `just changelog` validates the queue-refresh objective against `CHANGELOG.md`, regenerates the changelog body, and stamps the active queue snapshot.
@@ -122,7 +123,7 @@ operator use case justifies promotion.
 - Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`.
 - Low-level launch writers stay behind `afterburner debug deploy launch ...`; the grouped `just deploy-launch-*` recipes remain the operator-facing launch entrypoint.
 - Kube lease flow: `just kube-rs-lease-reconcile`.
-- Kube lease pointer and history support artifacts stay behind `afterburner deploy point-kube-rs-lease` and `afterburner deploy record-kube-rs-lease-...`.
+- Low-level kube lease writers stay behind `afterburner debug deploy lease ...`; `just kube-rs-lease-reconcile` remains the operator-facing lease entrypoint.
 - `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.
 - Scheduler heartbeat stays grouped under these operator flows:
 - Primary heartbeat flow: `just scheduler-heartbeat`.

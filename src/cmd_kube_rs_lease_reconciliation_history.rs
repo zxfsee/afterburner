@@ -169,7 +169,7 @@ where
             }
             _ => {
                 return Err(KubeRsLeaseReconciliationHistoryError::InvalidArg(format!(
-                    "unknown argument for deploy record-kube-rs-lease-reconciliation-history: {arg}\n{}",
+                    "unknown argument for debug deploy lease reconciliation-history: {arg}\n{}",
                     usage()
                 )));
             }
@@ -225,5 +225,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-kube-rs-lease-reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy lease reconciliation-history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

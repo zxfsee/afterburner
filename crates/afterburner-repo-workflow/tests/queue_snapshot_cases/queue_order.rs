@@ -62,6 +62,59 @@ fn queue_top_runnable_check_reports_runnable_backlog_item_when_active_queue_has_
 }
 
 #[test]
+fn queue_top_runnable_check_reports_runnable_backlog_item_when_active_queue_is_empty() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let cargo_toml = tmp.path().join("Cargo.toml");
+    let backlog = tmp.path().join("backlog.md");
+
+    fs::write(&cargo_toml, "## TODO\n\n## [Trunk]\n").expect("write Cargo.toml");
+    fs::write(
+        &backlog,
+        "# Backlog\n\n## Items\n\n- runnable backlog item\n  - Goal: y\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/reference.md`\n",
+    )
+    .expect("write backlog");
+
+    let mut check = cargo_bin_cmd!("workflow_queue_snapshot");
+    check
+        .arg("check-top-runnable")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml)
+        .arg("--backlog")
+        .arg(&backlog);
+    let assert = check.assert().failure();
+    let stderr = String::from_utf8(assert.get_output().stderr.clone()).expect("utf8 stderr");
+    assert!(
+        stderr.contains("active TODO queue is empty")
+            && stderr.contains("next runnable backlog item: `runnable backlog item`")
+            && stderr.contains("just queue-promote-next-runnable"),
+        "empty active queue check must report the next runnable backlog item and repair path: {stderr}"
+    );
+}
+
+#[test]
+fn queue_top_runnable_check_accepts_empty_active_queue_when_backlog_has_no_runnable_item() {
+    let tmp = tempfile::tempdir().expect("tempdir");
+    let cargo_toml = tmp.path().join("Cargo.toml");
+    let backlog = tmp.path().join("backlog.md");
+
+    fs::write(&cargo_toml, "## TODO\n\n## [Trunk]\n").expect("write Cargo.toml");
+    fs::write(
+        &backlog,
+        "# Backlog\n\n## Items\n\n- blocked backlog item\n  - Goal: z\n  - Kind: `mixed`\n  - Boundary: `repo-workflow`\n  - Contracts: `docs`\n  - Scope: `docs/backlog.md`\n  - Blocked-by: external dependency\n",
+    )
+    .expect("write backlog");
+
+    let mut check = cargo_bin_cmd!("workflow_queue_snapshot");
+    check
+        .arg("check-top-runnable")
+        .arg("--cargo-toml")
+        .arg(&cargo_toml)
+        .arg("--backlog")
+        .arg(&backlog);
+    check.assert().success();
+}
+
+#[test]
 fn queue_promote_next_runnable_moves_blocked_top_below_runnable_item() {
     let tmp = tempfile::tempdir().expect("tempdir");
     let cargo_toml = tmp.path().join("Cargo.toml");

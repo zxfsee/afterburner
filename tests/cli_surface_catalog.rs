@@ -146,6 +146,7 @@ fn grouped_subcommands_dispatch_to_existing_tools() {
         ("verify", "handoff", "reconcile"),
         ("rollback", "verification-receipt", "supersession-reconcile"),
         ("rollback", "verification-bundle", "apply"),
+        ("debug", "deploy", "lease"),
         ("debug", "drift", "baseline"),
         ("source", "approval", "receipt"),
         ("source", "provenance", "bundle"),
@@ -256,6 +257,35 @@ fn deployment_verification_operator_surface_uses_intent_families() {
         .arg("launch")
         .arg("locator")
         .arg("point")
+        .arg("--help")
+        .assert()
+        .success();
+
+    cargo_bin_cmd!("afterburner")
+        .arg("deploy")
+        .arg("kube-rs-lease-reconcile")
+        .arg("--help")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains(
+            "use `afterburner debug deploy lease reconcile ...`",
+        ));
+
+    cargo_bin_cmd!("afterburner")
+        .arg("deploy")
+        .arg("point-kube-rs-lease")
+        .arg("--help")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains(
+            "use `afterburner debug deploy lease point ...`",
+        ));
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("deploy")
+        .arg("lease")
+        .arg("reconcile")
         .arg("--help")
         .assert()
         .success();

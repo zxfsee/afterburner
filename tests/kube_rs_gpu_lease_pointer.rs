@@ -63,8 +63,10 @@ fn kube_rs_gpu_lease_pointer_writes_pointer_and_event() {
     let out = tmp.path().join("kube_rs_gpu_lease_pointer.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("point-kube-rs-lease")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("lease")
+        .arg("point")
         .arg("--reconciliation")
         .arg(fixture_path(
             "kube_rs_gpu_lease_reconciliation.example.json",

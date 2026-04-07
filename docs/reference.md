@@ -68,6 +68,7 @@ unless they graduate into a clear operator intent.
   - `kube_rs_gpu_lease_reconciliation_history.json`
   - `kube_rs_gpu_lease_pointer.json`
   - `kube_rs_gpu_lease_history.json`
+  - Low-level kube lease writers stay behind `afterburner debug deploy lease ...`; use `just kube-rs-lease-reconcile` for the operator-facing lease flow.
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.
   - Scheduler heartbeat artifact groups:
   - `gpu_scheduler_heartbeat*.json`

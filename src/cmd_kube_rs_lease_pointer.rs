@@ -130,7 +130,7 @@ where
             }
             _ => {
                 return Err(KubeRsLeasePointerError::InvalidArg(format!(
-                    "unknown argument for deploy point-kube-rs-lease: {arg}\n{}",
+                    "unknown argument for debug deploy lease point: {arg}\n{}",
                     usage()
                 )));
             }
@@ -167,5 +167,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy point-kube-rs-lease --reconciliation PATH [--out PATH]"
+    "usage: afterburner debug deploy lease point --reconciliation PATH [--out PATH]"
 }

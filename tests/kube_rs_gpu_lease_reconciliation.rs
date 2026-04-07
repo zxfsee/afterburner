@@ -76,8 +76,10 @@ fn kube_rs_gpu_lease_reconciliation_writes_artifact_and_event() {
     let out = tmp.path().join("kube_rs_gpu_lease_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("kube-rs-lease-reconcile")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("lease")
+        .arg("reconcile")
         .arg("--lease")
         .arg(fixture_path("gpu_scheduler_lease.example.json"))
         .arg("--namespace")

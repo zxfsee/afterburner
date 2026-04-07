@@ -79,8 +79,10 @@ fn kube_rs_gpu_lease_reconciliation_history_writes_history_and_event() {
         .join("kube_rs_gpu_lease_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-kube-rs-lease-reconciliation-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("lease")
+        .arg("reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

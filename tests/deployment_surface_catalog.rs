@@ -80,7 +80,7 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`.",
         "Low-level launch writers stay behind `afterburner debug deploy launch ...`; the grouped `just deploy-launch-*` recipes remain the operator-facing launch entrypoint.",
         "Kube lease flow: `just kube-rs-lease-reconcile`.",
-        "Kube lease pointer and history support artifacts stay behind `afterburner deploy point-kube-rs-lease` and `afterburner deploy record-kube-rs-lease-...`.",
+        "Low-level kube lease writers stay behind `afterburner debug deploy lease ...`; `just kube-rs-lease-reconcile` remains the operator-facing lease entrypoint.",
         "`just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.",
     ] {
         assert!(
@@ -126,6 +126,7 @@ fn deployment_stack_family_stays_grouped_and_surface_complete() {
         "`kube_rs_gpu_lease_reconciliation_history.json`",
         "`kube_rs_gpu_lease_pointer.json`",
         "`kube_rs_gpu_lease_history.json`",
+        "Low-level kube lease writers stay behind `afterburner debug deploy lease ...`; use `just kube-rs-lease-reconcile` for the operator-facing lease flow.",
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-deployment-stack` for mechanical coverage.",
     ] {
         assert!(
