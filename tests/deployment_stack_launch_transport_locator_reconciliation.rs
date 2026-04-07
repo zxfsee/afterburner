@@ -97,8 +97,12 @@ fn deployment_stack_launch_transport_locator_reconciliation_writes_artifact_and_
         .join("deployment_stack_launch_transport_locator_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("reconcile-launch-transport-locator")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("transport")
+        .arg("reconcile")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--locator")

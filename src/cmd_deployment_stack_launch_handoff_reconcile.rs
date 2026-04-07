@@ -223,5 +223,5 @@ where
 afterburner::define_command_input_json_helpers!(DeploymentStackLaunchHandoffReconcileError);
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-launch-handoff --bundle PATH --handoff PATH [--out PATH]"
+    "usage: afterburner debug deploy launch handoff reconcile --bundle PATH --handoff PATH [--out PATH]"
 }

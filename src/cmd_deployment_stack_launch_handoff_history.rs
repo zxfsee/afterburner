@@ -229,5 +229,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy record-launch-handoff-history --handoff PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug deploy launch handoff history --handoff PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

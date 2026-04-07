@@ -122,8 +122,11 @@ fn deployment_stack_launch_handoff_reconciliation_writes_artifact_and_event() {
         .join("deployment_stack_launch_evidence_handoff_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("reconcile-launch-handoff")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("handoff")
+        .arg("reconcile")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--handoff")

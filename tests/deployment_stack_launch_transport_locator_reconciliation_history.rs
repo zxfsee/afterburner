@@ -94,8 +94,12 @@ fn deployment_stack_launch_transport_locator_reconciliation_history_writes_histo
         .join("deployment_stack_launch_transport_locator_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-launch-transport-locator-reconciliation-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("transport")
+        .arg("reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

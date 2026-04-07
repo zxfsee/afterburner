@@ -117,7 +117,10 @@ fn deployment_stack_check_writes_expected_artifact() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json"),
+        justfile.contains("afterburner-deploy := \"cargo run --locked --bin afterburner -- deploy\"")
+            && justfile.contains(
+                "stack-check --target-profile fixtures/deployment_target_profile.example.json --stack-profile fixtures/deployment_stack_profile.example.json"
+            ),
         "deploy-check must validate the deployment stack contract"
     );
 }

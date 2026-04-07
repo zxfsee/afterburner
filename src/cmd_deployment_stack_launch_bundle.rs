@@ -226,5 +226,5 @@ where
 afterburner::define_command_input_json_helpers!(DeploymentStackLaunchBundleError);
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy stack-launch-bundle --receipt PATH [--out PATH]"
+    "usage: afterburner debug deploy launch bundle --receipt PATH [--out PATH]"
 }

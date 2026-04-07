@@ -95,8 +95,10 @@ fn deployment_stack_launch_receipt_writes_expected_artifact() {
 
     let out_path = tmp.path().join("deployment_stack_launch_receipt.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("stack-launch-receipt")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("receipt")
         .arg("--plan")
         .arg(&plan)
         .arg("--port")

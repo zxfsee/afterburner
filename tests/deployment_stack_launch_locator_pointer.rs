@@ -77,8 +77,11 @@ fn deployment_stack_launch_locator_pointer_writes_pointer_and_event() {
         .path()
         .join("deployment_stack_launch_locator_pointer.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("point-launch-locator")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("point")
         .arg("--locator")
         .arg(&locator)
         .arg("--out")

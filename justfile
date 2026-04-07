@@ -145,22 +145,22 @@ deploy-check:
     nix eval .#checks.aarch64-darwin.deploy-schema.drvPath
 
 deploy-launch-plan target_profile stack_profile:
-    {{ afterburner-deploy }} stack-launch-plan --target-profile {{ target_profile }} --stack-profile {{ stack_profile }} --out artifacts/deploy/deployment_stack_launch_plan.json
+    {{ afterburner-debug-deploy }} launch plan --target-profile {{ target_profile }} --stack-profile {{ stack_profile }} --out artifacts/deploy/deployment_stack_launch_plan.json
 
 deploy-launch-receipt plan port launched_at_unix_ms:
-    {{ afterburner-deploy }} stack-launch-receipt --plan {{ plan }} --port {{ port }} --launched-at-unix-ms {{ launched_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_receipt.json
+    {{ afterburner-debug-deploy }} launch receipt --plan {{ plan }} --port {{ port }} --launched-at-unix-ms {{ launched_at_unix_ms }} --out artifacts/deploy/deployment_stack_launch_receipt.json
 
 deploy-launch-bundle receipt:
-    {{ afterburner-deploy }} stack-launch-bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
+    {{ afterburner-debug-deploy }} launch bundle --receipt {{ receipt }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle.json
 
 deploy-launch-bundle-reconcile receipt bundle:
-    {{ afterburner-deploy }} reconcile-launch-bundle --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
+    {{ afterburner-debug-deploy }} launch bundle reconcile --receipt {{ receipt }} --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_bundle_reconciliation.json
 
 deploy-launch-handoff bundle:
-    {{ afterburner-deploy }} stack-launch-handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
+    {{ afterburner-debug-deploy }} launch handoff --bundle {{ bundle }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff.json
 
 deploy-launch-handoff-reconcile bundle handoff:
-    {{ afterburner-deploy }} reconcile-launch-handoff --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
+    {{ afterburner-debug-deploy }} launch handoff reconcile --bundle {{ bundle }} --handoff {{ handoff }} --out artifacts/deploy/deployment_stack_launch_evidence_handoff_reconciliation.json
 
 # validate a candidate artifact before promotion
 rollout-check candidate_artifact candidate_manifest ownership provider destination:

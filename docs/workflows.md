@@ -120,7 +120,7 @@ operator use case justifies promotion.
 - Launch planning: `just deploy-launch-plan`, `just deploy-launch-receipt`.
 - Bundle flow: `just deploy-launch-bundle`, `just deploy-launch-bundle-reconcile`.
 - Handoff flow: `just deploy-launch-handoff`, `just deploy-launch-handoff-reconcile`.
-- Launch support artifacts for history, locator, transport, and reconciliation stay grouped behind `afterburner deploy record-launch-...`, `afterburner deploy point-launch-...`, and `afterburner deploy reconcile-launch-...`.
+- Low-level launch writers stay behind `afterburner debug deploy launch ...`; the grouped `just deploy-launch-*` recipes remain the operator-facing launch entrypoint.
 - Kube lease flow: `just kube-rs-lease-reconcile`.
 - Kube lease pointer and history support artifacts stay behind `afterburner deploy point-kube-rs-lease` and `afterburner deploy record-kube-rs-lease-...`.
 - `just workflow-surface-check-deployment-stack` guards the grouped deployment-stack workflow map and reference split.

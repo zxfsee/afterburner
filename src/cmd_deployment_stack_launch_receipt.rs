@@ -232,5 +232,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy stack-launch-receipt --plan PATH --port PORT --launched-at-unix-ms N [--out PATH]"
+    "usage: afterburner debug deploy launch receipt --plan PATH --port PORT --launched-at-unix-ms N [--out PATH]"
 }

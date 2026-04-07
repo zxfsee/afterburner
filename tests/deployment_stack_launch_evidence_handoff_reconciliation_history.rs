@@ -99,8 +99,11 @@ fn deployment_stack_launch_handoff_reconciliation_history_writes_history_and_eve
         .join("deployment_stack_launch_evidence_handoff_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-launch-handoff-reconciliation-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("handoff")
+        .arg("reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

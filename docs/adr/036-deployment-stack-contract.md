@@ -28,60 +28,63 @@ Add an explicit deployment stack contract.
 - `afterburner deploy stack-check` validates the deployment target profile
   plus the deployment stack profile and writes a checked
   `deployment_stack_check.json` artifact.
-- `afterburner deploy stack-launch-plan` resolves the deployment target profile
+- The grouped `just deploy-launch-*` recipes are the operator-facing launch
+  surface; the low-level launch writers stay behind
+  `afterburner debug deploy launch ...`.
+- `afterburner debug deploy launch plan` resolves the deployment target profile
   plus the deployment stack profile into one checked
   `deployment_stack_launch_plan.json` artifact.
-- `afterburner deploy stack-launch-receipt` materializes the launch-time
+- `afterburner debug deploy launch receipt` materializes the launch-time
   parameters over one checked launch plan as
   `deployment_stack_launch_receipt.json`.
-- `afterburner deploy stack-launch-bundle` packages the launch plan plus launch
+- `afterburner debug deploy launch bundle` packages the launch plan plus launch
   receipt into one `deployment_stack_launch_evidence_bundle.json` artifact so
   downstream rollout tooling can consume a single stack launch entrypoint.
-- `afterburner deploy reconcile-launch-bundle` exports one stable
+- `afterburner debug deploy launch bundle reconcile` exports one stable
   `deployment_stack_launch_evidence_bundle_reconciliation.json` artifact so
   downstream deployment tooling can compare desired plan-and-receipt-resolved
   bundle state against the current bundle without ad hoc shell checks.
-- `afterburner deploy record-launch-bundle-reconciliation-history` appends one
+- `afterburner debug deploy launch bundle reconciliation-history` appends one
   compact `deployment_stack_launch_evidence_bundle_reconciliation_history.json`
   artifact over desired-versus-current bundle updates for downstream deployment
   audit tooling.
-- `afterburner deploy stack-launch-handoff` exports one compact
+- `afterburner debug deploy launch handoff` exports one compact
   `deployment_stack_launch_evidence_handoff.json` handoff artifact over the
   current launch evidence bundle for downstream transport or deployment tools.
-- `afterburner deploy reconcile-launch-handoff` exports one stable
+- `afterburner debug deploy launch handoff reconcile` exports one stable
   `deployment_stack_launch_evidence_handoff_reconciliation.json` artifact so
   downstream deployment tooling can compare desired bundle-resolved handoff
   state against the current handoff without ad hoc shell checks.
-- `afterburner deploy record-launch-handoff-history` appends one compact
+- `afterburner debug deploy launch handoff history` appends one compact
   `deployment_stack_launch_evidence_handoff_history.json` artifact over handoff
   changes for downstream deployment audit tooling.
-- `afterburner deploy record-launch-handoff-reconciliation-history` appends one
+- `afterburner debug deploy launch handoff reconciliation-history` appends one
   compact `deployment_stack_launch_evidence_handoff_reconciliation_history.json`
   artifact over desired-versus-current handoff updates for downstream
   deployment audit tooling.
-- `afterburner deploy point-launch-transport-locator` exports one stable
+- `afterburner debug deploy launch locator transport point` exports one stable
   `deployment_stack_launch_transport_locator.json` locator over the current
   launch handoff for transport-facing consumers.
-- `afterburner deploy record-launch-transport-locator-history` appends one
+- `afterburner debug deploy launch locator transport history` appends one
   compact `deployment_stack_launch_transport_locator_history.json` artifact
   over transport-locator changes for downstream deployment audit tooling.
-- `afterburner deploy reconcile-launch-transport-locator` exports one stable
+- `afterburner debug deploy launch locator transport reconcile` exports one stable
   `deployment_stack_launch_transport_locator_reconciliation.json` artifact so
   downstream deployment tooling can compare desired handoff-resolved locator
   state against the current transport locator without ad hoc shell checks.
-- `afterburner deploy record-launch-transport-locator-reconciliation-history`
+- `afterburner debug deploy launch locator transport reconciliation-history`
   appends one compact
   `deployment_stack_launch_transport_locator_reconciliation_history.json`
   artifact over desired-versus-current transport locator updates for downstream
   deployment audit tooling.
-- `afterburner deploy point-launch-locator` exports one stable
+- `afterburner debug deploy launch locator point` exports one stable
   `deployment_stack_launch_locator_pointer.json` current-pointer artifact over
   the current launch transport locator.
-- `afterburner deploy reconcile-launch-locator` exports one stable
+- `afterburner debug deploy launch locator reconcile` exports one stable
   `deployment_stack_launch_locator_reconciliation.json` artifact so downstream
   deployment tooling can compare desired launch-locator state against the
   current pointer without ad hoc shell checks.
-- `afterburner deploy record-launch-locator-reconciliation-history` appends one
+- `afterburner debug deploy launch locator reconciliation-history` appends one
   compact `deployment_stack_launch_locator_reconciliation_history.json`
   artifact over desired-versus-current locator updates for downstream
   deployment audit tooling.

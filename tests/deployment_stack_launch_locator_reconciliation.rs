@@ -89,8 +89,11 @@ fn deployment_stack_launch_locator_reconciliation_writes_artifact_and_event() {
         .join("deployment_stack_launch_locator_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("reconcile-launch-locator")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("reconcile")
         .arg("--plan")
         .arg(&plan)
         .arg("--pointer")

@@ -209,5 +209,5 @@ where
 afterburner::define_command_input_json_helpers!(DeploymentStackLaunchLocatorReconcileError);
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-launch-locator --plan PATH --pointer PATH [--out PATH]"
+    "usage: afterburner debug deploy launch locator reconcile --plan PATH --pointer PATH [--out PATH]"
 }

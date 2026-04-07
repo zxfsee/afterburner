@@ -88,8 +88,11 @@ fn deployment_stack_launch_handoff_history_writes_history_and_event() {
         .join("deployment_stack_launch_evidence_handoff_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-launch-handoff-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("handoff")
+        .arg("history")
         .arg("--handoff")
         .arg(&handoff)
         .arg("--event")

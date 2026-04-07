@@ -105,8 +105,10 @@ fn deployment_stack_launch_handoff_writes_handoff_and_event() {
         .path()
         .join("deployment_stack_launch_evidence_handoff.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("stack-launch-handoff")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("handoff")
         .arg("--bundle")
         .arg(&bundle)
         .arg("--out")

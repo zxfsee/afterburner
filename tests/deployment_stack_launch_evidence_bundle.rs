@@ -131,8 +131,10 @@ fn deployment_stack_launch_bundle_writes_bundle_and_event() {
         .path()
         .join("deployment_stack_launch_evidence_bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("stack-launch-bundle")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("bundle")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--out")

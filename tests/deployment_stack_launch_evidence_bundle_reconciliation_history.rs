@@ -115,8 +115,11 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_history_writes_history
         .join("deployment_stack_launch_evidence_bundle_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-launch-bundle-reconciliation-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("bundle")
+        .arg("reconciliation-history")
         .arg("--reconciliation")
         .arg(&reconciliation)
         .arg("--event")

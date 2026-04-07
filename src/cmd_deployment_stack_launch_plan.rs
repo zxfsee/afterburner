@@ -276,5 +276,5 @@ fn read_relative_string(
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy stack-launch-plan --target-profile PATH --stack-profile PATH [--out PATH]"
+    "usage: afterburner debug deploy launch plan --target-profile PATH --stack-profile PATH [--out PATH]"
 }

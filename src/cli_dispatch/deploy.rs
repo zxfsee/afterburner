@@ -31,6 +31,9 @@ where
         eprintln!("{}", super::usage());
         return 2;
     };
+    if group == "launch" {
+        return run_debug_launch(args);
+    }
     if let Some(target) = legacy_debug_deploy_target(&group) {
         eprintln!(
             "debug deploy subcommand `{group}` moved to `{target}`; use `afterburner debug deploy {target} ...`"
@@ -51,6 +54,145 @@ where
         return 2;
     };
     dispatch_deploy(subcommand, args)
+}
+
+fn run_debug_launch<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy launch action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "plan" => dispatch_deploy("stack-launch-plan".to_string(), args),
+        "receipt" => dispatch_deploy("stack-launch-receipt".to_string(), args),
+        "bundle" => run_debug_launch_bundle(args),
+        "handoff" => run_debug_launch_handoff(args),
+        "locator" => run_debug_launch_locator(args),
+        _ => {
+            eprintln!("unknown debug deploy launch action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_launch_bundle<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return dispatch_deploy("stack-launch-bundle".to_string(), args.into_iter());
+    };
+    if action.starts_with('-') {
+        return dispatch_deploy("stack-launch-bundle".to_string(), args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "reconcile" => dispatch_deploy("reconcile-launch-bundle".to_string(), rest),
+        "reconciliation-history" => dispatch_deploy(
+            "record-launch-bundle-reconciliation-history".to_string(),
+            rest,
+        ),
+        _ => {
+            eprintln!("unknown debug deploy launch bundle action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_launch_handoff<I>(args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let args = args.collect::<Vec<_>>();
+    let Some(action) = args.first().cloned() else {
+        return dispatch_deploy("stack-launch-handoff".to_string(), args.into_iter());
+    };
+    if action.starts_with('-') {
+        return dispatch_deploy("stack-launch-handoff".to_string(), args.into_iter());
+    }
+    let rest = args.into_iter().skip(1);
+    match action.as_str() {
+        "history" => dispatch_deploy("record-launch-handoff-history".to_string(), rest),
+        "reconcile" => dispatch_deploy("reconcile-launch-handoff".to_string(), rest),
+        "reconciliation-history" => dispatch_deploy(
+            "record-launch-handoff-reconciliation-history".to_string(),
+            rest,
+        ),
+        _ => {
+            eprintln!("unknown debug deploy launch handoff action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_launch_locator<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy launch locator action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => dispatch_deploy("point-launch-locator".to_string(), args),
+        "history" => dispatch_deploy("record-launch-locator-history".to_string(), args),
+        "reconcile" => dispatch_deploy("reconcile-launch-locator".to_string(), args),
+        "reconciliation-history" => dispatch_deploy(
+            "record-launch-locator-reconciliation-history".to_string(),
+            args,
+        ),
+        "transport" => run_debug_launch_locator_transport(args),
+        _ => {
+            eprintln!("unknown debug deploy launch locator action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
+}
+
+fn run_debug_launch_locator_transport<I>(mut args: I) -> i32
+where
+    I: Iterator<Item = String>,
+{
+    let Some(action) = args.next() else {
+        eprintln!("missing debug deploy launch locator transport action");
+        eprintln!("{}", super::usage());
+        return 2;
+    };
+    if action == "--help" || action == "-h" {
+        println!("{}", super::usage());
+        return 0;
+    }
+    match action.as_str() {
+        "point" => dispatch_deploy("point-launch-transport-locator".to_string(), args),
+        "history" => dispatch_deploy("record-launch-transport-locator-history".to_string(), args),
+        "reconcile" => dispatch_deploy("reconcile-launch-transport-locator".to_string(), args),
+        "reconciliation-history" => dispatch_deploy(
+            "record-launch-transport-locator-reconciliation-history".to_string(),
+            args,
+        ),
+        _ => {
+            eprintln!("unknown debug deploy launch locator transport action: {action}");
+            eprintln!("{}", super::usage());
+            2
+        }
+    }
 }
 
 fn run_debug_scheduler_heartbeat<I>(args: I) -> i32
@@ -718,6 +860,7 @@ fn legacy_debug_deploy_target(subcommand: &str) -> Option<String> {
     }
 
     let target = match subcommand {
+        "launch" => "launch",
         "point-scheduler-heartbeat" => "scheduler-heartbeat point",
         "record-scheduler-heartbeat-pointer-history" => "scheduler-heartbeat pointer history",
         "reconcile-scheduler-heartbeat-pointer" => "scheduler-heartbeat pointer reconcile",
@@ -752,6 +895,25 @@ fn legacy_debug_deploy_target(subcommand: &str) -> Option<String> {
         }
         "record-scheduler-heartbeat-pointer-rollback-supersession-reconciliation-history" => {
             "scheduler-heartbeat pointer rollback supersession reconciliation-history"
+        }
+        "stack-launch-plan" => "launch plan",
+        "stack-launch-receipt" => "launch receipt",
+        "stack-launch-bundle" => "launch bundle",
+        "reconcile-launch-bundle" => "launch bundle reconcile",
+        "record-launch-bundle-reconciliation-history" => "launch bundle reconciliation-history",
+        "stack-launch-handoff" => "launch handoff",
+        "record-launch-handoff-history" => "launch handoff history",
+        "reconcile-launch-handoff" => "launch handoff reconcile",
+        "record-launch-handoff-reconciliation-history" => "launch handoff reconciliation-history",
+        "point-launch-locator" => "launch locator point",
+        "record-launch-locator-history" => "launch locator history",
+        "reconcile-launch-locator" => "launch locator reconcile",
+        "record-launch-locator-reconciliation-history" => "launch locator reconciliation-history",
+        "point-launch-transport-locator" => "launch locator transport point",
+        "record-launch-transport-locator-history" => "launch locator transport history",
+        "reconcile-launch-transport-locator" => "launch locator transport reconcile",
+        "record-launch-transport-locator-reconciliation-history" => {
+            "launch locator transport reconciliation-history"
         }
         "record-scheduler-heartbeat-history" => "scheduler-heartbeat history",
         "scheduler-heartbeat-reconcile" => "scheduler-heartbeat reconcile",

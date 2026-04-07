@@ -77,8 +77,10 @@ fn deployment_stack_launch_plan_writes_expected_artifact() {
     let out_path = tmp.path().join("deployment_stack_launch_plan.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("stack-launch-plan")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("plan")
         .arg("--target-profile")
         .arg(fixture_path("deployment_target_profile.example.json"))
         .arg("--stack-profile")

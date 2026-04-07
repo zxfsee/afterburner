@@ -153,8 +153,11 @@ fn deployment_stack_launch_evidence_bundle_reconciliation_writes_artifact_and_ev
         .join("deployment_stack_launch_evidence_bundle_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("reconcile-launch-bundle")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("bundle")
+        .arg("reconcile")
         .arg("--receipt")
         .arg(&receipt)
         .arg("--bundle")

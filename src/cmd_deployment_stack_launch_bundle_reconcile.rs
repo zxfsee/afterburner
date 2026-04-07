@@ -230,5 +230,5 @@ where
 afterburner::define_command_input_json_helpers!(DeploymentStackLaunchBundleReconcileError);
 
 fn usage() -> &'static str {
-    "usage: afterburner deploy reconcile-launch-bundle --receipt PATH --bundle PATH [--out PATH]"
+    "usage: afterburner debug deploy launch bundle reconcile --receipt PATH --bundle PATH [--out PATH]"
 }

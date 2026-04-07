@@ -212,6 +212,45 @@ fn deployment_verification_operator_surface_uses_intent_families() {
         .arg("--help")
         .assert()
         .success();
+
+    cargo_bin_cmd!("afterburner")
+        .arg("deploy")
+        .arg("stack-launch-plan")
+        .arg("--help")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains(
+            "use `afterburner debug deploy launch plan ...`",
+        ));
+
+    cargo_bin_cmd!("afterburner")
+        .arg("deploy")
+        .arg("point-launch-locator")
+        .arg("--help")
+        .assert()
+        .failure()
+        .stderr(predicates::str::contains(
+            "use `afterburner debug deploy launch locator point ...`",
+        ));
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("plan")
+        .arg("--help")
+        .assert()
+        .success();
+
+    cargo_bin_cmd!("afterburner")
+        .arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("point")
+        .arg("--help")
+        .assert()
+        .success();
 }
 
 #[test]
@@ -318,6 +357,7 @@ fn grouped_operator_grammar_stays_intent_first() {
         ("verify", "handoff", "reconcile"),
         ("rollback", "verification-receipt", "supersession-reconcile"),
         ("rollback", "verification-bundle", "apply"),
+        ("debug", "deploy", "launch"),
         ("debug", "lineage", "receipt"),
         ("debug", "lineage", "bundle"),
         ("debug", "lineage", "handoff"),

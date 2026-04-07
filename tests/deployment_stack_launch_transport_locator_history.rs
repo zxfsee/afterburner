@@ -82,8 +82,12 @@ fn deployment_stack_launch_transport_locator_history_writes_history_and_event() 
         .join("deployment_stack_launch_transport_locator_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("deploy")
-        .arg("record-launch-transport-locator-history")
+    cmd.arg("debug")
+        .arg("deploy")
+        .arg("launch")
+        .arg("locator")
+        .arg("transport")
+        .arg("history")
         .arg("--locator")
         .arg(&locator)
         .arg("--event")
