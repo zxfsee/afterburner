@@ -99,7 +99,12 @@ fn distributed_optimizer_and_checkpoint_state_is_documented() {
         "README must mention the explicit checkpoint_group recovery anchor"
     );
     let reference = repo_file("docs/reference.md");
-    for needle in ["distributed optimizer-state recovery", "checkpoint_group"] {
+    for needle in [
+        "distributed optimizer-state recovery",
+        "checkpoint_group",
+        "distributed_runtime_checkpoint_state.json",
+        "checkpoint_root",
+    ] {
         assert!(
             reference.contains(needle),
             "reference index must mention the optimizer/checkpoint anchor `{needle}`"

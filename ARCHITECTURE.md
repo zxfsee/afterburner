@@ -146,6 +146,10 @@ participant-device refs explicit through `distributed_runtime_execution.json`
 instead of deriving topology from scheduler placement or shard ownership. CPU
 explicit DP and ambiguous participant refs are rejected at the runtime boundary
 until a passing real distinct-device execution proof lands.
+Checkpointed recovery stays anchored to explicit runtime state through
+`distributed_runtime_checkpoint_state.json`, with `checkpoint_group`,
+`checkpoint_root`, and `resume_epoch` kept inside the runtime boundary instead
+of the scheduler.
 
 Distributed-training scope is workload-driven. The repo is not targeting
 framework parity with DeepSpeed-class systems; it is implementing the minimum

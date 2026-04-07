@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-runtime-checkpoint-state/v1",
+  "title": "Distributed Runtime Checkpoint State v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_version",
+    "backend",
+    "checkpoint_group",
+    "checkpoint_root",
+    "resume_epoch",
+    "world_size",
+    "device_group"
+  ],
+  "properties": {
+    "schema_version": { "const": "1" },
+    "artifact_version": { "type": "string", "minLength": 1 },
+    "backend": { "type": "string", "minLength": 1 },
+    "checkpoint_group": { "type": "string", "minLength": 1 },
+    "checkpoint_root": { "type": "string", "minLength": 1 },
+    "resume_epoch": {
+      "type": ["integer", "null"],
+      "minimum": 1
+    },
+    "world_size": { "type": "integer", "minimum": 1 },
+    "device_group": {
+      "type": ["string", "null"],
+      "minLength": 1
+    }
+  }
+}

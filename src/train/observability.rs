@@ -1,6 +1,7 @@
 use std::io;
 use std::path::{Path, PathBuf};
 
+use crate::command_artifacts::path_payload_fields;
 use crate::observability::{append_json_line, event_line};
 
 use super::{
@@ -21,6 +22,8 @@ pub fn write_train_event(
     backend: &str,
     config: &TrainingConfig,
     metrics_dir: &Path,
+    runtime_root: &Path,
+    checkpoint_group: Option<&str>,
     inference_dir: &Path,
     planned_samples: u64,
 ) -> io::Result<()> {
@@ -30,6 +33,8 @@ pub fn write_train_event(
         event,
         config,
         metrics_dir,
+        runtime_root,
+        checkpoint_group,
         inference_dir,
         planned_samples,
     );
@@ -41,23 +46,41 @@ pub fn train_start_event_line(
     event: &str,
     config: &TrainingConfig,
     metrics_dir: &Path,
+    runtime_root: &Path,
+    checkpoint_group: Option<&str>,
     inference_dir: &Path,
     planned_samples: u64,
 ) -> String {
+    let mut fields = serde_json::json!({
+        "backend": backend,
+        "artifact_version": config.artifact_version,
+        "batch_size": config.batch_size,
+        "worker_parallelism": config.num_workers,
+        "num_epochs": config.num_epochs,
+        "planned_samples": planned_samples,
+        "metrics_dir": metrics_dir.to_string_lossy().to_string(),
+        "inference_dir": inference_dir.to_string_lossy().to_string()
+    });
+    if let Some(object) = fields.as_object_mut() {
+        if runtime_root != metrics_dir {
+            object.insert(
+                "runtime_root".to_string(),
+                serde_json::Value::from(runtime_root.to_string_lossy().to_string()),
+            );
+        }
+        if let Some(checkpoint_group) = checkpoint_group {
+            object.insert(
+                "checkpoint_group".to_string(),
+                serde_json::Value::from(checkpoint_group.to_string()),
+            );
+        }
+    }
+
     event_line(
         "info",
         "train",
         event,
-        serde_json::json!({
-            "backend": backend,
-            "artifact_version": config.artifact_version,
-            "batch_size": config.batch_size,
-            "worker_parallelism": config.num_workers,
-            "num_epochs": config.num_epochs,
-            "planned_samples": planned_samples,
-            "metrics_dir": metrics_dir.to_string_lossy().to_string(),
-            "inference_dir": inference_dir.to_string_lossy().to_string()
-        }),
+        fields,
     )
 }
 
@@ -152,5 +175,20 @@ pub fn write_train_distributed_runtime_execution_event(
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
     let line = distributed_runtime_execution_written_event_line(artifact_path, artifact);
+    append_json_line(&path, &line)
+}
+
+pub fn write_train_distributed_runtime_checkpoint_state_event(
+    train_dir: &Path,
+    artifact_path: &Path,
+    artifact: &serde_json::Value,
+) -> io::Result<()> {
+    let path = observability_path(train_dir);
+    let line = event_line(
+        "info",
+        "train",
+        "distributed_runtime_checkpoint_state_written",
+        path_payload_fields("artifact_path", artifact_path, "artifact", artifact.clone()),
+    );
     append_json_line(&path, &line)
 }

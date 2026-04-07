@@ -175,6 +175,8 @@ fn train_start_and_artifact_exported_events_match_fixture_contracts() {
         "train_start",
         &config,
         metrics_dir.as_path(),
+        metrics_dir.as_path(),
+        None,
         inference_dir.as_path(),
         60_000,
     );

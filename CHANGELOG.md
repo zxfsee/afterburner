@@ -2,6 +2,22 @@
 
 ## TODO
 
+- DP checkpoint and optimizer resume path [Distributed Training, Runtime Infra]
+  - Goal: Make `checkpoint_group`-anchored checkpoint and optimizer resume executable for the first DP runtime path instead of leaving recovery at the contract-only layer.
+  - Kind: `mixed`
+  - Boundary: `distributed-runtime`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `src/cmd_train.rs`, `src/train/runtime.rs`, `src/train/artifacts.rs`, `src/train/observability.rs`, `fixtures/distributed_runtime_checkpoint_state.schema.json`, `tests/distributed_runtime_checkpoint_state.rs`, `tests/contract_anchor_catalog.rs`, `docs/adr/061-distributed-optimizer-and-checkpoint-state.md`, `docs/reference.md`, `README.md`, `ARCHITECTURE.md`
+
+- Scheduler/runtime rank assignment handoff [Distributed Training, Runtime Infra]
+  - Goal: Feed explicit `world_size`, `rank_assignments`, and `device_group` semantics from the scheduler/control-plane boundary into the first DP runtime path without widening scheduler policy.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/cmd_single_node_scheduler.rs`, `src/cmd_scheduler_runtime_simulation.rs`, `tests/gpu_scheduler_lifecycle_message.rs`, `tests/single_node_gpu_scheduler.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+
+
+
 - Distinct-device execution proof for single-node DP path [Distributed Training, Runtime Infra]
   - Goal: Run one real single-node data-parallel training execution on a host or runner with at least 2 concrete adapters and capture proof evidence that multiple distinct participants actually execute under the guarded DP runtime path.
   - Kind: `mixed`
@@ -10,12 +26,7 @@
   - Scope: `src/cmd_train.rs`, `src/train/runtime.rs`, `src/train/distributed_metadata.rs`, `tests/distributed_runtime_execution_contract.rs`, `tests/distributed_runtime_fit_catalog.rs`, `docs/reference.md`, `ARCHITECTURE.md`
   - Blocked-by: Host or runner with >=2 concrete adapters for one distinct-device DP execution proof
 
-- DP checkpoint and optimizer resume path [Distributed Training, Runtime Infra]
-  - Goal: Make `checkpoint_group`-anchored checkpoint and optimizer resume executable for the first DP runtime path instead of leaving recovery at the contract-only layer.
-  - Kind: `mixed`
-  - Boundary: `distributed-runtime`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/train/runtime.rs`, `src/train/artifacts.rs`, `docs/adr/061-distributed-optimizer-and-checkpoint-state.md`, `docs/reference.md`, `ARCHITECTURE.md`, `tests/contract_anchor_catalog.rs`
+
 
 - Executed DP benchmark and profile artifact [Distributed Training, Experimentation/Eval Infra]
   - Goal: Run one executed single-node DP benchmark from the train path and synthesize both `distributed_runtime_benchmark_run.json` and one measured `distributed_runtime_profile.json` cell from that real run instead of synthetic inputs or schema-only normalization.
@@ -25,12 +36,7 @@
   - Scope: `src/cmd_distributed_runtime_benchmark.rs`, `src/cmd_distributed_runtime_profile.rs`, `src/cmd_train.rs`, `tests/distributed_runtime_benchmark_harness.rs`, `tests/distributed_runtime_profile_schema.rs`, `docs/adr/058-distributed-runtime-benchmark-harness.md`, `docs/adr/043-distributed-runtime-profile-schema.md`, `docs/reference.md`
   - Blocked-by: Distinct-device execution proof for single-node DP path
 
-- Scheduler/runtime rank assignment handoff [Distributed Training, Runtime Infra]
-  - Goal: Feed explicit `world_size`, `rank_assignments`, and `device_group` semantics from the scheduler/control-plane boundary into the first DP runtime path without widening scheduler policy.
-  - Kind: `mixed`
-  - Boundary: `runtime-scheduler`
-  - Contracts: `artifact`, `event`
-  - Scope: `src/cmd_single_node_scheduler.rs`, `src/cmd_scheduler_runtime_simulation.rs`, `tests/gpu_scheduler_lifecycle_message.rs`, `tests/single_node_gpu_scheduler.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+
 
 - Text DP smoke vertical [Pre-training, Distributed Training]
   - Goal: Exercise the bounded text training path through the first DP runtime slice and keep artifact, eval, and inference outputs valid on a non-MNIST workload.
@@ -40,6 +46,8 @@
   - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `README.md`, `docs/reference.md`
   - Blocked-by: Distinct-device execution proof for single-node DP path
 
+
+
 - Text model deploy and verification vertical [Pre-training, Serving/Deployment Infra]
   - Goal: Run one bounded text model from training artifact through inference, HTTP serving, rollout verification, and deployment-facing evidence so the text path is demonstrable end to end after the DP runtime slices land.
   - Kind: `mixed`
@@ -48,7 +56,8 @@
   - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `tests/http_graceful_shutdown.rs`, `tests/deployment_verification_workflow_surface_catalog.rs`, `README.md`, `docs/reference.md`
   - Blocked-by: Text DP smoke vertical
 
-<!-- queue-snapshot: todo_sha256=dbda51f491908321a8a920226c2c1743de0fb8eb68ce7b13e676ab54569cd6ac parent_commit=262f68e5ee048fe2b9e1e7fdd708c00c26b83689 -->
+
+<!-- queue-snapshot: todo_sha256=ac1e71a47b0d35a1982c73f45019ab0f71830025c3e47939508e9ab1a29de948 parent_commit=4df76317964664a8e7833412a51d4613034f0065 -->
 
 ## [Trunk]
 
@@ -469,6 +478,7 @@
 - Drop stale scheduler heartbeat todo ([a46a6c1])
 - Drop stale pretraining provenance todo ([dcbbcb9])
 - Formalize dp-first capability queue ([5d7b51a])
+- Unblock preparatory dp follow-on work ([4df7631])
 
 ### Documentation
 
@@ -1572,5 +1582,6 @@
 [cdb8173]: https://github.com/zxfsee/afterburner/commit/cdb817317813b9776fc0425403ebae589683c17f
 [5d7b51a]: https://github.com/zxfsee/afterburner/commit/5d7b51a68bac2c025c2878ee1f7e74f3e3eae2e4
 [262f68e]: https://github.com/zxfsee/afterburner/commit/262f68e5ee048fe2b9e1e7fdd708c00c26b83689
+[4df7631]: https://github.com/zxfsee/afterburner/commit/4df76317964664a8e7833412a51d4613034f0065
 
 <!-- generated by git-cliff -->

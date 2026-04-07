@@ -140,6 +140,7 @@ struct TrainArgs {
     world_size: Option<usize>,
     device_group: Option<String>,
     participant_devices: Option<Vec<String>>,
+    checkpoint_group: Option<String>,
     max_train_items: Option<usize>,
     max_valid_items: Option<usize>,
     dataset_manifest: Option<PathBuf>,
@@ -222,6 +223,10 @@ fn apply_cli_overrides(config: &mut train::TrainingConfig, args: &TrainArgs) {
     if let Some(participant_devices) = &args.participant_devices {
         config.participant_devices = participant_devices.clone();
     }
+    if let Some(checkpoint_group) = &args.checkpoint_group {
+        config.checkpoint_group = checkpoint_group.clone();
+    }
+    config.resume_epoch = args.resume_epoch;
     if let Some(max_train_items) = args.max_train_items {
         config.max_train_items = max_train_items;
     }
@@ -243,6 +248,7 @@ where
         world_size: None,
         device_group: None,
         participant_devices: None,
+        checkpoint_group: None,
         max_train_items: None,
         max_valid_items: None,
         dataset_manifest: None,
@@ -267,6 +273,12 @@ where
             "--participant-devices" => {
                 parsed.participant_devices =
                     Some(parse_device_refs(&mut args, "--participant-devices")?)
+            }
+            "--checkpoint-group" => {
+                parsed.checkpoint_group = Some(parse_non_empty_string_value(
+                    &mut args,
+                    "--checkpoint-group",
+                )?)
             }
             "--max-train-items" => {
                 parsed.max_train_items = Some(parse_value(&mut args, "--max-train-items")?)
@@ -341,6 +353,12 @@ where
                     "--participant-devices",
                 )?)
             }
+            _ if arg.starts_with("--checkpoint-group=") => {
+                parsed.checkpoint_group = Some(parse_non_empty_inline_string(
+                    arg.trim_start_matches("--checkpoint-group="),
+                    "--checkpoint-group",
+                )?)
+            }
             _ if arg.starts_with("--max-train-items=") => {
                 parsed.max_train_items = Some(parse_inline_value(
                     arg.trim_start_matches("--max-train-items="),
@@ -389,6 +407,15 @@ where
     }
     if matches!(parsed.resume_epoch, Some(0)) {
         return Err(format!("--resume-epoch must be > 0\n{}", usage()));
+    }
+    if parsed.task == TrainTask::Mnist
+        && parsed.resume_epoch.is_some()
+        && parsed.checkpoint_group.is_none()
+    {
+        return Err(format!(
+            "--resume-epoch requires --checkpoint-group\n{}",
+            usage()
+        ));
     }
     if parsed.world_size.is_some() && parsed.device_group.is_none() {
         return Err(format!("--world-size requires --device-group\n{}", usage()));
@@ -540,7 +567,7 @@ fn is_missing_gpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--world-size N --device-group NAME --participant-devices REF[,REF...]] [--max-train-items N] [--max-valid-items N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N] [--max-validation-loss F64] [--max-validation-perplexity F64]]"
+    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--world-size N --device-group NAME --participant-devices REF[,REF...]] [--checkpoint-group NAME] [--max-train-items N] [--max-valid-items N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N] [--max-validation-loss F64] [--max-validation-perplexity F64]]"
 }
 
 #[cfg(test)]
@@ -571,6 +598,7 @@ mod tests {
                 world_size: None,
                 device_group: None,
                 participant_devices: None,
+                checkpoint_group: None,
                 max_train_items: None,
                 max_valid_items: None,
                 dataset_manifest: None,
@@ -607,6 +635,7 @@ mod tests {
             world_size: None,
             device_group: None,
             participant_devices: None,
+            checkpoint_group: None,
             max_train_items: None,
             max_valid_items: None,
             dataset_manifest: None,
@@ -635,6 +664,8 @@ mod tests {
             "single-node:cpu".to_string(),
             "--participant-devices".to_string(),
             "cpu0,cpu1".to_string(),
+            "--checkpoint-group".to_string(),
+            "group-a".to_string(),
             "--max-train-items".to_string(),
             "64".to_string(),
             "--max-valid-items".to_string(),
@@ -648,6 +679,7 @@ mod tests {
             parsed.participant_devices,
             Some(vec!["cpu0".to_string(), "cpu1".to_string()])
         );
+        assert_eq!(parsed.checkpoint_group.as_deref(), Some("group-a"));
         assert_eq!(parsed.max_train_items, Some(64));
         assert_eq!(parsed.max_valid_items, Some(32));
     }
@@ -680,6 +712,13 @@ mod tests {
         ];
         let err = parse_args(args.into_iter()).expect_err("world size without participant devices");
         assert!(err.contains("--world-size requires --participant-devices"));
+    }
+
+    #[test]
+    fn parse_args_rejects_resume_without_checkpoint_group() {
+        let args = vec!["--resume-epoch".to_string(), "1".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("resume without checkpoint group");
+        assert!(err.contains("--resume-epoch requires --checkpoint-group"));
     }
 
     #[test]

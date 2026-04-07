@@ -71,7 +71,10 @@ Inference runs through `afterburner infer`, consumes only the inference
 artifact, and returns deterministic JSON on success.
 Distributed optimizer-state recovery remains an in-job runtime concern and
 stays anchored to an explicit `checkpoint_group` instead of scheduler-local
-placement state.
+placement state. The train runtime writes
+`distributed_runtime_checkpoint_state.json` with the explicit
+`checkpoint_group`, `checkpoint_root`, and `resume_epoch` anchor when
+checkpointed recovery is requested.
 
 ## HTTP wrapper (optional)
 

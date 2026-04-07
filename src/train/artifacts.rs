@@ -20,6 +20,17 @@ pub fn artifact_dirs(root: &Path) -> (PathBuf, PathBuf) {
     (train_dir, inference_root)
 }
 
+pub fn checkpoint_runtime_root(train_dir: &Path, checkpoint_group: Option<&str>) -> PathBuf {
+    match checkpoint_group {
+        Some(group) => train_dir.join("checkpoint_groups").join(group),
+        None => train_dir.to_path_buf(),
+    }
+}
+
+pub fn checkpoint_root(runtime_root: &Path) -> PathBuf {
+    runtime_root.join("checkpoint")
+}
+
 pub fn export_inference_artifact(
     train_model_path: &Path,
     inference_root: &Path,

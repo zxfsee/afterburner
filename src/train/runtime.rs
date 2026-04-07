@@ -15,15 +15,18 @@ use burn::{
         metric::{AccuracyMetric, LossMetric},
     },
 };
+use serde_json::{Value, json};
 
 use crate::{
+    command_artifacts::write_json_value,
     data::{MnistBatch, test_loader, train_loader},
     model::{Model, ModelConfig},
 };
 
 use super::{
     artifacts::{
-        artifact_dirs, copy_calibration_metadata_sidecar_if_present, export_inference_artifact,
+        artifact_dirs, checkpoint_root, checkpoint_runtime_root,
+        copy_calibration_metadata_sidecar_if_present, export_inference_artifact,
         inference_version_dir,
     },
     contracts::{
@@ -36,11 +39,15 @@ use super::{
         write_distributed_runtime_execution_artifact,
     },
     observability::{
+        write_train_distributed_runtime_checkpoint_state_event,
         write_train_distributed_runtime_execution_event,
         write_train_distributed_shard_metadata_invalid_event, write_train_done_event,
         write_train_event, write_train_export_event,
     },
 };
+
+const DISTRIBUTED_RUNTIME_CHECKPOINT_STATE_FILENAME: &str =
+    "distributed_runtime_checkpoint_state.json";
 
 #[derive(Config, Debug)]
 pub struct TrainingConfig {
@@ -64,6 +71,9 @@ pub struct TrainingConfig {
     pub device_group: String,
     #[config(default = "Vec::<String>::new()")]
     pub participant_devices: Vec<String>,
+    #[config(default = "\"\".to_string()")]
+    pub checkpoint_group: String,
+    pub resume_epoch: Option<usize>,
     #[config(default = 0)]
     pub max_train_items: usize,
     #[config(default = 0)]
@@ -182,6 +192,9 @@ where
     let root = Path::new(&config.artifacts_dir);
     let (train_dir, inference_root) = artifact_dirs(root);
     let inference_dir = inference_version_dir(&inference_root, &config.artifact_version);
+    let checkpoint_group = normalized_checkpoint_group(&config)?;
+    let runtime_root = checkpoint_runtime_root(&train_dir, checkpoint_group.as_deref());
+    let runtime_checkpoint_root = checkpoint_root(&runtime_root);
     let train_items_total = train_loader.num_items();
     let valid_items_total = valid_loader.num_items();
     let samples_per_epoch = u64::try_from(train_items_total).unwrap_or(u64::MAX);
@@ -198,6 +211,8 @@ where
         &backend,
         &config,
         &train_dir,
+        &runtime_root,
+        checkpoint_group.as_deref(),
         &inference_dir,
         samples_per_epoch.saturating_mul(config.num_epochs as u64),
     )
@@ -222,13 +237,16 @@ where
 
     let optim = AdamConfig::new().init::<B, Model<B>>();
     let learner = Learner::new(config.model.init::<B>(&device), optim, config.learning_rate);
-    let mut training = SupervisedTraining::new(&train_dir, train_loader, valid_loader)
+    let mut training = SupervisedTraining::new(&runtime_root, train_loader, valid_loader)
         .metric_train_numeric(LossMetric::new())
         .metric_train_numeric(AccuracyMetric::new())
         .metric_valid_numeric(LossMetric::new())
         .metric_valid_numeric(AccuracyMetric::new())
         .num_epochs(config.num_epochs)
         .with_file_checkpointer(CompactRecorder::new());
+    if let Some(epoch) = config.resume_epoch {
+        training = training.checkpoint(epoch);
+    }
     if let Some(devices) = participant_devices.as_ref() {
         training = training.with_training_strategy(TrainingStrategy::MultiDevice(
             devices.clone(),
@@ -293,6 +311,27 @@ where
         .expect("write distributed runtime execution event");
     }
 
+    if checkpoint_group.is_some() || config.resume_epoch.is_some() {
+        let checkpoint_state = distributed_runtime_checkpoint_state_value(
+            &backend,
+            &config.artifact_version,
+            checkpoint_group.as_deref(),
+            &runtime_checkpoint_root,
+            config.resume_epoch,
+            config.world_size,
+            &config.device_group,
+        );
+        let checkpoint_state_path = train_dir.join(DISTRIBUTED_RUNTIME_CHECKPOINT_STATE_FILENAME);
+        write_json_value(&checkpoint_state_path, &checkpoint_state)
+            .map_err(|err| format!("write distributed runtime checkpoint state artifact: {err}"))?;
+        write_train_distributed_runtime_checkpoint_state_event(
+            &train_dir,
+            &checkpoint_state_path,
+            &checkpoint_state,
+        )
+        .expect("write distributed runtime checkpoint state event");
+    }
+
     let elapsed_ms = u64::try_from(start.elapsed().as_millis()).unwrap_or(u64::MAX);
     let contract = training_scalability_contract_value(
         &backend,
@@ -328,6 +367,39 @@ fn limit_loader<B: Backend, O>(
 
     let end = max_items.min(dataloader.num_items());
     dataloader.slice(0, end)
+}
+
+fn normalized_checkpoint_group(config: &TrainingConfig) -> Result<Option<String>, String> {
+    let checkpoint_group = config.checkpoint_group.trim();
+    if checkpoint_group.is_empty() {
+        if config.resume_epoch.is_some() {
+            return Err("resuming train runtime requires a non-empty checkpoint_group".to_string());
+        }
+        return Ok(None);
+    }
+
+    Ok(Some(checkpoint_group.to_string()))
+}
+
+fn distributed_runtime_checkpoint_state_value(
+    backend: &str,
+    artifact_version: &str,
+    checkpoint_group: Option<&str>,
+    checkpoint_root: &Path,
+    resume_epoch: Option<usize>,
+    world_size: usize,
+    device_group: &str,
+) -> Value {
+    json!({
+        "schema_version": "1",
+        "artifact_version": artifact_version,
+        "backend": backend,
+        "checkpoint_group": checkpoint_group,
+        "checkpoint_root": checkpoint_root.display().to_string(),
+        "resume_epoch": resume_epoch,
+        "world_size": world_size,
+        "device_group": if device_group.trim().is_empty() { Value::Null } else { Value::from(device_group.to_string()) },
+    })
 }
 
 fn resolve_training_devices<D: ExplicitParticipantDevice>(

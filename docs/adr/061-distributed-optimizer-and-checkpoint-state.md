@@ -17,6 +17,9 @@ an in-job runtime concern.
   the scheduler.
 - Recovery state must remain anchored to an explicit `checkpoint_group`
   identity.
+- The runtime should surface that recovery anchor explicitly through
+  `distributed_runtime_checkpoint_state.json`, including `checkpoint_group`,
+  `checkpoint_root`, and `resume_epoch`.
 - Future multi-device recovery should keep shard/rank optimizer state grouped
   under that `checkpoint_group` instead of inferring restore boundaries from
   host-local directory layout.
