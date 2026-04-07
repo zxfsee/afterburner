@@ -1,5 +1,6 @@
 pub mod queue_workflow_metadata;
 pub mod workflow_objective_lock_cli;
+mod workflow_objective_lock_cli_parse;
 pub mod workflow_objective_lock_core;
 mod workflow_objective_lock_state;
 pub mod workflow_process;
