@@ -13,13 +13,6 @@ header = """# Changelog
 
 ## TODO
 
-- Scheduler-heartbeat action bucket collapse [Serving/Deployment Infra]
-  - Goal: Remove the remaining scheduler-heartbeat `action +args` buckets from `justfile` so the operator surface stays grouped without generic recipe-side dispatch buckets.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/scheduler_heartbeat_*.rs`, `tests/workflow_family_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
-
 - Deployment-stack launch family collapse [Serving/Deployment Infra]
   - Goal: Reduce deployment-stack launch recipe expansion by collapsing the operator-visible launch grammar and moving repeated launch-side semantics behind typed helpers.
   - Kind: `mixed`
