@@ -359,17 +359,28 @@ test:
 test-cargo:
     cargo test
 
+# fast compile-only smoke for the root package integration tests
+test-root-compile-smoke:
+    cargo test -p afterburner --tests --locked --no-run --quiet
+
+# fast compile-only smoke for repo workflow tooling after crate-local helper changes
+test-repo-workflow-compile-smoke:
+    cargo test -p afterburner-repo-workflow --tests --locked --no-run --quiet
+
 # fast compile-only smoke for integration tests after broad helper/layout changes
-test-compile-smoke:
-    cargo test --tests --locked --no-run --quiet
+test-compile-smoke: test-root-compile-smoke test-repo-workflow-compile-smoke
 
 # grouped docs/reference validators
 test-doc-gates:
     cargo nextest run --locked --test doc_test_admission --test readme_reference_split --test reference_doc_validation --test workflow_reference
 
 # grouped queue/workflow guards
-test-queue-gates:
-    cargo nextest run --locked -p afterburner-repo-workflow -p afterburner --test objective_lock --test queue_snapshot --test developer_workflows
+test-repo-workflow-gates:
+    cargo nextest run --locked -p afterburner-repo-workflow --test objective_lock --test queue_snapshot
+
+# grouped queue/workflow guards
+test-queue-gates: test-repo-workflow-gates
+    cargo nextest run --locked -p afterburner --test developer_workflows
 
 # grouped deploy/workflow-family guards
 test-deploy-family:

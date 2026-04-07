@@ -57,9 +57,12 @@ prefer a `just` recipe or `afterburner debug ...` surface over a new public oper
 ## Validation and hygiene
 
 - `just workspace-gate` validates the workspace/core dependency boundaries.
+- `just test-root-compile-smoke` is the compile-only smoke path for root-package integration tests.
+- `just test-repo-workflow-compile-smoke` is the compile-only smoke path for the repo workflow crate.
 - `just test-compile-smoke` is the compile-only integration-test smoke path for broad helper/layout changes.
 - `just test-doc-gates` runs the shared docs/reference validators.
-- `just test-queue-gates` runs the queue/objective-lock workflow guards.
+- `just test-repo-workflow-gates` runs the package-scoped queue/objective-lock workflow guards.
+- `just test-queue-gates` runs the full queue guard set across package boundaries: repo-workflow gates plus the root `developer_workflows` coverage.
 - `just test-deploy-family` runs the grouped deploy-family workflow guards.
 - `just test-drift-family` runs the grouped drift-family workflow guards.
 - `just objective-lock-pin-execute-top-item` verifies the queue snapshot, then pins the current top TODO scope into `.git/afterburner/objective-lock.json` before implementation work starts.

@@ -55,8 +55,11 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "workflow-surface-check-reference-docs:",
         "eval-gate:",
         "backend-profile-gate:",
+        "test-root-compile-smoke:",
+        "test-repo-workflow-compile-smoke:",
         "test-compile-smoke:",
         "test-doc-gates:",
+        "test-repo-workflow-gates:",
         "test-queue-gates:",
         "test-deploy-family:",
         "test-drift-family:",
@@ -78,6 +81,8 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "queue execute and resume surfaces must delegate branching to the typed execute-preflight helper"
     );
     for dependency_chain in [
+        "test-compile-smoke: test-root-compile-smoke test-repo-workflow-compile-smoke",
+        "test-queue-gates: test-repo-workflow-gates",
         "queue-refresh: repo-lock-repair repo-lock-check objective-lock-pin-queue changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear",
         "queue-fix-top-scope: repo-lock-repair repo-lock-check objective-lock-pin-top-scope-fix queue-top-scope-worktree-check changelog-top-scope-fix queue-top-runnable-check queue-snapshot-check objective-lock-clear",
         "queue-promote-next-runnable: repo-lock-repair repo-lock-check objective-lock-pin-queue queue-promote-next-runnable-step changelog queue-top-runnable-check queue-snapshot-check objective-lock-clear",
@@ -127,8 +132,11 @@ fn developer_workflows_are_repo_managed_and_documented() {
         "just workflow-surface-check-reference-docs",
         "just eval-gate",
         "just backend-profile-gate",
+        "just test-root-compile-smoke",
+        "just test-repo-workflow-compile-smoke",
         "just test-compile-smoke",
         "just test-doc-gates",
+        "just test-repo-workflow-gates",
         "just test-queue-gates",
         "just test-deploy-family",
         "just test-drift-family",
