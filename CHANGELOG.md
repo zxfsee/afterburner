@@ -2,7 +2,49 @@
 
 ## TODO
 
-<!-- queue-snapshot: todo_sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 parent_commit=6e8711af0940e726cf897206354d28ad74ff3308 -->
+- Single-node DP runtime path [Distributed Training, Runtime Infra]
+  - Goal: Execute one real single-node data-parallel training run with explicit `world_size`, `rank`, and `device_group` semantics, where multiple participants actually run and training behavior depends on DP execution rather than single-device fallback or metadata-only shaping.
+  - Kind: `mixed`
+  - Boundary: `distributed-runtime`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `src/cmd_train.rs`, `src/train/runtime.rs`, `src/train/distributed_metadata.rs`, `tests/distributed_runtime_layout_feasibility.rs`, `tests/distributed_runtime_fit_catalog.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+
+- DP checkpoint and optimizer resume path [Distributed Training, Runtime Infra]
+  - Goal: Make `checkpoint_group`-anchored checkpoint and optimizer resume executable for the first DP runtime path instead of leaving recovery at the contract-only layer.
+  - Kind: `mixed`
+  - Boundary: `distributed-runtime`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/train/runtime.rs`, `src/train/artifacts.rs`, `docs/adr/061-distributed-optimizer-and-checkpoint-state.md`, `docs/reference.md`, `ARCHITECTURE.md`, `tests/contract_anchor_catalog.rs`
+
+- Executed DP benchmark and profile artifact [Distributed Training, Experimentation/Eval Infra]
+  - Goal: Run one executed single-node DP benchmark from the train path and synthesize both `distributed_runtime_benchmark_run.json` and one measured `distributed_runtime_profile.json` cell from that real run instead of synthetic inputs or schema-only normalization.
+  - Kind: `mixed`
+  - Boundary: `distributed-runtime`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `src/cmd_distributed_runtime_benchmark.rs`, `src/cmd_distributed_runtime_profile.rs`, `src/cmd_train.rs`, `tests/distributed_runtime_benchmark_harness.rs`, `tests/distributed_runtime_profile_schema.rs`, `docs/adr/058-distributed-runtime-benchmark-harness.md`, `docs/adr/043-distributed-runtime-profile-schema.md`, `docs/reference.md`
+
+- Scheduler/runtime rank assignment handoff [Distributed Training, Runtime Infra]
+  - Goal: Feed explicit `world_size`, `rank_assignments`, and `device_group` semantics from the scheduler/control-plane boundary into the first DP runtime path without widening scheduler policy.
+  - Kind: `mixed`
+  - Boundary: `runtime-scheduler`
+  - Contracts: `artifact`, `event`
+  - Scope: `src/cmd_single_node_scheduler.rs`, `src/cmd_scheduler_runtime_simulation.rs`, `tests/gpu_scheduler_lifecycle_message.rs`, `tests/single_node_gpu_scheduler.rs`, `docs/reference.md`, `ARCHITECTURE.md`
+
+- Text DP smoke vertical [Pre-training, Distributed Training]
+  - Goal: Exercise the bounded text training path through the first DP runtime slice and keep artifact, eval, and inference outputs valid on a non-MNIST workload.
+  - Kind: `mixed`
+  - Boundary: `distributed-runtime`
+  - Contracts: `cli`, `artifact`, `event`
+  - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `README.md`, `docs/reference.md`
+
+- Text model deploy and verification vertical [Pre-training, Serving/Deployment Infra]
+  - Goal: Run one bounded text model from training artifact through inference, HTTP serving, rollout verification, and deployment-facing evidence so the text path is demonstrable end to end after the DP runtime slices land.
+  - Kind: `mixed`
+  - Boundary: `runtime-deploy`
+  - Contracts: `cli`, `artifact`, `event`, `http`
+  - Scope: `src/text_pretrain.rs`, `src/cmd_train.rs`, `src/cmd_infer.rs`, `src/bin/afterburner_http.rs`, `tests/text_pretraining_adapter.rs`, `tests/text_pretraining_smoke.rs`, `tests/http_graceful_shutdown.rs`, `tests/deployment_verification_workflow_surface_catalog.rs`, `README.md`, `docs/reference.md`
+
+<!-- queue-snapshot: todo_sha256=e74cabf806a7059b72f58988865cba50a2c89cf58b9c4d0e7553d17f7f3f7493 parent_commit=cdb817317813b9776fc0425403ebae589683c17f -->
 
 ## [Trunk]
 
@@ -294,12 +336,13 @@
 - Split objective lock scenarios ([20771ce])
 - Isolate objective lock state ([3f9bf36])
 - Extract queue order logic ([85cc1f0])
-- Split repo workflow crate ([89c91eb])
-- Split queue snapshot cli parser ([52d3fe0])
-- Split objective lock cli parser ([163c1df])
-- Move lineage writers behind debug surface ([4557450])
-- Move launch writers behind debug surface ([e007a0f])
-- Move baseline writers behind debug surface ([dd776e7])
+- Split repo workflow crate ([5ce1ff7])
+- Split queue snapshot cli parser ([9061c6d])
+- Split objective lock cli parser ([d29d6b5])
+- Move lineage writers behind debug surface ([adf9a4f])
+- Move launch writers behind debug surface ([5de3aa2])
+- Move baseline writers behind debug surface ([d4ff6e2])
+- Move kube lease writers behind debug surface ([cdb8173])
 
 ### Chore
 
@@ -418,8 +461,8 @@
 - Refresh queue snapshot lineage ([e84b3f6])
 - Advance bundle rollback grouping ([aec7d16])
 - Prioritize queue hardening ([4b29939])
-- Drop stale scheduler heartbeat todo ([12e6982])
-- Drop stale pretraining provenance todo ([6e8711a])
+- Drop stale scheduler heartbeat todo ([a46a6c1])
+- Drop stale pretraining provenance todo ([dcbbcb9])
 
 ### Documentation
 
@@ -771,7 +814,7 @@
 - Reduce repo structure test fanout ([f410918])
 - Reduce deployment surface fanout ([be2ee09])
 - Reduce markdown assertion fragility ([c74ec5c])
-- Add package-scoped verification entrypoints ([a4ba17a])
+- Add package-scoped verification entrypoints ([8c60b1f])
 
 [Trunk]: https://github.com/zxfsee/afterburner/commits/HEAD
 [118aa3b]: https://github.com/zxfsee/afterburner/commit/118aa3bd3a2e294be709228903dcdfdfa8e9e6ed
@@ -1511,14 +1554,15 @@
 [3f9bf36]: https://github.com/zxfsee/afterburner/commit/3f9bf36b53bd8e2e1e7b7c5c8c3d5f145919f6fd
 [c74ec5c]: https://github.com/zxfsee/afterburner/commit/c74ec5cc69809410f88b20c33203c9c2afced3e7
 [85cc1f0]: https://github.com/zxfsee/afterburner/commit/85cc1f09c61aab1db50efe222defd56e154ec4ca
-[89c91eb]: https://github.com/zxfsee/afterburner/commit/89c91eb47fd4ac2abe90f9aebc1a5fe64117c655
-[a4ba17a]: https://github.com/zxfsee/afterburner/commit/a4ba17a47a6de545991fd8c70222be4d2c18b19a
-[52d3fe0]: https://github.com/zxfsee/afterburner/commit/52d3fe054ba3238969b49908314c4562ffc2e5f5
-[163c1df]: https://github.com/zxfsee/afterburner/commit/163c1df94759db570bcc3a391134f27de5ee543c
-[4557450]: https://github.com/zxfsee/afterburner/commit/45574500d3b1c8616b17dd743c4d89f44f429bba
-[12e6982]: https://github.com/zxfsee/afterburner/commit/12e698254727123e1fd712f1aaeaf9ca8003c604
-[e007a0f]: https://github.com/zxfsee/afterburner/commit/e007a0f6d97b5602c6c875cec1ecb93aafbb5bc5
-[dd776e7]: https://github.com/zxfsee/afterburner/commit/dd776e7ff67237bcb859220c9e2cc5737066ba19
-[6e8711a]: https://github.com/zxfsee/afterburner/commit/6e8711af0940e726cf897206354d28ad74ff3308
+[5ce1ff7]: https://github.com/zxfsee/afterburner/commit/5ce1ff75889fd051023bb9b3eba332a656f1cba6
+[8c60b1f]: https://github.com/zxfsee/afterburner/commit/8c60b1fda5ae6d1cd5bd7122de985e5bf4c52cad
+[9061c6d]: https://github.com/zxfsee/afterburner/commit/9061c6d31653d6add0585f8ba0175d607844f840
+[d29d6b5]: https://github.com/zxfsee/afterburner/commit/d29d6b58f4ec06f4fd03e0a2c8be2f68bf148174
+[adf9a4f]: https://github.com/zxfsee/afterburner/commit/adf9a4f3688817b831426d9e5bac19fa4d71f8ae
+[a46a6c1]: https://github.com/zxfsee/afterburner/commit/a46a6c1ca554e78279055d5a7fa29710cf08919d
+[5de3aa2]: https://github.com/zxfsee/afterburner/commit/5de3aa2667921bcb42799695e7c09d58c6d4d28e
+[d4ff6e2]: https://github.com/zxfsee/afterburner/commit/d4ff6e293801a6988b31b2e5fff6e0267ade8ec5
+[dcbbcb9]: https://github.com/zxfsee/afterburner/commit/dcbbcb90667fe44de1a788580436427a4b8fa0d2
+[cdb8173]: https://github.com/zxfsee/afterburner/commit/cdb817317813b9776fc0425403ebae589683c17f
 
 <!-- generated by git-cliff -->
