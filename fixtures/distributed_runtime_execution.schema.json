@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://afterburner.local/schemas/distributed-runtime-execution/v1",
+  "title": "Distributed Runtime Execution v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_version",
+    "backend",
+    "runtime_mode",
+    "node_count",
+    "world_size",
+    "device_group",
+    "participant_count",
+    "participant_devices",
+    "participants",
+    "batch_size",
+    "num_epochs",
+    "train_items_total",
+    "valid_items_total",
+    "optimizer_strategy"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "artifact_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "backend": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime_mode": {
+      "const": "single_node_dp"
+    },
+    "node_count": {
+      "type": "integer",
+      "const": 1
+    },
+    "world_size": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "device_group": {
+      "type": "string",
+      "minLength": 1
+    },
+    "participant_count": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "participant_devices": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "participants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "global_rank",
+          "local_rank",
+          "node_rank",
+          "device_group",
+          "device_ref"
+        ],
+        "properties": {
+          "global_rank": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "local_rank": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "node_rank": {
+            "type": "integer",
+            "const": 0
+          },
+          "device_group": {
+            "type": "string",
+            "minLength": 1
+          },
+          "device_ref": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "batch_size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "num_epochs": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "train_items_total": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "valid_items_total": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "optimizer_strategy": {
+      "const": "main_device"
+    }
+  }
+}

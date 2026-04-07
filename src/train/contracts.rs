@@ -7,7 +7,6 @@ use crate::{
     model::{MODEL_ARCH_ID, MODEL_ARCH_VERSION, MODEL_KERNEL_SITES},
 };
 
-const MNIST_TRAIN_SAMPLES_PER_EPOCH: u64 = 60_000;
 pub const TRAINING_SCALABILITY_CONTRACT_FILENAME: &str = "training_scalability_contract.json";
 pub const TRAINING_SCALABILITY_CONTRACT_SCHEMA_VERSION: &str = "1";
 pub const KERNEL_ADOPTION_CONTRACT_FILENAME: &str = "kernel_adoption_thresholds.json";
@@ -23,10 +22,10 @@ pub fn training_scalability_contract_value(
     batch_size: usize,
     worker_parallelism: usize,
     num_epochs: usize,
+    samples_per_epoch: u64,
     elapsed_ms: u64,
 ) -> serde_json::Value {
-    let samples_per_epoch = MNIST_TRAIN_SAMPLES_PER_EPOCH;
-    let planned_samples = planned_training_samples(num_epochs);
+    let planned_samples = planned_training_samples(samples_per_epoch, num_epochs);
     let throughput_samples_per_sec = (planned_samples as f64 * 1000.0) / elapsed_ms.max(1) as f64;
 
     serde_json::json!({
@@ -127,6 +126,6 @@ pub fn write_kernel_adoption_threshold_contract(
     Ok(path)
 }
 
-fn planned_training_samples(num_epochs: usize) -> u64 {
-    MNIST_TRAIN_SAMPLES_PER_EPOCH.saturating_mul(num_epochs as u64)
+fn planned_training_samples(samples_per_epoch: u64, num_epochs: usize) -> u64 {
+    samples_per_epoch.saturating_mul(num_epochs as u64)
 }

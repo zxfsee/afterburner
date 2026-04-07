@@ -51,7 +51,7 @@ responsibility boundaries:
 │                        (Burn-side layer)                     │
 │                                                              │
 │  Responsibilities:                                           │
-│  - DP (today)                                                │
+│  - Guarded single-node DP train path (today)                 │
 │  - Future: ZeRO / TP / PP / SP/CP / EP                       │
 │  - Rank/world topology                                       │
 │  - Process groups / collectives                              │
@@ -107,8 +107,12 @@ responsibility boundaries:
 
 1. Distributed training runtime
    - Burn-side execution semantics inside one job.
+   - Current capability includes a guarded explicit single-node DP train path
+     while single-device execution remains the default.
    - Owns data/model parallel execution, collectives, rank/world topology,
      checkpoint and optimizer state, and future DP/TP/PP/ZeRO-style expansion.
+   - Current explicit runtime artifact: `distributed_runtime_execution.json`
+     for the single-node DP train path.
 2. GPU scheduler / allocator
    - Control-plane policy across jobs.
    - Owns queueing, admission, topology-aware GPU placement, node inventory,
@@ -136,6 +140,12 @@ The scheduler/runtime lifecycle message contract should also stay explicit:
 - `job_id`
 - `lease_id`
 - `resources` for `START`, including `node_ids`, `gpu_ids`, and `rank_assignments`
+
+Single-node DP train execution keeps `world_size`, ranks, `device_group`, and
+participant-device refs explicit through `distributed_runtime_execution.json`
+instead of deriving topology from scheduler placement or shard ownership. CPU
+explicit DP and ambiguous participant refs are rejected at the runtime boundary
+until a passing real distinct-device execution proof lands.
 
 Distributed-training scope is workload-driven. The repo is not targeting
 framework parity with DeepSpeed-class systems; it is implementing the minimum

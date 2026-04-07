@@ -81,14 +81,11 @@ for future in-job distributed execution. Afterburner should not overload
 
 Supported now:
 
-- single-device execution only
+- single-device execution by default
+- a guarded explicit single-node data parallel execution path for training when `world_size`,
+  `device_group`, and concrete participant devices are declared explicitly
 - local CPU, `wgpu`, and `metal` backend selection
 - existing training and inference artifact contracts
-
-First candidate expansion:
-
-- data parallel execution, after explicit topology, collectives, and
-  checkpoint/state contracts are in place
 
 Unsupported now:
 
@@ -128,9 +125,11 @@ and verification surfaces justify.
 
 ## Current Implementation Mapping
 
-- current runtime capability: single-device only
+- current runtime capability: single-device by default plus a guarded explicit
+  single-node DP train path
 - current backend surface: CPU / `wgpu` / `metal`
-- first distributed expansion target: `DP`
+- current explicit distributed execution artifact:
+  `distributed_runtime_execution.json`
 - current local-only throughput knob: `worker_parallelism`
 - later explicit capability candidates: `ZeRO`, `TP`, `PP`, `SP/CP`, `EP`
 

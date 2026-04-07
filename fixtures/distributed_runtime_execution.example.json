@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "artifact_version": "0.3.0-dp",
+  "backend": "wgpu",
+  "runtime_mode": "single_node_dp",
+  "node_count": 1,
+  "world_size": 2,
+  "device_group": "single-node:wgpu",
+  "participant_count": 2,
+  "participant_devices": [
+    "discrete:0",
+    "discrete:1"
+  ],
+  "participants": [
+    {
+      "global_rank": 0,
+      "local_rank": 0,
+      "node_rank": 0,
+      "device_group": "single-node:wgpu",
+      "device_ref": "discrete:0"
+    },
+    {
+      "global_rank": 1,
+      "local_rank": 1,
+      "node_rank": 0,
+      "device_group": "single-node:wgpu",
+      "device_ref": "discrete:1"
+    }
+  ],
+  "batch_size": 8,
+  "num_epochs": 1,
+  "train_items_total": 16,
+  "valid_items_total": 8,
+  "optimizer_strategy": "main_device"
+}

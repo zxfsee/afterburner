@@ -61,7 +61,12 @@ traffic-management reference, not a current cluster-serving boundary.
 
 Training runs through `afterburner train`. The repo currently supports the
 MNIST path plus a bounded text-pretraining path via `--task text`, and writes
-versioned artifacts under `artifacts/train/` and `artifacts/inference/`.
+versioned artifacts under `artifacts/train/` and `artifacts/inference/`. The
+MNIST path also exposes a guarded single-node DP train path through
+`--world-size <N> --device-group <name> --participant-devices <ref[,ref...]>`.
+That path currently rejects unsupported or ambiguous configurations such as CPU
+explicit DP or non-concrete device refs; the queue item remains open until a
+passing real distinct-device execution proof lands.
 Inference runs through `afterburner infer`, consumes only the inference
 artifact, and returns deterministic JSON on success.
 Distributed optimizer-state recovery remains an in-job runtime concern and

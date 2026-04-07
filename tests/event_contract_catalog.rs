@@ -70,7 +70,7 @@ fn distributed_tracing_correlation_contract_is_documented() {
 #[test]
 fn training_scalability_contract_fixture_matches_written_artifact_and_event() {
     let expected = fixture_json("training_scalability_contract.fixture.json");
-    let contract = training_scalability_contract_value("cpu", "0.1.0", 64, 2, 10, 1_500);
+    let contract = training_scalability_contract_value("cpu", "0.1.0", 64, 2, 10, 60_000, 1_500);
     assert_eq!(
         contract, expected,
         "training scalability contract artifact must match fixture"
@@ -176,6 +176,7 @@ fn train_start_and_artifact_exported_events_match_fixture_contracts() {
         &config,
         metrics_dir.as_path(),
         inference_dir.as_path(),
+        60_000,
     );
     let normalized = normalize_train_event_line(line.as_str());
     let expected_text = fs::read_to_string(fixture_path("train_start_event.fixture.json"))

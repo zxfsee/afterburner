@@ -1,9 +1,11 @@
 use std::collections::BTreeSet;
+use std::io;
 use std::path::{Path, PathBuf};
 
 use crate::observability::event_line;
 
 const DISTRIBUTED_SHARD_METADATA_PATH_ENV: &str = "AFTERBURNER_DISTRIBUTED_SHARD_METADATA_PATH";
+pub const DISTRIBUTED_RUNTIME_EXECUTION_FILENAME: &str = "distributed_runtime_execution.json";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DistributedShardMetadata {
@@ -18,6 +20,15 @@ pub struct DistributedShardMetadataLoadError {
     kind: &'static str,
     metadata_path: PathBuf,
     detail: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DistributedRuntimeParticipant {
+    pub global_rank: u64,
+    pub local_rank: u64,
+    pub node_rank: u64,
+    pub device_group: String,
+    pub device_ref: String,
 }
 
 impl DistributedShardMetadataLoadError {
@@ -143,6 +154,102 @@ pub fn distributed_shard_metadata_path_from_env() -> Option<PathBuf> {
         .map(|value| value.trim().to_string())
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
+}
+
+pub fn single_node_data_parallel_participants(
+    world_size: u64,
+    device_group: &str,
+    participant_devices: &[String],
+) -> Vec<DistributedRuntimeParticipant> {
+    (0..world_size)
+        .map(|global_rank| DistributedRuntimeParticipant {
+            global_rank,
+            local_rank: global_rank,
+            node_rank: 0,
+            device_group: device_group.to_string(),
+            device_ref: participant_devices
+                .get(global_rank as usize)
+                .cloned()
+                .unwrap_or_default(),
+        })
+        .collect()
+}
+
+pub fn distributed_runtime_execution_value(
+    backend: &str,
+    artifact_version: &str,
+    world_size: u64,
+    device_group: &str,
+    participant_devices: Vec<String>,
+    batch_size: usize,
+    num_epochs: usize,
+    train_items_total: usize,
+    valid_items_total: usize,
+) -> Result<serde_json::Value, String> {
+    if participant_devices.len() != usize::try_from(world_size).unwrap_or(usize::MAX) {
+        return Err(format!(
+            "distributed runtime execution artifact requires {} participant devices, got {}",
+            world_size,
+            participant_devices.len()
+        ));
+    }
+
+    let participants =
+        single_node_data_parallel_participants(world_size, device_group, &participant_devices);
+    Ok(serde_json::json!({
+        "schema_version": "1",
+        "artifact_version": artifact_version,
+        "backend": backend,
+        "runtime_mode": "single_node_dp",
+        "node_count": 1,
+        "world_size": world_size,
+        "device_group": device_group,
+        "participant_count": participants.len(),
+        "participant_devices": participant_devices,
+        "participants": participants
+            .iter()
+            .map(|participant| {
+                serde_json::json!({
+                    "global_rank": participant.global_rank,
+                    "local_rank": participant.local_rank,
+                    "node_rank": participant.node_rank,
+                    "device_group": participant.device_group,
+                    "device_ref": participant.device_ref,
+                })
+            })
+            .collect::<Vec<_>>(),
+        "batch_size": batch_size,
+        "num_epochs": num_epochs,
+        "train_items_total": train_items_total,
+        "valid_items_total": valid_items_total,
+        "optimizer_strategy": "main_device",
+    }))
+}
+
+pub fn write_distributed_runtime_execution_artifact(
+    train_dir: &Path,
+    artifact: &serde_json::Value,
+) -> io::Result<PathBuf> {
+    let path = train_dir.join(DISTRIBUTED_RUNTIME_EXECUTION_FILENAME);
+    let text = serde_json::to_string_pretty(artifact)
+        .map_err(|err| io::Error::other(format!("serialize runtime execution artifact: {err}")))?;
+    std::fs::write(&path, text)?;
+    Ok(path)
+}
+
+pub fn distributed_runtime_execution_written_event_line(
+    artifact_path: &Path,
+    artifact: &serde_json::Value,
+) -> String {
+    event_line(
+        "info",
+        "train",
+        "distributed_runtime_execution_written",
+        serde_json::json!({
+            "artifact_path": artifact_path.to_string_lossy().to_string(),
+            "artifact": artifact,
+        }),
+    )
 }
 
 fn distributed_shard_metadata_load_error(

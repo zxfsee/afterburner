@@ -40,7 +40,7 @@ fn distributed_runtime_growth_model_and_boundaries_are_documented() {
         "framework-parity work",
         "DeepSpeed-class systems",
         "worker_parallelism",
-        "single-device execution only",
+        "single-device execution by default",
         "data parallel execution",
         "ZeRO-1/2/3",
         "tensor parallelism",
@@ -56,8 +56,8 @@ fn distributed_runtime_growth_model_and_boundaries_are_documented() {
 
     let reference = repo_file("docs/reference.md");
     for needle in [
-        "single-device execution",
-        "First candidate expansion: DP",
+        "single-device execution by default",
+        "single-node DP train path",
         "ZeRO-1/2/3",
         "TP/PP/SP-CP/EP",
     ] {
@@ -99,7 +99,7 @@ fn distributed_runtime_growth_model_documents_burn_strategy_alignment() {
         "worker_parallelism",
         "Burn-aligned",
         "data parallel execution",
-        "first distributed expansion target: `DP`",
+        "single-node data parallel execution",
         "ZeRO",
         "TP",
         "PP",
@@ -114,6 +114,7 @@ fn distributed_runtime_growth_model_documents_burn_strategy_alignment() {
     for needle in [
         "worker_parallelism",
         "Distributed runtime remains workload-driven DP-first growth",
+        "single-node DP train path",
     ] {
         assert!(
             reference.contains(needle),

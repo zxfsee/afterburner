@@ -14,6 +14,9 @@ use burn::{
 use burn_autodiff::Autodiff;
 use serde_json::json;
 
+#[cfg(test)]
+use burn::backend::wgpu::WgpuDevice;
+
 type GpuBackend = Wgpu<f32, i32>;
 type MetalBackend = Metal<f32, i32>;
 type CpuBackend = NdArray<f32>;
@@ -100,12 +103,18 @@ fn run_task<B: AutodiffBackend>(
     mnist_config: train::TrainingConfig,
     text_config: Option<TextTrainingConfig>,
     device: B::Device,
-) -> i32 {
+) -> i32
+where
+    B::Device: train::runtime::ExplicitParticipantDevice,
+{
     match args.task {
-        TrainTask::Mnist => {
-            train::train::<B>(mnist_config, device);
-            0
-        }
+        TrainTask::Mnist => match train::train::<B>(mnist_config, device) {
+            Ok(()) => 0,
+            Err(err) => {
+                eprintln!("{err}");
+                2
+            }
+        },
         TrainTask::Text => {
             let Some(config) = text_config else {
                 eprintln!("missing text training configuration\n{}", usage());
@@ -128,6 +137,11 @@ struct TrainArgs {
     batch_size: Option<usize>,
     num_workers: Option<usize>,
     num_epochs: Option<usize>,
+    world_size: Option<usize>,
+    device_group: Option<String>,
+    participant_devices: Option<Vec<String>>,
+    max_train_items: Option<usize>,
+    max_valid_items: Option<usize>,
     dataset_manifest: Option<PathBuf>,
     tokenizer_profile: Option<PathBuf>,
     token_cache: Option<PathBuf>,
@@ -199,6 +213,21 @@ fn apply_cli_overrides(config: &mut train::TrainingConfig, args: &TrainArgs) {
     if let Some(num_epochs) = args.num_epochs {
         config.num_epochs = num_epochs;
     }
+    if let Some(world_size) = args.world_size {
+        config.world_size = world_size;
+    }
+    if let Some(device_group) = &args.device_group {
+        config.device_group = device_group.clone();
+    }
+    if let Some(participant_devices) = &args.participant_devices {
+        config.participant_devices = participant_devices.clone();
+    }
+    if let Some(max_train_items) = args.max_train_items {
+        config.max_train_items = max_train_items;
+    }
+    if let Some(max_valid_items) = args.max_valid_items {
+        config.max_valid_items = max_valid_items;
+    }
 }
 
 fn parse_args<I>(args: I) -> Result<TrainArgs, String>
@@ -211,6 +240,11 @@ where
         batch_size: None,
         num_workers: None,
         num_epochs: None,
+        world_size: None,
+        device_group: None,
+        participant_devices: None,
+        max_train_items: None,
+        max_valid_items: None,
         dataset_manifest: None,
         tokenizer_profile: None,
         token_cache: None,
@@ -225,6 +259,21 @@ where
             "--batch-size" => parsed.batch_size = Some(parse_value(&mut args, "--batch-size")?),
             "--num-workers" => parsed.num_workers = Some(parse_value(&mut args, "--num-workers")?),
             "--num-epochs" => parsed.num_epochs = Some(parse_value(&mut args, "--num-epochs")?),
+            "--world-size" => parsed.world_size = Some(parse_value(&mut args, "--world-size")?),
+            "--device-group" => {
+                parsed.device_group =
+                    Some(parse_non_empty_string_value(&mut args, "--device-group")?)
+            }
+            "--participant-devices" => {
+                parsed.participant_devices =
+                    Some(parse_device_refs(&mut args, "--participant-devices")?)
+            }
+            "--max-train-items" => {
+                parsed.max_train_items = Some(parse_value(&mut args, "--max-train-items")?)
+            }
+            "--max-valid-items" => {
+                parsed.max_valid_items = Some(parse_value(&mut args, "--max-valid-items")?)
+            }
             "--dataset-manifest" => {
                 parsed.dataset_manifest = Some(PathBuf::from(parse_string_value(
                     &mut args,
@@ -274,6 +323,36 @@ where
                     "--num-epochs",
                 )?)
             }
+            _ if arg.starts_with("--world-size=") => {
+                parsed.world_size = Some(parse_inline_value(
+                    arg.trim_start_matches("--world-size="),
+                    "--world-size",
+                )?)
+            }
+            _ if arg.starts_with("--device-group=") => {
+                parsed.device_group = Some(parse_non_empty_inline_string(
+                    arg.trim_start_matches("--device-group="),
+                    "--device-group",
+                )?)
+            }
+            _ if arg.starts_with("--participant-devices=") => {
+                parsed.participant_devices = Some(parse_device_ref_list(
+                    arg.trim_start_matches("--participant-devices="),
+                    "--participant-devices",
+                )?)
+            }
+            _ if arg.starts_with("--max-train-items=") => {
+                parsed.max_train_items = Some(parse_inline_value(
+                    arg.trim_start_matches("--max-train-items="),
+                    "--max-train-items",
+                )?)
+            }
+            _ if arg.starts_with("--max-valid-items=") => {
+                parsed.max_valid_items = Some(parse_inline_value(
+                    arg.trim_start_matches("--max-valid-items="),
+                    "--max-valid-items",
+                )?)
+            }
             _ if arg.starts_with("--max-validation-loss=") => {
                 parsed.max_validation_loss = Some(parse_inline_value(
                     arg.trim_start_matches("--max-validation-loss="),
@@ -296,8 +375,47 @@ where
     if matches!(parsed.num_epochs, Some(0)) {
         return Err(format!("--num-epochs must be > 0\n{}", usage()));
     }
+    if matches!(parsed.world_size, Some(0) | Some(1)) {
+        return Err(format!(
+            "--world-size must be > 1 for the explicit DP runtime path\n{}",
+            usage()
+        ));
+    }
+    if matches!(parsed.max_train_items, Some(0)) {
+        return Err(format!("--max-train-items must be > 0\n{}", usage()));
+    }
+    if matches!(parsed.max_valid_items, Some(0)) {
+        return Err(format!("--max-valid-items must be > 0\n{}", usage()));
+    }
     if matches!(parsed.resume_epoch, Some(0)) {
         return Err(format!("--resume-epoch must be > 0\n{}", usage()));
+    }
+    if parsed.world_size.is_some() && parsed.device_group.is_none() {
+        return Err(format!("--world-size requires --device-group\n{}", usage()));
+    }
+    if parsed.world_size.is_some() && parsed.participant_devices.is_none() {
+        return Err(format!(
+            "--world-size requires --participant-devices\n{}",
+            usage()
+        ));
+    }
+    if parsed.device_group.is_some() && parsed.world_size.is_none() {
+        return Err(format!("--device-group requires --world-size\n{}", usage()));
+    }
+    if parsed.participant_devices.is_some() && parsed.world_size.is_none() {
+        return Err(format!(
+            "--participant-devices requires --world-size\n{}",
+            usage()
+        ));
+    }
+    if let (Some(world_size), Some(participant_devices)) =
+        (parsed.world_size, parsed.participant_devices.as_ref())
+        && participant_devices.len() != world_size
+    {
+        return Err(format!(
+            "--participant-devices must contain exactly {world_size} entries for --world-size {world_size}\n{}",
+            usage()
+        ));
     }
     if parsed.task == TrainTask::Text
         && (parsed.dataset_manifest.is_none()
@@ -306,6 +424,12 @@ where
     {
         return Err(format!(
             "--task text requires --dataset-manifest, --tokenizer-profile, and --token-cache\n{}",
+            usage()
+        ));
+    }
+    if parsed.task == TrainTask::Text && parsed.world_size.is_some() {
+        return Err(format!(
+            "--task text does not support the explicit DP runtime path yet\n{}",
             usage()
         ));
     }
@@ -341,6 +465,52 @@ where
         .ok_or_else(|| format!("missing value for {flag}\n{}", usage()))
 }
 
+fn parse_non_empty_string_value<I>(args: &mut I, flag: &str) -> Result<String, String>
+where
+    I: Iterator<Item = String>,
+{
+    let value = parse_string_value(args, flag)?;
+    parse_non_empty_inline_string(value.as_str(), flag)
+}
+
+fn parse_non_empty_inline_string(value: &str, flag: &str) -> Result<String, String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        return Err(format!("{flag} must be non-empty\n{}", usage()));
+    }
+    Ok(trimmed.to_string())
+}
+
+fn parse_device_refs<I>(args: &mut I, flag: &str) -> Result<Vec<String>, String>
+where
+    I: Iterator<Item = String>,
+{
+    let value = parse_string_value(args, flag)?;
+    parse_device_ref_list(value.as_str(), flag)
+}
+
+fn parse_device_ref_list(value: &str, flag: &str) -> Result<Vec<String>, String> {
+    if value.trim().is_empty() {
+        return Err(format!(
+            "{flag} must contain at least one device ref\n{}",
+            usage()
+        ));
+    }
+
+    let mut values = Vec::new();
+    for entry in value.split(',') {
+        let trimmed = entry.trim();
+        if trimmed.is_empty() {
+            return Err(format!(
+                "{flag} entries must be non-empty comma-separated device refs\n{}",
+                usage()
+            ));
+        }
+        values.push(trimmed.to_string());
+    }
+    Ok(values)
+}
+
 fn parse_task<I>(args: &mut I) -> Result<TrainTask, String>
 where
     I: Iterator<Item = String>,
@@ -370,13 +540,14 @@ fn is_missing_gpu_adapter_panic(payload: &(dyn Any + Send)) -> bool {
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N] [--max-validation-loss F64] [--max-validation-perplexity F64]]"
+    "usage: afterburner train [--task mnist|text] [--batch-size N] [--num-workers N] [--num-epochs N] [--world-size N --device-group NAME --participant-devices REF[,REF...]] [--max-train-items N] [--max-valid-items N] [--dataset-manifest PATH --tokenizer-profile PATH --token-cache PATH [--resume-epoch N] [--max-validation-loss F64] [--max-validation-perplexity F64]]"
 }
 
 #[cfg(test)]
 mod tests {
     use std::path::Path;
 
+    use super::WgpuDevice;
     use super::{TrainArgs, TrainTask, parse_args, training_config_from_env};
 
     #[test]
@@ -397,6 +568,11 @@ mod tests {
                 batch_size: Some(32),
                 num_workers: Some(4),
                 num_epochs: Some(1),
+                world_size: None,
+                device_group: None,
+                participant_devices: None,
+                max_train_items: None,
+                max_valid_items: None,
                 dataset_manifest: None,
                 tokenizer_profile: None,
                 token_cache: None,
@@ -428,6 +604,11 @@ mod tests {
             batch_size: None,
             num_workers: None,
             num_epochs: Some(1),
+            world_size: None,
+            device_group: None,
+            participant_devices: None,
+            max_train_items: None,
+            max_valid_items: None,
             dataset_manifest: None,
             tokenizer_profile: None,
             token_cache: None,
@@ -443,6 +624,96 @@ mod tests {
         let args = vec!["--bogus".to_string()];
         let err = parse_args(args.into_iter()).expect_err("unknown flag must fail");
         assert!(err.contains("unknown argument for train: --bogus"));
+    }
+
+    #[test]
+    fn parse_args_accepts_explicit_single_node_dp_runtime_flags() {
+        let args = vec![
+            "--world-size".to_string(),
+            "2".to_string(),
+            "--device-group".to_string(),
+            "single-node:cpu".to_string(),
+            "--participant-devices".to_string(),
+            "cpu0,cpu1".to_string(),
+            "--max-train-items".to_string(),
+            "64".to_string(),
+            "--max-valid-items".to_string(),
+            "32".to_string(),
+        ];
+
+        let parsed = parse_args(args.into_iter()).expect("parse dp args");
+        assert_eq!(parsed.world_size, Some(2));
+        assert_eq!(parsed.device_group.as_deref(), Some("single-node:cpu"));
+        assert_eq!(
+            parsed.participant_devices,
+            Some(vec!["cpu0".to_string(), "cpu1".to_string()])
+        );
+        assert_eq!(parsed.max_train_items, Some(64));
+        assert_eq!(parsed.max_valid_items, Some(32));
+    }
+
+    #[test]
+    fn parse_args_rejects_world_size_without_device_group() {
+        let args = vec!["--world-size".to_string(), "2".to_string()];
+        let err = parse_args(args.into_iter()).expect_err("world size without device group");
+        assert!(err.contains("--world-size requires --device-group"));
+    }
+
+    #[test]
+    fn parse_args_rejects_empty_device_group_inline() {
+        let args = vec![
+            "--world-size=2".to_string(),
+            "--device-group=".to_string(),
+            "--participant-devices=cpu0,cpu1".to_string(),
+        ];
+        let err = parse_args(args.into_iter()).expect_err("empty device group must fail");
+        assert!(err.contains("--device-group must be non-empty"));
+    }
+
+    #[test]
+    fn parse_args_rejects_world_size_without_participant_devices() {
+        let args = vec![
+            "--world-size".to_string(),
+            "2".to_string(),
+            "--device-group".to_string(),
+            "single-node:cpu".to_string(),
+        ];
+        let err = parse_args(args.into_iter()).expect_err("world size without participant devices");
+        assert!(err.contains("--world-size requires --participant-devices"));
+    }
+
+    #[test]
+    fn parse_args_rejects_empty_participant_device_entries() {
+        let args = vec![
+            "--world-size=2".to_string(),
+            "--device-group=single-node:wgpu".to_string(),
+            "--participant-devices=default, ".to_string(),
+        ];
+        let err = parse_args(args.into_iter()).expect_err("empty participant device entry");
+        assert!(err.contains("--participant-devices entries must be non-empty"));
+    }
+
+    #[test]
+    fn parse_args_rejects_text_dp_path_until_later_queue_item() {
+        let args = vec![
+            "--task".to_string(),
+            "text".to_string(),
+            "--dataset-manifest".to_string(),
+            "fixtures/pretraining_dataset_manifest.example.json".to_string(),
+            "--tokenizer-profile".to_string(),
+            "fixtures/text_tokenizer_packing_profile.example.json".to_string(),
+            "--token-cache".to_string(),
+            "fixtures/text_token_cache.example.json".to_string(),
+            "--world-size".to_string(),
+            "2".to_string(),
+            "--device-group".to_string(),
+            "single-node:cpu".to_string(),
+            "--participant-devices".to_string(),
+            "cpu0,cpu1".to_string(),
+        ];
+
+        let err = parse_args(args.into_iter()).expect_err("text dp must fail");
+        assert!(err.contains("does not support the explicit DP runtime path yet"));
     }
 
     #[test]
@@ -474,5 +745,58 @@ mod tests {
                 "fixtures/pretraining_dataset_manifest.example.json"
             ))
         );
+    }
+
+    #[test]
+    fn wgpu_device_refs_parse_as_distinct_inventory_entries() {
+        let parsed = [
+            "default".to_string(),
+            "cpu".to_string(),
+            "integrated:0".to_string(),
+            "discrete:0".to_string(),
+        ]
+        .into_iter()
+        .map(|value| super::runtime_device_ref_to_wgpu(value.as_str()))
+        .collect::<Result<Vec<_>, _>>()
+        .expect("device refs parse");
+
+        assert_eq!(
+            parsed,
+            vec![
+                WgpuDevice::DefaultDevice,
+                WgpuDevice::Cpu,
+                WgpuDevice::IntegratedGpu(0),
+                WgpuDevice::DiscreteGpu(0),
+            ]
+        );
+    }
+}
+
+#[cfg(test)]
+fn runtime_device_ref_to_wgpu(value: &str) -> Result<WgpuDevice, String> {
+    match value {
+        "default" => Ok(WgpuDevice::DefaultDevice),
+        "cpu" => Ok(WgpuDevice::Cpu),
+        _ if value.starts_with("discrete:") => value
+            .trim_start_matches("discrete:")
+            .parse::<usize>()
+            .map(WgpuDevice::DiscreteGpu)
+            .map_err(|_| format!("invalid discrete device ref `{value}`")),
+        _ if value.starts_with("integrated:") => value
+            .trim_start_matches("integrated:")
+            .parse::<usize>()
+            .map(WgpuDevice::IntegratedGpu)
+            .map_err(|_| format!("invalid integrated device ref `{value}`")),
+        _ if value.starts_with("virtual:") => value
+            .trim_start_matches("virtual:")
+            .parse::<usize>()
+            .map(WgpuDevice::VirtualGpu)
+            .map_err(|_| format!("invalid virtual device ref `{value}`")),
+        _ if value.starts_with("existing:") => value
+            .trim_start_matches("existing:")
+            .parse::<u32>()
+            .map(WgpuDevice::Existing)
+            .map_err(|_| format!("invalid existing device ref `{value}`")),
+        _ => Err(format!("unknown participant device ref `{value}`")),
     }
 }

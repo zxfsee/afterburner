@@ -4,8 +4,11 @@ use std::path::{Path, PathBuf};
 use crate::observability::{append_json_line, event_line};
 
 use super::{
-    TrainingConfig, artifacts::ExportedCalibrationSidecar,
-    distributed_metadata::DistributedShardMetadataLoadError,
+    TrainingConfig,
+    artifacts::ExportedCalibrationSidecar,
+    distributed_metadata::{
+        DistributedShardMetadataLoadError, distributed_runtime_execution_written_event_line,
+    },
 };
 
 fn observability_path(train_dir: &Path) -> PathBuf {
@@ -19,9 +22,17 @@ pub fn write_train_event(
     config: &TrainingConfig,
     metrics_dir: &Path,
     inference_dir: &Path,
+    planned_samples: u64,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let line = train_start_event_line(backend, event, config, metrics_dir, inference_dir);
+    let line = train_start_event_line(
+        backend,
+        event,
+        config,
+        metrics_dir,
+        inference_dir,
+        planned_samples,
+    );
     append_json_line(&path, &line)
 }
 
@@ -31,8 +42,8 @@ pub fn train_start_event_line(
     config: &TrainingConfig,
     metrics_dir: &Path,
     inference_dir: &Path,
+    planned_samples: u64,
 ) -> String {
-    let planned_samples = 60_000_u64.saturating_mul(config.num_epochs as u64);
     event_line(
         "info",
         "train",
@@ -131,5 +142,15 @@ pub fn write_train_distributed_shard_metadata_invalid_event(
         artifact_version,
         err,
     );
+    append_json_line(&path, &line)
+}
+
+pub fn write_train_distributed_runtime_execution_event(
+    train_dir: &Path,
+    artifact_path: &Path,
+    artifact: &serde_json::Value,
+) -> io::Result<()> {
+    let path = observability_path(train_dir);
+    let line = distributed_runtime_execution_written_event_line(artifact_path, artifact);
     append_json_line(&path, &line)
 }
