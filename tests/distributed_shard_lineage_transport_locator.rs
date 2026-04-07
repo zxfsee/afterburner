@@ -80,7 +80,8 @@ fn distributed_shard_lineage_transport_locator_writes_locator_and_event() {
         .path()
         .join("distributed_shard_lineage_transport_locator.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("locator")
         .arg("transport")
         .arg("point")

@@ -230,5 +230,5 @@ afterburner::define_command_input_json_kind_history_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage bundle history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug lineage bundle history --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

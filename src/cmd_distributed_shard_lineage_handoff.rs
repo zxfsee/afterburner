@@ -172,5 +172,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage handoff --bundle PATH [--out PATH]"
+    "usage: afterburner debug lineage handoff --bundle PATH [--out PATH]"
 }

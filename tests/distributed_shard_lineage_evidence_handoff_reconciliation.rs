@@ -101,7 +101,8 @@ fn distributed_shard_lineage_handoff_reconciliation_writes_artifact_and_event() 
         .join("distributed_shard_lineage_evidence_handoff_reconciliation.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("handoff")
         .arg("reconcile")
         .arg("--bundle")

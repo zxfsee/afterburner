@@ -17,8 +17,9 @@ require lineage receipts to make evidence provenance explicit through an
 - `checkpoint_root`
 - `observed_at_unix_ms`
 
-Current stance: the repo now materializes this provenance layer through
-`afterburner lineage receipt`.
+Current stance: the repo now materializes this provenance layer through the
+grouped `just distributed-shard-lineage-receipt` flow, with the low-level
+writer kept behind `afterburner debug lineage receipt`.
 
 ## Consequences
 

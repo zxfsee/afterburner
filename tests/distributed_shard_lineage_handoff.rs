@@ -84,7 +84,8 @@ fn distributed_shard_lineage_handoff_writes_handoff_and_event() {
         .path()
         .join("distributed_shard_lineage_evidence_handoff.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("handoff")
         .arg("--bundle")
         .arg(&bundle)

@@ -280,5 +280,5 @@ fn require_non_empty(
 afterburner::define_command_input_json_helpers!(DistributedShardLineageReceiptError);
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage receipt --metadata PATH --shard-id ID --source NAME --source-revision REV --checkpoint-group NAME --checkpoint-root PATH --checked-at-unix-ms N [--out PATH]"
+    "usage: afterburner debug lineage receipt --metadata PATH --shard-id ID --source NAME --source-revision REV --checkpoint-group NAME --checkpoint-root PATH --checked-at-unix-ms N [--out PATH]"
 }

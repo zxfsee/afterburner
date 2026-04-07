@@ -144,6 +144,7 @@ unless they graduate into a clear operator intent.
   - `distributed_shard_lineage_transport_locator_reconciliation_history.json`
   - `distributed_shard_lineage_locator_pointer.json`
   - `distributed_shard_lineage_locator_history.json`
+  - Low-level lineage writers stay behind `afterburner debug lineage ...`; use the grouped `just distributed-shard-lineage-*` recipes for operator-facing flows.
   - Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.
 
 For command entrypoints, use [docs/workflows.md](./workflows.md).

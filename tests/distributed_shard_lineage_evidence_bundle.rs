@@ -87,7 +87,8 @@ fn distributed_shard_lineage_evidence_bundle_writes_bundle_and_event() {
         .path()
         .join("distributed_shard_lineage_evidence_bundle.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("bundle")
         .arg("--receipt")
         .arg(&receipt)

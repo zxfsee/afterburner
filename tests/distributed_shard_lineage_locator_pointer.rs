@@ -79,7 +79,8 @@ fn distributed_shard_lineage_locator_pointer_writes_pointer_and_event() {
         .path()
         .join("distributed_shard_lineage_locator_pointer.json");
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("locator")
         .arg("point")
         .arg("--locator")

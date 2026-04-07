@@ -56,7 +56,9 @@ fn distributed_shard_lineage_handoff_reconciliation_history_schema_and_workflow_
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("distributed-shard-lineage-handoff-history action +args:"),
+        justfile.contains(
+            "distributed-shard-lineage-handoff-reconciliation-history reconciliation event recorded_at_unix_ms:"
+        ),
         "justfile must expose the grouped distributed-shard-lineage-handoff-history workflow"
     );
 }
@@ -97,7 +99,8 @@ fn distributed_shard_lineage_handoff_reconciliation_history_writes_history_and_e
         .join("distributed_shard_lineage_evidence_handoff_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("handoff")
         .arg("history")
         .arg("reconciliation")

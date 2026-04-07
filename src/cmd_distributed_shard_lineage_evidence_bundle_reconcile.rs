@@ -232,5 +232,5 @@ afterburner::define_command_input_json_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage bundle reconcile --receipt PATH --bundle PATH [--out PATH]"
+    "usage: afterburner debug lineage bundle reconcile --receipt PATH --bundle PATH [--out PATH]"
 }

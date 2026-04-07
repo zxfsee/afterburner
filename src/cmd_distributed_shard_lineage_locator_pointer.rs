@@ -174,5 +174,5 @@ afterburner::define_command_input_json_kind_helpers!(
 );
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage locator point --locator PATH [--out PATH]"
+    "usage: afterburner debug lineage locator point --locator PATH [--out PATH]"
 }

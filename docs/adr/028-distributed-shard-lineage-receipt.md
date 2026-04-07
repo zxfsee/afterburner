@@ -20,8 +20,9 @@ The minimum receipt contract should include:
 - `checkpoint_group`
 - `checked_at_unix_ms`
 
-Current stance: the repo now materializes this receipt through
-`afterburner lineage receipt`.
+Current stance: the repo now materializes this receipt through the grouped
+`just distributed-shard-lineage-receipt` flow, with the low-level writer kept
+behind `afterburner debug lineage receipt`.
 
 ## Consequences
 

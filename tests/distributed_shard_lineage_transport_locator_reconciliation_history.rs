@@ -98,7 +98,8 @@ fn distributed_shard_lineage_transport_locator_reconciliation_history_writes_his
         .join("distributed_shard_lineage_transport_locator_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("locator")
         .arg("transport")
         .arg("history")

@@ -90,7 +90,8 @@ fn distributed_shard_lineage_handoff_history_writes_history_and_event() {
         .join("distributed_shard_lineage_evidence_handoff_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("handoff")
         .arg("history")
         .arg("record")

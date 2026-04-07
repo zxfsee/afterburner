@@ -115,7 +115,8 @@ fn distributed_shard_lineage_evidence_bundle_reconciliation_history_writes_histo
         .join("distributed_shard_lineage_evidence_bundle_reconciliation_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("bundle")
         .arg("history")
         .arg("--reconciliation")

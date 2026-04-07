@@ -79,7 +79,8 @@ fn distributed_shard_lineage_locator_history_writes_history_and_event() {
         .join("distributed_shard_lineage_locator_history.json");
 
     let mut cmd = cargo_bin_cmd!("afterburner");
-    cmd.arg("lineage")
+    cmd.arg("debug")
+        .arg("lineage")
         .arg("locator")
         .arg("history")
         .arg("--pointer")

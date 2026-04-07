@@ -276,6 +276,7 @@ fn grouped_operator_grammar_stays_intent_first() {
     }
 
     for forbidden in [
+        "|profile <...>|lineage <...>|source <...>|",
         "afterburner drift-receipt",
         "afterburner source approval-receipt",
         "afterburner source provenance-evidence-bundle",
@@ -317,6 +318,10 @@ fn grouped_operator_grammar_stays_intent_first() {
         ("verify", "handoff", "reconcile"),
         ("rollback", "verification-receipt", "supersession-reconcile"),
         ("rollback", "verification-bundle", "apply"),
+        ("debug", "lineage", "receipt"),
+        ("debug", "lineage", "bundle"),
+        ("debug", "lineage", "handoff"),
+        ("debug", "lineage", "locator"),
         ("source", "approval", "receipt"),
         ("source", "provenance", "bundle"),
     ];

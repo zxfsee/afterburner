@@ -13,47 +13,40 @@ header = """# Changelog
 
 ## TODO
 
-- Distributed-shard-lineage action bucket collapse [Distributed Training, Runtime Infra]
-  - Goal: Remove the remaining distributed shard-lineage `action +args` buckets from `justfile` and collapse the operator-visible grammar behind intent-first typed helpers.
-  - Kind: `mixed`
-  - Boundary: `repo-workflow`
-  - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/distributed_shard_lineage_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
-
 - Scheduler-heartbeat action bucket collapse [Serving/Deployment Infra]
   - Goal: Remove the remaining scheduler-heartbeat `action +args` buckets from `justfile` so the operator surface stays grouped without generic recipe-side dispatch buckets.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/scheduler_heartbeat_*.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/scheduler_heartbeat_*.rs`, `tests/workflow_family_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
 
 - Deployment-stack launch family collapse [Serving/Deployment Infra]
   - Goal: Reduce deployment-stack launch recipe expansion by collapsing the operator-visible launch grammar and moving repeated launch-side semantics behind typed helpers.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_stack_*.rs`, `tests/deployment_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
 
 - Drift baseline family collapse [Experimentation/Eval Infra, Runtime Infra]
   - Goal: Reduce drift baseline recipe expansion by collapsing the operator-visible baseline grammar and moving repeated baseline-side semantics behind typed helpers.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/drift_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/infer_drift_*.rs`, `tests/workflow_family_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
 
 - Pretraining-source provenance bucket collapse [Data Infra, Runtime Infra]
   - Goal: Remove the remaining pretraining-source provenance bucketed dispatch from `justfile` so the operator surface is intent-first and no longer exposes generic provenance action routing.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/pretraining_source_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`, `tests/operator_grammar_gate.rs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/pretraining_source_*.rs`, `tests/workflow_family_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
 
 - Kube-lease family collapse [Serving/Deployment Infra]
   - Goal: Reduce the remaining kube-lease recipe expansion in `justfile` by collapsing the lease-facing grammar and moving repeated lease semantics behind typed helpers.
   - Kind: `mixed`
   - Boundary: `repo-workflow`
   - Contracts: `cli`, `docs`
-  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/deployment_stack_workflow_surface.rs`, `tests/justfile_thinness_gate.rs`
+  - Scope: `justfile`, `src/cli_dispatch/`, `docs/workflows.md`, `docs/reference.md`, `tests/kube_rs_gpu_lease_*.rs`, `tests/deployment_surface_catalog.rs`, `tests/justfile_thinness_gate.rs`, `tests/cli_surface_catalog.rs`
 
 ## [Trunk]
 """

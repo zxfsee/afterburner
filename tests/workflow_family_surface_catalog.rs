@@ -305,6 +305,7 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
     let workflows = repo_file("docs/workflows.md");
     for needle in [
         "Distributed shard lineage stays grouped under these operator flows:",
+        "Low-level lineage artifact writers stay behind `afterburner debug lineage ...`; the grouped `just distributed-shard-lineage-*` recipes remain the operator-facing entrypoint.",
         "Receipt flow: `just distributed-shard-lineage-receipt`.",
         "Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.",
         "Handoff flow: `just distributed-shard-lineage-handoff`, `just distributed-shard-lineage-handoff-reconcile`, `just distributed-shard-lineage-handoff-history`, `just distributed-shard-lineage-handoff-reconciliation-history`.",
@@ -355,6 +356,7 @@ fn distributed_shard_lineage_family_stays_grouped_and_surface_complete() {
         "`distributed_shard_lineage_transport_locator_reconciliation_history.json`",
         "`distributed_shard_lineage_locator_pointer.json`",
         "`distributed_shard_lineage_locator_history.json`",
+        "Low-level lineage writers stay behind `afterburner debug lineage ...`; use the grouped `just distributed-shard-lineage-*` recipes for operator-facing flows.",
         "Use [docs/workflows.md](./workflows.md) for the grouped operator-flow map and `workflow-surface-check-distributed-shard-lineage` for mechanical coverage.",
     ] {
         assert!(

@@ -187,6 +187,7 @@ operator use case justifies promotion.
 - The `source provenance receipt` captures reviewed source metadata over one approval receipt; `bundle` packages the approval and provenance evidence together.
 - `just workflow-surface-check-pretraining-source` guards the grouped source workflow map and recipe surface.
 - Distributed shard lineage stays grouped under these operator flows:
+- Low-level lineage artifact writers stay behind `afterburner debug lineage ...`; the grouped `just distributed-shard-lineage-*` recipes remain the operator-facing entrypoint.
 - Receipt flow: `just distributed-shard-lineage-receipt`.
 - `just distributed-shard-lineage-receipt` writes `distributed_shard_lineage_receipt.json`.
 - Bundle flow: `just distributed-shard-lineage-bundle`, `just distributed-shard-lineage-bundle-reconcile`, `just distributed-shard-lineage-bundle-history`.

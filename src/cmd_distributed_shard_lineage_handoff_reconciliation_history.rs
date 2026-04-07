@@ -215,5 +215,5 @@ where
 }
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage handoff history reconciliation --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
+    "usage: afterburner debug lineage handoff history reconciliation --reconciliation PATH --event NAME --recorded-at-unix-ms MS [--out PATH]"
 }

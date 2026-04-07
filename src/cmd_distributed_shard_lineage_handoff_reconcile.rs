@@ -220,5 +220,5 @@ where
 afterburner::define_command_input_json_helpers!(DistributedShardLineageHandoffReconcileError);
 
 fn usage() -> &'static str {
-    "usage: afterburner lineage handoff reconcile --bundle PATH --handoff PATH [--out PATH]"
+    "usage: afterburner debug lineage handoff reconcile --bundle PATH --handoff PATH [--out PATH]"
 }

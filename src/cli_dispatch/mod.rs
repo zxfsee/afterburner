@@ -18,7 +18,13 @@ where
         "deploy" => deploy::run_deploy(args),
         "verify" => deploy::run_verify(args),
         "rollback" => deploy::run_rollback(args),
-        "lineage" => run_lineage(args),
+        "lineage" => {
+            eprintln!(
+                "lineage operator flows moved to the grouped `just distributed-shard-lineage-*` recipes; low-level lineage writers remain behind `afterburner debug lineage ...`"
+            );
+            eprintln!("{}", usage());
+            2
+        }
         "profile" => run_profile(args),
         "source" => run_source(args),
         "drift" => run_drift(args),
@@ -46,6 +52,7 @@ where
 
     match group.as_str() {
         "deploy" => deploy::run_debug_deploy(args),
+        "lineage" => run_lineage(args),
         "inventory-burn-bpk-surface" => crate::cmd_burn_bpk_migration_surface_inventory::run(args),
         "simulate-scheduler-runtime" => crate::cmd_scheduler_runtime_simulation::run(args),
         _ => {
@@ -359,5 +366,5 @@ where
 }
 
 pub fn usage() -> &'static str {
-    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|lineage <...>|source <...>|debug <deploy <...>|simulate-scheduler-runtime <...>>> [args]"
+    "usage: afterburner <train|infer|eval|deploy <...>|verify <...>|rollback <...>|drift <...>|cleanup <...>|profile <...>|source <...>|debug <deploy <...>|lineage <...>|simulate-scheduler-runtime <...>>> [args]"
 }
