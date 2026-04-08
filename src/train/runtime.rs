@@ -34,12 +34,12 @@ use super::{
         write_kernel_adoption_threshold_contract, write_training_scalability_contract,
     },
     distributed_metadata::{
-        distributed_runtime_execution_value, distributed_shard_metadata_path_from_env,
-        validate_distributed_shard_metadata_load_path,
+        DistributedRuntimeExecutionSpec, distributed_runtime_execution_value,
+        distributed_shard_metadata_path_from_env, validate_distributed_shard_metadata_load_path,
         write_distributed_runtime_execution_artifact,
     },
     observability::{
-        write_train_distributed_runtime_checkpoint_state_event,
+        TrainStartEventContext, write_train_distributed_runtime_checkpoint_state_event,
         write_train_distributed_runtime_execution_event,
         write_train_distributed_shard_metadata_invalid_event, write_train_done_event,
         write_train_event, write_train_export_event,
@@ -210,11 +210,13 @@ where
         "train_start",
         &backend,
         &config,
-        &train_dir,
-        &runtime_root,
-        checkpoint_group.as_deref(),
-        &inference_dir,
-        samples_per_epoch.saturating_mul(config.num_epochs as u64),
+        &TrainStartEventContext {
+            metrics_dir: &train_dir,
+            runtime_root: &runtime_root,
+            checkpoint_group: checkpoint_group.as_deref(),
+            inference_dir: &inference_dir,
+            planned_samples: samples_per_epoch.saturating_mul(config.num_epochs as u64),
+        },
     )
     .expect("write train start event");
 
@@ -285,21 +287,22 @@ where
     .expect("write train export event");
 
     if let Some(participant_devices) = participant_devices.as_ref() {
-        let runtime_artifact = distributed_runtime_execution_value(
-            &backend,
-            &config.artifact_version,
-            u64::try_from(config.world_size).unwrap_or(u64::MAX),
-            &config.device_group,
-            participant_devices
-                .iter()
-                .map(B::Device::participant_device_ref)
-                .collect(),
-            config.batch_size,
-            config.num_epochs,
-            train_items_total,
-            valid_items_total,
-        )
-        .map_err(|err| format!("build distributed runtime execution artifact: {err}"))?;
+        let runtime_artifact =
+            distributed_runtime_execution_value(DistributedRuntimeExecutionSpec {
+                backend: &backend,
+                artifact_version: &config.artifact_version,
+                world_size: u64::try_from(config.world_size).unwrap_or(u64::MAX),
+                device_group: &config.device_group,
+                participant_devices: participant_devices
+                    .iter()
+                    .map(B::Device::participant_device_ref)
+                    .collect(),
+                batch_size: config.batch_size,
+                num_epochs: config.num_epochs,
+                train_items_total,
+                valid_items_total,
+            })
+            .map_err(|err| format!("build distributed runtime execution artifact: {err}"))?;
         let runtime_artifact_path =
             write_distributed_runtime_execution_artifact(&train_dir, &runtime_artifact)
                 .expect("write distributed runtime execution artifact");
@@ -503,7 +506,8 @@ fn wgpu_device_key(device: &WgpuDevice) -> (&'static str, usize) {
 #[cfg(test)]
 mod tests {
     use super::{
-        TrainingConfig, WgpuDevice, limit_loader, resolve_training_devices, train_with_loaders,
+        DISTRIBUTED_RUNTIME_CHECKPOINT_STATE_FILENAME, TrainingConfig, WgpuDevice, limit_loader,
+        resolve_training_devices, train_with_loaders,
     };
     use crate::data::MnistBatcher;
     use crate::model::ModelConfig;
@@ -583,6 +587,64 @@ mod tests {
         let err = resolve_training_devices::<WgpuDevice>(&config, 16, 8)
             .expect_err("ambiguous default device ref must fail");
         assert!(err.contains("requires concrete participant devices"));
+    }
+
+    #[test]
+    fn checkpoint_group_anchor_and_resume_work_with_synthetic_loaders() {
+        let tmp = tempfile::tempdir().expect("tempdir");
+        let device = <CpuAutodiff as Backend>::Device::default();
+        let train_loader = synthetic_loader::<CpuAutodiff>(&device, 16, 8);
+        let valid_loader =
+            synthetic_loader::<CpuBackend>(&<CpuBackend as Backend>::Device::default(), 8, 4);
+
+        let mut config = TrainingConfig::new(ModelConfig::new(10));
+        config.artifacts_dir = tmp.path().join("artifacts").display().to_string();
+        config.artifact_version = "0.3.0-runtime".to_string();
+        config.batch_size = 8;
+        config.num_epochs = 1;
+        config.checkpoint_group = "group-a".to_string();
+
+        train_with_loaders(config.clone(), device, train_loader, valid_loader)
+            .expect("initial checkpointed train must succeed");
+
+        let resumed_train_loader = synthetic_loader::<CpuAutodiff>(&device, 16, 8);
+        let resumed_valid_loader =
+            synthetic_loader::<CpuBackend>(&<CpuBackend as Backend>::Device::default(), 8, 4);
+        let mut resumed = config;
+        resumed.num_epochs = 2;
+        resumed.resume_epoch = Some(1);
+
+        train_with_loaders(resumed, device, resumed_train_loader, resumed_valid_loader)
+            .expect("resumed checkpointed train must succeed");
+
+        let artifacts_dir = tmp.path().join("artifacts");
+        let checkpoint_state_path = artifacts_dir
+            .join("train")
+            .join(DISTRIBUTED_RUNTIME_CHECKPOINT_STATE_FILENAME);
+        assert!(
+            checkpoint_state_path.is_file(),
+            "runtime checkpoint state artifact must be written"
+        );
+
+        let checkpoint_root = artifacts_dir
+            .join("train")
+            .join("checkpoint_groups")
+            .join("group-a")
+            .join("checkpoint");
+        assert!(
+            checkpoint_root.is_dir(),
+            "checkpoint root must exist under the checkpoint_group anchor"
+        );
+
+        let observability =
+            std::fs::read_to_string(artifacts_dir.join("train/observability.jsonl"))
+                .expect("read train observability");
+        assert!(observability.contains("\"event\":\"train_start\""));
+        assert!(
+            observability.contains("\"event\":\"distributed_runtime_checkpoint_state_written\"")
+        );
+        assert!(observability.contains("\"event\":\"train_done\""));
+        assert!(observability.contains("\"checkpoint_group\":\"group-a\""));
     }
 
     fn synthetic_loader<B: Backend>(

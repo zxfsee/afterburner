@@ -571,6 +571,35 @@ fn usage() -> &'static str {
 }
 
 #[cfg(test)]
+fn runtime_device_ref_to_wgpu(value: &str) -> Result<WgpuDevice, String> {
+    match value {
+        "default" => Ok(WgpuDevice::DefaultDevice),
+        "cpu" => Ok(WgpuDevice::Cpu),
+        _ if value.starts_with("discrete:") => value
+            .trim_start_matches("discrete:")
+            .parse::<usize>()
+            .map(WgpuDevice::DiscreteGpu)
+            .map_err(|_| format!("invalid discrete device ref `{value}`")),
+        _ if value.starts_with("integrated:") => value
+            .trim_start_matches("integrated:")
+            .parse::<usize>()
+            .map(WgpuDevice::IntegratedGpu)
+            .map_err(|_| format!("invalid integrated device ref `{value}`")),
+        _ if value.starts_with("virtual:") => value
+            .trim_start_matches("virtual:")
+            .parse::<usize>()
+            .map(WgpuDevice::VirtualGpu)
+            .map_err(|_| format!("invalid virtual device ref `{value}`")),
+        _ if value.starts_with("existing:") => value
+            .trim_start_matches("existing:")
+            .parse::<u32>()
+            .map(WgpuDevice::Existing)
+            .map_err(|_| format!("invalid existing device ref `{value}`")),
+        _ => Err(format!("unknown participant device ref `{value}`")),
+    }
+}
+
+#[cfg(test)]
 mod tests {
     use std::path::Path;
 
@@ -808,34 +837,5 @@ mod tests {
                 WgpuDevice::DiscreteGpu(0),
             ]
         );
-    }
-}
-
-#[cfg(test)]
-fn runtime_device_ref_to_wgpu(value: &str) -> Result<WgpuDevice, String> {
-    match value {
-        "default" => Ok(WgpuDevice::DefaultDevice),
-        "cpu" => Ok(WgpuDevice::Cpu),
-        _ if value.starts_with("discrete:") => value
-            .trim_start_matches("discrete:")
-            .parse::<usize>()
-            .map(WgpuDevice::DiscreteGpu)
-            .map_err(|_| format!("invalid discrete device ref `{value}`")),
-        _ if value.starts_with("integrated:") => value
-            .trim_start_matches("integrated:")
-            .parse::<usize>()
-            .map(WgpuDevice::IntegratedGpu)
-            .map_err(|_| format!("invalid integrated device ref `{value}`")),
-        _ if value.starts_with("virtual:") => value
-            .trim_start_matches("virtual:")
-            .parse::<usize>()
-            .map(WgpuDevice::VirtualGpu)
-            .map_err(|_| format!("invalid virtual device ref `{value}`")),
-        _ if value.starts_with("existing:") => value
-            .trim_start_matches("existing:")
-            .parse::<u32>()
-            .map(WgpuDevice::Existing)
-            .map_err(|_| format!("invalid existing device ref `{value}`")),
-        _ => Err(format!("unknown participant device ref `{value}`")),
     }
 }

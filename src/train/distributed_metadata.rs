@@ -175,37 +175,44 @@ pub fn single_node_data_parallel_participants(
         .collect()
 }
 
+pub struct DistributedRuntimeExecutionSpec<'a> {
+    pub backend: &'a str,
+    pub artifact_version: &'a str,
+    pub world_size: u64,
+    pub device_group: &'a str,
+    pub participant_devices: Vec<String>,
+    pub batch_size: usize,
+    pub num_epochs: usize,
+    pub train_items_total: usize,
+    pub valid_items_total: usize,
+}
+
 pub fn distributed_runtime_execution_value(
-    backend: &str,
-    artifact_version: &str,
-    world_size: u64,
-    device_group: &str,
-    participant_devices: Vec<String>,
-    batch_size: usize,
-    num_epochs: usize,
-    train_items_total: usize,
-    valid_items_total: usize,
+    spec: DistributedRuntimeExecutionSpec<'_>,
 ) -> Result<serde_json::Value, String> {
-    if participant_devices.len() != usize::try_from(world_size).unwrap_or(usize::MAX) {
+    if spec.participant_devices.len() != usize::try_from(spec.world_size).unwrap_or(usize::MAX) {
         return Err(format!(
             "distributed runtime execution artifact requires {} participant devices, got {}",
-            world_size,
-            participant_devices.len()
+            spec.world_size,
+            spec.participant_devices.len()
         ));
     }
 
-    let participants =
-        single_node_data_parallel_participants(world_size, device_group, &participant_devices);
+    let participants = single_node_data_parallel_participants(
+        spec.world_size,
+        spec.device_group,
+        &spec.participant_devices,
+    );
     Ok(serde_json::json!({
         "schema_version": "1",
-        "artifact_version": artifact_version,
-        "backend": backend,
+        "artifact_version": spec.artifact_version,
+        "backend": spec.backend,
         "runtime_mode": "single_node_dp",
         "node_count": 1,
-        "world_size": world_size,
-        "device_group": device_group,
+        "world_size": spec.world_size,
+        "device_group": spec.device_group,
         "participant_count": participants.len(),
-        "participant_devices": participant_devices,
+        "participant_devices": spec.participant_devices,
         "participants": participants
             .iter()
             .map(|participant| {
@@ -218,10 +225,10 @@ pub fn distributed_runtime_execution_value(
                 })
             })
             .collect::<Vec<_>>(),
-        "batch_size": batch_size,
-        "num_epochs": num_epochs,
-        "train_items_total": train_items_total,
-        "valid_items_total": valid_items_total,
+        "batch_size": spec.batch_size,
+        "num_epochs": spec.num_epochs,
+        "train_items_total": spec.train_items_total,
+        "valid_items_total": spec.valid_items_total,
         "optimizer_strategy": "main_device",
     }))
 }

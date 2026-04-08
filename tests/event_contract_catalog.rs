@@ -5,9 +5,9 @@ use std::path::PathBuf;
 use afterburner::model::ModelConfig;
 use afterburner::observability::event_line;
 use afterburner::train::{
-    TRAINING_SCALABILITY_CONTRACT_FILENAME, TrainingConfig, artifact_exported_event_line,
-    train_done_event_line, train_start_event_line, training_scalability_contract_value,
-    write_training_scalability_contract,
+    TRAINING_SCALABILITY_CONTRACT_FILENAME, TrainStartEventContext, TrainingConfig,
+    artifact_exported_event_line, train_done_event_line, train_start_event_line,
+    training_scalability_contract_value, write_training_scalability_contract,
 };
 use serde_json::{Value, json};
 
@@ -174,11 +174,13 @@ fn train_start_and_artifact_exported_events_match_fixture_contracts() {
         "cpu",
         "train_start",
         &config,
-        metrics_dir.as_path(),
-        metrics_dir.as_path(),
-        None,
-        inference_dir.as_path(),
-        60_000,
+        &TrainStartEventContext {
+            metrics_dir: metrics_dir.as_path(),
+            runtime_root: metrics_dir.as_path(),
+            checkpoint_group: None,
+            inference_dir: inference_dir.as_path(),
+            planned_samples: 60_000,
+        },
     );
     let normalized = normalize_train_event_line(line.as_str());
     let expected_text = fs::read_to_string(fixture_path("train_start_event.fixture.json"))

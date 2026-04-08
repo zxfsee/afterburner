@@ -16,28 +16,23 @@ fn observability_path(train_dir: &Path) -> PathBuf {
     train_dir.join("observability.jsonl")
 }
 
+pub struct TrainStartEventContext<'a> {
+    pub metrics_dir: &'a Path,
+    pub runtime_root: &'a Path,
+    pub checkpoint_group: Option<&'a str>,
+    pub inference_dir: &'a Path,
+    pub planned_samples: u64,
+}
+
 pub fn write_train_event(
     train_dir: &Path,
     event: &str,
     backend: &str,
     config: &TrainingConfig,
-    metrics_dir: &Path,
-    runtime_root: &Path,
-    checkpoint_group: Option<&str>,
-    inference_dir: &Path,
-    planned_samples: u64,
+    context: &TrainStartEventContext<'_>,
 ) -> io::Result<()> {
     let path = observability_path(train_dir);
-    let line = train_start_event_line(
-        backend,
-        event,
-        config,
-        metrics_dir,
-        runtime_root,
-        checkpoint_group,
-        inference_dir,
-        planned_samples,
-    );
+    let line = train_start_event_line(backend, event, config, context);
     append_json_line(&path, &line)
 }
 
@@ -45,11 +40,7 @@ pub fn train_start_event_line(
     backend: &str,
     event: &str,
     config: &TrainingConfig,
-    metrics_dir: &Path,
-    runtime_root: &Path,
-    checkpoint_group: Option<&str>,
-    inference_dir: &Path,
-    planned_samples: u64,
+    context: &TrainStartEventContext<'_>,
 ) -> String {
     let mut fields = serde_json::json!({
         "backend": backend,
@@ -57,18 +48,18 @@ pub fn train_start_event_line(
         "batch_size": config.batch_size,
         "worker_parallelism": config.num_workers,
         "num_epochs": config.num_epochs,
-        "planned_samples": planned_samples,
-        "metrics_dir": metrics_dir.to_string_lossy().to_string(),
-        "inference_dir": inference_dir.to_string_lossy().to_string()
+        "planned_samples": context.planned_samples,
+        "metrics_dir": context.metrics_dir.to_string_lossy().to_string(),
+        "inference_dir": context.inference_dir.to_string_lossy().to_string()
     });
     if let Some(object) = fields.as_object_mut() {
-        if runtime_root != metrics_dir {
+        if context.runtime_root != context.metrics_dir {
             object.insert(
                 "runtime_root".to_string(),
-                serde_json::Value::from(runtime_root.to_string_lossy().to_string()),
+                serde_json::Value::from(context.runtime_root.to_string_lossy().to_string()),
             );
         }
-        if let Some(checkpoint_group) = checkpoint_group {
+        if let Some(checkpoint_group) = context.checkpoint_group {
             object.insert(
                 "checkpoint_group".to_string(),
                 serde_json::Value::from(checkpoint_group.to_string()),
@@ -76,12 +67,7 @@ pub fn train_start_event_line(
         }
     }
 
-    event_line(
-        "info",
-        "train",
-        event,
-        fields,
-    )
+    event_line("info", "train", event, fields)
 }
 
 pub fn write_train_export_event(

@@ -20,6 +20,7 @@ pub use distributed_metadata::{
     validate_distributed_shard_metadata_load_path,
 };
 pub use observability::{
-    artifact_exported_event_line, train_done_event_line, train_start_event_line,
+    TrainStartEventContext, artifact_exported_event_line, train_done_event_line,
+    train_start_event_line,
 };
 pub use runtime::{TrainingConfig, train};
