@@ -90,9 +90,17 @@
             ];
           };
 
-          rustToolchain = pkgs.rust-bin.stable.latest.default.override {
-            targets = [ "wasm32-wasip2" ];
-          };
+          rustToolchain = pkgs.rust-bin.selectLatestNightlyWith (
+            toolchain:
+            toolchain.default.override {
+              extensions = [
+                "rust-src"
+                "miri"
+                "rustc-codegen-cranelift-preview"
+              ];
+              targets = [ "wasm32-wasip2" ];
+            }
+          );
 
           taploConfig = builtins.path {
             path = ./taplo.toml;
