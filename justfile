@@ -408,7 +408,7 @@ workflow-surface-check-deployment-verification:
     cargo nextest run --locked --test deployment_verification_workflow_surface_catalog
 
 workflow-surface-check-routing-orchestration:
-    cargo nextest run --locked --test rollout_orchestration_catalog
+    cargo nextest run --locked --test rollout_orchestration_catalog --test routing_orchestration_semantic_regression --test cli_dispatch_decomposition
 
 workflow-surface-check-scheduler-heartbeat:
     cargo nextest run --locked --test workflow_family_surface_catalog

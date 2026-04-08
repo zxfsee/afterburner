@@ -173,6 +173,8 @@ operator use case justifies promotion.
 
 - Profiling stays grouped under these operator flows:
 - Hotspot capture and infer path: `just profile-infer` delegates to `afterburner profile infer`.
+- The native profiling command still owns current pointer resolution and any explicit `BACKEND`
+  override contract behind the stable `just profile-infer` entrypoint.
 - On macOS, profiling requires `xcrun xctrace version` under full Xcode.
 - The native profiling command forces `XCTRACE=/usr/bin/xctrace` while clearing `DEVELOPER_DIR` and `SDKROOT`.
 - Environment capture: `just profile-environment-snapshot`, `just profile-refresh-environment-snapshot`.

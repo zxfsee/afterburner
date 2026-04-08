@@ -7,6 +7,156 @@ mod repo_test_support;
 
 use repo_test_support::repo_file;
 
+const DOC_TEST_ADMISSION_ALLOWLIST: &[&str] = &[
+    "tests/artifact_cleanup_dry_run_receipt.rs",
+    "tests/artifact_cleanup_evidence_bundle.rs",
+    "tests/artifact_cleanup_execution_receipt.rs",
+    "tests/artifact_cleanup_inventory.rs",
+    "tests/artifact_cleanup_policy.rs",
+    "tests/artifact_upload_adapter.rs",
+    "tests/burn_bpk_migration_surface_inventory.rs",
+    "tests/canonical_just_surface.rs",
+    "tests/deployment_stack_contract.rs",
+    "tests/deployment_stack_launch_evidence_bundle.rs",
+    "tests/deployment_stack_launch_evidence_bundle_reconciliation.rs",
+    "tests/deployment_stack_launch_evidence_bundle_reconciliation_history.rs",
+    "tests/deployment_stack_launch_evidence_handoff.rs",
+    "tests/deployment_stack_launch_evidence_handoff_reconciliation.rs",
+    "tests/deployment_stack_launch_evidence_handoff_reconciliation_history.rs",
+    "tests/deployment_stack_launch_handoff_history.rs",
+    "tests/deployment_stack_launch_locator_history.rs",
+    "tests/deployment_stack_launch_locator_pointer.rs",
+    "tests/deployment_stack_launch_locator_reconciliation.rs",
+    "tests/deployment_stack_launch_locator_reconciliation_history.rs",
+    "tests/deployment_stack_launch_plan.rs",
+    "tests/deployment_stack_launch_receipt.rs",
+    "tests/deployment_stack_launch_transport_locator.rs",
+    "tests/deployment_stack_launch_transport_locator_history.rs",
+    "tests/deployment_stack_launch_transport_locator_reconciliation.rs",
+    "tests/deployment_stack_launch_transport_locator_reconciliation_history.rs",
+    "tests/developer_workflows.rs",
+    "tests/distributed_load_profile.rs",
+    "tests/distributed_runtime_benchmark_harness.rs",
+    "tests/distributed_runtime_checkpoint_state.rs",
+    "tests/distributed_runtime_execution_contract.rs",
+    "tests/distributed_runtime_layout_feasibility.rs",
+    "tests/distributed_runtime_profile_schema.rs",
+    "tests/distributed_shard_lineage_evidence_provenance.rs",
+    "tests/distributed_shard_lineage_receipt.rs",
+    "tests/gpu_scheduler_lifecycle_message.rs",
+    "tests/huggingface_publish_adapter.rs",
+    "tests/infer_drift_baseline.rs",
+    "tests/infer_drift_baseline_approval.rs",
+    "tests/infer_drift_baseline_bundle.rs",
+    "tests/infer_drift_baseline_checkpoint.rs",
+    "tests/infer_drift_baseline_handoff.rs",
+    "tests/infer_drift_baseline_history.rs",
+    "tests/infer_drift_baseline_pointer.rs",
+    "tests/infer_drift_baseline_refresh.rs",
+    "tests/infer_drift_baseline_rollback.rs",
+    "tests/infer_drift_baseline_supersession.rs",
+    "tests/infer_drift_baseline_transport_locator.rs",
+    "tests/infer_drift_receipt.rs",
+    "tests/infer_output_drift_summary.rs",
+    "tests/kube_rs_gpu_lease_history.rs",
+    "tests/kube_rs_gpu_lease_pointer.rs",
+    "tests/kube_rs_gpu_lease_reconciliation.rs",
+    "tests/kube_rs_gpu_lease_reconciliation_history.rs",
+    "tests/model_optimization_profile.rs",
+    "tests/optimized_model_capability_surface.rs",
+    "tests/optimized_model_local_profile.rs",
+    "tests/optimized_model_package_contract.rs",
+    "tests/pretraining_source_approval_receipt.rs",
+    "tests/pretraining_source_provenance_evidence_bundle.rs",
+    "tests/pretraining_source_provenance_receipt.rs",
+    "tests/profiling_environment_snapshot.rs",
+    "tests/profiling_environment_snapshot_refresh.rs",
+    "tests/profiling_hotspot_taxonomy.rs",
+    "tests/profiling_provenance_evidence_bundle.rs",
+    "tests/profiling_provenance_receipt.rs",
+    "tests/profiling_recipe_current_pointer.rs",
+    "tests/readme_reference_split.rs",
+    "tests/scheduler_runtime_simulation.rs",
+    "tests/text_model_artifact_inference_contract.rs",
+    "tests/text_pretraining_adapter.rs",
+    "tests/text_pretraining_smoke.rs",
+    "tests/text_tokenizer_packing_profile.rs",
+    "tests/workflow_reference.rs",
+];
+
+const DOC_TEST_STRING_POLICING_ALLOWLIST: &[&str] = &[
+    "tests/artifact_cleanup_dry_run_receipt.rs",
+    "tests/artifact_cleanup_evidence_bundle.rs",
+    "tests/artifact_cleanup_execution_receipt.rs",
+    "tests/artifact_cleanup_inventory.rs",
+    "tests/artifact_cleanup_policy.rs",
+    "tests/artifact_upload_adapter.rs",
+    "tests/burn_bpk_migration_surface_inventory.rs",
+    "tests/deployment_stack_contract.rs",
+    "tests/deployment_stack_launch_evidence_bundle.rs",
+    "tests/deployment_stack_launch_evidence_bundle_reconciliation.rs",
+    "tests/deployment_stack_launch_evidence_bundle_reconciliation_history.rs",
+    "tests/deployment_stack_launch_evidence_handoff.rs",
+    "tests/deployment_stack_launch_evidence_handoff_reconciliation.rs",
+    "tests/deployment_stack_launch_evidence_handoff_reconciliation_history.rs",
+    "tests/deployment_stack_launch_handoff_history.rs",
+    "tests/deployment_stack_launch_locator_history.rs",
+    "tests/deployment_stack_launch_locator_pointer.rs",
+    "tests/deployment_stack_launch_locator_reconciliation.rs",
+    "tests/deployment_stack_launch_locator_reconciliation_history.rs",
+    "tests/deployment_stack_launch_plan.rs",
+    "tests/deployment_stack_launch_receipt.rs",
+    "tests/deployment_stack_launch_transport_locator.rs",
+    "tests/deployment_stack_launch_transport_locator_history.rs",
+    "tests/deployment_stack_launch_transport_locator_reconciliation.rs",
+    "tests/deployment_stack_launch_transport_locator_reconciliation_history.rs",
+    "tests/distributed_load_profile.rs",
+    "tests/distributed_runtime_benchmark_harness.rs",
+    "tests/distributed_runtime_checkpoint_state.rs",
+    "tests/distributed_runtime_execution_contract.rs",
+    "tests/distributed_runtime_layout_feasibility.rs",
+    "tests/distributed_runtime_profile_schema.rs",
+    "tests/distributed_shard_lineage_evidence_provenance.rs",
+    "tests/distributed_shard_lineage_receipt.rs",
+    "tests/huggingface_publish_adapter.rs",
+    "tests/infer_drift_baseline.rs",
+    "tests/infer_drift_baseline_approval.rs",
+    "tests/infer_drift_baseline_bundle.rs",
+    "tests/infer_drift_baseline_checkpoint.rs",
+    "tests/infer_drift_baseline_handoff.rs",
+    "tests/infer_drift_baseline_history.rs",
+    "tests/infer_drift_baseline_pointer.rs",
+    "tests/infer_drift_baseline_refresh.rs",
+    "tests/infer_drift_baseline_rollback.rs",
+    "tests/infer_drift_baseline_supersession.rs",
+    "tests/infer_drift_baseline_transport_locator.rs",
+    "tests/infer_drift_receipt.rs",
+    "tests/infer_output_drift_summary.rs",
+    "tests/kube_rs_gpu_lease_history.rs",
+    "tests/kube_rs_gpu_lease_pointer.rs",
+    "tests/kube_rs_gpu_lease_reconciliation.rs",
+    "tests/kube_rs_gpu_lease_reconciliation_history.rs",
+    "tests/model_optimization_profile.rs",
+    "tests/optimized_model_capability_surface.rs",
+    "tests/optimized_model_local_profile.rs",
+    "tests/optimized_model_package_contract.rs",
+    "tests/pretraining_source_approval_receipt.rs",
+    "tests/pretraining_source_provenance_evidence_bundle.rs",
+    "tests/pretraining_source_provenance_receipt.rs",
+    "tests/profiling_environment_snapshot.rs",
+    "tests/profiling_environment_snapshot_refresh.rs",
+    "tests/profiling_hotspot_taxonomy.rs",
+    "tests/profiling_provenance_evidence_bundle.rs",
+    "tests/profiling_provenance_receipt.rs",
+    "tests/readme_reference_split.rs",
+    "tests/scheduler_runtime_simulation.rs",
+    "tests/text_model_artifact_inference_contract.rs",
+    "tests/text_pretraining_adapter.rs",
+    "tests/text_pretraining_smoke.rs",
+    "tests/text_tokenizer_packing_profile.rs",
+    "tests/workflow_reference.rs",
+];
+
 fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
@@ -61,19 +211,14 @@ fn grouped_doc_surface_allowlist(file_name: &str) -> bool {
     )
 }
 
-fn load_snapshot(path: &str) -> BTreeSet<String> {
-    repo_file(path)
-        .lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(str::to_string)
-        .collect()
+fn load_snapshot(snapshot: &[&str]) -> BTreeSet<String> {
+    snapshot.iter().map(|entry| (*entry).to_string()).collect()
 }
 
 #[test]
 fn doc_test_admission_stays_on_the_known_legacy_surface() {
-    let doc_reader_allowlist = load_snapshot("tests/fixtures/doc_test_admission_allowlist.txt");
-    let string_policing_allowlist =
-        load_snapshot("tests/fixtures/doc_test_string_policing_allowlist.txt");
+    let doc_reader_allowlist = load_snapshot(DOC_TEST_ADMISSION_ALLOWLIST);
+    let string_policing_allowlist = load_snapshot(DOC_TEST_STRING_POLICING_ALLOWLIST);
 
     let mut unexpected_doc_readers = Vec::new();
     let mut unexpected_string_policing = Vec::new();
@@ -120,9 +265,8 @@ fn doc_test_admission_stays_on_the_known_legacy_surface() {
 
 #[test]
 fn doc_test_snapshots_only_keep_still_relevant_legacy_entries() {
-    let doc_reader_allowlist = load_snapshot("tests/fixtures/doc_test_admission_allowlist.txt");
-    let string_policing_allowlist =
-        load_snapshot("tests/fixtures/doc_test_string_policing_allowlist.txt");
+    let doc_reader_allowlist = load_snapshot(DOC_TEST_ADMISSION_ALLOWLIST);
+    let string_policing_allowlist = load_snapshot(DOC_TEST_STRING_POLICING_ALLOWLIST);
 
     let stale_doc_readers = doc_reader_allowlist
         .iter()

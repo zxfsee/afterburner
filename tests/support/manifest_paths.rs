@@ -10,7 +10,6 @@ pub fn fixture_manifest_path() -> PathBuf {
 
 fn fixture_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("tests")
         .join("fixtures")
         .join(name)
 }

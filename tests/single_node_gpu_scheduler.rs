@@ -41,7 +41,7 @@ fn single_node_scheduler_contracts_are_explicit() {
 
     let justfile = repo_file("justfile");
     assert!(
-        justfile.contains("deploy single-node-scheduler"),
+        justfile.contains("single-node-scheduler job inventory:"),
         "justfile must expose the single-node scheduler workflow"
     );
 

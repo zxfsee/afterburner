@@ -404,12 +404,11 @@ fn scheduler_heartbeat_family_stays_grouped_and_surface_complete() {
         );
     }
 
-    for forbidden in ["- `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`."] {
-        assert!(
-            !workflows.contains(forbidden),
-            "workflow reference must stay grouped instead of enumerating scheduler-heartbeat variant `{forbidden}`"
-        );
-    }
+    let forbidden = "- `just scheduler-heartbeat` writes `gpu_scheduler_heartbeat.json`.";
+    assert!(
+        !workflows.contains(forbidden),
+        "workflow reference must stay grouped instead of enumerating scheduler-heartbeat variant `{forbidden}`"
+    );
 
     let reference = repo_file("docs/reference.md");
     for needle in [

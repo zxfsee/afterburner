@@ -14,21 +14,20 @@
   "schema_version": "1",
   "summary": {
     "tag_counts": {
-      "bpk_literal": 10,
-      "burn_current_version": 12,
+      "bpk_literal": 6,
+      "burn_current_version": 9,
       "burn_mpk_export_format": 5,
       "burn_pre_release": 4,
       "burn_refresh_decision": 1,
-      "mpk_literal": 66
+      "mpk_literal": 64
     },
-    "touchpoint_count": 75
+    "touchpoint_count": 72
   },
   "touchpoints": [
     {
       "path": "ARCHITECTURE.md",
       "tags": [
         "bpk_literal",
-        "burn_current_version",
         "mpk_literal"
       ]
     },
@@ -56,17 +55,9 @@
       ]
     },
     {
-      "path": "docs/adr/012-runtime-backend-strategy.md",
-      "tags": [
-        "burn_current_version"
-      ]
-    },
-    {
       "path": "docs/reference.md",
       "tags": [
-        "bpk_literal",
-        "burn_current_version",
-        "mpk_literal"
+        "burn_current_version"
       ]
     },
     {
@@ -263,22 +254,6 @@
       ]
     },
     {
-      "path": "tests/burn_dependency_refresh.rs",
-      "tags": [
-        "bpk_literal",
-        "burn_current_version",
-        "burn_pre_release",
-        "mpk_literal"
-      ]
-    },
-    {
-      "path": "tests/burn_stable_release_availability.rs",
-      "tags": [
-        "bpk_literal",
-        "burn_current_version"
-      ]
-    },
-    {
       "path": "tests/calibration_export_contract.rs",
       "tags": [
         "mpk_literal"
@@ -303,8 +278,17 @@
       ]
     },
     {
-      "path": "tests/fixture_support.rs",
+      "path": "tests/event_contract_catalog.rs",
       "tags": [
+        "mpk_literal"
+      ]
+    },
+    {
+      "path": "tests/format_dependency_fit_catalog.rs",
+      "tags": [
+        "bpk_literal",
+        "burn_current_version",
+        "burn_pre_release",
         "mpk_literal"
       ]
     },
@@ -466,33 +450,25 @@
       ]
     },
     {
-      "path": "tests/readme_reference_split.rs",
-      "tags": [
-        "bpk_literal",
-        "mpk_literal"
-      ]
-    },
-    {
-      "path": "tests/reference_doc_validation.rs",
-      "tags": [
-        "bpk_literal",
-        "mpk_literal"
-      ]
-    },
-    {
       "path": "tests/rollout_orchestration_commands.rs",
       "tags": [
         "mpk_literal"
       ]
     },
     {
-      "path": "tests/text_pretraining_adapter.rs",
+      "path": "tests/support/manifest_paths.rs",
       "tags": [
         "mpk_literal"
       ]
     },
     {
-      "path": "tests/train_start_event.rs",
+      "path": "tests/support/runtime_model_artifact.rs",
+      "tags": [
+        "mpk_literal"
+      ]
+    },
+    {
+      "path": "tests/text_pretraining_adapter.rs",
       "tags": [
         "mpk_literal"
       ]

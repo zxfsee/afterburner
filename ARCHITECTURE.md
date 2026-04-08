@@ -275,7 +275,7 @@ auto-versioning, embedded serving) are intentionally absent.
   - Combined implementations in other codebases do not change the layer
     boundary here: scheduler/control-plane concerns stay separate from in-job
     runtime semantics.
-  - Within the runtime layer, topology, layout feasibility, and
+  - Within the runtime layer, topology, the layout feasibility artifact, and
     execution/state semantics should stay explicit contract surfaces rather
     than collapsing into one framework-shaped abstraction.
   - Do not promise broad generic support across all DP/TP/PP/SP-CP/EP/ZeRO combinations
@@ -314,6 +314,13 @@ auto-versioning, embedded serving) are intentionally absent.
 - Data and artifact lifecycle fits:
   - See `docs/reference.md` plus ADR-013, ADR-019, ADR-021, ADR-022, ADR-024, ADR-026, ADR-027,
     ADR-029, ADR-031, ADR-047, ADR-049, ADR-050, ADR-051, and ADR-052.
+  - The burn `.bpk` migration surface inventory prerequisite records the current `.mpk` and
+    `.bpk` touchpoints in `burn_bpk_migration_surface_inventory.json`; see ADR-033.
+  - The cleanup dry-run receipt contract anchors `artifact_cleanup_dry_run_receipt.json` to
+    `artifact_cleanup_inventory.json`; see ADR-024.
+  - The cleanup execution receipt contract anchors
+    `artifact_cleanup_execution_receipt.json` to `artifact_cleanup_dry_run_receipt.json`; see
+    ADR-029.
 
 ### Assumptions
 

@@ -69,14 +69,11 @@ fn deployment_verification_bundle_locator_and_rollback_surface_stays_grouped() {
     }
 
     let workflows = repo_file("docs/workflows.md");
-    for needle in [
-        "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow, but the detailed support artifacts stay behind `afterburner verify bundle ...` and `afterburner rollback verification-bundle ...`.",
-    ] {
-        assert!(
-            workflows.contains(needle),
-            "workflow reference must keep the grouped bundle locator/rollback surface `{needle}`"
-        );
-    }
+    let needle = "Bundle support flows: history/reconciliation, transport, locator, and rollback stay grouped under the bundle flow, but the detailed support artifacts stay behind `afterburner verify bundle ...` and `afterburner rollback verification-bundle ...`.";
+    assert!(
+        workflows.contains(needle),
+        "workflow reference must keep the grouped bundle locator/rollback surface `{needle}`"
+    );
 
     let reference = repo_file("docs/reference.md");
     for needle in [
@@ -156,14 +153,11 @@ fn deployment_verification_receipt_locator_and_rollback_surface_stays_grouped() 
     }
 
     let workflows = repo_file("docs/workflows.md");
-    for needle in [
-        "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow, but the detailed support artifacts stay behind `afterburner verify receipt ...` and `afterburner rollback verification-receipt ...`.",
-    ] {
-        assert!(
-            workflows.contains(needle),
-            "workflow reference must keep the grouped receipt locator/rollback surface `{needle}`"
-        );
-    }
+    let needle = "Receipt support flows: history/reconciliation, transport, locator, and rollback stay grouped under the receipt flow, but the detailed support artifacts stay behind `afterburner verify receipt ...` and `afterburner rollback verification-receipt ...`.";
+    assert!(
+        workflows.contains(needle),
+        "workflow reference must keep the grouped receipt locator/rollback surface `{needle}`"
+    );
 
     let reference = repo_file("docs/reference.md");
     for needle in [
