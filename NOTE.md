@@ -15,6 +15,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Use `jj` only at control points by default: queue preflight, commit, queue refresh when the TODO actually completes or queue state is being explicitly repaired, and explicit cleanliness proof when needed. During normal implementation, avoid routine `jj status` chatter and use ordinary reads/search/tests instead; `jj diff` and `jj log` remain allowed for ambiguity, not as default background checks.
 - If the user gives a process reminder during active changes (for example commit hygiene), treat it as a request to execute the missing step now, not as documentation work.
 - If proposing additional work outside the active TODO queue, either add it to TODO immediately or do not mention it.
+- If the user asks to append or reprioritize TODO items, treat that as queue-only work; do not start execution in the same pass unless they explicitly ask for it.
 - Do not mark a TODO complete on a partial improvement. If the stated goal is only partly satisfied, keep the item open or immediately queue the exact remainder instead of silently advancing the horizon.
 - If a requested skill appears unavailable from session discovery, verify `~/.config/codex/skills/<skill>/SKILL.md` before declaring it missing.
 - In a `jj` workspace path, run `direnv allow` once, then run toolchain commands directly; use `direnv exec <workspace> <command>` only if direct execution proves the environment is missing required tools.
@@ -42,6 +43,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Do not split one environment/tooling blocker into multiple active gate TODOs. If the issue is host-specific or transient, keep one contract/workflow gate at most, then record the remaining problem as an inline `Blocked-by:` note on the real TODO.
 - Park profiling/flamegraph work unless a near-term runtime/kernel/quantization decision actually depends on measured hotspot evidence; otherwise it is easy to over-invest in tooling before the next leverage point is ready.
 - When passing commit messages through `shell_command`, avoid unescaped backticks in the shell string; they trigger command substitution and silently corrupt the commit body.
+- If a gate only restates an already-decided boundary, fold, park, or remove it instead of expanding ADR/gate surface.
 - In constrained time, prioritize the highest-ROI item that still benefits from an explicit spec; keep enough architecture context to avoid drift, but do not expand documentation or ADR surface beyond what materially preserves the direction of travel.
 - Prefer the lowest-energy change that preserves architectural direction, avoids drift, and unlocks the next real capability; do not spend complexity, process, or implementation effort unless it materially increases leverage.
 - If public CLI names start mirroring internal artifact taxonomy, stop and collapse them behind `just` or `afterburner debug ...`; keep operator commands intent-first and proactive.
@@ -61,3 +63,4 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Do not call `justfile` "thin orchestration" while queue-control branching, generic `action +args` buckets, or large artifact-family recipe expansions remain concentrated in the file. Describe it as midpoint progress until at least one remaining semantic choke point is removed end to end.
 - Prefer structural fixes over indirection used only to silence lints. When a lint suppression is still necessary, keep it explicit, narrow, and adjacent to the affected item.
 - For compile-churn reduction, prioritize changes that reduce package invalidation, integration-test target count, or repeated compile surfaces before in-crate readability refactors.
+- Treat the default `dev` profile as compile-speed biased. When fuller debug information is needed, prefer an explicit debug-oriented profile or workflow instead of widening plain `dev` by default.
