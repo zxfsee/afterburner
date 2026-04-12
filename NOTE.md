@@ -43,7 +43,7 @@ Do *not* restate or reformulate existing rules from `AGENTS.md`.
 - Do not split one environment/tooling blocker into multiple active gate TODOs. If the issue is host-specific or transient, keep one contract/workflow gate at most, then record the remaining problem as an inline `Blocked-by:` note on the real TODO.
 - Park profiling/flamegraph work unless a near-term runtime/kernel/quantization decision actually depends on measured hotspot evidence; otherwise it is easy to over-invest in tooling before the next leverage point is ready.
 - When passing commit messages through `shell_command`, avoid unescaped backticks in the shell string; they trigger command substitution and silently corrupt the commit body.
-- If a gate only restates an already-decided boundary, fold, park, or remove it instead of expanding ADR/gate surface.
+- Do not add a new gate or ADR when it merely duplicates an invariant that is already mechanically enforced or already covered by an equivalent failing check.
 - In constrained time, prioritize the highest-ROI item that still benefits from an explicit spec; keep enough architecture context to avoid drift, but do not expand documentation or ADR surface beyond what materially preserves the direction of travel.
 - Prefer the lowest-energy change that preserves architectural direction, avoids drift, and unlocks the next real capability; do not spend complexity, process, or implementation effort unless it materially increases leverage.
 - If public CLI names start mirroring internal artifact taxonomy, stop and collapse them behind `just` or `afterburner debug ...`; keep operator commands intent-first and proactive.
